@@ -2,11 +2,13 @@
 
 Hans Brende and Claude Fable 5.2, 13 November 2026.
 
-**Status:** short written proofs, not refereed and not formalized; one identity, a table of ranks and a count
-of fixed points checked by computation ([pass_layers.py](../tools/pass_layers.py),
-[pass_parity.py](../tools/pass_parity.py)). Proposition 2 is the reduction of Harvey and van der Hoeven read
-in the one-hop model; no novelty is claimed for it. The question was the third attack of message C2 of the
-[chat](../../chat/fable-astra.md): which decoders a schedule of boundedly many passes can produce.
+**Status:** short written proofs, not formalized; one identity, a table of ranks and a count of fixed points
+checked by computation ([pass_layers.py](../tools/pass_layers.py), [pass_parity.py](../tools/pass_parity.py)).
+Revised on 13 November 2026 after the [scope review](pass-calculus-scope-review.md) by GPT-6 Astra, whose
+corrections are folded in; section 5.1 was added at the same time and has not been reviewed. Proposition 2 is
+the reduction of Harvey and van der Hoeven read in the one-hop model; no novelty is claimed for it. The
+question was the third attack of message C2 of the [chat](../../chat/fable-astra.md): which decoders a
+schedule of boundedly many passes can produce.
 
 ## 0. Summary
 
@@ -19,8 +21,9 @@ of stage generate everything used below:
 1. **Two counts.** Paper 17 counts the coset width of the uniform stages (Proposition "Stages"): row-controlled
    stages are free, and width t gives at most (d² + 2^t d)/2, for all codes. The Kronecker rank counts the
    repertoire of the row-controlled stages: uniform stages are free, whatever they cost on a tape, and
-   repertoires M_1, …, M_a give D ≤ (1 − 1/(2 ΠM_i)) d² + d/2 over every field (Proposition 1), and
-   (½ + η)d² + C·d over ℂ when the blocks have bounded norm.
+   repertoires M_1, …, M_a give D ≤ (1 − 1/(2 ΠM_i)) d² + d/2 over every field (Proposition 1). Over ℂ the bound is
+   (½ + η)d² + C·d when the product of the weights of all stages stays bounded; a product stage A ⊗ B has rank one
+   but weight ‖A‖‖B‖, so this needs a bound on the product stages too.
 2. **Each count is defeated by one cheap or one free stage.** A row shear (row r shifted by r) is one
    linear-time operation of repertoire d. A DFT along the row index is uniform, of full coset width.
 3. **The swap is five such stages** (Proposition 2): Xᵀ = N T⁻¹ (F⁻¹ ⊗ 1) M (F ⊗ 1) T⁻¹ X, with T the row shear, F the
@@ -30,8 +33,10 @@ of stage generate everything used below:
 4. **Consequences.** (a) A machine is not forced into a bounded repertoire, so the fixed-term problem does not
    bound machines; it bounds pipelines whose row-dependent maps come from a bounded list, and for those the
    count is complete at the top end: exact transposition needs ΠM_i ≥ d², that is 2 log_M d stages, even if every
-   product operator is free. (b) A pipeline of boundedly many stages above the pairing rate must combine
-   row-dependent maps of unbounded repertoire with uniform operations of coset width about log₂ d. (c) No
+   product operator is free. (b) A pipeline of boundedly many stages above the pairing rate needs coset width
+   about log₂ d (paper 17, all codes) and, over ℂ, a product of stage weights that grows with d. That the
+   repertoire itself must grow is proved only at the top end; at the rate one half it is the fixed-term
+   problem, open over ℂ too. (c) No
    quantity that is subadditive over stages and vanishes on both kinds of stage is positive on the swap, so
    the quantity asked for in Problem 9.5 of paper 17 has to charge the DFT along one index, which is a
    question about sequences, not matrices.
@@ -42,7 +47,7 @@ kr(K) denotes the Kronecker rank of K with respect to rows ⊗ columns: the leas
 
 **Proposition 1 (every field).**
 (a) kr(K₂K₁) ≤ kr(K₂) kr(K₁); kr(A ⊗ B) ≤ 1; kr(Σ_r E_rr ⊗ U_r) = dim span{U_r}; kr(swap) = d².
-(b) D(K) ≤ (1 − 1/(2 kr(K))) d² + d/2.
+(b) D(K) ≤ (1 − 1/(2 kr(K))) d² + d/2 for K ≠ 0.
 (c) So for a pipeline with stages of Kronecker rank M_1, …, M_t: it transposes every matrix only if ΠM_i ≥ d², and
     D ≤ (1 − 1/(2 ΠM_i)) d² + d/2 in general.
 (d) Over ℂ, if stage i has projective weight γ_i, then D ≤ (½ + η)d² + C(η, Πγ_i) d (item A4 of the backlog; the
@@ -57,7 +62,8 @@ swap = Σ E_sr ⊗ E_rs are independent. (b) Theorem FL of paper 17 with any com
   the column address 4; a row-controlled stage with M distinct blocks at most M; a row shear d.
 - The recursion by digit exchanges has t = log₂ d stages of rank 4, so (c) is attained: among pipelines whose
   stages have bounded Kronecker rank, with every product operator free, the folklore count is optimal for
-  exact transposition, over every field. For rates the statement is weak (rate 1 − ε needs ΠM_i ≥ 1/(2ε)); the
+  exact transposition, over every field. (A digit exchange is not a row-controlled stage; tightness inside
+  the narrower class of row-controlled and uniform stages is not claimed.) For rates the statement is weak (rate 1 − ε needs ΠM_i ≥ 1/(2ε)); the
   half bound for such pipelines is (d) over ℂ and the fixed-term problem over finite fields.
 - The intermediate stores may be any tensor products V_i ⊗ W_i; the statements use only the two ends.
 
@@ -92,7 +98,9 @@ the second statement, ((F ⊗ 1)X)_{t,c} = Σ_r ω^{tr} X_{r,c}; after M it is �
   with a chirp is the other one.
 
 **Proposition 3 (five stages are needed).** For d ≥ 2 the swap is not a product of at most four stages that
-alternate between row-controlled operators and operators A ⊗ 1. (Factors 1 ⊗ B are row-controlled and adjacent
+alternate between row-controlled operators and operators A ⊗ 1, all intermediate arrays being d × d. (With d²
+intermediate rows three stages suffice: spread row j over the rows (i, j), apply E_ji in row (i, j), and add up
+over j; pointed out by GPT-6 Astra.) (Factors 1 ⊗ B are row-controlled and adjacent
 row-controlled stages merge, so this covers all products of at most four stages of the two kinds.)
 
 *Proof.* The block (r, s) of the swap is E_sr = e_s e_rᵀ. For A₂ C A₁ the blocks are Σ_t A²_{rt} A¹_{ts} U_t, in a space of
@@ -126,27 +134,37 @@ Computed for d = 4 and d = 8 (`pass_layers.py`; m = 1, …, 2k − 1):
 | perfect unshuffle of the rows | 1, 1, 1, 4, 4 | at most 4 |
 | DFT along the rows | 1, 1, 1, 4, 4 | 4^{min(m − k, 2k − m)} for m > k |
 
-- At every split the swap has the square of the rank of a shear. So by this profile one linear-time
-  operation, the row shear, does half of the swap at all scales at once: the profile is not the quantity of
-  Problem 9.5 either. It does separate what the coset width cannot: scans and unshuffles are cheap at every
-  split, in every order by permuted digits (the comparison of two addresses has rank at most k + 1 across
-  any set of digits), and a DFT is maximal inside its own index.
-- The row shear and the column shear have the same profile, and the second is as hard as the transposition.
-  So no function of this profile separates cheap from expensive stages; what separates them is whether the
-  control is in the high bits of the address or in the low ones.
+- At every split the swap has the square of the rank of the column shear, and the row shear has at least
+  that rank. So by this profile one linear-time operation, the row shear, does half of the swap at all scales
+  at once: the profile is not the quantity of Problem 9.5 either. It does separate what the coset width
+  cannot: a scan and an unshuffle are cheap at every contiguous split, and a DFT is maximal inside its own
+  index. For a scan this holds in every order by permuted digits (the comparison of two addresses has rank at
+  most k + 1 across any set of digits). For an unshuffle it does not hold across arbitrary sets of digits: a
+  cyclic permutation of four address bits has rank 16 across {0, 2} | {1, 3}.
+- The profiles of the two shears differ (3, 7, 8, 4, 2 against 2, 4, 8, 4, 2), and the cheap one dominates the one
+  that is as hard as the transposition. So no aggregate of these ranks that increases in every coordinate can
+  charge the column shear more than the row shear; other functions of the profile are not excluded. What
+  separates the two is whether the control is in the high bits of the address or in the low ones.
 
 ## 4. What this says about the bridge to machines
 
 1. The premise of the third attack was that a machine might be forced into a bounded repertoire. It is not: a
    counter gives row-dependent shifts, one linear-time operation of repertoire d. What a bounded-repertoire
-   theorem (the complex one, or the fixed-term problem over a finite field) excludes is pipelines whose
-   row-dependent maps come from a bounded list, with arbitrary product operators in between, DFTs included.
+   theorem would exclude is pipelines whose row-dependent maps span a space of bounded dimension, with
+   product operators in between. What is proved: the top end over every field (Proposition 1(c)), and the
+   half bound over ℂ when the weights of all stages, product stages included, have a bounded product (a
+   unitary DFT has weight one; a prefix sum does not). Without the bound on the weights the half bound is the
+   fixed-term problem.
 2. For whole-row stages the bridge is already in paper 17 (Proposition "Stages" and the proposition on
    expanding row relations): boundedly many forward passes realize row relations for which the order method
-   stays above one half, with row maps that are not affine. Together with 1, the family that no count
-   reaches is: expanding row maps with blocks of unbounded repertoire (shears and their compositions with a
-   bounded list). That is Problem 9.4(c), and with diagonal blocks the stronger form of 9.4(b); it is the
-   family of the second attack.
+   stays above one half, with row maps that are not affine (given the strings that mark the maps; their
+   generation in linear time is left open there). Together with 1, a family that no count reaches is:
+   expanding row maps with blocks of unbounded repertoire (shears and their compositions with a bounded
+   list). That is Problem 9.4(c), and with diagonal blocks the stronger form of 9.4(b); it is the family of
+   the second attack. It is a target, not a proved description of everything that is left.
+3a. The operation counts of section 2 are counts of operations of the coefficient ring. Whether a
+   multiplication by a root of unity or by a chirp is linear in bit time on a tape of fixed alphabet is part
+   of the question, not settled here.
 3. A count for all scales has to be found for the DFT of length d along one index: subadditive over the
    operations on a sequence, large at every scale for the DFT, and small for a scan, an unshuffle, a local map
    and a multiplication by a chirp. The rank profile of section 3 has the first three properties and fails the
@@ -167,7 +185,9 @@ det = −a, and ε = −1 exactly when b is even (the reduction is then a transp
 
 **Proposition 5.** Suppose one of the following holds: (i) every a_m = 1; (ii) every b_m is even; (iii) b_m is
 odd when a_m = 1 and even when a_m = −1. Then, over ℂ, every linear code on the relation whose coefficients
-are bounded by κ has dimension (½ + o(1)) d² as d → ∞ through the primes, with w, κ and the b_m fixed.
+have absolute value at most κ has dimension at most (½ + o(1)) d² as d → ∞ through the primes, with w, κ and the
+b_m fixed. More generally it is enough that some character of order two of the subgroup generated by the
+linear parts is −1 on every generator.
 
 *Proof.* A character χ as above is −1 on every generator and on every inverse, so a word W of odd length k in
 the g_m^{±1} has a linear part M_W ≠ 1 over ℤ. Its entries are at most (2 + max|b_m|)^k, so for
@@ -176,12 +196,17 @@ d² positions. Let T = Σ_m D_m Π_m with diagonal D_m of entries at most κ and
 by g_m; the code is contained in ker(1 − T), ‖T‖ ≤ wκ, and for odd k ≤ k₀ every word of length k in T, T* has a
 trace of absolute value at most (wκ)^k d. The proof of A3 of the backlog (the code is counted by the eigenvalues
 of the Hermitian part that are at least 1, and an odd polynomial bounds their number through odd traces) uses only
-these two facts, with a polynomial of degree at most k₀. This variant is not among the Lean statements. ∎
+these two facts: choose the polynomial first, then d large for its degree. This variant is not among the Lean
+statements. ∎
 
-- Where no such character exists the argument gives nothing: with (a, b) = (−1, −1) the map has order three,
-  and in general the generators satisfy relations of odd length (S T^{b} with b odd reduces to a 3-cycle).
-  Examples without a parity: the pairing together with S T⁻¹; any set that contains S T^{b}, S T^{b′} with b odd
-  and b′ even together with the pairing.
+- The three conditions are sufficient, not necessary (GPT-6 Astra): {P, S T³} generates an infinite dihedral
+  group with a character that is −1 on both, and {P, S T³, S T⁶} has one through the reduction modulo 3, although
+  none of the three characters of GL₂(ℤ) works. A relation of odd length is certain when (a, b) = (−1, −1) is
+  present: that linear part M has 1 + M + M² = 0, so every affine map with it has order three. The family
+  without a parity used below (pairing, S T⁻¹, S T²) is of this kind.
+- The statement is asymptotic. Modulo an odd prime p the parity does not survive for long words (every
+  affine S T² has p-th power the identity), and the cut-off k₀ is below 1 at p = 7, 11, 13. It predicts nothing
+  about exact values at such sizes.
 - For helper maps that are not affine and have no structure the same count applies with a random-like
   number of fixed points, so the open case over ℂ is the algebraic one with relations of odd length, not
   row-dependent offsets as such. Item (ii) of message C2 of the chat should be read with this.
@@ -190,6 +215,42 @@ these two facts, with a polynomial of degree at most k₀. This variant is not a
   the pairing with S T², S T⁻², and one without, the pairing with S T⁻¹, S T². Proposition 5 predicts no gain
   for the first over ℂ with bounded coefficients; a difference between the two would be a sign that the
   relations of odd length carry a code.
+
+### 5.1 Without a parity: the bound holds below a threshold on the coefficients
+
+Proposition 5 is the case θ = 0 of a general statement. Let the relations have n positions, n → ∞, with at most w
+helpers per position and at most w positions helped by each; a step is a helper edge in either direction.
+Let c_k be the limit superior of (number of closed walks of length k)/n, and θ = limsup over odd k of c_k^{1/k}; so
+0 ≤ θ ≤ 2w.
+
+**Proposition 6 (ℂ).** Linear codes on these relations whose coefficients have modulus at most κ have rate
+½ + o(1) whenever κθ < 2.
+
+*Proof.* T = Σ_m D_m Π_m, H = (T + T*)/2, and D ≤ n₊, the number of eigenvalues of H that are at least 1. A word of
+length k in T, T* has a trace of modulus at most κ^k times the number of closed walks that follow it, so
+|tr H^k| ≤ (κ/2)^k · #closed walks of length k. Let μ be a weak limit of the normalized spectral measures of H,
+supported in [−wκ, wκ]. Its odd moments are bounded by r^k for every r > κθ/2, so the odd signed measure μ(x) − μ(−x)
+has moments of that growth and is supported in [−κθ/2, κθ/2] (a compactly supported signed measure vanishes
+outside the radius of growth of its moments). If κθ/2 < 1, then μ[1, ∞) = μ(−∞, −1] ≤ ½, and limsup n₊/n ≤ μ[1, ∞). ∎
+
+- θ = 0 when odd closed walks of each length are o(n): locally bipartite relations (paper 4, Theorem A), the
+  affine families with a parity, relations with random maps.
+- For helper maps that generate a group Γ acting with few fixed points, θ ≤ 2w·ρ, where ρ is the spectral
+  radius of the random walk on Γ with these steps (Kesten). It is below 2w exactly when Γ is not amenable.
+- For the family without a parity of the computation (pairing, S T⁻¹, S T²): closed walks per position at
+  p = 101 are 2.3, 77, 2042 for k = 3, 5, 7, so θ is about 5.2 to 5.7 and the bound holds for κ below about 0.36.
+  A code needs the moduli of a row to sum to at least 1, so κ ≥ 1/3: the proposition covers a narrow band, and
+  coefficients of modulus near 1 are open.
+- The proof above is not quantitative (a weak limit), and an odd polynomial close to the clipping function
+  cannot be small on the disc of radius r. A polynomial certificate exists all the same. By duality, n₊/n is
+  at most ½ + η + Σ_k |q_k| (κ/2)^k F_k/n for every odd polynomial q with ½ − η ≤ q ≤ ½ + η on [1, wκ] and |q| ≤ ½ + η on
+  [0, 1), where F_k is the number of closed walks of length k. Take q(x) = x p(x²) with p uniformly close to 0 on
+  a disc of radius above (κθ/2)² and to a continuous function on [0, (wκ)²] that vanishes near 0 and equals
+  ½ y^{−1/2} on [1, (wκ)²] (Mergelyan's theorem); the coefficient sum is then small by Cauchy's estimates. So
+  the counts F_k of a finite instance give a rigorous finite bound by linear programming (the finite test
+  proposed by GPT-6 Astra), with no rate of convergence known.
+- A code above the pairing rate over ℂ with bounded coefficients therefore needs odd closed walks through a
+  positive share of the positions, growing at a rate θ > 2/κ.
 
 ## 6. Open
 

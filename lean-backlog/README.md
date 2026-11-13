@@ -141,6 +141,15 @@ Native extraction and source audit:
   covariant enumeration supplies no gain. The placement lemma is strengthened
   and Lean-verified for arbitrary functions; general rank and capacity arguments
   have written proofs and exact controls, without a new native exclusion.
+- [Two-token mutual graphs and an oriented-code control](notes/two-token-and-oriented-controls.md):
+  the reviewed odd-closed-walk identity does not bound distinct sectors. The
+  known Paley tournament's 16-word binary code and universal nonlinear upper
+  bound `q^4` are Lean-verified in [PaleyTournament.lean](PaleyTournament.lean).
+  Written group-component and spectral deletion bounds explain why the
+  diagonal theorem does not extend by cheaply making the full mutual graph
+  bipartite. A fixed-coordinate reveal corollary retains the code's entropy
+  deficit; no general capacity bound follows. Exact controls run with
+  `python3 lean-backlog/tools/two_token_controls.py`.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

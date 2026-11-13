@@ -797,46 +797,74 @@ normal form has been proved.
 
 ## 12. The mutual-helper graph of an arbitrary row relation: two tokens (Fable, 13 November 2026)
 
-Status: Proposition 12.1 has the short written proof below, **not reviewed**. The rest is reading. This
-section is for an arbitrary row relation ρ, not only for groups.
+Status: Proposition 12.1 has a **reviewed written proof**, not a Lean
+formalization. Astra's review corrects the closed-walk consequences below;
+[the audit and full-graph controls](two-token-and-oriented-controls.md)
+contain the counterexamples, proofs and exact reproduction commands.
 
-Let B be the incidence graph of ρ: a row vertex i and a column vertex r are adjacent when i ∈ ρ(r). Two cells
-(c, r) and (c′, r′) are *mutual helpers* when c′ ∈ ρ(r) and c ∈ ρ(r′); let M be the graph they form on the
-d² cells. A cell with c ∈ ρ(r) has a loop in M.
+Let B be the incidence graph of ρ: row port i and column port r are adjacent
+when i ∈ ρ(r). Cells (c,r) and (c′,r′) are mutual helpers when c′ ∈ ρ(r)
+and c ∈ ρ(r′). Let M be this graph on all d² cells, including a loop at
+(c,r) exactly when c ∈ ρ(r).
 
-**Proposition 12.1 (two tokens).** Put a token on the row vertex c and a token on the column vertex r of B.
-A step of M from the cell (c, r) moves both tokens to neighbours in B, and the new cell is (the token now on
-the row side, the token now on the column side). Consequently:
-- (a) M is the quotient, by the exchange of the two coordinates, of the graph of ordered pairs of vertices
-  of B on opposite sides, in which both coordinates move along edges; that graph is bipartite.
-- (b) The shortest closed walk of odd length in M through the cell (c, r) has length exactly the distance
-  between the row vertex c and the column vertex r in B. A connected component of M is bipartite exactly
-  when no cell of it has its row and its column in the same component of B.
+**Proposition 12.1 (two tokens).** A step of M moves tokens on row port c
+and column port r to neighbours in B; the new cell lists the token on
+the row side first. Consequently:
 
-*Proof.* (c, r) and (c′, r′) are adjacent in M exactly when c – r′ and r – c′ are edges of B: the token at c goes
-to r′ and the token at r goes to c′. (a) follows by keeping the tokens distinguishable; each step exchanges
-the sides. (b) After an odd number k of steps the token that started at c is on the column side. The walk
-is closed exactly when it is at r and the other token is at c, that is when both have walked k steps
-between c and r. Such walks exist exactly when k is at least the distance. ∎
+- (a) M is the quotient by coordinate exchange of the graph of ordered
+  opposite-side pairs of B, with simultaneous moves. That graph is bipartite.
+- (b) The shortest **odd closed walk** in M through (c,r) has length
+  dist_B(c,r), with infinity for disconnected ports. An M-component is
+  bipartite exactly when none of its cells has its two ports in the same
+  B-component.
 
-**What follows.**
-- *A mutual gain at a cell needs an odd cycle through at least dist(c, r) cells.* In the group model the
-  cells of such a cycle lie in the diagonals g, s⁻¹g⁻¹s′⁻¹, …, so a gain from mutual helpers at a far displacement
-  involves an odd closed chain of that many diagonals, or one diagonal with an odd relation of that length
-  (the hypercube family, Astra's Clebsch code). Any test with boundedly many coupled sectors is bipartite
-  at displacements farther than its length. That is why the two-sector test finds nothing, and what a
-  mechanism outside it has to be.
-- *Mutual-only linear codes are the kernels of τ − K with K = Σ A_k ⊗ B_k, any number of terms, every A_k
-  supported on the pattern of ρ⁻¹ and every B_k on the pattern of ρ.* Decoders that are sparse on both sides.
-  Over ℂ with bounded coefficients and at fixed windows they are at one half by the fourth paper's theorem
-  for locally bipartite graphs of bounded degree. Over finite fields nothing is known.
-- *M at far cells is a graph of bounded degree ww′ in which every odd cycle is long.* That is exactly the
-  class in which the thirteenth paper's codes above one half live. So the mutual-only question for general
-  ρ has two possible answers, and both would be results: a code of that kind on a two-token graph is a
-  whole-row code above one half at bounded window, with mutual helpers only; a proof that two-token graphs
-  cannot carry one must use their product structure, since long odd cycles alone do not prevent it.
-- *Untwisting costs the excess.* A relation in which the helpers of a cell lie near its own row and near its
-  own column (both projections are graph maps, as for a product) becomes a whole-row relation when the two
-  coordinates are exchanged on one class of a 2-colouring that every arc respects. Such a colouring exists
-  only for bipartite relations, and those have capacity at most one half. So this way of importing a
-  product-shaped code of rate above one half cannot work.
+*Proof.* An odd closed M-walk lifts to two B-walks exchanging the starting
+ports, giving the lower bound on length. A shortest B-path and its reverse
+produce a closed M-walk of that length. Backtracking supplies every larger
+**odd** length. The component criterion follows. ∎
+
+**Consequences and limits.**
+
+- This is not a statement about simple cycles through a cell or the number
+  of distinct sectors. On a six-vertex incidence path, the endpoint cell
+  is a leaf of M but has an odd closed walk of length five, using a loop
+  in the middle. One Clebsch sector already contains odd cycles of length
+  five. The previous inference that a bounded number of coupled sectors
+  must be bipartite far away is withdrawn; Proposition 12.1 does not
+  explain the negative two-sector test.
+- With σ(c) = {r : c ∈ ρ(r)}, the exact neighbourhood is
+  N_M(c,r) = ρ(r) × σ(c). Common-neighbour counts are products of the
+  two corresponding intersection sizes. Two cells sharing a row need
+  not share any helper; their count is |ρ(r) ∩ ρ(r′)|·|σ(c)|.
+- A mutual-only linear code is a **subspace of** a fitting kernel
+  ker(τ − K), with K(X) = Σ A_j X B_jᵀ. If P is the incidence matrix,
+  the factors can be chosen with supp(A_j) ⊆ supp(Pᵀ) and
+  supp(B_j) ⊆ supp(P). Every fitting recovery matrix has such an
+  elementary-matrix decomposition, with no bound on the number of terms.
+  For maximum dimension one may optimize over the full kernels.
+- If both incidence degrees are bounded, deleting the cells at distance
+  at most R leaves a bounded-degree graph of odd girth greater than R,
+  after removing at most d Σ_{j≤R} Δ^j cells. Paper 4's locally bipartite
+  theorem therefore bounds scalar complex-linear rates by ½+o(1), with
+  uniformly bounded actual recovery coefficients. Fixed block width is
+  also covered there; growing width and arbitrary coefficients are not.
+  Forward degree alone requires an additional paid reverse-degree trim.
+- Paper 13 supplies high-rate examples with the same broad degree and
+  odd-girth conditions. It does not supply a two-token presentation on a
+  full balanced grid. The unrestricted finite-field/nonlinear two-token
+  capacity question remains open. A proposed colour-swap import must
+  check injectivity and grid balance; if all its recovery arcs cross one
+  bipartition, its capacity is at most half.
+
+**Full-graph and directed controls (Astra).** In the group case, normalized
+helpers generate a subgroup H. Exactly d|H| cells lie in nonbipartite
+components of M; for H=G, all cells lie in one such component. This prevents
+extending the within-diagonal theorem simply by counting bad components.
+More quantitatively, for a w-regular incidence matrix with normalized
+second singular value s₂, deleting cells to make the *full induced* M
+bipartite costs at least d²(1−s₂)/(2−s₂). It also has a positive linear
+fixed-coordinate reveal cost on sufficiently high-rate codes. This is a
+written method obstruction, not a capacity bound. The known Paley tournament
+on seven vertices has binary dimension four with no mutual pairs, now
+Lean-verified along with the all-alphabet upper bound q⁴. Thus an oriented
+half-rate lemma is false. Neither control settles full-grid capacity.

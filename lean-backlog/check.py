@@ -19,7 +19,7 @@ MODULES = [
     "StatementsRowSpread", "WindowAmortization", "WindowLabels",
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
     "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread",
-    "WindowPages", "FarClebsch",
+    "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 
 
@@ -40,7 +40,7 @@ def main():
              str(root.joinpath(*module.split('.')).with_suffix('.lean'))],
             cwd=PACKAGE, env=env, check=True,
         )
-    if "FarClebsch" in selected:
+    if {"FarClebsch", "PaleyTournament"}.intersection(selected):
         # Keep the existing namespace intact: a partial namespace in CACHE
         # would shadow Paper 4's other compiled modules on LEAN_PATH.
         paper4 = SOURCE.parent / (

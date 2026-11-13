@@ -44,6 +44,12 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
 
 ## Completion status
 
+Written research notes supporting item D, not yet Lean-verified:
+
+- [Finite-field lifting, joint-image surgery and expansion cores](notes/finite-field-expansion.md).
+- [Linear comparison kernels for fixed-seed identity lifts](notes/identity-lift-comparison.md),
+  including a characteristic-two refinement and exact finite comparison certificates.
+
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,
 coordinate-capacity and sequential-dimension lemmas.

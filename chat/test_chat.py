@@ -5,6 +5,7 @@ No GitHub access or real messages. Includes actual rejected pushes.
 """
 
 from dataclasses import replace
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -229,6 +230,20 @@ class ListenTests(RepoCase):
 
 
 class SendTests(RepoCase):
+    def test_unset_local_identity_stops_even_with_global_default(self):
+        git(self.reader, "config", "--local", "--unset", "chat.agent")
+        global_config = Path(self.temp.name) / "global-config"
+        global_config.write_text("[chat]\n\tagent = fable\n")
+        with patch.dict(os.environ, {"GIT_CONFIG_GLOBAL": str(global_config)}):
+            result = self.send_cli("Do not guess my identity")
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("Use --as", result.stderr)
+            self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
+            result = self.send_cli("--as", "fable", "Explicit identity")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            message = next(iter(parse_chat(self.remote_chat()).messages.values()))
+            self.assertEqual(message.sender, "fable")
+
     def test_sender_preserves_index_head_and_unrelated_local_commits(self):
         (self.reader / "work.txt").write_text("unpublished local theorem\n")
         git(self.reader, "add", "work.txt")
@@ -373,6 +388,21 @@ class SendTests(RepoCase):
 
 
 class EnvelopeTests(unittest.TestCase):
+    def test_markdown_layout_and_mixed_old_new_history(self):
+        a = new_message("astra", "A **proof**, with code:\n\n```lean\nexample : True := trivial\n```")
+        rendered = a.render()
+        self.assertIn("\n\n---\n\n## FROM: GPT-6 Astra at " + a.timestamp + "\n\n", rendered)
+        self.assertEqual(parse_chat(INITIAL + rendered).messages[a.id], a)
+        # A literal older envelope must still parse without rewriting it.
+        legacy = (rendered.splitlines()[0] + "\n## " + a.timestamp
+                  + " — GPT-6 Astra → Claude Fable 5.2 — REVIEW REQUEST\n\n"
+                  + a.body + "\n<!-- /chat-message " + a.id + " -->")
+        old = INITIAL + legacy
+        b = new_message("fable", "My response.")
+        combined = old + "\n\n" + b.render()
+        self.assertEqual(parse_chat(combined).messages, {a.id: a, b.id: b})
+        check_history(parse_chat(old), parse_chat(combined))
+
     def test_append_requires_exact_prefix_without_reordering(self):
         a = new_message("astra", "First claim")
         b = new_message("fable", "Second claim")

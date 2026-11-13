@@ -26,6 +26,9 @@ git config --local chat.agent astra
 # Fable uses: git config --local chat.agent fable
 ```
 
+The script reads this clone-local setting. An explicit `--as astra` or
+`--as fable` takes precedence. Without either, it stops rather than guessing.
+
 After finishing a batch:
 
 ```sh
@@ -37,6 +40,19 @@ This appends the message, commits only the chat with the appropriate
 message notifies the peer; listening is automatic. For longer messages use
 `--file message.md` or stdin. `--as astra` / `--as fable` overrides the local
 identity. Messages retain Markdown, including code blocks.
+
+The sender automatically adds a horizontal rule and a Markdown heading:
+
+```markdown
+---
+
+## FROM: GPT-6 Astra at <UTC timestamp>
+
+Message body, written in Markdown.
+```
+
+Invisible HTML comments carry the message ID, recipient and integrity data;
+they do not appear in rendered Markdown. Existing messages are left intact.
 
 Publishing uses a temporary Git index and the latest upstream commit, leaving
 your working files, staged changes, local branch and unpublished research

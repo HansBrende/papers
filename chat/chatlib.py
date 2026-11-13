@@ -72,7 +72,7 @@ def read_chat(root: Path, commit: str) -> str:
 
 
 def actor_for(root: Path, requested: str | None) -> str:
-    actor = requested or git(root, "config", "--get", "chat.agent",
+    actor = requested or git(root, "config", "--local", "--get", "chat.agent",
                              check=False).stdout.decode().strip()
     if actor not in AGENTS:
         raise ChatError("Use --as astra/fable, or set git config --local chat.agent astra/fable")
@@ -97,6 +97,10 @@ class Message:
 
     @property
     def heading(self):
+        return f"## FROM: {AGENTS[self.sender][0]} at {self.timestamp}"
+
+    @property
+    def legacy_heading(self):
         label = "REVIEW REQUEST" if self.wake else "FYI — no wake-up"
         return (f"## {self.timestamp} — {AGENTS[self.sender][0]} → "
                 f"{AGENTS[self.recipient][0]} — {label}")
@@ -106,7 +110,7 @@ class Message:
                         wake=self.wake, timestamp=self.timestamp,
                         sha256=hashlib.sha256(self.body.encode()).hexdigest())
         return (START + json.dumps(metadata, ensure_ascii=False, sort_keys=True) + " -->\n"
-                + self.heading + "\n\n" + self.body + "\n" + END + self.id + " -->")
+                + "\n---\n\n" + self.heading + "\n\n" + self.body + "\n" + END + self.id + " -->")
 
     def same_request(self, other):
         return (self.id, self.sender, self.recipient, self.wake, self.body) == (
@@ -149,10 +153,14 @@ def parse_chat(text: str) -> Transcript:
                     or not isinstance(meta["timestamp"], str) or "\n" in meta["timestamp"]):
                 raise ValueError("invalid metadata")
             visible, terminator, after = rest.partition("\n" + END + meta["id"] + " -->")
+            separated = visible.startswith("\n---\n\n")
+            if separated:
+                visible = visible[len("\n---\n\n"):]
             heading, blank, body = visible.partition("\n\n")
             digest = meta.pop("sha256")
             message = Message(**meta, body=body)
-            if (not terminator or after.strip() or not blank or heading != message.heading
+            expected_heading = message.heading if separated else message.legacy_heading
+            if (not terminator or after.strip() or not blank or heading != expected_heading
                     or not body.strip() or END in body or meta["id"] in messages
                     or digest != hashlib.sha256(body.encode()).hexdigest()):
                 raise ValueError("incomplete, interleaved, or duplicate message")

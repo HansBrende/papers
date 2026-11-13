@@ -11,7 +11,10 @@ import math
 import os
 from pathlib import Path
 import re
+import shlex
 import subprocess
+import sys
+import time
 import uuid
 
 
@@ -83,23 +86,12 @@ def positive_seconds(value: str) -> float:
     return seconds
 
 
-def add_options(parser):
-    parser.add_argument("--as", dest="actor", choices=AGENTS,
-                        help="identity (default: local Git config chat.agent)")
-    parser.add_argument("--remote", default="origin")
-    parser.add_argument("--branch", default="master")
-    parser.add_argument("--interval", type=positive_seconds, default=15)
-    parser.add_argument("--since", help="last-read commit; overrides the startup snapshot")
-    parser.add_argument("--no-pull", action="store_true",
-                        help="also leave working files unchanged when a notification arrives")
-
-
 @dataclass(frozen=True)
 class Message:
     id: str
     sender: str
     recipient: str
-    wake: bool
+    wake: bool  # Retained for old transcripts/readers; new messages always set it true.
     timestamp: str
     body: str
 
@@ -121,7 +113,7 @@ class Message:
             other.id, other.sender, other.recipient, other.wake, other.body)
 
 
-def new_message(actor: str, body: str, wake: bool, message_id=None) -> Message:
+def new_message(actor: str, body: str, message_id=None) -> Message:
     body = body.rstrip("\n")
     if not body.strip() or START in body or END in body:
         raise ChatError("Message must be nonempty and cannot contain chat envelope markers")
@@ -130,7 +122,7 @@ def new_message(actor: str, body: str, wake: bool, message_id=None) -> Message:
         raise ChatError("Message ID must contain exactly 32 lowercase hexadecimal characters")
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     peer = "fable" if actor == "astra" else "astra"
-    return Message(message_id, actor, peer, wake, timestamp, body)
+    return Message(message_id, actor, peer, True, timestamp, body)
 
 
 @dataclass
@@ -190,3 +182,51 @@ def sync_if_safe(root: Path, commit: str, remote: str, branch: str) -> str:
         return "Working files unchanged: local commits need manual reconciliation."
     git(root, "merge", "--ff-only", "--quiet", commit)
     return "Fast-forwarded the working branch after the notification."
+
+
+def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
+           once=False, no_pull=False):
+    """Internal send/resume loop. Every new peer message ends the wait."""
+    since = revision(root, since)
+    baseline = previous = parse_chat(read_chat(root, since))
+    print(f"Listening as {actor} on {remote}/{branch}; fetch-only polling every "
+          f"{interval:g}s from {since}. Every peer message requests a response.", flush=True)
+    resume = ["python3", "chat/send.py", "--as", actor, "--resume", "--since", since]
+    if remote != "origin":
+        resume += ["--remote", remote]
+    if branch != "master":
+        resume += ["--branch", branch]
+    if interval != 15:
+        resume += ["--interval", str(interval)]
+    if no_pull:
+        resume += ["--no-pull"]
+    print("To resume without resending: " + shlex.join(resume), flush=True)
+    while True:
+        try:
+            commit = fetch(root, remote, branch)
+        except GitError as exc:
+            print(f"Fetch failed: {exc}", file=sys.stderr, flush=True)
+            if once:
+                return 2
+            time.sleep(interval)
+            continue
+        current = parse_chat(read_chat(root, commit))
+        check_history(previous, current)
+        previous = current
+        incoming = [message for key, message in current.messages.items()
+                    if key not in baseline.messages and message.recipient == actor]
+        if incoming:
+            if not no_pull:
+                try:
+                    print(sync_if_safe(root, commit, remote, branch), flush=True)
+                except GitError as exc:
+                    print(f"Could not fast-forward; message is still available: {exc}", flush=True)
+            print(f"\nNew messages for {actor} at {commit}:\n", flush=True)
+            for message in incoming:
+                print(message.heading + "\n\n" + message.body + "\n", flush=True)
+            print(f"Last-read commit: {commit}", flush=True)
+            return 0
+        if once:
+            print(f"No new peer message for {actor}.", flush=True)
+            return 1
+        time.sleep(interval)

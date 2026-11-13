@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Publish one chat message, then listen for a peer's review request.
+"""Publish one batched request, then listen for the peer's response.
 
-Run: python3 chat/send.py --as astra --wake 'Batch ready for review.'
-Without --wake the message is FYI only. Use --no-wait to send and return.
+Run: python3 chat/send.py --as astra 'Batch ready for review.'
+Every message notifies the peer. Listening is automatic, with no separate command.
 Only the chat is committed; local working files, HEAD and staging stay intact.
 """
 
@@ -13,9 +13,9 @@ from pathlib import Path
 import sys
 import tempfile
 
-from chatlib import (AGENTS, CHAT, ROOT, ChatError, GitError, actor_for, add_options,
-                     check_history, fetch, git, new_message, parse_chat, read_chat, revision)
-from watch import listen
+from chatlib import (AGENTS, CHAT, ROOT, ChatError, GitError, actor_for,
+                     check_history, fetch, git, listen, new_message, parse_chat,
+                     positive_seconds, read_chat, revision)
 
 
 def check_public_text(root, text):
@@ -66,8 +66,7 @@ def publish(root, message, *, remote="origin", branch="master"):
         result = git(root, "push", "--porcelain", "--", remote,
                      f"{commit}:refs/heads/{branch}", check=False)
         if result.returncode == 0:
-            print(f"Sent {'review request' if message.wake else 'quiet FYI'} at {commit}.",
-                  flush=True)
+            print(f"Sent message at {commit}.", flush=True)
             return base, commit
         error = result.stderr.decode("utf-8", errors="replace").strip()
     except GitError as exc:
@@ -100,18 +99,31 @@ def publish(root, message, *, remote="origin", branch="master"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    add_options(parser)
+    parser.add_argument("--as", dest="actor", choices=AGENTS,
+                        help="identity (default: local Git config chat.agent)")
+    parser.add_argument("--remote", default="origin")
+    parser.add_argument("--branch", default="master")
+    parser.add_argument("--interval", type=positive_seconds, default=15)
+    parser.add_argument("--since", help="last-read commit (required with --resume)")
+    parser.add_argument("--no-pull", action="store_true",
+                        help="leave working files unchanged even when a reply arrives")
     source = parser.add_mutually_exclusive_group()
     source.add_argument("message", nargs="?", help="message text; otherwise use --file or stdin")
     source.add_argument("--file", type=Path, help="read a UTF-8 Markdown message from a file")
-    parser.add_argument("--wake", action="store_true", help="request the peer's attention")
-    parser.add_argument("--no-wait", action="store_true", help="send and return without listening")
+    source.add_argument("--resume", action="store_true", help="listen without sending again")
     parser.add_argument("--id", help="reuse a printed message ID after an uncertain delivery")
     args = parser.parse_args()
     actor = actor_for(ROOT, args.actor)
     if args.since:
         args.since = revision(ROOT, args.since)
         parse_chat(read_chat(ROOT, args.since))
+    if args.resume:
+        if not args.since:
+            parser.error("--resume needs --since <last-read-commit> so pending replies are not missed")
+        if args.id:
+            parser.error("--id is only for sending; --resume does not send")
+        return listen(ROOT, actor, remote=args.remote, branch=args.branch, interval=args.interval,
+                      since=args.since, no_pull=args.no_pull)
     if args.file:
         body = args.file.read_text(encoding="utf-8")
     elif args.message is not None:
@@ -120,12 +132,10 @@ def main():
         body = sys.stdin.read()
     else:
         parser.error("provide a message, --file, or stdin")
-    message = new_message(actor, body, args.wake, args.id)
+    message = new_message(actor, body, args.id)
     baseline, _ = publish(ROOT, message, remote=args.remote, branch=args.branch)
-    if args.no_wait:
-        return 0
     # Use the PRE-send snapshot, not a fresh one: a reply racing with the push
-    # or the rearm must not be swallowed. Own messages never qualify as wakes.
+    # or the rearm must not be swallowed. Own messages never qualify as replies.
     return listen(ROOT, actor, remote=args.remote, branch=args.branch, interval=args.interval,
                   since=args.since or baseline, no_pull=args.no_pull)
 

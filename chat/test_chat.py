@@ -1,6 +1,6 @@
 """Chat integration tests using disposable clones and a local bare remote.
 
-Run: python3 -m unittest discover -s chat -p 'test_watch.py'
+Run: python3 -m unittest discover -s chat -p 'test_chat.py'
 No GitHub access or real messages. Includes actual rejected pushes.
 """
 
@@ -14,14 +14,28 @@ import time
 import unittest
 from unittest.mock import patch
 
-from chatlib import ChatError, check_history, new_message, parse_chat
+from chatlib import ChatError, check_history, listen, new_message, parse_chat
 import send
-from watch import listen
 
 
 SOURCE = Path(__file__).parent
 CHAT = "chat/fable-astra.md"
 INITIAL = "# Discussion\n\nAstra: initial message.\n"
+
+# Exercise the real CLI/Git writes while bounding waits in individual checks.
+# Separate live-process tests below cover the unmodified blocking workflow.
+CLI_BOOTSTRAP = """
+import functools, runpy, sys
+from pathlib import Path
+mode, directory = sys.argv.pop(1), Path(sys.argv.pop(1))
+sys.path.insert(0, str(directory))
+import chatlib
+if mode == 'once':
+    chatlib.listen = functools.partial(chatlib.listen, once=True)
+else:
+    chatlib.listen = lambda *a, **kw: 0
+runpy.run_path(str(directory / 'send.py'), run_name='__main__')
+"""
 
 
 def git(root, *args):
@@ -44,7 +58,7 @@ class RepoCase(unittest.TestCase):
         git(self.writer, "symbolic-ref", "HEAD", "refs/heads/master")
         self.configure(self.writer, "fable")
         (self.writer / "chat").mkdir()
-        for name in ("watch.py", "send.py", "chatlib.py"):
+        for name in ("send.py", "chatlib.py"):
             shutil.copyfile(SOURCE / name, self.writer / "chat" / name)
         (self.writer / "tools").mkdir()
         shutil.copyfile(SOURCE.parent / "tools/check_public_paths.py",
@@ -76,29 +90,27 @@ class RepoCase(unittest.TestCase):
         git(self.writer, "push")
         return git(self.writer, "rev-parse", "HEAD")
 
-    def append(self, body="Please review this proposal.", wake=True, actor="fable"):
-        message = new_message(actor, body, wake)
+    def append(self, body="Please review this proposal.", actor="fable", legacy_quiet=False):
+        message = new_message(actor, body)
+        if legacy_quiet:
+            message = replace(message, wake=False)
         text = (self.writer / CHAT).read_text() + "\n" + message.render() + "\n"
         return self.publish_file(CHAT, text)
 
-    def watch(self, *args, baseline=True):
-        command = [sys.executable, str(self.reader / "chat/watch.py"), "--once"]
-        if baseline:
-            command += ["--since", self.before]
-        return subprocess.run(command + list(args), cwd=self.temp.name,
-                              capture_output=True, text=True, timeout=10)
+    def watch(self, *args):
+        return self.send_cli("--resume", "--since", self.before, *args, mode="once")
 
-    def send_cli(self, *args, root=None, data=None):
+    def send_cli(self, *args, root=None, data=None, mode="sent"):
         root = root or self.reader
-        return subprocess.run([sys.executable, str(root / "chat/send.py"),
-                               "--no-wait", *args], input=data, capture_output=True,
+        return subprocess.run([sys.executable, "-c", CLI_BOOTSTRAP, mode,
+                               str(root / "chat"), *args], input=data, capture_output=True,
                               text=True, timeout=15)
 
     def remote_chat(self):
         return git(self.remote, "show", "master:" + CHAT)
 
 
-class WatchTests(RepoCase):
+class ListenTests(RepoCase):
     def test_no_worktree_updates_on_unrelated_commits(self):
         self.publish_file("work.txt", "remote update\n")
         result = self.watch()
@@ -106,24 +118,20 @@ class WatchTests(RepoCase):
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         self.assertEqual((self.reader / "work.txt").read_text(), "published work\n")
 
-    def test_startup_snapshot_and_explicit_unread_baseline(self):
+    def test_resume_requires_baseline_and_catches_waiting_reply(self):
         head = self.append()
-        self.assertEqual(self.watch(baseline=False).returncode, 1)
+        self.assertEqual(self.send_cli("--resume").returncode, 2)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("Please review", result.stdout)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
 
-    def test_quiet_updates_are_batched_until_wake(self):
-        self.append("Quiet experiment result", wake=False)
-        self.assertEqual(self.watch().returncode, 1)
-        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
-        self.append("Now please review the batch")
+    def test_every_peer_message_notifies_including_legacy_envelopes(self):
+        self.append("A message in the older envelope format", legacy_quiet=True)
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Quiet experiment result", result.stdout)
-        self.assertIn("Now please review", result.stdout)
+        self.assertIn("older envelope format", result.stdout)
 
     def test_own_request_does_not_wake_self(self):
         self.append("Astra's outbound request", actor="astra")
@@ -173,7 +181,9 @@ class WatchTests(RepoCase):
 
     def test_other_branch_and_no_pull(self):
         self.append()
-        self.assertEqual(self.watch("--no-pull").returncode, 0)
+        result = self.watch("--no-pull")
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("--no-pull", result.stdout)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         git(self.reader, "checkout", "-b", "research")
         self.assertEqual(self.watch().returncode, 0)
@@ -196,20 +206,21 @@ class WatchTests(RepoCase):
 
     def test_running_listener_waits_for_peer_request(self):
         process = subprocess.Popen(
-            [sys.executable, str(self.reader / "chat/watch.py"), "--interval", "0.05"],
+            [sys.executable, str(self.reader / "chat/send.py"), "--resume",
+             "--since", self.before, "--interval", "0.05"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         )
         try:
             self.assertIn("Listening", process.stdout.readline())
-            self.assertIn("Startup baseline", process.stdout.readline())
-            self.append("Quiet progress", wake=False)
+            self.assertIn("To resume without resending", process.stdout.readline())
+            self.append("Our earlier outbound request", actor="astra")
             time.sleep(0.2)
             self.assertIsNone(process.poll())
             self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
             self.append("Review the result")
             output, errors = process.communicate(timeout=10)
             self.assertEqual(process.returncode, 0, errors)
-            self.assertIn("Quiet progress", output)
+            self.assertNotIn("Our earlier outbound request", output)
             self.assertIn("Review the result", output)
         finally:
             if process.poll() is None:
@@ -227,7 +238,7 @@ class SendTests(RepoCase):
         git(self.reader, "add", "work.txt")
         (self.reader / "work.txt").write_text("unstaged changes\n")
         index = (self.reader / ".git/index").read_bytes()
-        result = self.send_cli("--wake", "Please check my argument")
+        result = self.send_cli("Please check my argument")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
         self.assertEqual((self.reader / ".git/index").read_bytes(), index)
@@ -237,12 +248,12 @@ class SendTests(RepoCase):
         self.assertIn("Co-authored-by: GPT-6 Astra <noreply@openai.com>",
                       git(self.remote, "log", "-1", "--format=%B"))
 
-    def test_fable_identity_stdin_and_quiet_default(self):
+    def test_fable_identity_stdin_and_implicit_notification(self):
         result = self.send_cli("--as", "fable", data="A multiline message\n\nWith a proof.")
         self.assertEqual(result.returncode, 0, result.stderr)
         messages = list(parse_chat(self.remote_chat()).messages.values())
         self.assertEqual(len(messages), 1)
-        self.assertFalse(messages[0].wake)
+        self.assertTrue(messages[0].wake)
         self.assertEqual(messages[0].recipient, "astra")
         self.assertEqual(messages[0].body, "A multiline message\n\nWith a proof.")
         self.assertIn("Co-authored-by: Claude Fable 5.2 <noreply@anthropic.com>",
@@ -258,8 +269,8 @@ class SendTests(RepoCase):
         self.assertEqual(len(parse_chat(self.remote_chat()).messages), 1)
 
     def test_push_race_stops_for_review_without_publishing_or_reordering(self):
-        own = new_message("astra", "My result\n\nShared paragraph\n\nEnd.", True)
-        peer = new_message("fable", "My alternative\n\nShared paragraph\n\nEnd.", True)
+        own = new_message("astra", "My result\n\nShared paragraph\n\nEnd.")
+        peer = new_message("fable", "My alternative\n\nShared paragraph\n\nEnd.")
         original = send.message_commit
         raced = False
 
@@ -284,7 +295,7 @@ class SendTests(RepoCase):
         self.assertEqual(git(self.remote, "rev-list", "--count", self.before + "..master"), "2")
 
     def test_unrelated_push_race_also_stops_without_automatic_retry(self):
-        message = new_message("astra", "An outgoing message", False)
+        message = new_message("astra", "An outgoing message")
         original = send.message_commit
 
         def race(root, base, text, actor):
@@ -298,7 +309,7 @@ class SendTests(RepoCase):
         self.assertEqual(parse_chat(self.remote_chat()).messages, {})
 
     def test_lost_push_acknowledgement_does_not_duplicate_message(self):
-        message = new_message("astra", "Delivered despite lost acknowledgement", True)
+        message = new_message("astra", "Delivered despite lost acknowledgement")
         original = send.git
 
         def lost_ack(root, *args, **kwargs):
@@ -314,11 +325,11 @@ class SendTests(RepoCase):
     def test_send_rearms_before_send_baseline_and_catches_immediate_reply(self):
         def immediate_reply(root, actor, **options):
             self.assertEqual(options["since"], self.before)
-            send.publish(self.writer, new_message("fable", "Immediate response", True))
+            send.publish(self.writer, new_message("fable", "Immediate response"))
             return listen(root, actor, once=True, **options)
 
         with patch.object(send, "ROOT", self.reader), patch.object(send, "listen", immediate_reply), \
-                patch.object(sys, "argv", ["send.py", "--wake", "Please review"]):
+                patch.object(sys, "argv", ["send.py", "Please review"]):
             self.assertEqual(send.main(), 0)
         self.assertEqual(len(parse_chat(self.remote_chat()).messages), 2)
 
@@ -334,11 +345,37 @@ class SendTests(RepoCase):
         self.assertEqual(git(self.reader, "check-attr", "merge", "--", CHAT),
                          CHAT + ": merge: unspecified")
 
+    def test_default_cli_sends_and_waits_without_extra_flags(self):
+        process = subprocess.Popen(
+            [sys.executable, str(self.reader / "chat/send.py"),
+             "--interval", "0.05", "Completed batch; please review."],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        try:
+            lines = [process.stdout.readline() for _ in range(4)]
+            self.assertTrue(any("Sent message" in line for line in lines), lines)
+            self.assertTrue(any("Listening as astra" in line for line in lines), lines)
+            self.assertIsNone(process.poll())
+            self.assertEqual(len(parse_chat(self.remote_chat()).messages), 1)
+            send.publish(self.writer, new_message("fable", "Here is my review."))
+            output, errors = process.communicate(timeout=10)
+            self.assertEqual(process.returncode, 0, errors)
+            self.assertIn("Here is my review.", output)
+        finally:
+            if process.poll() is None:
+                process.kill()
+            process.communicate()
+
+    def test_obsolete_flags_are_removed(self):
+        for flag in ("--wake", "--no-wait"):
+            self.assertEqual(self.send_cli(flag, "Do not post").returncode, 2)
+        self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
+
 
 class EnvelopeTests(unittest.TestCase):
     def test_append_requires_exact_prefix_without_reordering(self):
-        a = new_message("astra", "First claim", False)
-        b = new_message("fable", "Second claim", True)
+        a = new_message("astra", "First claim")
+        b = new_message("fable", "Second claim")
         before = parse_chat(INITIAL + a.render())
         after = parse_chat(INITIAL + a.render() + "\n\n" + b.render())
         check_history(before, after)
@@ -351,8 +388,8 @@ class EnvelopeTests(unittest.TestCase):
             check_history(before, parse_chat(INITIAL + changed.render()))
 
     def test_duplicate_and_interleaved_envelopes_are_rejected(self):
-        a = new_message("astra", "First claim", False)
-        b = new_message("fable", "Second claim", True)
+        a = new_message("astra", "First claim")
+        b = new_message("fable", "Second claim")
         with self.assertRaises(ChatError):
             parse_chat(INITIAL + a.render() + "\n" + a.render())
         with self.assertRaises(ChatError):

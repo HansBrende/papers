@@ -5,12 +5,10 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from datetime import datetime, timezone
-import hashlib
 import math
 import os
 from pathlib import Path
 import re
-import shlex
 import subprocess
 import sys
 import time
@@ -24,7 +22,7 @@ AGENTS = {
 }
 SEPARATOR = "-" * 46
 DELIMITER = "\n" + SEPARATOR + "\n"
-HEADER_PATTERN = re.compile(r"\n## FROM: ([^\n]+) at ([^\n]+)\nID: ([0-9a-f]{8})\n\n")
+HEADER_PATTERN = re.compile(r"\n## FROM: ([^\n]+) at ([^\n]+)\nID: (C[1-9][0-9]*)\n\n")
 
 
 class ChatError(RuntimeError):
@@ -69,14 +67,6 @@ def read_chat(root: Path, commit: str) -> str:
     return git(root, "show", f"{commit}:{CHAT}").stdout.decode("utf-8")
 
 
-def actor_for(root: Path, requested: str | None) -> str:
-    actor = requested or git(root, "config", "--local", "--get", "chat.agent",
-                             check=False).stdout.decode().strip()
-    if actor not in AGENTS:
-        raise ChatError("Use --as astra/fable, or set git config --local chat.agent astra/fable")
-    return actor
-
-
 def positive_seconds(value: str) -> float:
     seconds = float(value)
     if not math.isfinite(seconds) or seconds <= 0:
@@ -105,15 +95,8 @@ class Message:
     def render(self):
         return DELIMITER + "\n" + self.display()
 
-    def same_request(self, other):
-        return (self.id, self.sender, self.body) == (other.id, other.sender, other.body)
 
-
-def body_id(body: str) -> str:
-    return hashlib.sha256(body.encode("utf-8")).hexdigest()[:8]
-
-
-def new_message(actor: str, body: str) -> Message:
+def new_message(actor: str, body: str, number: int) -> Message:
     body = body.rstrip("\n")
     if actor not in AGENTS:
         raise ChatError("Unknown sender")
@@ -122,20 +105,19 @@ def new_message(actor: str, body: str) -> Message:
     if DELIMITER in "\n" + body + "\n":
         raise ChatError("Message body contains the reserved 46-dash separator; use a different rule")
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    return Message(body_id(body), actor, timestamp, body)
+    return Message(f"C{number}", actor, timestamp, body)
 
 
 @dataclass
 class Transcript:
     text: str
-    preamble: str
-    messages: dict[str, Message]
+    messages: list[Message]
 
 
 def parse_chat(text: str) -> Transcript:
     """Parse complete, immutable message blocks in their recorded order."""
     parts = text.split(DELIMITER)
-    messages = {}
+    messages = []
     for part in parts[1:]:
         header = HEADER_PATTERN.match(part)
         if not header:
@@ -144,12 +126,10 @@ def parse_chat(text: str) -> Transcript:
         sender = next((actor for actor, (display_name, _) in AGENTS.items()
                        if display_name == name), None)
         body = part[header.end():].rstrip("\n")
-        if (sender is None or not body.strip() or message_id in messages
-                or message_id != body_id(body)):
-            raise ChatError("Unknown sender, duplicate ID or damaged message; inspect the message history")
-        message = Message(message_id, sender, timestamp, body)
-        messages[message.id] = message
-    return Transcript(text, parts[0].rstrip("\n"), messages)
+        if sender is None or not body.strip() or message_id != f"C{len(messages) + 1}":
+            raise ChatError("Unknown sender, empty body or out-of-sequence ID; inspect the message history")
+        messages.append(Message(message_id, sender, timestamp, body))
+    return Transcript(text, messages)
 
 
 def check_history(before: Transcript, after: Transcript):
@@ -176,21 +156,10 @@ def sync_if_safe(root: Path, commit: str, remote: str, branch: str) -> str:
 
 def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
            once=False, no_pull=False):
-    """Internal send/resume loop. Every new peer message ends the wait."""
-    since = revision(root, since)
+    """Wait after sending. Every new peer message ends the wait."""
     baseline = previous = parse_chat(read_chat(root, since))
     print(f"Listening as {actor} on {remote}/{branch}; fetch-only polling every "
-          f"{interval:g}s from {since}. Every peer message requests a response.", flush=True)
-    resume = ["python3", "chat/send.py", "--as", actor, "--resume", "--since", since]
-    if remote != "origin":
-        resume += ["--remote", remote]
-    if branch != "master":
-        resume += ["--branch", branch]
-    if interval != 15:
-        resume += ["--interval", str(interval)]
-    if no_pull:
-        resume += ["--no-pull"]
-    print("To resume without resending: " + shlex.join(resume), flush=True)
+          f"{interval:g}s. Every peer message requests a response.", flush=True)
     while True:
         try:
             commit = fetch(root, remote, branch)
@@ -203,8 +172,8 @@ def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
         current = parse_chat(read_chat(root, commit))
         check_history(previous, current)
         previous = current
-        incoming = [message for key, message in current.messages.items()
-                    if key not in baseline.messages and message.recipient == actor]
+        incoming = [message for message in current.messages[len(baseline.messages):]
+                    if message.recipient == actor]
         if incoming:
             if not no_pull:
                 try:
@@ -212,7 +181,6 @@ def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
                 except GitError as exc:
                     print(f"Could not fast-forward; message is still available: {exc}", flush=True)
             print(f"\nNew messages for {actor} at {commit}:\n", flush=True)
-            print(f"Last-read commit: {commit}\n", flush=True)
             for message in incoming:
                 print(message.display() + "\n", flush=True)
             return 0

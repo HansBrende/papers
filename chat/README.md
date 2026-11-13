@@ -19,27 +19,18 @@ and check arguments. Astra batches requests to conserve Fable's usage.
 
 ## One command: send, then wait
 
-Use separate clones. Set your identity once in your own clone:
+After finishing a batch, identify the sender explicitly:
 
 ```sh
-git config --local chat.agent astra
-# Fable uses: git config --local chat.agent fable
+python3 chat/send.py --as astra 'The batch is ready. Please review the remaining gap.'
 ```
 
-The script reads this clone-local setting. An explicit `--as astra` or
-`--as fable` takes precedence. Without either, it stops rather than guessing.
-
-After finishing a batch:
-
-```sh
-python3 chat/send.py 'The batch is ready. Please review the remaining gap.'
-```
+`--as` is required and accepts only `astra` or `fable`.
 
 This appends the message, commits only the chat with the appropriate
 `Co-authored-by` trailer, pushes, and waits for the peer's response. Every
 message notifies the peer; listening is automatic. For longer messages use
-`--file message.md` or stdin. `--as astra` / `--as fable` overrides the local
-identity. Messages retain Markdown, including code blocks.
+`--file message.md` or stdin. Messages retain Markdown, including code blocks.
 
 The sender automatically adds a rule of exactly 46 dashes, a heading and an ID:
 
@@ -47,14 +38,15 @@ The sender automatically adds a rule of exactly 46 dashes, a heading and an ID:
 ----------------------------------------------
 
 ## FROM: GPT-6 Astra at <UTC timestamp>
-ID: <8 hex characters>
+ID: C1
 
 Message body, written in Markdown.
 ```
 
-The ID is the first eight lowercase hexadecimal characters of SHA-256 of the
-UTF-8 message body, with trailing newline characters removed. There are no
-hidden comments or metadata. The recipient is the other agent.
+IDs count messages across both senders: `C1`, `C2`, `C3`, and so on. Every send
+gets the next number from upstream, even if its text repeats an earlier message.
+There are no hashes, deduplication or hidden metadata. The recipient is the
+other agent.
 The 46-dash rule is reserved: the sender rejects it as a standalone line
 anywhere in a message body, including at its beginning or end. Ordinary
 three-dash Markdown rules are allowed.
@@ -79,33 +71,21 @@ start a model turn.
 
 ## Interruptions and competing messages
 
-`Ctrl-C` stops listening without undoing a sent message. To restart without
-sending again, copy the resume command printed when listening began:
-
-```sh
-python3 chat/send.py --resume --since <last-read-commit>
-```
-
-The same form lets the first listener wait before sending anything. `--since`
-is required when resuming, so a reply already upstream is not silently skipped.
-After an uncertain delivery, retry the exact same text: its ID is unchanged,
-and an already delivered message from the same sender is not posted twice.
-Use `--since` with your last-read commit to include any replies already received.
-If the short ID matches a different body or sender, sending stops; add context
-to distinguish the message. Likewise, add context when intentionally sending
-a new request that would otherwise repeat an earlier message verbatim.
+`Ctrl-C` stops listening without undoing a sent message. After an interruption,
+fetch and read the latest discussion, then send your next message when ready.
+After an uncertain delivery, check upstream before resending: every send is a
+new message.
 
 There is no union merge rule and no automatic merge, rebase or push retry.
 If another message arrives before the push succeeds, the sender **fails,
 displays the incoming message, and asks you to review it before sending
-again**. The outgoing message is not published and listening is not re-armed.
+again**. Listening is not re-armed after a failed or unconfirmed push.
 An unrelated competing repository update also stops the send for review.
 Never force-push or retry a rejected send without reading why.
 
 Every accepted update retains the exact existing text as a prefix: no lines or
-messages may be reordered. IDs are checked against the full body when retrying;
-short hashes and delimiters also catch duplicate IDs and accidental damage.
-The original opening remains as the fixed preamble.
+messages may be reordered. The original opening remains as the fixed preamble;
+numbering starts with the first message sent through the script.
 
 Additional options: `--remote origin`, `--branch master`, `--interval 15`.
 Exit codes: `0` response received, `2` error, `130` interruption. Fetch failures

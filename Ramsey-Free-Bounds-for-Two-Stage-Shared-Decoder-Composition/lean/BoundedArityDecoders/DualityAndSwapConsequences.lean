@@ -1246,6 +1246,61 @@ theorem bonus2_SublinearProfileAndTendstoHalf.{u, v} :
     le_of_lt ((div_lt_iff₀ hd_pos).mp hlt)
   exact hBound (F m) m (α m) (M_A m) (M_B m) (A m) (B m) hm (hA m) (hB m) hSub
 
+/-- Explicit quantitative form of `bonus2_SublinearProfileAndTendstoHalf.1` with
+`M₀ = ⌊1 / ε⌋₊ + 1` and `δ = ε / 2`. -/
+theorem bonus2_SublinearProfileExplicitThreshold.{u, v}
+    (ε : ℝ) (hε : 0 < ε)
+    (F : Type u) [Field F] (m : ℕ) (α : Type v) [Fintype α]
+    (M_A M_B : Fin m → ℕ)
+    (A B : α → Matrix (Fin (2 ^ m)) (Fin (2 ^ m)) F)
+    (hm : ⌊1 / ε⌋₊ + 1 ≤ m)
+    (hA : InMultiscaleIntervalRotSpan M_A A)
+    (hB : InMultiscaleIntervalRotSpan M_B B)
+    (hSub : ((min (∑ j : Fin m, M_A j) (∑ j : Fin m, M_B j) : ℕ) : ℝ) ≤
+      (ε / 2) * ((2 ^ m : ℕ) : ℝ)) :
+    (finrank F (SwapRigidity.swapCode A B) : ℝ) ≤
+      (1 / 2 + ε) * (((2 ^ m : ℕ) : ℝ) ^ 2) := by
+  set K : ℕ := ⌊1 / ε⌋₊ + 1
+  have hK : 1 / ε < (K : ℝ) := by
+    dsimp only [K]
+    push_cast
+    exact Nat.lt_floor_add_one (1 / ε)
+  have hNat := (bonus2_MultiscaleIntervalBothSides F m α M_A M_B A B).2 hA hB
+  set S_nat : ℕ := min (∑ j : Fin m, M_A j) (∑ j : Fin m, M_B j)
+  have hMinMax :
+      min (max 1 (2 * ∑ j : Fin m, M_A j)) (max 1 (2 * ∑ j : Fin m, M_B j)) ≤
+        1 + 2 * S_nat := by
+    dsimp only [S_nat]
+    omega
+  have hNat' : 2 * finrank F (SwapRigidity.swapCode A B) ≤
+      (2 ^ m) ^ 2 + (2 ^ m) * (1 + 2 * S_nat) :=
+    le_trans hNat (Nat.add_le_add_left (Nat.mul_le_mul_left _ hMinMax) _)
+  set d_r : ℝ := ((2 ^ m : ℕ) : ℝ)
+  set S_r : ℝ := (S_nat : ℝ)
+  have hReal : 2 * (finrank F (SwapRigidity.swapCode A B) : ℝ) ≤
+      d_r ^ 2 + d_r * (1 + 2 * S_r) := by
+    dsimp only [d_r, S_r]
+    exact_mod_cast hNat'
+  have hd_nonneg : 0 ≤ d_r := Nat.cast_nonneg _
+  have hK_le_d : (K : ℝ) ≤ d_r := by
+    have hKm : K ≤ 2 ^ m := le_trans hm (le_two_pow_self m)
+    dsimp only [d_r]
+    exact_mod_cast hKm
+  have hOne_le_eps_d : 1 ≤ ε * d_r := by
+    have h1 : 1 < ε * (K : ℝ) := by
+      have hmul := mul_lt_mul_of_pos_left hK hε
+      have hdiv : ε * (1 / ε) = 1 := mul_one_div_cancel (ne_of_gt hε)
+      linarith
+    have h2 : ε * (K : ℝ) ≤ ε * d_r := mul_le_mul_of_nonneg_left hK_le_d (le_of_lt hε)
+    linarith
+  have hd_le_eps_sq : d_r ≤ ε * d_r ^ 2 := by
+    have hmul := mul_le_mul_of_nonneg_right hOne_le_eps_d hd_nonneg
+    nlinarith
+  have hS_le_eps_sq : 2 * d_r * S_r ≤ ε * d_r ^ 2 := by
+    have hmul := mul_le_mul_of_nonneg_left hSub hd_nonneg
+    nlinarith
+  nlinarith
+
 /-- Support `Finset` of the `1`-bit of scale `j : Fin m` in the periodic Rademacher/Walsh dyadic
 digit decomposition on `Fin (2^m)`. -/
 def walshBitSet (m : ℕ) (j : Fin m) : Finset (Fin (2 ^ m)) :=

@@ -127,22 +127,24 @@ $\lean{IsBoundedAritySetCode}(\Delta, p, \mathcal{E}, f, Q, C)$.
 \begin{outline}
 In~(a), strong induction on $\mathrm{rk}(c, r)$ shows that two codewords agreeing outside
 $A(\mathrm{rk})$ agree on $A(\mathrm{rk})$ as well, because every $y \in F_{c,r}$ strictly precedes
-$(c, r)$. For each clean entry $x = (c, r)$, $\abs{F_{c,r} \cup \{x\}} \le \Delta + 1$; swapping $x$
-with the $\tau$-maximum element of $F_{c,r} \cup \{x\}$ partitions the symmetric group so that $x$
-comes last in $F_{c,r} \cup \{x\}$ on at least a $1/(\Delta + 1)$ fraction of permutations, and
-double counting selects $\mathrm{rk}_*$. Combining~(a) with \Cref{lem:clean-count}(b) and
+$(c, r)$. For each clean entry $x = (c, r)$, $\abs{F_{c,r} \cup \{x\}} \le \Delta + 1$; for a
+uniformly random permutation $\pi$ of $\Z_d \times \Z_d$, composing $\pi$ with the transposition
+swapping $x$ and the $\pi$-maximum element of $F_{c,r} \cup \{x\}$ partitions the symmetric group so
+that $x$ comes last in $F_{c,r} \cup \{x\}$ on at least a $1/(\Delta + 1)$ fraction of permutations,
+and double counting selects $\mathrm{rk}_*$. Combining~(a) with \Cref{lem:clean-count}(b) and
 $\log\abs{\Sigma} > 0$ gives~(b) (with $\log 0 = 0$ in Lean handling $C = \emptyset$).
 \end{outline}
 
 \begin{remark}[Comparison with small-window and unrestricted-arity bounds]\label{rem:capacity-context}
+{\emergencystretch=4em
 In \leanfile{BoundedAritySetCapacityProofs.lean} and \leanfile{SetCapacityConsequences.lean}
 (\lean{oneHopRecoverableInjective}, \lean{existsRecoverableSubsetBound},
-\lean{theorem1_BoundedAritySetCapacity}, \lean{growingClassesPositiveDeficit},
+\lean{theorem1_BoundedAritySetCapacity}, \lean{growingClassesPositiveDeficit}, and
 \lean{pMin_two_sided_theta_inv_arity}) we also formalized the weaker one-hop product-Bernoulli
 variant with factor $\Delta^\Delta/(\Delta+1)^{\Delta+1} \in \bigl(1/(e(\Delta+1)),\,
 1/(2(\Delta+1))\bigr]$, together with explicit $M = 1, \mathcal{E} = \emptyset$ nonlinear lower bounds
 for all $d \ge 2$ and $\abs{\Sigma} \ge 2$ (\lean{boundaryControl_DeficitVanishesAtDeltaEqD},
-\lean{unrestrictedArity_RateLowerBoundAndTendstoOne},
+\lean{unrestrictedArity_RateLowerBoundAndTendstoOne}, and
 \lean{unrestrictedArity_ExactLogarithmicAsymptoticAllDimensions}):
 $\abs{C} = \lfloor\abs{\Sigma}^d / d\rfloor^d$ at cell arity $\Delta = d$ (where the clean-entry
 coefficient $d^2 - dM\Delta$ vanishes), $\abs{C} \ge \abs{\Sigma}^{d(d-1)}$ at whole-column support
@@ -159,7 +161,7 @@ of \Cref{thm:random-order-capacity}(b) to $\abs{C} \le q^{d(d+1)/2 + d - 1}$ (ra
 $\frac{1}{2} + O(1/d)$).
 Meanwhile, Problem~9.4(b) of \cite{SeventeenthPaper2026} asks whether rate $\frac{1}{2} + o(1)$ holds
 at fixed windows $w \ge 3$ over a \emph{fixed} alphabet of $q$ symbols, rather than merely rate
-$< 1$.
+$< 1$.\par}
 \end{remark}
 
 \subsection{Why column classes cannot absorb per-entry cut labels}\label{sec:sweep-remark}
@@ -184,7 +186,7 @@ distinct barriers prevent a direct reduction:
   Cutting all causal paths down to length $D$ over a run of length $T$ requires revealing a cut word
   of bit-cost $\eps L = \Omega(L/D)$, whereas $(M.k + 1)^{D+1} > 1/\eps$ and the entry-level cone arity
   $\Delta = b(M.k + 1)^D$ grows exponentially in $D$ (and includes the word-width factor
-  $b = \clog{d}$). Thus an $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and,
+  $b = \max(1, \clog{d})$). Thus an $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and,
   as already proved in \cite[Proposition~4.14(c)]{FourthPaper2026}, cannot by itself contradict a
   transposer.
 \item \emph{Per-entry cut labels from spine edges, and separated high-rate storage codes

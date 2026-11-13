@@ -6,7 +6,8 @@ import LeanMachine.ShuffleShear.Model
 Constructs an explicit finite transition table `rowShearTM : DetTM` with `k = 2` work tapes over a
 `10`-symbol work alphabet (`g = 9`) that computes the within-row cyclic shear
 `(rowShearMatrix d A) r c t = A r ((c + r) % d) t` on the row-major encoding of any `d × d` matrix
-(`d ≥ 1`) with `⌈log₂ d⌉`-bit entries within `200 · L` steps (`L = inputLength d`).
+(`d ≥ 1`) with `max(1, ⌈log₂ d⌉)`-bit (`entryBits d`) entries within `200 · L` steps
+(`L = inputLength d`).
 -/
 
 namespace LeanMachine.ShuffleShear

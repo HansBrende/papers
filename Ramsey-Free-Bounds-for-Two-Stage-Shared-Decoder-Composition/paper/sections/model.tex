@@ -78,9 +78,9 @@ Let $F$ be a field and let $d \ge 1$ and $b \in \N$.
 \item For every field homomorphism $\varphi : F \to K$, coordinatewise application of $\varphi$
   preserves linear independence of finite vector families in $F^\iota$ for any index type $\iota$,
   satisfies $\dim_F U \le \dim_K W$ for any finite $\iota$ whenever $U \le F^\iota$ and
-  $W \le K^\iota$ obey $\varphi(U) \subseteq W$, and for finite $\iota$ and arbitrary $\tau$ extends
-  every $F$-linear map $L : F^\iota \to F^\tau$ to a $K$-linear map
-  \lean{extendLinearMapPi}$(\varphi, L) : K^\iota \to K^\tau$ commuting with coordinatewise
+  $W \le K^\iota$ obey $\varphi(U) \subseteq W$, and for finite $\iota$ and arbitrary $\kappa'$ extends
+  every $F$-linear map $L : F^\iota \to F^{\kappa'}$ to a $K$-linear map
+  \lean{extendLinearMapPi}$(\varphi, L) : K^\iota \to K^{\kappa'}$ commuting with coordinatewise
   application of $\varphi$.
 \end{enumerate}
 \end{proposition}
@@ -151,8 +151,8 @@ When $M.k = 0$, adjoining a single blank work tape whose head never moves preser
 input-head positions, and emitted output bits step for step.
 \end{outline}
 
-To connect Boolean tape matrices $A \in {}$\leanname{Transpose.Matrix}$(d)$ (at canonical bit-width
-$b = {}$\leanname{Transpose.entryBits}$(d)$) with the linear operators of
+To connect Boolean tape matrices $A : {}$\leanname{Transpose.Matrix} (read on $d \times d$ entries at
+canonical bit-width $b = {}$\leanname{Transpose.entryBits}$(d)$) with the linear operators of
 \Cref{sec:duality}, \lean{encodeTMMatrixToGrid} maps each bit $A(r,c,\ell) \in \{0,1\}$ to $0,1 \in F$
 in \lean{GridState}$(F, d, b) = (\mathrm{Fin}\,d \to \mathrm{Fin}\,d \to \mathrm{Fin}\,b \to F)$.
 

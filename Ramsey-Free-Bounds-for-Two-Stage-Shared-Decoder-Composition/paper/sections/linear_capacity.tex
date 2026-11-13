@@ -26,8 +26,10 @@ coordinate form of Theorem~5.1 Lean-verified, Corollary~5.9(b) and Remark~5.10 p
 $M \ge 11$. (Conversely, while the leading coefficient $c_M$ of \Cref{thm:1b-multi-class} below has a
 $\Theta(1/M)$ deficit that beats $1 - \frac{1}{2M}$ for all $M \ge 2$ and is smaller than
 $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ for $2 \le M \le 49$ and $51 \le M \le 54$---so
-\Cref{thm:1b-two-class} at $M = 2$ for coprime $d \ge 29$ and \Cref{thm:1b-multi-class}(b) for
-$M \ge 3$ at sufficiently large primes $d \ne \operatorname{char}(F)$ improve on
+\Cref{thm:1b-two-class} at $M = 2$ (for $d \ge 29$ with $\operatorname{char}(F) \nmid d$ against
+\cite[Theorem~3.5]{SharedDecoders2026}, while improving on \cite[Theorem~3.4]{SharedDecoders2026} for
+all $d \ge 1$ with $\operatorname{char}(F) \nmid d$) and \Cref{thm:1b-multi-class}(b) for $M \ge 3$
+(at sufficiently large primes $d \ne \operatorname{char}(F)$) improve on
 \cite[Theorem~3.5]{SharedDecoders2026} once $d$ exceeds the subleading crossover---the
 $\Theta(M^{-1/2})$ leading coefficient of \cite[Theorem~3.5]{SharedDecoders2026} is strictly smaller
 at $M = 50$ and for all $M \ge 55$, carries no $+bMd$ error term, and applies to composite
@@ -163,8 +165,8 @@ Let $F$ be \emph{any} field (of arbitrary characteristic) and let $m \ge 1$ and 
 alternating two-coloring $p(c) = c \bmod 2$ (\lean{altTwoColoring}, for $c \in \{0,\dots,2m-1\}$) at
 $b = 1$ and shift $s = 1$:
 \begin{enumerate}[label=(\alph*)]
-\item $g_1 = 1$, $n = 2m$, $d_{0,0} = d_{1,0} = m$, $T_{0,0} = T_{1,0} = m$, the nonlinear covariance
-  space $H_{\{0,1\}}$ has $\dim_F H_{\{0,1\}} = (2m)^2 = d^2$, and
+\item With $g_1 = 1$, $n = 2m$, $d_{0,0} = d_{1,0} = m$, and $T_{0,0} = T_{1,0} = m$, the nonlinear
+  covariance space $H_{\{0,1\}}$ has $\dim_F H_{\{0,1\}} = (2m)^2 = d^2$, and
   $B_{\mathrm{run}}(1, p, 1) = m^2 + 3m = \frac{1}{4}d^2 + \frac{3}{2}d$.
 \item The explicit position-space symmetric decoder pair \lean{alternatingSharpDecoder} defines a
   linear class-uniform code $\mathcal{X} := {}$\lean{alternatingSharpCode}$(F, m)$
@@ -178,8 +180,10 @@ $b = 1$ and shift $s = 1$:
     \;=\;
     \frac{1}{4}d^2 + \frac{3}{2}d,
   \]
-  attaining \Cref{thm:1a-single-shift}(b) with equality over every field $F$ (and showing in
-  characteristic~$2$, when $2 \mid m$, that the bound $m^2 + 3m$ cannot be lowered there either).
+  matching $B_{\mathrm{run}}(1, p, 1)$ over every field $F$---hence attaining
+  \Cref{thm:1a-single-shift}(b) with equality whenever $\operatorname{char}(F) \nmid 2m$, and showing
+  even when $\operatorname{char}(F) \mid 2m$ (including characteristic~$2$ for every $m \ge 1$) that
+  $m^2 + 3m$ cannot be lowered.
 \end{enumerate}
 \end{theorem}
 \begin{outline}
@@ -302,7 +306,8 @@ the global tangent-line sum-of-squares identity
 \]
 sums over $m \in \mathrm{Fin}\,M$ using $\sum_m (\alpha_m - c) = 0$ to give
 $\sum_m f(\alpha_m) \le M f(1/M)$, with equality if and only if every $\alpha_m = 1/M$. For~(b), when
-$d$ is prime, every $s \in \Z_d \setminus \{0\}$ has $g_s = 1$ and $n_s = d$; summing
+$d$ is prime, every $s \in \Z_d \setminus \{0\}$ has $g_s = 1$ and $n_s = d$; writing
+$d_m := \abs{J_m}$, summing
 \Cref{thm:1a-single-shift}(b) over $s \ne 0$ (with $T_{m,0}(0) = 0$) uses
 $\sum_{s \ne 0} T_{m,0}(s) = d_m(d - d_m)$, Cauchy--Schwarz over all $d$ shifts
 $d\sum_{s \ne 0} T_{m,0}(s)^2 \ge d_m^2(d - d_m)^2$, and~(a) at $\alpha_m = d_m / d$, leaving a linear
@@ -312,8 +317,8 @@ error term $\frac{5}{4} b d \le b M d$ for $M \ge 3$. Part~(c) is direct algebra
 \begin{remark}[Scope in positive characteristic dividing $d$, and remaining gap to $1/2$]\label{rem:char-dividing-d}
 Because \Cref{thm:1a-single-shift}(b) relies on distinct $n$-th roots of unity in $\overline{F}$,
 \Cref{thm:1b-two-class}(b) requires $\operatorname{char}(F) \nmid d$ and does not apply, for example,
-at $d = 2^m$ in characteristic~$2$ (where Mahler binomial polynomials $\binom{c}{j} \bmod 2$ can vanish
-on more than $j$ elements of $\Z_{2^m}$). Even when $\operatorname{char}(F) \nmid d$, the constant
+at $d = 2^m$ ($m \ge 2$) in characteristic~$2$ (where Mahler binomial polynomials
+$\binom{c}{j} \bmod 2$ can vanish on more than $j$ elements of $\Z_{2^m}$). Even when $\operatorname{char}(F) \nmid d$, the constant
 $\frac{19}{32} = 0.59375$ narrows the gap toward $\frac{1}{2} + o(1)$ in
 \cite[Problem~9.1(a)]{SeventeenthPaper2026} (and drops below the $\frac{5}{8} = 0.625$ nested-component
 floor of \cite[Theorem~C.6]{SharedDecoders2026}, while remaining above the $\frac{9}{16} = 0.5625$

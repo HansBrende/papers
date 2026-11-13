@@ -38,7 +38,7 @@ $K_1$ has $M_1$ column classes and $K_2$ has $M_2$ column classes:
   Theorem~6.3 of \cite{SharedDecoders2026} reduced two-stage composition to a common-message subspace
   inside a cyclic channel module and extracted a monochromatic arithmetic progression in the stage-1
   partition, proving $d \le M_2\bigl(\mathsf{W}(M_1, M_2 + 1) - 1\bigr)$, where $\mathsf{W}$ denotes
-  the van der Waerden number; at $M_1, M_2 \le 2$, Corollary~6.4 of \cite{SharedDecoders2026} used
+  a van der Waerden threshold; at $M_1, M_2 \le 2$, Corollary~6.4 of \cite{SharedDecoders2026} used
   $\mathsf{W}(2,3) \le 9$ to obtain the small-parameter bound $d \le 16$.
 \item For approximate factorizations over any field $F$ with $(d : F) \ne 0$,
   Theorem~6.6 of \cite{SharedDecoders2026}
@@ -59,8 +59,9 @@ linear shared decoders. Within the linear class-uniform and swap-code models, ho
 \emph{linearity of the shared decoders} removes two separate ceilings from prior work: in two-stage
 composition (\cite[Section~6]{SharedDecoders2026}), replacing arithmetic progressions (which
 Behrend's construction \cite{Behrend1946} limits to length $< 3$ at $M_1 = 2^{O(\sqrt{\log d})}$ and
-which grow at most as $O(\log d)$ even at $M_1 = 2$) by \emph{affine Hilbert cubes} (over every
-field) and \emph{shifted monochromatic sumsets} (when $(d : F) \ne 0$) removes Ramsey numbers; and in
+whose worst-case monochromatic length is $O(\log d)$ even at $M_1 = 2$) by \emph{affine Hilbert cubes}
+(over every field) and \emph{shifted monochromatic sumsets} (when $\operatorname{char}(F) \nmid d$,
+i.e.\ $(d : F) \ne 0$) removes Ramsey numbers; and in
 one-stage capacity (\cite[Problem~9.1(a)--(b)]{SeventeenthPaper2026};
 \cite[Section~3 and Appendix~C]{SharedDecoders2026}), run-extension equations at the right endpoints
 of monochromatic cyclic runs push strictly past the $\frac{5}{8}$ certificate floor imposed by
@@ -133,25 +134,28 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   (\cite[Definition~6.3]{SeventeenthPaper2026}), evaluating $\rot_s(X) \in \mathcal{X}$ at the right
   endpoint of each maximal monochromatic run along each cycle of $c \mapsto c + s$ supplies an extra
   linear equation per run. Filtering by $\rot_s$-eigenmodes over $\overline{F}$ proves the
-  single-shift bound \Cref{thm:1a-single-shift} whenever $\operatorname{char}(F) \nmid (d/\gcd(d,s))$,
-  which is attained with equality ($\frac{1}{4}d^2 + \frac{3}{2}d$ vs.\ $\dim_F H_{\{0,1\}} = d^2$)
-  over \emph{every} field on the alternating two-coloring for even $d = 2m \ge 2$ at $b = 1, s = 1$
-  (\Cref{thm:1a-sharpness}). Averaging over
+  single-shift bound $B_{\mathrm{run}}(b, p, s)$ (\Cref{thm:1a-single-shift}) whenever
+  $\operatorname{char}(F) \nmid (d/\gcd(d,s))$, whose value $\frac{1}{4}d^2 + \frac{3}{2}d$ (versus
+  $\dim_F H_{\{0,1\}} = d^2$) on the alternating two-coloring for even $d = 2m \ge 2$ at $b = 1, s = 1$
+  is realized over \emph{every} field (\Cref{thm:1a-sharpness}, attaining \Cref{thm:1a-single-shift}
+  whenever $\operatorname{char}(F) \nmid 2m$). Averaging over
   shifts proves $D_b(p) \le \frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ for two classes whenever
   $\operatorname{char}(F) \nmid d$ (\Cref{thm:1b-two-class}, strictly below $\frac{5}{8} <
   \frac{41}{64}$, while positive characteristics dividing $d$ and the gap from $\frac{19}{32}$ to
   $\frac{1}{2}$ remain open) and
   $D_b(p) \le \bigl(1 - \frac{5}{4M} + \frac{1}{M^2} - \frac{1}{4M^3}\bigr)bd^2 + bMd$ for $M \ge 3$
-  at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}, whose leading coefficient
+  at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}). Its leading coefficient $c_M$
   beats the flag bound $1 - \frac{1}{2M}$ of
   \cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026}
   (coordinate form of Theorem~5.1 Lean-verified; Corollary~5.9(b) and Remark~5.10 proved in text)
-  for every $M \ge 2$ and is smaller than the leading coefficient $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ of
-  Theorem~3.5 of \cite{SharedDecoders2026} for $2 \le M \le 49$ and $51 \le M \le 54$---improving on it
-  for sufficiently large primes $d \ne \operatorname{char}(F)$ at $M \ge 3$, and for coprime $d \ge 29$
-  via \Cref{thm:1b-two-class} at $M = 2$---whereas Theorem~3.5 of \cite{SharedDecoders2026} has a
+  for every $M \ge 2$, and is smaller than the leading coefficient $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$
+  of Theorem~3.5 of \cite{SharedDecoders2026} for $2 \le M \le 49$ and $51 \le M \le 54$---improving
+  on Theorem~3.5 for sufficiently large primes $d \ne \operatorname{char}(F)$ at $M \ge 3$, and for
+  $d \ge 29$ with $\operatorname{char}(F) \nmid d$ via \Cref{thm:1b-two-class} at $M = 2$ (whereas
+  \Cref{thm:1b-two-class} improves on \cite[Theorem~3.4]{SharedDecoders2026} for all $d \ge 1$ with
+  $\operatorname{char}(F) \nmid d$). Conversely, Theorem~3.5 of \cite{SharedDecoders2026} has a
   smaller $\Theta(M^{-1/2})$ leading coefficient at $M = 50$ and $M \ge 55$, carries no $+bMd$ error
-  term, and applies to composite $d \ge 2M$ and arbitrary characteristic).
+  term, and applies to composite $d \ge 2M$ and arbitrary characteristic.
 
 \item \textbf{Exact dimension $25$ for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$ outside characteristics $2$ and $3$ (\Cref{sec:aperiodic-six}).}
   On \cite[Problem~9.1(b)]{SeventeenthPaper2026}, combining six-mode column-Fourier decomposition on

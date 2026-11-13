@@ -588,8 +588,10 @@ theorem denseSubset_AffineCubeCommonMessageBound :
     nlinarith
 
 /-- **Growing-Class Theorem 2A.**
-Non-factorization for growing class counts `M₁(d), M₂(d)` below the Cauchy–Schwarz cutoff, together
-with the polynomial-class `M₂ = 1` specialization (`8 * M₁ < d` and `4 * M₁^2 < d`). -/
+Non-factorization for growing class counts `M₁(d), M₂(d)` below the Cauchy–Schwarz cutoff (giving
+a polynomial cutoff in `M₁` for fixed `M₂ ≥ 2`), together with the formal `M₂ = 1` algebraic
+specialization (`8 * M₁ < d` and `4 * M₁^2 < d`; note that at `M₂ = 1` Paper 19 Theorem 6.3
+already gives the stronger bound `d ≤ M₁`). -/
 theorem theorem2A_GrowingClassesNonFactorization :
     (∀ (F : Type*) [Field F] (M₁ M₂ : ℕ → ℕ) (d b : ℕ) [NeZero d]
       (p₁ : ZMod d → Fin (M₁ d)) (p₂ : ZMod d → Fin (M₂ d)),

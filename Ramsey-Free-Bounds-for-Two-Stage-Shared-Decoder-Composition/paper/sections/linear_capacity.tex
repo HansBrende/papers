@@ -1,68 +1,83 @@
 \section{Run-extension bounds for one-stage linear shared decoders}\label{sec:linear-capacity}
 
-\subsection{Why nonlinear translate certificates stall at \texorpdfstring{$5/8$}{5/8}, and run-extension for linear decoders}\label{sec:run-extension}
+\subsection{Certificate floors at \texorpdfstring{$5/8$}{5/8} and \texorpdfstring{$9/16$}{9/16}, and run-extension for linear decoders}\label{sec:run-extension}
 
-We now turn from two-stage compositions to the one-stage linear shared-decoder capacity problem posed
-in \cite[Problem~9.1(a)]{SeventeenthPaper2026}: for a partition $p : \Z_d \to \kappa$ into $M$ column
+We now turn from two-stage compositions to the one-stage linear shared-decoder capacity problem
+(posed at $b = 1$ in \cite[Definition~6.3 and Problem~9.1(a)]{SeventeenthPaper2026} and studied for
+$b$ lanes in \cite{SharedDecoders2026}): for a partition $p : \Z_d \to \kappa$ into $M$ column
 classes, bound the maximum dimension $D_b(p) = {}$\lean{linearClassUniformMaxDim}$(F, b, p)$ of an
 $F$-linear class-uniform code $\mathcal{X} \le \Mat_{d\times d}(F^b)$
 (\lean{IsLinearClassUniformCode}). When each class is a cyclic interval, Theorem~TP
-(\cite[Theorem~6.4]{SeventeenthPaper2026}, Lean-verified) gives $D_1(p) \le (d^2 + M d)/2$, whereas
-scattered classes can exceed that interval value (\cite[Proposition~8.2]{SeventeenthPaper2026},
-Lean-verified, and \cite[Theorem~4.9]{ClassUniformMemo2026} at $d \in \{8, 12, 16\}$, Lean-verified;
+(\cite[Theorem~6.4]{SeventeenthPaper2026}, Lean-verified at $b = 1$) gives $D_1(p) \le (d^2 + M d)/2$,
+whereas scattered classes can exceed that interval value
+(\cite[Proposition~8.2]{SeventeenthPaper2026}, Lean-verified, and
+\cite[Theorem~4.9]{ClassUniformMemo2026} at $d \in \{8, 12, 16\}$, Lean-verified;
 \cite[Proposition~6.17 and Corollary~6.19]{SeventeenthPaper2026} and
 \cite[Theorem~4.8 and Corollary~4.10]{ClassUniformMemo2026}, proved in text).
 
 Theorem~3.4 of \cite{SharedDecoders2026} (Lean-verified, as are Theorems~3.2, 3.5, C.6, and~C.7
-cited below) proved the universal two-class
-ceiling $D_b(p) \le \frac{41}{64}\,b d^2 + \frac{5}{3}\,b d^{3/2}$ over every field by iterating the
+cited below) proved the universal two-class ceiling
+$D_b(p) \le \frac{41}{64}\,b d^2 + \frac{5}{3}\,b d^{3/2}$ over every field by iterating the
 single-shift inclusion $\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}) \le H_{\{0, s\}}$ along doubled
-shift sets $E_0 = \{0\}, E_j = E_{j-1} \cup (E_{j-1} + t_j)$ (\cite[Theorem~3.2]{SharedDecoders2026}),
-and Theorem~3.5 of \cite{SharedDecoders2026} proved
-$D_b(p) \le \bigl(1 - 1/(4\lceil\sqrt{2M}\,\rceil)\bigr) b d^2$ for $M \le d/2$, which improves on the
-flag bound $(1 - \frac{1}{2M}) b d^2 + O(bd)$
+shift sets $E_0 = \{0\}, E_j = E_{j-1} \cup (E_{j-1} + t_j)$ (\cite[Theorem~3.2]{SharedDecoders2026}).
+For general $M$, Theorem~3.5 of \cite{SharedDecoders2026} proved the difference-cover bound
+\[
+  D_b(p) \;\le\; b d^2 - \frac{b d(d - U)}{u + v},
+  \qquad
+  R = \min(uv, d - 1),\quad U = \min\bigl(d, M\lfloor d/(R + 1)\rfloor\bigr)
+\]
+for all $u, v \ge 1$ (\leanname{SharedDecoders.IsSharedCode.difference_cover_real_bound}, with no
+$M \le d/2$ restriction and optimized leading coefficient $1 - \frac{1 + o(1)}{3\sqrt{3M}}$), together
+with its square-root specialization $D_b(p) \le \bigl(1 - 1/(4\lceil\sqrt{2M}\,\rceil)\bigr) b d^2$
+for $M \le d/2$ (\leanname{SharedDecoders.IsSharedCode.square_cover_bound}). Against the flag bound
+$(1 - \frac{1}{2M}) b d^2 + O(bd)$
 (\cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026};
-coordinate form of Theorem~5.1 Lean-verified, Corollary~5.9(b) and Remark~5.10 proved in text) when
-$M \ge 11$. (Conversely, while the leading coefficient $c_M$ of \Cref{thm:1b-multi-class} below has a
-$\Theta(1/M)$ deficit that beats $1 - \frac{1}{2M}$ for all $M \ge 2$ and is smaller than
-$1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ for $2 \le M \le 49$ and $51 \le M \le 54$---so
-\Cref{thm:1b-two-class} at $M = 2$ (for $d \ge 29$ with $\operatorname{char}(F) \nmid d$ against
-\cite[Theorem~3.5]{SharedDecoders2026}, while improving on \cite[Theorem~3.4]{SharedDecoders2026} for
-all $d \ge 1$ with $\operatorname{char}(F) \nmid d$) and \Cref{thm:1b-multi-class}(b) for $M \ge 3$
-(at sufficiently large primes $d \ne \operatorname{char}(F)$) improve on
-\cite[Theorem~3.5]{SharedDecoders2026} once $d$ exceeds the subleading crossover---the
-$\Theta(M^{-1/2})$ leading coefficient of \cite[Theorem~3.5]{SharedDecoders2026} is strictly smaller
-at $M = 50$ and for all $M \ge 55$, carries no $+bMd$ error term, and applies to composite
-$d \ge 2M$ and arbitrary characteristic.) At the same time,
-Theorem~C.6 of \cite{SharedDecoders2026} proved that this nested-component
-translate certificate method cannot go below $(\frac{5}{8} - o(1)) b d^2$
-($\frac{5}{8} = \frac{40}{64} = 0.625$) on almost every two-class partition (and its full-ambient
-isolation variant cannot go below $(\frac{9}{16} - o(1)) b d^2$,
-\cite[Theorem~C.7]{SharedDecoders2026}). The structural reason for that ceiling is that
-$C \cap \rot_s^{-1}(C) \le H_{\{0, s\}}$ uses only equality of decoder outputs across monochromatic
-edges $p(c) = p(c + s)$, a property shared by \emph{arbitrary nonlinear deterministic decoders}
-$f_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ (\leanname{SharedDecoders.IsSharedCode}).
+coordinate form of Theorem~5.1 Lean-verified, Corollary~5.9(b) and Remark~5.10 proved in text), the
+optimized difference-cover bound improves from $M \ge 7$ ($u = 4, v = 5$ gives
+$\frac{25}{27} < \frac{13}{14}$) and its square-root specialization improves from $M \ge 11$.
+In comparison, the leading coefficient $c_M = 1 - \frac{5}{4M} + \frac{1}{M^2} - \frac{1}{4M^3}$ of
+\Cref{thm:1b-multi-class} below beats the flag bound $1 - \frac{1}{2M}$ for every $M \ge 2$ and is
+strictly smaller than the optimized leading coefficient of \cite[Theorem~3.5]{SharedDecoders2026}
+\emph{if and only if $2 \le M \le 40$}: at primes $d \ne \operatorname{char}(F)$,
+\Cref{thm:1b-multi-class}(b) improves on \cite[Theorem~3.5]{SharedDecoders2026} for $2 \le M \le 40$
+once $d$ exceeds a finite crossover (from $d \ge 7$ at $M = 2$ to $d \ge 39{,}163$ at $M = 40$), while
+at $M = 2$ for general (possibly composite) $d$ with $\operatorname{char}(F) \nmid d$,
+\Cref{thm:1b-two-class}(b) improves on \cite[Theorem~3.4]{SharedDecoders2026} (and is non-vacuous) for
+$d \ge 14$ and improves on \cite[Theorem~3.5]{SharedDecoders2026} for $d \ge 35$. Conversely, for
+every $M \ge 41$ the $1 - \Theta(M^{-1/2})$ leading coefficient of
+\cite[Theorem~3.5]{SharedDecoders2026} is strictly smaller than $c_M$ (at $M = 41$, $u = v = 11$ gives
+$\frac{2603}{2684} \approx 0.96982 < c_{41} \approx 0.97010$), and \cite[Theorem~3.5]{SharedDecoders2026}
+applies to arbitrary composite $d$ and arbitrary field characteristic.
+
+Regarding two-class certificate limits, Theorem~C.6 of \cite{SharedDecoders2026} proved that the
+nested-component certificates of \cite{SharedDecoders2026} cannot go below
+$(\frac{5}{8} - o(1)) b d^2$ ($\frac{5}{8} = \frac{40}{64} = 0.625$) on almost every two-class
+partition, while their full-ambient isolation variant cannot go below $(\frac{9}{16} - o(1)) b d^2$
+(\cite[Theorem~C.7]{SharedDecoders2026}; neither is a capacity lower bound for nonlinear decoders).
+Separately, the inclusion $C \cap \rot_s^{-1}(C) \le H_{\{0, s\}}$ uses only equality of decoder
+outputs across monochromatic edges $p(c) = p(c + s)$, a property shared by arbitrary deterministic
+decoders $f_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ (\leanname{SharedDecoders.IsSharedCode}).
 
 When the class decoders $\mathcal{A}_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ are \emph{$F$-linear}
-(\cite[Definition~6.3]{SeventeenthPaper2026}), the single-shift intersection
-$U := \mathcal{X} \cap \rot_s^{-1}(\mathcal{X})$ satisfies strictly more linear constraints than
-$H_{\{0, s\}}$. Fix $s \in \Z_d$ (identified with its canonical representative in $\{0,\dots,d-1\}$),
-let $g_s := \gcd(d, s)$ (\lean{shiftGcd}) and
-$n := d / g_s$ (\lean{shiftOrbitLen}), and partition $\Z_d$ into the $g_s$ cyclic orbits $O_a$
-($a \in \mathrm{Fin}\,g_s$, \lean{shiftOrbit}) of $c \mapsto c + s$, each of length $n$. Along $O_a$,
-consider any maximal contiguous monochromatic run
+(the $b$-lane form of \cite[Definition~6.3]{SeventeenthPaper2026}), the single-shift intersection
+$U := \mathcal{X} \cap \rot_s^{-1}(\mathcal{X})$ satisfies additional linear constraints beyond
+$H_{\{0, s\}}$ whenever an orbit of $c \mapsto c + s$ is not monochromatic. Fix $s \in \Z_d$
+(identified with its canonical representative in $\{0,\dots,d-1\}$), let $g_s := \gcd(d, s)$
+(\lean{shiftGcd}) and $n := d / g_s$ (\lean{shiftOrbitLen}), and partition $\Z_d$ into the $g_s$
+cyclic orbits $O_a$ ($a \in \mathrm{Fin}\,g_s$, \lean{shiftOrbit}) of $c \mapsto c + s$, each of
+length $n$. Along $O_a$, consider any maximal contiguous monochromatic run
 $I_r = \{c_r, c_r + s, \dots, c_r + (\ell_r - 1)s\} \subseteq J_m \cap O_a$ of class $m$, where
 $J_m = p^{-1}(m)$:
 \begin{itemize}[leftmargin=1.5em]
-\item Since $U \le H_{\{0, s\}}$, all $\ell_r$ matrices $\rot_{c_r + t s}(X)$ ($0 \le t \le \ell_r - 1$)
-  have shifted rows $X_{c_r + t s, \cdot} = \rot_s^t(x^{(a)}_r)$ determined by the single vector
+\item Since $U \le H_{\{0, s\}}$, along $I_r$ the rows $X_{c_r + t s, \cdot} = \rot_s^t(x^{(a)}_r)$
+  ($0 \le t \le \ell_r - 1$) of $X$ are cyclic shifts of the single vector
   $x^{(a)}_r := X_{c_r, \cdot} \in (F^b)^{\Z_d}$ (writing $(\rot_s v)_j := v_{j + s}$ on
   $(F^b)^{\Z_d}$), and $X \in \mathcal{X}$ gives
   $\mathcal{A}_m\bigl(\rot_{c_r + t s}(X)\bigr) = \rot_s^t(x^{(a)}_r)$ for $0 \le t \le \ell_r - 1$.
 \item Because $\rot_s(X)$ \emph{also} lies in $\mathcal{X}$ and the right endpoint
   $c_r + (\ell_r - 1)s$ still belongs to $J_m$, evaluating the class-$m$ rule for $\rot_s(X)$ at
   output column (row index) $c_r + (\ell_r - 1)s$ yields \emph{one additional linear equation} at
-  $t = \ell_r$:
+  $t = \ell_r$ whenever $c_r + \ell_r s \notin J_m$:
   \[
     \mathcal{A}_m\bigl(\rot_{c_r + \ell_r s}(X)\bigr)
     \;=\;
@@ -157,15 +172,16 @@ $\sum_{a, m} d_{m,a} = d$ gives $B_{\mathrm{run}}(b, p, s)$.
 
 Unlike $H_{\{0, 1\}}$, which has full dimension $d^2$ whenever no two adjacent columns share a class,
 \Cref{thm:1a-single-shift} cuts the single-shift intersection down to $\frac{1}{4}d^2 + \frac{3}{2}d$
-on the alternating two-coloring, and this bound is attained with equality over \emph{every} field:
+on the alternating two-coloring when $\operatorname{char}(F) \nmid 2m$, and the value
+$\frac{1}{4}d^2 + \frac{3}{2}d$ itself is realized over \emph{every} field:
 
-\begin{theorem}[All-field sharpness of \Cref{thm:1a-single-shift} on the alternating coloring]\label{thm:1a-sharpness}
+\begin{theorem}[Realization of $B_{\mathrm{run}}(1, p, 1)$ over every field and sharpness when $\operatorname{char}(F) \nmid 2m$]\label{thm:1a-sharpness}
 \formal{ExtensionLinearRunSharpness.lean}{extension_Theorem1A_AlternatingSharpness,alternatingSharpCode_finrank_and_shift_inf}
 Let $F$ be \emph{any} field (of arbitrary characteristic) and let $m \ge 1$ and $d = 2m$. For the
 alternating two-coloring $p(c) = c \bmod 2$ (\lean{altTwoColoring}, for $c \in \{0,\dots,2m-1\}$) at
 $b = 1$ and shift $s = 1$:
 \begin{enumerate}[label=(\alph*)]
-\item With $g_1 = 1$, $n = 2m$, $d_{0,0} = d_{1,0} = m$, and $T_{0,0} = T_{1,0} = m$, the nonlinear
+\item With $g_1 = 1$, $n = 2m$, $d_{0,0} = d_{1,0} = m$, and $T_{0,0} = T_{1,0} = m$, the
   covariance space $H_{\{0,1\}}$ has $\dim_F H_{\{0,1\}} = (2m)^2 = d^2$, and
   $B_{\mathrm{run}}(1, p, 1) = m^2 + 3m = \frac{1}{4}d^2 + \frac{3}{2}d$.
 \item The explicit position-space symmetric decoder pair \lean{alternatingSharpDecoder} defines a
@@ -201,16 +217,17 @@ anti-diagonals $i + j \in \Z_m$ (dimension $m$ each), leaving exact dimension
 $2 \cdot \frac{m(m+1)}{2} + 2m = m^2 + 3m$.
 \end{outline}
 
-\subsection{Universal \texorpdfstring{$19/32$}{19/32} two-class ceiling and prime-\texorpdfstring{$d$}{d} multi-class bounds}\label{sec:19-32}
+\subsection{Two-class \texorpdfstring{$19/32$}{19/32} bound when \texorpdfstring{$\operatorname{char}(F) \nmid d$}{char(F) does not divide d} and prime-\texorpdfstring{$d$}{d} multi-class bounds}\label{sec:19-32}
 
-Averaging \Cref{thm:1a-single-shift} across shifts $s \in \Z_d$ via the Grassmann identity
+Averaging \Cref{thm:1a-single-shift} across shifts $s \in \Z_d$ via the Grassmann inequality
 $2\dim_F \mathcal{X} \le b d^2 + \dim_F\bigl(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X})\bigr)$ yields
-universal dimension bounds that improve strictly on the $\frac{5}{8}$ nested-component certificate
-floor of \cite[Theorem~C.6]{SharedDecoders2026} for two classes and beat the flag bound
-$(1 - \frac{1}{2M}) b d^2$ for every $M \ge 2$ (for all $d$ coprime to $\operatorname{char}(F)$ at
-$M = 2$, and at prime $d \ne \operatorname{char}(F)$ for $M \ge 3$):
+leading coefficient $\frac{19}{32}$ for two classes whenever $\operatorname{char}(F) \nmid d$---strictly
+below the $\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} (beating it for $d \ge 14$,
+and lying below $\frac{3}{4}\,b d^2$ for $d \ge 93$) and below the $\frac{5}{8} - o(1)$
+nested-component certificate floor of \cite[Theorem~C.6]{SharedDecoders2026}---and leading coefficient
+$c_M < 1 - \frac{1}{2M}$ for every $M \ge 2$ at prime $d \ne \operatorname{char}(F)$:
 
-\begin{theorem}[Universal $19/32$ capacity ceiling for two-class linear shared decoders]\label{thm:1b-two-class}
+\begin{theorem}[Two-class $19/32$ capacity ceiling when $\operatorname{char}(F) \nmid d$]\label{thm:1b-two-class}
 \formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_TwoClass,linearClassUniform_twoClass_finrank_le}
 Let $F$ be a field and let $d, b \ge 1$. For any finite set $\kappa$, any $p : \Z_d \to \kappa$, and
 any $s \in \Z_d$, write $Q_s := \abs{\{c \in \Z_d : p(c) \ne p(c + s)\}}$
@@ -224,18 +241,19 @@ any $s \in \Z_d$, write $Q_s := \abs{\{c \in \Z_d : p(c) \ne p(c + s)\}}$
     \;\le\;
     b\Bigl(\frac{1}{2}\,Q_s d \;-\; \frac{1}{4}\,Q_s^2 \;+\; \frac{1}{2}\,g_s Q_s \;+\; g_s d\Bigr).
   \]
-\item \emph{Universal two-class bound}: whenever $\operatorname{char}(F) \nmid d$, for every finite set
-  $\kappa$ with $\abs{\kappa} \le 2$ and every $p : \Z_d \to \kappa$, every $\mathcal{X}$ satisfying
-  \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$---and hence
-  $D_b(p) = {}$\lean{linearClassUniformMaxDim}$(F, b, p)$---satisfies
+\item \emph{Two-class bound for $\operatorname{char}(F) \nmid d$}: whenever
+  $\operatorname{char}(F) \nmid d$, for every finite set $\kappa$ with $\abs{\kappa} \le 2$ and every
+  $p : \Z_d \to \kappa$, every $\mathcal{X}$ satisfying \lean{IsLinearClassUniformCode} $p$
+  $\mathcal{X}$---and hence $D_b(p) = {}$\lean{linearClassUniformMaxDim}$(F, b, p)$---satisfies
   \[
     \dim_F \mathcal{X}
     \;\le\;
     \frac{19}{32}\,b d^2 \;+\; \frac{3}{2}\,b d^{3/2}.
   \]
-  Here $\frac{19}{32} = \frac{38}{64} = 0.59375 < \frac{5}{8} = \frac{40}{64} < \frac{41}{64}$, strictly
-  below both the $\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} and the $\frac{5}{8}$
-  nested-component certificate floor of \cite[Theorem~C.6]{SharedDecoders2026}.
+  Here $\frac{19}{32} = \frac{38}{64} = 0.59375 < \frac{5}{8} = \frac{40}{64} < \frac{41}{64}$
+  (non-vacuous and strictly below \cite[Theorem~3.4]{SharedDecoders2026} for $d \ge 14$, strictly below
+  \cite[Theorem~3.5]{SharedDecoders2026} for $d \ge 35$, and strictly below $\frac{3}{4}\,b d^2$ for
+  $d \ge 93$).
 \end{enumerate}
 \end{theorem}
 \begin{outline}
@@ -257,7 +275,7 @@ averages over $s \in \Z_d$ to at most $\frac{3}{4} b \cdot 2 d^{3/2} = \frac{3}{
 \end{outline}
 
 \begin{theorem}[Multi-class linear capacity ceiling at prime dimensions]\label{thm:1b-multi-class}
-\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_MultiClassPrime,multiClass_simplex_max_iff,linearClassUniform_multiClass_prime_finrank_le,linearClassUniform_multiClass_prime_maxDim_le}
+\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_MultiClassPrime,multiClass_simplex_max_iff,linearClassUniform_multiClass_prime_finrank_le_sharp,linearClassUniform_multiClass_prime_maxDim_le_sharp,linearClassUniform_twoClass_prime_finrank_le,linearClassUniform_multiClass_prime_finrank_le,linearClassUniform_multiClass_prime_maxDim_le,multiClassLeadingCoeff_sub_flag}
 For $M \ge 2$, define the rational leading coefficient (\lean{multiClassLeadingCoeff})
 \[
   c_M \;:=\; 1 \;-\; \frac{5}{4M} \;+\; \frac{1}{M^2} \;-\; \frac{1}{4M^3}.
@@ -272,20 +290,24 @@ For $M \ge 2$, define the rational leading coefficient (\lean{multiClassLeadingC
   \]
   with equality if and only if $\alpha_m = 1/M$ for all $m \in \mathrm{Fin}\,M$.
 \item \emph{Prime-$d$ bound}: for every prime $d$, every field $F$ with $\operatorname{char}(F) \ne d$,
-  every $M \ge 3$, every $b \ge 1$, and every $p : \Z_d \to \mathrm{Fin}\,M$, every subspace
+  every $M \ge 2$, every $b \ge 1$, and every $p : \Z_d \to \mathrm{Fin}\,M$, every subspace
   $\mathcal{X}$ satisfying \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$---and hence
   $D_b(p)$---obeys
   \[
-    \dim_F \mathcal{X} \;\le\; c_M\,b d^2 \;+\; b M d.
+    \dim_F \mathcal{X}
+    \;\le\;
+    c_M\,b d^2 \;+\; \Bigl(\frac{5}{4} - \frac{1}{4M}\Bigr) b d
   \]
+  (giving $\dim_F \mathcal{X} \le \frac{19}{32}\,b d^2 + \frac{9}{8}\,b d$ for any finite $\abs{\kappa} \le 2$
+  at $M = 2$, which is $< b d^2$ for all primes $d \ge 3$, beats \cite[Theorem~3.5]{SharedDecoders2026}
+  for all primes $d \ge 7$, and is $< \frac{3}{4}\,b d^2$ for all primes $d \ge 11$; and implying the
+  simpler form $\dim_F \mathcal{X} \le c_M\,b d^2 + b M d$ for $M \ge 3$).
 \item \emph{Strict win over the flag bound for all $M \ge 2$}: for every $M \ge 2$,
   \[
-    c_M \;<\; 1 - \frac{1}{2M}
-    \qquad
-    \left(\text{difference } \frac{(M - 1)(3M - 1)}{4M^3} > 0\right);
+    \Bigl(1 - \frac{1}{2M}\Bigr) - c_M \;=\; \frac{(M - 1)(3M - 1)}{4M^3} \;>\; 0,
   \]
-  in particular $c_3 = \frac{37}{54} \approx 0.6852 < \frac{5}{6}$ and
-  $c_4 = \frac{191}{256} \approx 0.7461 < \frac{7}{8}$.
+  so $c_M < 1 - \frac{1}{2M}$ (in particular $c_3 = \frac{37}{54} \approx 0.6852 < \frac{5}{6}$ and
+  $c_4 = \frac{191}{256} \approx 0.7461 < \frac{7}{8}$).
 \end{enumerate}
 \end{theorem}
 \begin{outline}
@@ -307,21 +329,25 @@ the global tangent-line sum-of-squares identity
 sums over $m \in \mathrm{Fin}\,M$ using $\sum_m (\alpha_m - c) = 0$ to give
 $\sum_m f(\alpha_m) \le M f(1/M)$, with equality if and only if every $\alpha_m = 1/M$. For~(b), when
 $d$ is prime, every $s \in \Z_d \setminus \{0\}$ has $g_s = 1$ and $n_s = d$; writing
-$d_m := \abs{J_m}$, summing
-\Cref{thm:1a-single-shift}(b) over $s \ne 0$ (with $T_{m,0}(0) = 0$) uses
-$\sum_{s \ne 0} T_{m,0}(s) = d_m(d - d_m)$, Cauchy--Schwarz over all $d$ shifts
-$d\sum_{s \ne 0} T_{m,0}(s)^2 \ge d_m^2(d - d_m)^2$, and~(a) at $\alpha_m = d_m / d$, leaving a linear
-error term $\frac{5}{4} b d \le b M d$ for $M \ge 3$. Part~(c) is direct algebra.
+$d_m := \abs{J_m}$, summing $2\dim_F\mathcal{X} \le b d^2 + \dim_F(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}))$
+at $s = 0$ ($\dim_F\mathcal{X} \le bd^2$) and \Cref{thm:1a-single-shift}(b) over all $s \ne 0$ uses
+$\sum_{s \ne 0} T_{m,0}(s) = d_m(d - d_m)$, Cauchy--Schwarz over the $d - 1$ nonzero shifts
+($d\sum_{s \ne 0} T_{m,0}(s)^2 \ge (d - 1)\sum_{s \ne 0} T_{m,0}(s)^2 \ge d_m^2(d - d_m)^2$), and~(a) at $\alpha_m = d_m / d$, while the
+remaining subleading terms contribute $\frac{1}{2d} b\bigl(d^2 + (d - 1)d + \frac{1}{2}\sum_m d_m(d - d_m)\bigr) \le
+\bigl(\frac{5}{4} - \frac{1}{4M}\bigr)bd$ since $\sum_m d_m^2 \ge d^2 / M$ by Cauchy--Schwarz.
+Part~(c) is proved directly in \lean{multiClassLeadingCoeff_sub_flag}.
 \end{outline}
 
-\begin{remark}[Scope in positive characteristic dividing $d$, and remaining gap to $1/2$]\label{rem:char-dividing-d}
+\begin{remark}[Scope in positive characteristic dividing $d$, and remaining gap to $1/2$ (not formalized)]\label{rem:char-dividing-d}
 Because \Cref{thm:1a-single-shift}(b) relies on distinct $n$-th roots of unity in $\overline{F}$,
 \Cref{thm:1b-two-class}(b) requires $\operatorname{char}(F) \nmid d$ and does not apply, for example,
-at $d = 2^m$ ($m \ge 2$) in characteristic~$2$ (where Mahler binomial polynomials
-$\binom{c}{j} \bmod 2$ can vanish on more than $j$ elements of $\Z_{2^m}$). Even when $\operatorname{char}(F) \nmid d$, the constant
-$\frac{19}{32} = 0.59375$ narrows the gap toward $\frac{1}{2} + o(1)$ in
-\cite[Problem~9.1(a)]{SeventeenthPaper2026} (and drops below the $\frac{5}{8} = 0.625$ nested-component
-floor of \cite[Theorem~C.6]{SharedDecoders2026}, while remaining above the $\frac{9}{16} = 0.5625$
-full-ambient isolation floor of \cite[Theorem~C.7]{SharedDecoders2026}), leaving
-$D_b(p) \le (\frac{1}{2} + o(1))b d^2$ open.
+at $d = 2^m$ ($m \ge 2$) in characteristic~$2$ (where the Mahler binomial polynomial $\binom{c}{j}
+\bmod 2$ can vanish on more than $j$ elements of $\{0, \dots, 2^m - 1\}$: already at $j = 1$,
+$\binom{c}{1} \equiv 0 \pmod 2$ vanishes on all $2^{m-1} > 1$ even integers in $\{0, \dots, 2^m - 1\}$).
+Even when $\operatorname{char}(F) \nmid d$, the constant $\frac{19}{32} = 0.59375$ narrows the gap
+toward $\frac{1}{2} + o(1)$ in \cite[Problem~9.1(a)]{SeventeenthPaper2026} (dropping below the
+$\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} and the $\frac{5}{8} - o(1)$
+nested-component certificate floor of \cite[Theorem~C.6]{SharedDecoders2026}, while remaining above
+the $\frac{9}{16} - o(1)$ full-ambient isolation certificate floor of
+\cite[Theorem~C.7]{SharedDecoders2026}), leaving $D_b(p) \le (\frac{1}{2} + o(1))b d^2$ open.
 \end{remark}

@@ -14,7 +14,8 @@ lake build
 lake env lean Axioms.lean
 \end{verbatim}
 Then return to this paper's directory, regenerate the declaration index and axiom audit, verify all
-proofs in \texttt{lean/}, and build the manuscript PDF:
+proofs in \texttt{lean/}, run the optional numerical script for \Cref{rem:two-sided-numerical}, and
+build the manuscript PDF:
 \begin{verbatim}
 cd ../Ramsey-Free-Bounds-for-Two-Stage-Shared-Decoder-Composition
 python3 tools/lean_index.py
@@ -22,14 +23,16 @@ cd lean
 lake exe cache get
 lake build
 lake env lean PaperAxioms.lean
-cd ../paper
+cd ..
+python3 tools/verify_two_sided_svd.py
+cd paper
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 \end{verbatim}
 Running \texttt{python3} \leanfile{tools/lean_index.py} regenerates
 \leanfile{lean/BoundedArityDecoders.lean}, \leanfile{lean/PaperAxioms.lean}, and
-\Cref{sec:leanindex} (\leanfile{paper/sections/leanindex.tex}) directly from the \verb|\formal| and
-\verb|\lean| commands in \leanfile{paper/sections/*.tex}. Every proved declaration audited in
-\leanfile{Axioms.lean} and \leanfile{PaperAxioms.lean} depends at most on Lean's three standard
-axioms \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}, with no \texttt{sorry},
-\texttt{admit}, \texttt{native\_decide}, \texttt{unsafe}, \texttt{implemented\_by},
-\texttt{extern}, or custom \texttt{axiom} declarations.
+\Cref{sec:leanindex} (\leanfile{paper/sections/leanindex.tex}) directly from the \verb|\formal|,
+\verb|\partformal|, and \verb|\lean| commands in \leanfile{paper/sections/*.tex}. Every proved
+declaration audited in \leanfile{Axioms.lean} and \leanfile{PaperAxioms.lean} depends at most on
+Lean's three standard axioms \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound},
+with no \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, \texttt{unsafe},
+\texttt{implemented\_by}, \texttt{extern}, or custom \texttt{axiom} declarations.

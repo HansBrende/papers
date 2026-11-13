@@ -7,7 +7,7 @@ import Mathlib.LinearAlgebra.Dimension.Finrank
 /-!
 # Three-Term Swap Codes and Multi-Scale Interval Swap-Code Bounds
 
-Definitions and proposition types answering two questions from Paper 17
+Definitions and proposition types extending Remark 5.6 and studying Problem 9.3 of Paper 17
 (proved in `BoundedArityDecoders.SwapCodeAnswersProofs`):
 
 1. **Three-Term Swap-Code Examples (`Remark 5.6` of Paper 17)**:
@@ -203,7 +203,7 @@ end Bonus2Defs
 
 /-! ### Theorem Statement Specifications -/
 
-/-- **Bonus 1A (Explicit 3-Term Kronecker Family Answering `Remark 5.6`).**
+/-- **Bonus 1A (Explicit 3-Term Kronecker Family Extending `Remark 5.6` of Paper 17).**
 Over **every** field `F` and every `m ≥ 1`:
 1. `X ∈ SwapRigidity.swapCode (threeTermBlockA F m) (threeTermBlockB F m)` holds **if and only if**
    `X` satisfies `IsThreeByThreeSymmetricZeroTraceBlocks m X` (every `m × m` block `X_{i, j}` is

@@ -1,21 +1,24 @@
-\section{Exact dimension \texorpdfstring{$25$}{25} for the aperiodic partition of \texorpdfstring{$\Z_6$}{Z\_6}}\label{sec:aperiodic-six}
+\section{Exact dimension \texorpdfstring{$25$}{25} for \texorpdfstring{$\{0,1,3\} \mid \{2,4,5\}$}{\{0,1,3\} | \{2,4,5\}} on \texorpdfstring{$\Z_6$}{Z\_6} outside characteristics \texorpdfstring{$2$}{2} and \texorpdfstring{$3$}{3}}\label{sec:aperiodic-six}
 
 Problem~9.1(b) of \cite{SeventeenthPaper2026} asks for the exact maximum scalar ($b = 1$) dimension
 $D_1\bigl(\{0,1,3\},\,\{2,4,5\}\bigr)$ (written $D$ in \cite{SeventeenthPaper2026}) of a linear
-class-uniform code on $\Z_6$ for the
-aperiodic two-class partition $J_0 = \{0,1,3\}$, $J_1 = \{2,4,5\}$
-(\leanname{SwapRigidity.aperiodicCls}, the smallest partition of $\Z_d$ with no shift almost-period in
-which a code beats the interval value $(d^2 + Md)/2 = 24$). Prior to this work, the known bounds were
-$25 \le D_1 \le 28$ over every field in which $3 \ne 0$ (and $24 \le D_1 \le 28$ in characteristic~$3$):
-Theorem~TP (\cite[Theorem~6.4]{SeventeenthPaper2026}, Lean-verified) gives $D_1 \le 28$ over every
-field, while a $25$-dimensional code was constructed over $\F_2$ in
-\cite[Proposition~8.2]{SeventeenthPaper2026} (Lean-verified) and extended to every field with
-$3 \ne 0$ in \cite[Theorem~3.2]{ClassUniformMemo2026}
+class-uniform code on $\Z_6$ for the two-class partition $J_0 = \{0,1,3\}$, $J_1 = \{2,4,5\}$
+(\leanname{SwapRigidity.aperiodicCls}, the partition of \cite[Proposition~8.2]{SeventeenthPaper2026},
+which has no shift almost-period by \cite[Remark~8.1(c)]{SeventeenthPaper2026} and beats the interval
+value $(d^2 + Md)/2 = 24$). Prior to this work, the known bounds were $25 \le D_1 \le 28$ over every
+field in which $3 \ne 0$ and $21 \le D_1 \le 28$ in characteristic~$3$: Theorem~TP
+(\cite[Theorem~6.4]{SeventeenthPaper2026}, Lean-verified) gives $D_1 \le 28$ over every field;
+symmetric matrices $X = X^{\T}$ (with single decoder $A(Y)_r = Y_{r,0}$, giving $X_{c,r} = X_{r,c}$)
+achieve dimension $6 \cdot 7 / 2 = 21$ in every characteristic; and a $25$-dimensional code was
+constructed over $\F_2$ in \cite[Proposition~8.2]{SeventeenthPaper2026} (Lean-verified) and extended
+to every field with $3 \ne 0$ in \cite[Theorem~3.2]{ClassUniformMemo2026}
 (\leanname{ClassUniformMemo.exists_code_of_three_ne_zero}, Lean-verified, pushing forward the $\F_2$
 certificate in characteristic~$2$ and supplying two integer echelon certificates for all
-characteristics outside $\{2, 3\}$).
-Note that \Cref{thm:1a-single-shift}(b) alone at $d = 6, b = 1, s = 1$ ($d_{0,0} = d_{1,0} = 3$,
-$T_{0,0} = T_{1,0} = 2$) gives $\dim_F\bigl(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})\bigr) \le
+characteristics outside $\{2, 3\}$; whether $25$ is attainable in characteristic~$3$ is
+\cite[Problem~6.1]{ClassUniformMemo2026}).
+Note that when $\operatorname{char}(F) \nmid 6$, \Cref{thm:1a-single-shift}(b) alone at
+$d = 6, b = 1, s = 1$ ($d_{0,0} = d_{1,0} = 3$, $T_{0,0} = T_{1,0} = 2$) gives
+$\dim_F\bigl(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})\bigr) \le
 2\bigl(2\cdot 3 - \frac{1}{2}\cdot 4 + \frac{1}{2}\cdot 2\bigr) + 6 = 16$, yielding
 $2\dim_F\mathcal{X} \le 36 + 16 = 52$, i.e.\ $\dim_F\mathcal{X} \le 26$, still one dimension above $25$.
 
@@ -110,8 +113,12 @@ transfers the result to any $\mathrm{cls}$ satisfying \lean{IsAperiodicSixPartit
 \end{outline}
 
 \begin{remark}[Remaining characteristics $2$ and $3$]\label{rem:aperiodic-six-chars}
-Over $\operatorname{char}(F) = 2$ ($25 \le D_1 \le 28$, \cite[Proposition~8.2]{SeventeenthPaper2026}) and
-$\operatorname{char}(F) = 3$ ($24 \le D_1 \le 28$, \cite[Problem~6.1]{ClassUniformMemo2026}), $Z^6 - 1$
-factors with repeated roots as $(Z^3 - 1)^2$ and $(Z^2 - 1)^3$, so $\Z_6$ is not semisimple over
-$\overline{F}$ and both characteristics remain open.
+Over $\operatorname{char}(F) = 2$ ($25 \le D_1 \le 28$, by
+\cite[Theorem~6.4 and Proposition~8.2]{SeventeenthPaper2026} and
+\cite[Theorem~3.2]{ClassUniformMemo2026}) and $\operatorname{char}(F) = 3$ ($21 \le D_1 \le 28$, from
+symmetric matrices and \cite[Theorem~6.4]{SeventeenthPaper2026}, with attainability of $25$ posed in
+\cite[Problem~6.1]{ClassUniformMemo2026}), $Z^6 - 1$ factors with repeated roots as $(Z^3 - 1)^2$ and
+$(Z^2 - 1)^3$. Thus the group algebra $\overline{F}[\Z_6]$ is not semisimple, explaining why the
+six-mode Fourier decomposition above is unavailable there; determining the exact value of $D_1$ in
+characteristics~$2$ and~$3$ remains open.
 \end{remark}

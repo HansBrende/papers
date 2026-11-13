@@ -208,6 +208,103 @@ theorem unshiftedToShiftedSumset_intrinsicDiam
         (fun t => finsetNatDiam (B_tilde t)) K₁ K₂ hd hM₁ hM₂ hk1 hkd hsum_le hshift hK₁ hK₂).2
         hdiam_quarter
 
+/-- Explicit formula version of `unshiftedToShiftedSumset`: for any `nSteps` and any
+`HasUnshiftedMonochromaticSumset p₁ m₁ k L₀ J₀ B`, the concrete sets
+`B_tilde t := (B t).image (· - (B t).min')` and
+`J₀_tilde := J₀.image (· + ∑ t, ((B t).min' : ZMod d))` satisfy all properties of Lemma 4.1. -/
+theorem unshiftedToShiftedSumset_explicit
+    {d M₁ nSteps k L₀ : ℕ} [NeZero d]
+    (p₁ : ZMod d → Fin M₁) (m₁ : Fin M₁)
+    (J₀ : Finset (ZMod d)) (B : Fin nSteps → Finset ℕ)
+    (h : HasUnshiftedMonochromaticSumset p₁ m₁ k L₀ J₀ B) :
+    have hBne : ∀ t : Fin nSteps, (B t).Nonempty := fun t =>
+      Finset.card_pos.mp (by rw [(h.2.1 t).1]; omega)
+    let b₀ : Fin nSteps → ℕ := fun t => (B t).min' (hBne t)
+    let B_tilde : Fin nSteps → Finset ℕ := fun t => (B t).image (fun x => x - b₀ t)
+    let J₀_tilde : Finset (ZMod d) :=
+      J₀.image (fun c => c + ∑ t : Fin nSteps, (b₀ t : ZMod d))
+    (∀ t : Fin nSteps,
+      0 ∈ B_tilde t ∧
+      (B_tilde t).card = k + 1 ∧
+      finsetNatDiam (B_tilde t) = finsetNatDiam (B t) ∧
+      finsetNatDiam (B_tilde t) ≤ L₀ ∧
+      ∀ y ∈ B_tilde t, y ≤ L₀) ∧
+    HasShiftedMonochromaticSumset p₁ m₁ k J₀_tilde B_tilde (fun _ => L₀) ∧
+    (∀ (S : Finset (Fin nSteps)) (c₀ : ZMod d), c₀ ∈ J₀_tilde →
+      ∀ b : Fin nSteps → ℕ, (∀ t ∈ S, b t ∈ B_tilde t) →
+        p₁ (c₀ + ∑ t ∈ S, (b t : ZMod d)) = m₁) := by
+  dsimp only
+  have hBne : ∀ t : Fin nSteps, (B t).Nonempty := fun t =>
+    Finset.card_pos.mp (by rw [(h.2.1 t).1]; omega)
+  let b₀ : Fin nSteps → ℕ := fun t => (B t).min' (hBne t)
+  let B_tilde : Fin nSteps → Finset ℕ := fun t => (B t).image (fun x => x - b₀ t)
+  let shiftSum : ZMod d := ∑ t : Fin nSteps, (b₀ t : ZMod d)
+  let J₀_tilde : Finset (ZMod d) := J₀.image (fun c => c + shiftSum)
+  have hJ₀ := h.1
+  have hB := h.2.1
+  have hsum := h.2.2
+  have hJ₀_card : J₀_tilde.card = k := by
+    rw [Finset.card_image_of_injective _ (add_left_injective shiftSum), hJ₀]
+  have hBt : ∀ t : Fin nSteps,
+      0 ∈ B_tilde t ∧ (B_tilde t).card = k + 1 ∧
+      finsetNatDiam (B_tilde t) = finsetNatDiam (B t) ∧
+      finsetNatDiam (B_tilde t) ≤ L₀ ∧ ∀ y ∈ B_tilde t, y ≤ L₀ := by
+    intro t
+    have h0 : 0 ∈ B_tilde t :=
+      Finset.mem_image.mpr ⟨b₀ t, Finset.min'_mem (B t) (hBne t), Nat.sub_self _⟩
+    have hinj : Set.InjOn (fun x => x - b₀ t) (B t : Set ℕ) := by
+      intro x hx y hy hxy
+      dsimp at hxy
+      have hx_ge : b₀ t ≤ x := Finset.min'_le (B t) x hx
+      have hy_ge : b₀ t ≤ y := Finset.min'_le (B t) y hy
+      omega
+    have hcard : (B_tilde t).card = k + 1 := by
+      rw [Finset.card_image_of_injOn hinj, (hB t).1]
+    have hdiam_eq : finsetNatDiam (B_tilde t) = finsetNatDiam (B t) :=
+      finsetNatDiam_shift_min (hBne t)
+    have hdiam_le : finsetNatDiam (B_tilde t) ≤ L₀ := by
+      rw [hdiam_eq, finsetNatDiam_le_iff]
+      intro x hx y _
+      exact ((hB t).2 x hx).trans (Nat.le_add_left L₀ y)
+    have hyle : ∀ y ∈ B_tilde t, y ≤ L₀ := by
+      intro y hy
+      rcases Finset.mem_image.mp hy with ⟨x, hx, rfl⟩
+      exact (Nat.sub_le _ _).trans ((hB t).2 x hx)
+    exact ⟨h0, hcard, hdiam_eq, hdiam_le, hyle⟩
+  have hsub : ∀ (S : Finset (Fin nSteps)) (c₀' : ZMod d), c₀' ∈ J₀_tilde →
+      ∀ b : Fin nSteps → ℕ, (∀ t ∈ S, b t ∈ B_tilde t) →
+        p₁ (c₀' + ∑ t ∈ S, (b t : ZMod d)) = m₁ := by
+    intro S c₀' hc₀' b hb
+    rcases Finset.mem_image.mp hc₀' with ⟨c₀, hc₀, rfl⟩
+    let b_orig : Fin nSteps → ℕ := fun t => (if t ∈ S then b t else 0) + b₀ t
+    have hb_orig : ∀ t : Fin nSteps, b_orig t ∈ B t := by
+      intro t
+      dsimp [b_orig]
+      by_cases ht : t ∈ S
+      · simp only [ht, ↓reduceIte]
+        rcases Finset.mem_image.mp (hb t ht) with ⟨x, hx, hxb⟩
+        rw [← hxb, Nat.sub_add_cancel (Finset.min'_le (B t) x hx)]
+        exact hx
+      · simp only [ht, ↓reduceIte, zero_add]
+        exact Finset.min'_mem (B t) (hBne t)
+    have heq : c₀ + shiftSum + ∑ t ∈ S, (b t : ZMod d) =
+        c₀ + ∑ t : Fin nSteps, (b_orig t : ZMod d) := by
+      have hS : (∑ t ∈ S, (b t : ZMod d)) =
+          ∑ t : Fin nSteps, (if t ∈ S then (b t : ZMod d) else 0) := by
+        rw [← Finset.sum_filter]
+        congr 1; ext t; simp
+      rw [hS, add_assoc]
+      congr 1
+      rw [← Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro t _
+      dsimp [b_orig]
+      by_cases ht : t ∈ S <;> simp [ht, add_comm]
+    rw [heq]
+    exact hsum c₀ hc₀ b_orig hb_orig
+  refine ⟨hBt, ⟨hJ₀_card, fun t => ⟨(hBt t).1, (hBt t).2.1, (hBt t).2.2.2.2⟩,
+    fun c₀' hc₀' b hb => hsub Finset.univ c₀' hc₀' b (fun t _ => hb t)⟩, hsub⟩
+
 /-! ### 2. Public Step 3 Kernel Dimension Bound on `ColumnAmbient (bandRowSpace χ p₂ k)` -/
 
 /-- **Theorem 2B Step 3 Directly on `ColumnAmbient (bandRowSpace χ p₂ k)`.**

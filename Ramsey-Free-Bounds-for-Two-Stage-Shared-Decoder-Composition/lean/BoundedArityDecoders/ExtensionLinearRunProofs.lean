@@ -891,29 +891,26 @@ private lemma sum_classTransition_all_shifts {d M : ℕ} [NeZero d]
   simp_rw [hper_c, ← Finset.sum_filter, Finset.sum_const, smul_eq_mul, hComp]
   rfl
 
-private lemma theorem1B_multiClass_prime_finrank_le
+private lemma theorem1B_multiClass_prime_finrank_le_sharp
     (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
-    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 3 ≤ M)
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 2 ≤ M)
     (p : ZMod d → Fin M)
     (𝒳 : Submodule F (Matrix (ZMod d) (ZMod d) (Fin b → F)))
     (hLin : IsLinearClassUniformCode p 𝒳) :
     (finrank F 𝒳 : ℝ) ≤
       multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
-        (1 : ℝ) * (b : ℝ) * (M : ℝ) * (d : ℝ) := by
+        (5 / 4 - 1 / (4 * (M : ℝ))) * (b : ℝ) * (d : ℝ) := by
   classical
   have : NeZero d := ⟨hd.ne_zero⟩
   have : NeZero M := ⟨by omega⟩
   have hd_pos : 0 < (d : ℝ) := Nat.cast_pos.mpr hd.pos
+  have hM_pos : 0 < (M : ℝ) := by exact_mod_cast (by omega : 0 < M)
   have hb_nn : 0 ≤ (b : ℝ) := Nat.cast_nonneg b
   have hcop_d : CoprimeToChar F d := coprimeToChar_of_prime_ne_ringChar F hd hchar
   let dm : Fin M → ℕ := fun m => (Finset.univ.filter fun c : ZMod d => p c = m).card
   let Tm : Fin M → ZMod d → ℕ := fun m s =>
     (Finset.univ.filter fun c : ZMod d => p c = m ∧ p (c + s) ≠ m).card
   have hdm_sum_nat : ∑ m : Fin M, dm m = d := by
-    have h := sum_orbitClassCard_eq p (0 : ZMod d)
-      ⟨0, shiftGcd_pos d 0⟩
-    -- Or directly partition ZMod d by p
-    clear h
     rw [← ZMod.card d, ← Finset.card_univ]
     symm
     rw [← Finset.card_biUnion (s := Finset.univ) (t := fun m : Fin M =>
@@ -1036,15 +1033,11 @@ private lemma theorem1B_multiClass_prime_finrank_le
           (1 / 2 : ℝ) * (Tm m s : ℝ) ^ 2 +
           (1 / 2 : ℝ) * (Tm m s : ℝ))) ≤
       (d : ℝ) ^ 3 * (α m * (1 - α m) ^ 2 * (1 - α m / 2)) +
-        (1 / 2 : ℝ) * (dm m : ℝ) * (d : ℝ) := by
+        (1 / 2 : ℝ) * ((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ))) := by
     intro m
     simp_rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.sum_mul, ← Finset.mul_sum,
       hTm_sum_nz m]
     have hsq := hTm_sq_nz m
-    have hlin : (1 / 2 : ℝ) * ((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ))) ≤
-        (1 / 2 : ℝ) * (dm m : ℝ) * (d : ℝ) := by
-      have : 0 ≤ (dm m : ℝ) ^ 2 := sq_nonneg _
-      linarith
     have hquart :
         (dm m : ℝ) * ((d : ℝ) - (dm m : ℝ)) * ((d : ℝ) - (dm m : ℝ)) -
           (1 / 2 : ℝ) * (((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ))) ^ 2 / (d : ℝ)) =
@@ -1053,11 +1046,37 @@ private lemma theorem1B_multiClass_prime_finrank_le
       have hd_ne : (d : ℝ) ≠ 0 := ne_of_gt hd_pos
       field_simp [hd_ne]
     linarith
+  have hsum_dm_quad :
+      (∑ m : Fin M, (1 / 2 : ℝ) * ((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ)))) ≤
+        (1 / 2 - 1 / (2 * (M : ℝ))) * (d : ℝ) ^ 2 := by
+    have hdm_r : (∑ m : Fin M, (dm m : ℝ)) = (d : ℝ) := by exact_mod_cast hdm_sum_nat
+    have hcs_dm : (d : ℝ) ^ 2 ≤ (M : ℝ) * ∑ m : Fin M, (dm m : ℝ) ^ 2 := by
+      rw [← hdm_r]
+      simpa using sq_sum_le_card_mul_sum_sq_fintype (fun m : Fin M => (dm m : ℝ))
+    have hdiv_dm : (d : ℝ) ^ 2 / (M : ℝ) ≤ ∑ m : Fin M, (dm m : ℝ) ^ 2 := by
+      rw [div_le_iff₀ hM_pos]
+      linarith
+    have hexpand :
+        (∑ m : Fin M, (1 / 2 : ℝ) * ((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ)))) =
+          (1 / 2 : ℝ) * ((d : ℝ) ^ 2 - ∑ m : Fin M, (dm m : ℝ) ^ 2) := by
+      have hterm : ∀ m : Fin M,
+          (1 / 2 : ℝ) * ((dm m : ℝ) * ((d : ℝ) - (dm m : ℝ))) =
+            (1 / 2 : ℝ) * ((dm m : ℝ) * (d : ℝ)) - (1 / 2 : ℝ) * (dm m : ℝ) ^ 2 :=
+        fun _ => by ring
+      simp_rw [hterm, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.sum_mul, hdm_r]
+      ring
+    rw [hexpand]
+    have hM_ne : (M : ℝ) ≠ 0 := ne_of_gt hM_pos
+    have hrew : (1 / 2 - 1 / (2 * (M : ℝ))) * (d : ℝ) ^ 2 =
+        (1 / 2 : ℝ) * ((d : ℝ) ^ 2 - (d : ℝ) ^ 2 / (M : ℝ)) := by
+      field_simp [hM_ne]
+    rw [hrew]
+    linarith
   have hsum_nz :
       (∑ s ∈ (Finset.univ : Finset (ZMod d)).erase 0,
         (finrank F ↥(𝒳 ⊓ 𝒳.comap (laneRot s)) : ℝ)) ≤
       (b : ℝ) * ((d : ℝ) ^ 3 * ∑ m : Fin M, (α m * (1 - α m) ^ 2 * (1 - α m / 2))) +
-        (3 / 2 : ℝ) * (b : ℝ) * (d : ℝ) ^ 2 - (b : ℝ) * (d : ℝ) := by
+        (3 / 2 - 1 / (2 * (M : ℝ))) * (b : ℝ) * (d : ℝ) ^ 2 - (b : ℝ) * (d : ℝ) := by
     have h1 := Finset.sum_le_sum hper_nz
     refine le_trans h1 ?_
     have hcard_nz : ((Finset.univ : Finset (ZMod d)).erase 0).card = d - 1 := by
@@ -1067,35 +1086,30 @@ private lemma theorem1B_multiClass_prime_finrank_le
     have h2 := mul_le_mul_of_nonneg_left
       (Finset.sum_le_sum (s := (Finset.univ : Finset (Fin M))) fun m _ => hper_m m) hb_nn
     rw [Finset.sum_add_distrib, ← Finset.mul_sum] at h2
-    have hsum_dm_r : (∑ m : Fin M, (1 / 2 : ℝ) * (dm m : ℝ) * (d : ℝ)) =
-        (1 / 2 : ℝ) * (d : ℝ) ^ 2 := by
-      have hdm_r : (∑ m : Fin M, (dm m : ℝ)) = (d : ℝ) := by exact_mod_cast hdm_sum_nat
-      calc (∑ m : Fin M, (1 / 2 : ℝ) * (dm m : ℝ) * (d : ℝ))
-          = (1 / 2 : ℝ) * (∑ m : Fin M, (dm m : ℝ)) * (d : ℝ) := by
-              simp_rw [mul_assoc, ← Finset.mul_sum, ← Finset.sum_mul]
-        _ = (1 / 2 : ℝ) * (d : ℝ) ^ 2 := by rw [hdm_r]; ring
-    rw [hsum_dm_r] at h2
+    have h3 := mul_le_mul_of_nonneg_left hsum_dm_quad hb_nn
     have hd1_cast : ((d - 1 : ℕ) : ℝ) = (d : ℝ) - 1 := by
       have : 1 ≤ d := hd.one_lt.le
       simpa using Nat.cast_sub (R := ℝ) this
     rw [hd1_cast]
+    have hrew_nz :
+        (b : ℝ) * ((1 / 2 - 1 / (2 * (M : ℝ))) * (d : ℝ) ^ 2) +
+          ((d : ℝ) - 1) * ((b : ℝ) * (d : ℝ)) =
+        (3 / 2 - 1 / (2 * (M : ℝ))) * (b : ℝ) * (d : ℝ) ^ 2 - (b : ℝ) * (d : ℝ) := by
+      ring
     linarith
   have hsum_all :
       (∑ s : ZMod d, (finrank F ↥(𝒳 ⊓ 𝒳.comap (laneRot s)) : ℝ)) ≤
       (b : ℝ) * ((d : ℝ) ^ 3 * ∑ m : Fin M, (α m * (1 - α m) ^ 2 * (1 - α m / 2))) +
-        (5 / 2 : ℝ) * (b : ℝ) * (d : ℝ) ^ 2 := by
+        (5 / 2 - 1 / (2 * (M : ℝ))) * (b : ℝ) * (d : ℝ) ^ 2 := by
     rw [← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ (0 : ZMod d))]
     have hbd_nn : 0 ≤ (b : ℝ) * (d : ℝ) := by positivity
     linarith
   have havg := shift_avg_finrank_real_le 𝒳
-  have hsimplex := (simplex_maximization_clause M (by omega) α hα_nn hα_sum).1
-  have hM_ge3_r : (5 / 2 : ℝ) ≤ 2 * (M : ℝ) := by
-    have : (3 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
-    linarith
+  have hsimplex := (simplex_maximization_clause M hM α hα_nn hα_sum).1
   have h2d_bound :
       (2 * (d : ℝ)) * (finrank F 𝒳 : ℝ) ≤
         (2 * (d : ℝ)) * (multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
-          (1 : ℝ) * (b : ℝ) * (M : ℝ) * (d : ℝ)) := by
+          (5 / 4 - 1 / (4 * (M : ℝ))) * (b : ℝ) * (d : ℝ)) := by
     have hlead :
         (b : ℝ) * (d : ℝ) ^ 3 +
           (b : ℝ) * ((d : ℝ) ^ 3 * ∑ m : Fin M, (α m * (1 - α m) ^ 2 * (1 - α m / 2))) ≤
@@ -1103,12 +1117,28 @@ private lemma theorem1B_multiClass_prime_finrank_le
       have hmul := mul_le_mul_of_nonneg_right hsimplex (by positivity : 0 ≤ 2 * (b : ℝ) * (d : ℝ) ^ 3)
       linarith
     have herr :
-        (5 / 2 : ℝ) * (b : ℝ) * (d : ℝ) ^ 2 ≤
-          2 * (M : ℝ) * (b : ℝ) * (d : ℝ) ^ 2 := by
-      have hbd2 : 0 ≤ (b : ℝ) * (d : ℝ) ^ 2 := by positivity
-      nlinarith
+        (5 / 2 - 1 / (2 * (M : ℝ))) * (b : ℝ) * (d : ℝ) ^ 2 =
+          (2 * (d : ℝ)) * ((5 / 4 - 1 / (4 * (M : ℝ))) * (b : ℝ) * (d : ℝ)) := by
+      ring
     linarith
   exact le_of_mul_le_mul_left h2d_bound (by positivity)
+
+private lemma theorem1B_multiClass_prime_finrank_le
+    (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 3 ≤ M)
+    (p : ZMod d → Fin M)
+    (𝒳 : Submodule F (Matrix (ZMod d) (ZMod d) (Fin b → F)))
+    (hLin : IsLinearClassUniformCode p 𝒳) :
+    (finrank F 𝒳 : ℝ) ≤
+      multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
+        (1 : ℝ) * (b : ℝ) * (M : ℝ) * (d : ℝ) := by
+  have hsharp := theorem1B_multiClass_prime_finrank_le_sharp F hd hchar (by omega) p 𝒳 hLin
+  have hM_r : (3 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hinv_nn : 0 ≤ 1 / (4 * (M : ℝ)) := by positivity
+  have hcoef : 5 / 4 - 1 / (4 * (M : ℝ)) ≤ (1 : ℝ) * (M : ℝ) := by linarith
+  have hbd_nn : 0 ≤ (b : ℝ) * (d : ℝ) := by positivity
+  have hmul := mul_le_mul_of_nonneg_right hcoef hbd_nn
+  linarith
 
 end MultiClassPrime
 
@@ -1202,5 +1232,76 @@ theorem linearClassUniform_multiClass_prime_maxDim_le
   have : NeZero d := ⟨hd.ne_zero⟩
   exact linearClassUniformMaxDim_real_le p fun 𝒳 hLin =>
     linearClassUniform_multiClass_prime_finrank_le F hd hchar hM p 𝒳 hLin
+
+/-- Sharper prime-`d` (`d ≠ char F`) multi-class dimension ceiling valid for **all** `M ≥ 2`
+with linear error term `(5/4 - 1/(4M)) b d` (improving on `+ b M d` for `M ≥ 3` and yielding
+`(19/32) b d^2 + (9/8) b d` at `M = 2`). -/
+theorem linearClassUniform_multiClass_prime_finrank_le_sharp
+    (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 2 ≤ M)
+    (p : ZMod d → Fin M)
+    (𝒳 : Submodule F (Matrix (ZMod d) (ZMod d) (Fin b → F)))
+    (hLin : IsLinearClassUniformCode p 𝒳) :
+    (finrank F 𝒳 : ℝ) ≤
+      multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
+        (5 / 4 - 1 / (4 * (M : ℝ))) * (b : ℝ) * (d : ℝ) :=
+  theorem1B_multiClass_prime_finrank_le_sharp F hd hchar hM p 𝒳 hLin
+
+/-- Companion supremum form of `linearClassUniform_multiClass_prime_finrank_le_sharp` for all
+`M ≥ 2` and prime `d ≠ char F`. -/
+theorem linearClassUniform_multiClass_prime_maxDim_le_sharp
+    (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 2 ≤ M)
+    (p : ZMod d → Fin M) :
+    (linearClassUniformMaxDim F b p : ℝ) ≤
+      multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
+        (5 / 4 - 1 / (4 * (M : ℝ))) * (b : ℝ) * (d : ℝ) := by
+  have : NeZero d := ⟨hd.ne_zero⟩
+  exact linearClassUniformMaxDim_real_le p fun 𝒳 hLin =>
+    linearClassUniform_multiClass_prime_finrank_le_sharp F hd hchar hM p 𝒳 hLin
+
+/-- Prime-`d` (`d ≠ char F`) specialization at `M = 2` (for any finite `κ` with `|κ| ≤ 2`),
+improving the `O(b d^(3/2))` error term of `linearClassUniform_twoClass_finrank_le` to
+`(9 / 8) b d`. -/
+theorem linearClassUniform_twoClass_prime_finrank_le
+    (F : Type*) [Field F] {d b : ℕ} [NeZero b]
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F)
+    {κ : Type*} [Fintype κ] (hκ : Fintype.card κ ≤ 2) (p : ZMod d → κ)
+    (𝒳 : Submodule F (Matrix (ZMod d) (ZMod d) (Fin b → F)))
+    (hLin : IsLinearClassUniformCode p 𝒳) :
+    (finrank F 𝒳 : ℝ) ≤
+      (19 / 32 : ℝ) * (b : ℝ) * (d : ℝ) ^ 2 +
+        (9 / 8 : ℝ) * (b : ℝ) * (d : ℝ) := by
+  classical
+  let e := Fintype.equivFin κ
+  let ι : κ → Fin 2 := fun k => ⟨(e k).val, lt_of_lt_of_le (e k).isLt hκ⟩
+  have hι_inj : Function.Injective ι := fun k₁ k₂ h =>
+    e.injective (Fin.ext (Fin.mk.inj h))
+  let p' : ZMod d → Fin 2 := fun c => ι (p c)
+  obtain ⟨dec, hdec⟩ := hLin
+  have hLin' : IsLinearClassUniformCode p' 𝒳 := by
+    refine ⟨fun m => if h : ∃ k : κ, ι k = m then dec (Classical.choose h) else 0, ?_⟩
+    intro X hX c
+    have hex : ∃ k : κ, ι k = p' c := ⟨p c, rfl⟩
+    have hchoose : Classical.choose hex = p c := hι_inj (Classical.choose_spec hex)
+    simp only [hex, ↓reduceDIte, hchoose]
+    exact hdec X hX c
+  have h := linearClassUniform_multiClass_prime_finrank_le_sharp F hd hchar (le_refl 2) p' 𝒳 hLin'
+  have hc2 : multiClassLeadingCoeff 2 = (19 / 32 : ℝ) := by
+    unfold multiClassLeadingCoeff
+    norm_num
+  have herr2 : (5 / 4 - 1 / (4 * ((2 : ℕ) : ℝ))) = (9 / 8 : ℝ) := by norm_num
+  rw [hc2, herr2] at h
+  exact h
+
+/-- Explicit rational gap between Theorem FL's leading coefficient `1 - 1 / (2M)` and
+`multiClassLeadingCoeff M` for every `M ≥ 1`. -/
+theorem multiClassLeadingCoeff_sub_flag (M : ℕ) (hM : 1 ≤ M) :
+    (1 - 1 / (2 * (M : ℝ))) - multiClassLeadingCoeff M =
+      (((M : ℝ) - 1) * (3 * (M : ℝ) - 1)) / (4 * (M : ℝ) ^ 3) := by
+  have hM_ne : (M : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  unfold multiClassLeadingCoeff
+  field_simp [hM_ne]
+  ring
 
 end BoundedArityDecoders

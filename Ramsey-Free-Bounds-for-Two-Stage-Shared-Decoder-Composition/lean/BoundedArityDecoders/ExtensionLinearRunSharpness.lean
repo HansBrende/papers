@@ -17,10 +17,18 @@ open scoped BigOperators
 
 section ModelAndCharBridges
 
-private lemma laneOneMatrixEquiv_laneRot {F : Type*} [Field F] {d : ℕ} (s : ZMod d)
+/-- `laneOneMatrixEquiv` intertwines `laneRot` with `SwapRigidity.rot`. -/
+theorem laneOneMatrixEquiv_laneRot {F : Type*} [Field F] {d : ℕ} (s : ZMod d)
     (X : Matrix (ZMod d) (ZMod d) (Fin 1 → F)) :
     laneOneMatrixEquiv F d (laneRot s X) = SwapRigidity.rot s (laneOneMatrixEquiv F d X) := by
   ext i j
+  rfl
+
+/-- `matrixToSharedStateEquiv` intertwines `laneRot` with `SharedDecoders.rot`. -/
+theorem matrixToSharedStateEquiv_laneRot {F : Type*} [Semiring F] {d b : ℕ} (s : ZMod d)
+    (X : Matrix (ZMod d) (ZMod d) (Fin b → F)) :
+    matrixToSharedStateEquiv F d b (laneRot s X) =
+      SharedDecoders.rot s (matrixToSharedStateEquiv F d b X) :=
   rfl
 
 private lemma laneOneMatrixEquiv_symm_rot {F : Type*} [Field F] {d : ℕ} (s : ZMod d)

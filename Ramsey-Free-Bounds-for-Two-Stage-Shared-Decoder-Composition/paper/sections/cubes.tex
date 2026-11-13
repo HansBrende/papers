@@ -9,10 +9,13 @@ $K_2 \circ K_1 = \tau$. By the common-message reduction of
 \cite[Lemma~6.1 and Theorem~6.3]{SharedDecoders2026}, any such factorization produces a subspace
 $W \le A$ of dimension $\dim_F W = bd$ inside a $q$-channel cyclic shift module
 $A = (\Z_d \to F^q)$ with $q \le b M_2$ ($\dim_F A = qd \le b M_2 d$), together with a linear
-readout $L : A \to Z$ injective on $W$ such that $L(T_c w) = L(w)$ for all $w \in W$ and all $c$ in
-a single $p_1$-class $J = p_1^{-1}(m_1)$ (where $(T_s w)_u = w_{u+s}$, formalized as
-\lean{cyclicChannelShift}). In \cite[Theorem~6.3]{SharedDecoders2026}, choosing a monochromatic
-arithmetic progression $\{c_0 + j s : 0 \le j < \ell\} \subseteq J$ gave
+readout $L : A \to Z$ and a reference shift $c_{\mathrm{ref}} \in J$ in a single $p_1$-class
+$J = p_1^{-1}(m_1)$ such that $w \mapsto L(T_{c_{\mathrm{ref}}} w)$ is injective on $W$ and
+$L(T_c w) = L(T_{c_{\mathrm{ref}}} w)$ for all $w \in W$ and all $c \in J$ (where
+$(T_s w)_u = w_{u+s}$, formalized as \lean{cyclicChannelShift}; passing from $W$ to
+$T_{c_{\mathrm{ref}}}(W)$ centers the invariance at shift~$0$). In
+\cite[Theorem~6.3]{SharedDecoders2026}, choosing a monochromatic arithmetic progression
+$\{c_0 + j s : 0 \le j < \ell\} \subseteq J$ gave
 $\ell \dim_F W \le \dim_F A + (\ell - 1)\dim_F\ker(T_s - \mathrm{id})$, yielding
 $d \le M_2(\mathsf{W}(M_1, M_2 + 1) - 1)$.
 
@@ -22,8 +25,10 @@ $\eps \in \{0,1\}^k$ the ordered operator cube product (\lean{orderedCubeMap})
 \[
   R^\eps \;:=\; R_{k-1}^{\eps_{k-1}} \cdots R_0^{\eps_0} \in \End_F(A).
 \]
+When $R_0 = \cdots = R_{k-1} = R$, the lemma below specializes to \cite[Lemma~6.1]{SharedDecoders2026}
+with the same nested-span argument.
 
-\begin{lemma}[Affine $k$-cube common-message growth]\label{lem:affine-cube}
+\begin{lemma}[Affine $k$-cube common-message growth; cf.\ {\cite[Lemma~6.1]{SharedDecoders2026}}]\label{lem:affine-cube}
 \formal{AffineCubeCompositionProofs.lean}{lemma_AffineCubeCommonMessageGrowth}
 Let $F$ be any field, $A$ a finite-dimensional $F$-vector space, $Z$ an $F$-vector space,
 $R_0, \dots, R_{k-1} \in \End_F(A)$, $W \le A$ a subspace, and $L : A \to Z$ an $F$-linear map
@@ -50,11 +55,12 @@ Summing from $t = 0$ to $k - 1$ gives $(k+1)\dim_F W \le \dim_F S_k + \sum_{t=0}
 \subsection{Iterated Cauchy--Schwarz cube extraction and Theorem 2A}\label{sec:thm2a}
 
 Unlike arithmetic progressions, affine $k$-cubes exist in every dense subset $J \subseteq \Z_d$
-(including $3$-AP-free sets) by elementary bucket pigeonholing and Cauchy--Schwarz, with explicit
-step bounds $1 \le s_t \le \lfloor d / (2 k^2)\rfloor$ keeping $\dim_F\ker(T_{s_t} - \mathrm{id})$
-small.
+(including $3$-AP-free sets) by the classical Szemer\'edi (density Hilbert) cube lemma
+\cite{Szemeredi1969,GRS1990}, implemented here via bucket pigeonholing and Cauchy--Schwarz with
+explicit step bounds $1 \le s_t \le \lfloor d / (2 k^2)\rfloor$ keeping
+$\dim_F\ker(T_{s_t} - \mathrm{id})$ small.
 
-\begin{lemma}[Cauchy--Schwarz affine $k$-cube extraction and dense-class bound]\label{lem:cs-cube}
+\begin{lemma}[Cauchy--Schwarz affine $k$-cube extraction and dense-class bound; cf.\ {\cite{Szemeredi1969,GRS1990}}]\label{lem:cs-cube}
 \formal{AffineCubeCompositionProofs.lean}{cauchySchwarzAffineCubeExtraction}
 \formal{AffineCubeConsequences.lean}{singleSubset_CauchySchwarzAffineCubeExtraction,denseSubset_AffineCubeCommonMessageBound}
 Let $d, M_{\mathrm{eff}}, k \ge 1$ satisfy $\max\bigl(8 M_{\mathrm{eff}} k^2,\;
@@ -93,22 +99,22 @@ gives the dimension bound.
 
 \begin{theorem}[Theorem 2A: Ramsey-free two-stage exact factorization cutoff]\label{thm:2a}
 \formal{AffineCubeCompositionProofs.lean}{theorem2A_TwoStageRamseyFreeCutoff}
-\formal{AffineCubeConsequences.lean}{theorem2A_GrowingClassesNonFactorization}
+\partformal{AffineCubeConsequences.lean}{theorem2A_GrowingClassesNonFactorization}{the asymptotic $o\bigl(d^{1/2^{M_2}}\bigr)$ and $(1 - \eps)\log_2\log_2 d$ specializations of the pointwise inequality and the translate-covering step turning Behrend's $3$-AP-free set \cite{Behrend1946} into a $2^{O(\sqrt{\log d})}$-class partition of $\Z_d$.}
 Let $F$ be any field, let $d, b, M_1, M_2 \ge 1$, and let $p_1 : \Z_d \to \mathrm{Fin}\,M_1$ and
 $p_2 : \Z_d \to \mathrm{Fin}\,M_2$. If two $F$-linear class-uniform maps $K_1, K_2$ on
 $\Mat_{d\times d}(F^b)$ satisfy $K_2 \circ K_1 = \tau$, then
 \[
-  d \;\le\; \max\!\Bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\Bigr)
+  d \;\le\; \max\!\Bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\Bigr).
 \]
-(giving $d \le \max(8 M_1, 4 M_1^2)$ when $M_2 = 1$). Consequently, for any $b \ge 1$ and any class
-schedules $M_1(d), M_2(d) \ge 1$ eventually satisfying both $8 M_1(d) M_2(d)^2 < d$ and
-$(2 M_1(d))^{2^{M_2(d)}} < d$ (for instance, fixed $M_2 \ge 1$ with
-$M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$, covering $3$-AP-free Behrend partitions \cite{Behrend1946} with
-$M_1(d) = 2^{O(\sqrt{\log d})}$, or fixed $M_1 \ge 1$ and fixed $\eps \in (0, 1)$ with
-$M_2(d) \le (1 - \eps)\log_2\log_2 d$), for all sufficiently large $d$ no exact two-stage linear
-factorization $K_2 \circ K_1 = \tau$ on $\Mat_{d\times d}(F^b)$ exists over any field $F$.
+Consequently, for any $b \ge 1$ and any class schedules $M_1(d), M_2(d) \ge 1$ eventually satisfying
+both $8 M_1(d) M_2(d)^2 < d$ and $(2 M_1(d))^{2^{M_2(d)}} < d$---in particular whenever $M_2 \ge 2$ is
+fixed and $M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$ (covering partitions of $\Z_d$ into
+$M_1(d) = 2^{O(\sqrt{\log d})}$ $3$-AP-free classes via Behrend \cite{Behrend1946}) or whenever
+$M_1 \ge 2$ and $\eps \in (0, 1)$ are fixed and $M_2(d) \le (1 - \eps)\log_2\log_2 d$---for all
+sufficiently large $d$ no exact two-stage linear factorization $K_2 \circ K_1 = \tau$ on
+$\Mat_{d\times d}(F^b)$ exists over any field $F$.
 \end{theorem}
-\begin{outline}
+\begin{outline}[Outline of the formal proof and proof of the remaining claims]
 Assume for contradiction that $\max(8M_1 M_2^2, (2M_1)^{2^{M_2}}) < d$ and $K_2 \circ K_1 = \tau$.
 By \Cref{lem:cs-cube}(b), some $p_1$-class contains an affine $M_2$-cube with steps
 $1 \le s_t \le \lfloor d/(2M_2^2)\rfloor$. On the $q$-channel common-message module
@@ -120,18 +126,39 @@ Applying \Cref{lem:affine-cube} with $k = M_2$ gives
   (M_2 + 1) bd \;\le\; b M_2 d + \sum_{t=0}^{M_2 - 1} b M_2 \lfloor d/(2 M_2^2)\rfloor
   \;\le\; b M_2 d + \frac{1}{2} bd,
 \]
-contradicting $bd > 0$.
+contradicting $bd > 0$. For the asymptotic clauses (proved in text), if $M_2 \ge 2$ is fixed and
+$M_1(d) = o(d^{1/2^{M_2}})$, then $(2M_1(d))^{2^{M_2}} = o(d)$ and $8M_1(d)M_2^2 = o(d^{1/4}) = o(d)$;
+if $M_1 \ge 2$ is fixed and $M_2(d) \le (1 - \eps)\log_2\log_2 d$, then $2^{M_2(d)} \le (\log_2 d)^{1-\eps}$,
+so $\log_2((2M_1)^{2^{M_2(d)}}) = (\log_2(2M_1))(\log_2 d)^{1-\eps} = o(\log_2 d)$. Finally, for
+$d \ge 4$ and $N = \lfloor d/2\rfloor$, Behrend \cite{Behrend1946} constructs an integer $3$-AP-free
+set $B \subseteq \{0, \dots, N-1\}$ of size $\abs{B} \ge N\exp(-c\sqrt{\log N})$. Because
+$0 \le x + z, 2y < d$ for all $x, y, z \in B$, $B$ (and hence every cyclic translate $t + B \subseteq
+\Z_d$) is $3$-AP-free modulo $d$; greedily choosing translates $t_i + B$ covering at least a
+$\abs{B}/d$ fraction of the remaining uncovered residues covers $\Z_d$ in at most
+$\lceil (d/\abs{B})\log d\rceil + 1 = 2^{O(\sqrt{\log d})}$ translates, and taking disjoint
+remainders $(t_i + B) \setminus \bigcup_{j < i}(t_j + B)$ partitions $\Z_d$ into
+$2^{O(\sqrt{\log d})}$ $3$-AP-free classes.
 \end{outline}
 
-\begin{remark}[Comparison with van der Waerden cutoffs at small parameters]\label{rem:2a-vs-p19}
-\Cref{thm:2a} trades small-parameter tightness for elementary dependence on $M_1$. At $M_1 = M_2 = 2$,
-\Cref{thm:2a} gives $d \le \max(64, 4^4) = 256$, which is substantially weaker than the bound
-$d \le 2(9 - 1) = 16$ (using $\mathsf{W}(2,3) \le 9$) of \cite[Corollary~6.4]{SharedDecoders2026}.
-Conversely, \cite[Theorem~6.3]{SharedDecoders2026} supplies no quantitative upper bound on
-$\mathsf{W}(M_1, M_2 + 1)$ beyond qualitative Hales--Jewett finiteness \cite{HalesJewett1963}, and
-progression extraction of length $M_2 + 1 \ge 3$ cannot rule out $3$-AP-free Behrend partitions
-\cite{Behrend1946} with $M_1(d) = 2^{O(\sqrt{\log d})}$, whereas \Cref{thm:2a} gives an explicit
-cutoff polynomial in $M_1$ for every fixed $M_2$.
+\begin{remark}[Comparison with van der Waerden cutoffs across parameter regimes]\label{rem:2a-vs-p19}
+\Cref{thm:2a} improves on \cite[Theorem~6.3]{SharedDecoders2026} only when $M_1, M_2 \ge 2$ and $M_1$
+is large relative to $M_2$:
+\begin{itemize}[leftmargin=1.5em]
+\item At $M_2 = 1$, two distinct columns in a single stage-1 class already contradict
+  $\ell d \le M_2 d + (\ell - 1)M_2\gcd(d, s)$ at $\ell = 2$ in
+  \cite[Theorem~6.3]{SharedDecoders2026}, giving the exact pigeonhole bound $d \le M_1$
+  ($\mathsf{W}(M_1, 2) = M_1 + 1$), whereas \Cref{thm:2a} gives $d \le \max(8M_1, 4M_1^2)$.
+\item At $M_1 = 1$, $\mathsf{W}(1, M_2 + 1) = M_2 + 1$ gives $d \le M_2^2$ in
+  \cite[Theorem~6.3]{SharedDecoders2026}, whereas \Cref{thm:2a} gives
+  $d \le \max(8M_2^2, 2^{2^{M_2}})$.
+\item At $M_1 = M_2 = 2$, \cite[Corollary~6.4]{SharedDecoders2026} uses $\mathsf{W}(2, 3) = 9$ to
+  obtain $d \le 2(9 - 1) = 16$, whereas \Cref{thm:2a} gives $d \le \max(64, 4^4) = 256$.
+\item Conversely, for every fixed $M_2 \ge 2$, any progression-based cutoff from
+  \cite[Theorem~6.3]{SharedDecoders2026} is at least $M_2(\mathsf{W}(M_1, M_2 + 1) - 1) \ge
+  M_2(\mathsf{W}(M_1, 3) - 1)$, which is superpolynomial in $M_1$ by Behrend \cite{Behrend1946} (and
+  tower-type in $M_2$ under explicit van der Waerden upper bounds \cite{Gowers2001}), whereas
+  \Cref{thm:2a} gives the polynomial-in-$M_1$ bound $(2M_1)^{2^{M_2}}$ for fixed $M_2 \ge 2$.
+\end{itemize}
 \end{remark}
 
 \subsection{Finite controls at \texorpdfstring{$d = 13$}{d = 13} and \texorpdfstring{$d = 4$}{d = 4}}\label{sec:cube-controls}
@@ -139,7 +166,7 @@ cutoff polynomial in $M_1$ for every fixed $M_2$.
 Two finite-dimensional examples test the linear-growth multiplier $(k+1)$ in \Cref{lem:affine-cube}
 and the coded-versus-copy distinction at $d = 4 = M_1 M_2$.
 
-\begin{example}[$3$-AP-free $2$-cube witness at $d = 13$]\label{ex:d13-sharpness}
+\begin{example}[$3$-AP-free $2$-cube witness at $d = 13$ ($9 \le \max\dim_F W \le 10$)]\label{ex:d13-witness}
 \formal{AffineCubeCompositionProofs.lean}{control_D13TwoCubeAPFreeSharpness}
 \formal{AffineCubeConsequences.lean}{control_D13_GeneralFieldAndProgressionBridge}
 Let $d = 13$, $q = 2$ ($\dim_F A = 26$), and consider the $2$-cube
@@ -153,10 +180,10 @@ $J_{13} = \{0, 1, 4, 5\} = \{0,1\} + \{0,4\} \subseteq \Z_{13}$.
   $\dim_F W \le 10$.
 \item Over $\R$, and over every field $F$ with $(13 : F) \ne 0$, there exists an explicit $(W, L)$
   shift-invariant on $J_{13}$ of dimension $\dim_F W = 9$. Thus the maximum invariant dimension on
-  $J_{13}$ over such fields lies in $\{9, 10\}$; by contrast, on every non-constant $4$-term arithmetic
-  progression in $\Z_{13}$ the progression bound forces $4\dim_F W \le 26 + 3 \cdot 2 = 32$
-  ($\dim_F W \le 8 < 9$), and a naive $2^k$-multiplier inequality
-  $2^k \dim_F W \le \dim_F A + (2^k - 1)q$ fails at $k = 2$.
+  $J_{13}$ over such fields lies in $\{9, 10\}$ (whether $10$ is attainable is not decided here); by
+  contrast, on every non-constant $4$-term arithmetic progression in $\Z_{13}$ the progression bound
+  forces $4\dim_F W \le 26 + 3 \cdot 2 = 32$ ($\dim_F W \le 8 < 9$), and a naive $2^k$-multiplier
+  inequality $2^k \dim_F W \le \dim_F A + (2^k - 1)q$ fails at $k = 2$.
 \end{enumerate}
 \end{example}
 \begin{outline}

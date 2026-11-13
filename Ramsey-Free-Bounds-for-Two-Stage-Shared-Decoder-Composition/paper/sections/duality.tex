@@ -1,4 +1,4 @@
-\section{Restricted shuffle-and-local operator pipelines and anti-diagonal untwisting}\label{sec:duality}
+\section{Restricted shuffle and row/column-uniform operator pipelines and anti-diagonal untwisting}\label{sec:duality}
 
 We state the scope of this section up front. In \Cref{sec:osr} we analyze Operator Schmidt Rank
 ($\OSR$) across the row/column tensor cut $F_{\mathrm{row}}^d \otimes_F (F_{\mathrm{col}}^d \otimes_F F^b)$
@@ -7,11 +7,12 @@ row-uniform operators $I_d \otimes B$ and column-uniform operators $A \otimes I_
 applies \emph{only} to that restricted operator pipeline: it \emph{does not} answer
 \cite[Problem~9.5]{SeventeenthPaper2026} and \emph{does not} yield a lower bound for Turing machines.
 Indeed, Problem~9.5 of \cite{SeventeenthPaper2026} asks for a functional that is subadditive over
-machine steps, large for the swap at every scale, and \emph{``not raised at all scales by a single
-linear-time operation''}, whereas within-row cyclic shear has $\OSR = d$ (\Cref{prop:shear-control}(a))
-yet is computed in $O(L)$ steps on a $2$-work-tape Turing machine (\Cref{prop:stone-tm}). Nor do we
-formalize a converse decomposition of $\tau$ into $m$ shuffle passes here; \Cref{thm:osr-pass} is a
-pass lower bound for the specified operator class.
+machine steps, large for the swap at every scale separately, and \emph{``not raised at all scales by
+a single linear-time operation''}, whereas within-row cyclic shear has $\OSR = d$
+(\Cref{prop:shear-control}(a)) yet is computed in $O(L)$ steps on a $2$-work-tape Turing machine
+(\Cref{prop:stone-tm}). Within the specified operator class, the pass bound $t \ge m$ of
+\Cref{thm:osr-pass}(a) is attained with zero row/column-uniform stages by Stone's identity
+$S^m = \tau$ \cite{Stone1971} (\lean{stoneShuffleGridLinear_iterate_eq_swap}).
 
 \subsection{Operator Schmidt Rank on restricted shuffle pipelines and linear-time machines}\label{sec:osr}
 
@@ -19,8 +20,9 @@ Write $\lean{GridState}(F, d, b) := (\mathrm{Fin}\,d \to \mathrm{Fin}\,d \to \ma
 separating the row index $r \in \mathrm{Fin}\,d$ from the within-row column-and-lane index
 $(c, \ell) \in \mathrm{Fin}\,d \times \mathrm{Fin}\,b$. An $F$-linear operator $K$ on
 $\lean{GridState}(F, d, b)$ has \emph{Operator Schmidt Rank at most $R$}, written $\OSR(K) \le R$
-(\lean{HasOperatorSchmidtRankLe}), if there exist $R$ row matrices $A_i \in \Mat_{d\times d}(F)$ and
-$R$ within-row linear maps $B_i \in \End_F(F^d \otimes_F F^b)$ such that
+(\lean{HasOperatorSchmidtRankLe}; see \cite{Nielsen2003,Tyson2003}), if there exist $R$ row matrices
+$A_i \in \Mat_{d\times d}(F)$ and $R$ within-row linear maps $B_i \in \End_F(F^d \otimes_F F^b)$ such
+that
 \[
   (K X)_{r,c,\ell}
   \;=\;
@@ -29,7 +31,7 @@ $R$ within-row linear maps $B_i \in \End_F(F^d \otimes_F F^b)$ such that
 and we write $\OSR(K) = R$ (\lean{HasExactOperatorSchmidtRank}) when $\OSR(K) \le R$ and no
 $R' < R$ suffices.
 
-\begin{lemma}[Submultiplicativity and unit-rank operators]\label{lem:osr-submult}
+\begin{lemma}[Submultiplicativity and unit-rank operators; cf.\ {\cite{Nielsen2003,Tyson2003}}]\label{lem:osr-submult}
 \formal{OperatorDualityProofs.lean}{operatorSchmidtRankSubmultiplicative,hasOperatorSchmidtRankLe_comp}
 \formal{DualityAndSwapConsequences.lean}{isRowOrColUniform_rankLe_one}
 Over any commutative semiring $F$ (and in particular any field):
@@ -46,7 +48,7 @@ the row matrices $A_{2,i_2} A_{1,i_1}$ and composes the within-row maps $B_{2,i_
 using $R_2 R_1$ terms; $I_d \otimes B$ and $A \otimes I_{db}$ are single elementary tensors.
 \end{outline}
 
-\begin{theorem}[Operator Schmidt Rank of transpose and Stone's shuffle]\label{thm:osr-swap}
+\begin{theorem}[Operator Schmidt Rank of transpose and Stone's shuffle; cf.\ {\cite{Nielsen2003,Tyson2003}}]\label{thm:osr-swap}
 \formal{OperatorDualityProofs.lean}{operatorSchmidtRankSwap,operatorSchmidtRankStoneShuffle}
 Let $F$ be any field and let $b \ge 1$.
 \begin{enumerate}[label=(\alph*)]
@@ -70,15 +72,17 @@ decomposition whose four nonzero quadrant blocks are linearly independent once $
 symmetrically for $S^{-1}$).
 \end{outline}
 
-\begin{theorem}[Pass lower bounds for restricted shuffle-and-local pipelines]\label{thm:osr-pass}
+\begin{theorem}[Pass lower bounds and attainment for restricted shuffle and row/column-uniform pipelines]\label{thm:osr-pass}
 \formal{OperatorDualityProofs.lean}{stoneShufflePipelinePassLowerBound}
-\formal{DualityAndSwapConsequences.lean}{boundedOSRPipelinePassLowerBound}
+\formal{DualityAndSwapConsequences.lean}{boundedOSRPipelinePassLowerBound,stoneShuffleGridLinear_iterate_eq_swap}
 Let $F$ be any field and let $b \ge 1$.
 \begin{enumerate}[label=(\alph*)]
 \item On $d = 2^m$ ($m \ge 0$), if an operator list $K_1, \dots, K_n$ has composition
   \lean{composeGridOps} equal to $\tau$, where $t$ indices are equal to $S$ or $S^{-1}$
   and every remaining operator satisfies \lean{IsRowUniformColOp} or \lean{IsColUniformRowOp}
   (of the form $I_d \otimes B$ or $A \otimes I_{db}$), then $(2^m)^2 \le 4^t$ and $t \ge m$.
+  Conversely, iterating $S$ $m$ times satisfies $S^m = \tau$ (\lean{stoneShuffleGridLinear_iterate_eq_swap},
+  over any semiring and for any $m, b \ge 0$), attaining $t = m$.
 \item More generally, for any $d \ge 1$ and $R \ge 1$, if a composed pipeline equals $\tau$ with $t$
   operators satisfying $\OSR \le R$ and all remaining operators satisfying $\OSR \le 1$, then
   $d^2 \le R^t$, and for $R \ge 2$ one has $t \ge \dfrac{2\log d}{\log R}$.
@@ -86,8 +90,10 @@ Let $F$ be any field and let $b \ge 1$.
 \end{theorem}
 \begin{outline}
 By \Cref{lem:osr-submult} and \Cref{thm:osr-swap}(b), the composed pipeline has $\OSR \le 4^t$
-(respectively $\OSR \le R^t$), whereas $\OSR(\tau) = d^2$ by \Cref{thm:osr-swap}(a). Taking real
-logarithms when $R \ge 2$ gives $2\log d \le t\log R$.
+(respectively $\OSR \le R^t$), whereas $\OSR(\tau) = d^2$ by \Cref{thm:osr-swap}(a); taking real
+logarithms when $R \ge 2$ gives $2\log d \le t\log R$. For attainment in~(a), induction on
+$0 \le k \le m$ shows that $(S^k X)_{r,c,\ell} = X_{(c \bmod 2^k)2^{m-k} + \lfloor r/2^k\rfloor,\,
+(r \bmod 2^k)2^{m-k} + \lfloor c/2^k\rfloor,\,\ell}$, giving $S^m = \tau$ at $k = m$.
 \end{outline}
 
 In the shared library \texttt{lean-machine} (\leanname{LeanMachine.ShuffleShear}), we construct
@@ -125,18 +131,18 @@ by $rb$ bits. \lean{computesWithin_toTransposeTM} transports each proof identica
 
 Two controls clarify the boundary of $\OSR$ and of single-cell information measures:
 
-\begin{proposition}[Within-row shear $\OSR = d$ and row-diagonal source-arity gauge invariance]\label{prop:shear-control}
+\begin{proposition}[Within-row shear $\OSR = d$ and row-diagonal source-arity preservation]\label{prop:shear-control}
 \formal{OperatorDualityProofs.lean}{control_RowShearAndRowDiagonalAlternation}
 \formal{DualityAndSwapConsequences.lean}{rowDiagonal_SourceArityGaugeInvariance}
 Let $F$ be any field, $d \ge 1$, and $b \ge 1$.
 \begin{enumerate}[label=(\alph*)]
 \item Within-row cyclic shear \lean{rowShearLinear} on $(F, d, b)$ lies in the row-diagonal subalgebra
   \lean{IsRowDiagonalOp} ($(KX)_r = B_r(X_r)$) yet has operator Schmidt rank~$d$.
-\item Output-row source arity (\lean{HasOutputRowSourceArityLe}) is invariant under two-sided
-  composition $D_1 \circ K \circ D_0$ with arbitrary row-diagonal operators $D_0, D_1$ (over any
-  commutative semiring $F$), whereas $\OSR(\mathrm{id}) \le 1 < d = \OSR(\mathcal{S}_{d,b} \circ
-  \mathrm{id})$ separates $\OSR$ from row-diagonal gauge invariance for all $d \ge 2$ (writing
-  $\mathcal{S}_{d,b} := {}$\lean{rowShearLinear}$(F, d, b)$).
+\item For any $s \in \N$, the output-row source-arity bound $\le s$ (\lean{HasOutputRowSourceArityLe})
+  is preserved under two-sided composition $D_1 \circ K \circ D_0$ with arbitrary row-diagonal
+  operators $D_0, D_1$ (over any commutative semiring $F$), whereas $\OSR(\mathrm{id}) \le 1 < d =
+  \OSR(\mathcal{S}_{d,b} \circ \mathrm{id})$ separates $\OSR$ from row-diagonal gauge invariance for
+  all $d \ge 2$ (writing $\mathcal{S}_{d,b} := {}$\lean{rowShearLinear}$(F, d, b)$).
 \item On $d = 2^m$ ($m \ge 0$), every alternating product $D_t U_t D_{t-1} \cdots U_1 D_0$
   (\lean{alternatingRowDiagProduct}) of $t + 1$ row-diagonal operators $D_i$ and $t$ shuffle or
   unshuffle passes $U_j \in \{S, S^{-1}\}$ has output-row source arity at most $2^t$; if it equals
@@ -149,15 +155,25 @@ $(\sigma v)_{c,\ell} = v_{c+1,\ell}$), and linear independence
 of the $d$ cyclic column shifts $\sigma^0, \dots, \sigma^{d-1}$ forces $\OSR = d$. In~(b) and~(c),
 row-diagonal operators act within each row without mixing source rows, while each $S$ or $S^{-1}$
 combines at most two source rows into each output row; since row~$0$ of $\tau(X)$ depends on all
-$2^m$ input rows when $b \ge 1$, equality with $\tau$ forces $2^m \le 2^s$.
+$2^m$ input rows when $b \ge 1$, equality with $\tau$ forces $2^m \le 2^t$.
 \end{outline}
+
+Note that \Cref{prop:shear-control}(c) is a linear special case of
+\cite[Proposition~6.25(a)]{SeventeenthPaper2026} (proved in text), which bounds arbitrary (not
+necessarily linear) pipelines on $d = 2^m$ whose stages read input rows inside affine cosets of
+$\F_2^m$: row-diagonal maps have coset dimension $0$ and $S, S^{-1}$ have coset dimension $1$, so
+\cite[Proposition~6.25(a)]{SeventeenthPaper2026} bounds transposed sets by $q^{(d^2 + 2^t d)/2}$ and
+subsumes \Cref{prop:shear-control}(c). By contrast, \Cref{thm:osr-pass}(a) allows dense
+column-uniform linear row operators $A \otimes I_{db}$ (which read all $2^m$ rows and have coset
+dimension $m$ in \cite[Proposition~6.25(a)]{SeventeenthPaper2026}) while excluding row-varying
+column operators such as \lean{rowShearLinear}.
 
 \begin{proposition}[Skew one-time-pad zero-mutual-information control]\label{prop:otp-control}
 \formal{OperatorDualityProofs.lean}{control_SkewOneTimePadInformationTrap}
 \formal{DualityAndSwapConsequences.lean}{uniformShannonMI_eq_zero_of_indep,skewOneTimePad_ShannonMutualInfoZero}
 For $d \ge 1$ and $b \ge 1$, define $W(X) := X^{\T} \oplus X$ on $\{0,1\}^{d\times d\times b}$
 (\lean{skewXorPad}). Then $W(X) \oplus X = X^{\T}$ for every $X$, and under uniformly random $X$,
-every single entry $W_{r,c}$ is statistically independent of every target column $X_{:, c'}$, so its
+every single entry $W_{r,c}$ is statistically independent of every source column $X_{:, c'}$, so its
 discrete Shannon mutual information (\lean{uniformShannonMI}) satisfies
 \[
   I\bigl(W_{r,c}\;;\; X_{:,c'}\bigr) \;=\; 0
@@ -174,22 +190,27 @@ information.
 
 \subsection{Anti-diagonal untwisting of shift-collision equations}\label{sec:antidiag}
 
-We close this section with a coordinate observation on linear codes with deterministic shared
-decoders (\leanname{SharedDecoders.IsSharedCode}, \cite[Section~2]{SharedDecoders2026}) and the
-shift-link covariance spaces of \cite[Section~6]{SeventeenthPaper2026}. Untwisting matrix coordinates
-along anti-diagonals $a = c + j \in \Z_d$ via the mutually inverse $F$-linear maps
-(\lean{antiDiagLinear}, \lean{fromAntiDiagLinear})
+We close this section by recording a \leanname{TensorProduct} packaging of the shift-covariance
+characterization of \cite[Lemma~3.1]{SharedDecoders2026} (and the shift-link covariance spaces of
+\cite[Section~6]{SeventeenthPaper2026}). In \cite{SharedDecoders2026}, Lemma~3.1 and its Lean module
+formalize shift-collision compatibility (\leanname{SharedDecoders.isSharedCode_iff_compatible},
+\leanname{SharedDecoders.IsSharedCode.commonPreimage_le_covariance}), the anti-diagonal row
+normalization (\leanname{SharedDecoders.covarianceSpace}, \leanname{SharedDecoders.covarianceEquiv}),
+its dimension $bd\chi(E)$ (\leanname{SharedDecoders.finrank_covarianceSpace}), and its rotation
+invariance (\leanname{SharedDecoders.covarianceSpace_rot}). Theorem~\ref{thm:anti-diagonal}(a),(c)
+and \Cref{prop:mask-floors} below restate those properties; what is new here is packaging the
+anti-diagonal coordinate change $a = c + j \in \Z_d$ (\lean{antiDiagLinear}, \lean{fromAntiDiagLinear}),
 \[
   Z_{c,a} \;:=\; X_{c,\,a - c},
   \qquad
   X_{c,j} \;=\; Z_{c,\,j + c}
-  \qquad (c, a, j \in \Z_d)
+  \qquad (c, a, j \in \Z_d),
 \]
-induces for $d \ge 1$ the linear tensor isomorphism
+for $d \ge 1$ as the explicit linear tensor isomorphism
 $\Psi = \lean{antiDiagTensorEquiv} : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\;\sim\;}
 \Mat_{d\times d}(A)$ sending $u \otimes v$ to $(c, j) \mapsto u_c\,v_{j+c}$.
 
-\begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation]\label{thm:anti-diagonal}
+\begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation; after {\cite[Lemma~3.1]{SharedDecoders2026}}]\label{thm:anti-diagonal}
 \formal{OperatorDualityProofs.lean}{pairwiseShiftCollisionCharacterization,antiDiagonalTensorSeparation}
 \formal{DualityAndSwapConsequences.lean}{antiDiagTensorEquiv_intertwines_rot,shiftSetCovariance_tensor_finrank}
 Let $F$ be a field, $d \ge 1$, $A$ an $F$-vector space, and $p : \Z_d \to \kappa$.
@@ -197,34 +218,41 @@ Let $F$ be a field, $d \ge 1$, $A$ an $F$-vector space, and $p : \Z_d \to \kappa
 \item A linear subspace $C \le \Mat_{d\times d}(A)$ satisfies \leanname{SharedDecoders.IsSharedCode}
   for $p$ if and only if for every shift $s \in \Z_d$ and every $Y \in C$ with $\rot_s(Y) \in C$,
   $Y$ lies in \lean{InPairwiseShiftCovariance}: whenever $p(c) = p(c+s)$, one has
-  $Y_{c+s,\,j} = Y_{c,\,j+s}$ for all $j \in \Z_d$.
+  $Y_{c+s,\,j} = Y_{c,\,j+s}$ for all $j \in \Z_d$
+  (cf.\ \leanname{SharedDecoders.isSharedCode_iff_compatible}).
 \item Under $\Psi : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\sim} \Mat_{d\times d}(A)$,
   column rotation $\rot_t$ intertwines with the pure right-factor coordinate shift
   $\mathrm{id} \otimes \sigma^t$ (\lean{coordShiftLinear}, $(\sigma^t v)_a = v_{a+t}$).
 \item For any shift set $E \subseteq \Z_d$, a matrix $X \in \Mat_{d\times d}(A)$ lies in the
-  shift-set covariance subspace $H_E(p)$ (\lean{shiftSetCovarianceSubmodule}) if and only if its
+  shift-set covariance subspace $H_E(p)$ (\lean{shiftSetCovarianceSubmodule}, cf.\
+  \leanname{SharedDecoders.covarianceSpace}) if and only if its
   anti-diagonal coordinates $Z_{c,a} = X_{c, a - c}$ are constant in $c$ on every connected component
   of \leanname{SwapRigidity.Link} $p$ $E$ (\lean{antiDiagonalTensorSeparation}). When
   $\dim_F A < \infty$, writing $U_E(p) \le (\Z_d \to F)$ for the subspace of vectors constant on
   those components (\lean{leftComponentSubmodule}), $\Psi$ maps $U_E(p) \otimes_F (\Z_d \to A)$ onto
   $H_E(p)$ and
   \[
-    \dim_F H_E(p) \;=\; \dim_F U_E(p) \cdot d \cdot \dim_F A.
+    \dim_F H_E(p) \;=\; \dim_F U_E(p) \cdot d \cdot \dim_F A
   \]
+  (cf.\ \leanname{SharedDecoders.finrank_covarianceSpace}).
 \end{enumerate}
 \end{theorem}
 \begin{outline}
-In~(a), determinism of $f_{p(c)}$ on a linear subspace $C$ means that whenever $X_1, X_2 \in C$
-satisfy $p(c_1) = p(c_2)$ and $\rot_{c_1}(X_1) = \rot_{c_2}(X_2)$, row $c_1$ of $X_1$ equals row
-$c_2$ of $X_2$; setting $s = c_2 - c_1$ and $Y = X_1 - \rot_{-s}(X_2) \in C$ gives
-$\rot_s(Y) = \rot_s(X_1) - X_2 \in C$ and the pairwise identity. In~(b),
+In~(a) (where linearity of $C$ is not used), determinism of $f_{p(c)}$ on $C$ means that whenever
+$X_1, X_2 \in C$ satisfy $p(c_1) = p(c_2)$ and $\rot_{c_1}(X_1) = \rot_{c_2}(X_2)$, row $c_1$ of $X_1$
+equals row $c_2$ of $X_2$: given $Y \in C$ with $\rot_s(Y) \in C$ and $p(c) = p(c+s)$, applying this
+to $X_1 = \rot_s(Y) \in C$ at $c_1 = c$ and $X_2 = Y \in C$ at $c_2 = c + s$ (so
+$\rot_c(X_1) = \rot_{c+s}(Y) = \rot_{c_2}(X_2)$) yields $(\rot_s Y)_{c, j} = Y_{c+s, j}$, i.e.\
+$Y_{c, j+s} = Y_{c+s, j}$; conversely, if $\rot_{c_1}(X_1) = \rot_{c_2}(X_2)$ for $X_1, X_2 \in C$ with
+$p(c_1) = p(c_2)$, setting $s = c_2 - c_1$ gives $X_1 = \rot_s(X_2)$, so taking $Y = X_2 \in C$ gives
+$\rot_s(Y) = X_1 \in C$ and hence $(X_2)_{c_1+s, j} = (X_2)_{c_1, j+s} = (X_1)_{c_1, j}$. In~(b),
 $\Psi(\mathrm{id} \otimes \sigma^t(u \otimes v))_{c,j} = u_c v_{j+c+t} = \rot_t(\Psi(u\otimes v))_{c,j}$.
 In~(c), substituting $X_{c,j} = Z_{c, j+c}$ turns $X_{c', j+\delta'} = X_{c, j+\delta}$ under
 $c + \delta = c' + \delta'$ into $Z_{c', a} = Z_{c, a}$ independently for each anti-diagonal
 $a = c + \delta + j$.
 \end{outline}
 
-\begin{proposition}[Two-subspace Grassmann relaxation and alternating-mask shift separation]\label{prop:mask-floors}
+\begin{proposition}[Two-subspace Grassmann relaxation and alternating-mask shift separation; cf.\ {\cite[Lemma~3.1]{SharedDecoders2026}}]\label{prop:mask-floors}
 \formal{DualityAndSwapConsequences.lean}{maskFloor_GenericSubspaceRealization}
 Let $F$ be a field, $d \ge 1$, and $A$ a finite-dimensional $F$-vector space.
 \begin{enumerate}[label=(\alph*)]

@@ -19,11 +19,12 @@ dimension $11 > 10$ at $d = 4$ (checked numerically there over $\F_2, \F_3, \F_5
 and remarked: \emph{``We have no three-term example for $d \ge 5$.''}
 
 Here we give explicit three-term examples above $d(d+1)/2$ at $d \in \{6, 7, 9, 12\}$ over every
-field $F$, together with a uniform proof over every field at $d = 4$, by lifting the $3 \times 3$
-skew-pair construction into $m \times m$ blocks (\lean{threeTermBlockA}, \lean{threeTermBlockB}) and
-adjoining a diagonal tail (\lean{threeTermPaddedA}, \lean{threeTermPaddedB}). Write the three
-off-diagonal pairs of $\{0,1,2\}$ as $(i_0,j_0) = (0,1)$, $(i_1,j_1) = (0,2)$, and
-$(i_2,j_2) = (1,2)$, and set
+field $F$, together with a proof over every field at $d = 4$ (for a padded family matching the
+dimension $11 > 10$ of \cite[Remark~5.6]{SeventeenthPaper2026}, previously checked over
+$\F_2, \F_3, \F_5, \F_7$), by lifting the $3 \times 3$ skew-pair construction into $m \times m$
+blocks (\lean{threeTermBlockA}, \lean{threeTermBlockB}) and adjoining a diagonal tail
+(\lean{threeTermPaddedA}, \lean{threeTermPaddedB}). Write the three off-diagonal pairs of $\{0,1,2\}$
+as $(i_0,j_0) = (0,1)$, $(i_1,j_1) = (0,2)$, and $(i_2,j_2) = (1,2)$, and set
 \[
   A_t \;:=\; (E_{i_t, j_t} - E_{j_t, i_t}) \otimes I_m,
   \qquad
@@ -66,7 +67,7 @@ each off-diagonal block $(i, j)$ ($i \ne j$) to $+X_{j,i}$ and each diagonal blo
 $-\sum_{j \ne i} X_{j,j}$. Equating with $(X_{j,i}^{\T})_{i,j}$ gives $X_{j,i} = X_{j,i}^{\T}$ for
 $i \ne j$ together with $-X_{1,1} - X_{2,2} = X_{0,0}^{\T}$, $-X_{0,0} - X_{2,2} = X_{1,1}^{\T}$,
 and $-X_{0,0} - X_{1,1} = X_{2,2}^{\T}$. Over every ring (including characteristic~$2$), subtracting
-pairs of diagonal equations yields $X_{0,0}^{\T} - X_{1,1}^{\T} = X_{1,1} - X_{0,0}$ and cyclic
+pairs of diagonal equations yields $X_{0,0}^{\T} - X_{1,1}^{\T} = X_{0,0} - X_{1,1}$ and cyclic
 analogues, which together with $X_{2,2} = -X_{0,0}^{\T} - X_{1,1}$ is equivalent to
 $X_{i,i}^{\T} = X_{i,i}$ for $i \in \{0,1,2\}$ and $X_{0,0} + X_{1,1} + X_{2,2} = 0$. Eight
 independent symmetric $m \times m$ blocks ($6$ off-diagonal and $2$ free diagonal blocks) each have
@@ -101,25 +102,31 @@ $(2,7)$ with $m \in \{1, 2, 3, 4\}$ in \Cref{thm:three-term-kronecker} covers
 $d \in \{3, 4, 6, 7, 9, 12\}$.
 \end{outline}
 
-More generally, taking $m = \lfloor d/3\rfloor$ and $s = d - 3m \in \{0, 1, 2\}$, at $d = 3m + s$
-this block-and-tail construction achieves dimension
+More generally (proved in text; not formalized for general $m, s$), for $d = 3m + s$, partitioning
+$X \in \Mat_{d\times d}(F)$ into three $m$-coordinate blocks $0, 1, 2$ and a trailing
+$s$-coordinate block $3$, the top-left $3m \times 3m$ blocks still contribute $4m(m+1)$ dimensions by
+\Cref{thm:three-term-kronecker}, while equating $\sum_{t=0}^2 A_t X B_t^{\T} = X^{\T}$ on row/column~$3$
+gives $X_{0,3} = 0$, $X_{3,0} = 0$, $X_{2,3} = X_{3,1}^{\T}$ ($ms$ free entries),
+$-X_{1,3} = X_{3,2}^{\T}$ ($ms$ free entries), and $X_{3,3} = X_{3,3}^{\T}$ ($s(s+1)/2$ free entries).
+Thus for $m = \lfloor d/3\rfloor$ and $s = d - 3m \in \{0, 1, 2\}$, this block-and-tail construction
+achieves dimension
 $4m(m+1) + \frac{s(s+1)}{2} + 2ms = \frac{d(d+1)}{2} + \frac{m(5 - m - 2s)}{2}$, which is at most
 $d(d+1)/2$ for every $(m \ge 1, s \ge 0)$ with $d \ge 5$ outside $\{6, 7, 9, 12\}$ (giving
 $15 = 15$ at $d = 5$, $35 < 36$ at $d = 8$, $55 = 55$ at $d = 10$, $63 < 66$ at $d = 11$,
-$120 = 120$ at $d = 15$, and strictly less than $d(d+1)/2$ once $m \ge 6$). Thus whether a
-three-term swap code can exceed $d(d+1)/2$ remains open for $d = 5$ and for every $d \ge 8$ outside
-$\{9, 12\}$.
+$120 = 120$ at $d = 15$, and strictly less than $d(d+1)/2$ once $m \ge 6$). Whether a three-term swap
+code can exceed $d(d+1)/2$ remains open for $d = 5$ and for every $d \ge 8$ outside $\{9, 12\}$.
 
-\subsection{One-sided and two-sided bounds for multi-scale interval masks (Problem~9.3)}\label{sec:problem-9-3}
+\subsection{One-sided multi-scale and two-sided two-scale (coarse--fine) bounds (Problem~9.3)}\label{sec:problem-9-3}
 
 Problem~9.3 of \cite{SeventeenthPaper2026} asks for upper bounds on
 $\dim_F \leanname{SwapRigidity.swapCode}(A, B)$ when $d = 2^m$ and both $A_a$ and $B_a$ lie in the
-span of dyadic masks across all scales composed with cyclic rotations
+span of dyadic interval masks across all scales composed with cyclic rotations
 (\cite[Corollary~6.13]{SeventeenthPaper2026}, proved in text, covers one-sided tensor-factor
 rules commuting with a single non-derogatory matrix on one address digit). We first record the
-one-sided endpoint-refinement baseline, then prove a characteristic-free two-sided coarse--fine
-bound that improves strictly on it whenever both sides localize fine intervals to proper regions of
-$\Z_d$, and finally contrast interval masks with periodic Walsh digit masks.
+one-sided endpoint-refinement baseline across all scales, then prove a characteristic-free two-sided
+bound for two-scale (coarse--fine) interval families that improves the leading coefficient over
+one-sided Theorem~TP when $s_A, s_B$ are proportional to $d$ and the run and coarse counts are $o(d)$,
+and finally contrast interval masks with periodic Walsh digit masks.
 
 For contiguous cyclic or aligned dyadic intervals (\lean{IsCyclicInterval},
 \lean{IsAlignedDyadicInterval}; spans \lean{InMultiscaleIntervalRotSpan},
@@ -170,15 +177,21 @@ rather than any two-sided interaction between $A$ and $B$, carries no matching s
 and becomes vacuous ($\ge d^2$) as soon as $\min(\beta_A, \beta_B) \ge d$---in particular at the full
 profile $M_{\mathrm{full}}(j) = 2^{j+1}$ for $m \ge 2$, where $\beta = 4d - 4 > d$.
 
-To exploit sparsity on \emph{both} sides simultaneously over an arbitrary field $F$, suppose the
-intervals used on side $A$ separate into a ``fine'' coordinate set $S_A \subseteq \mathrm{Fin}\,d$ of
-cardinality $s_A = \abs{S_A}$ and $c_A$ pairwise-disjoint nonempty coarse cyclic intervals
-$\mathrm{coarse}_A : \mathrm{Fin}\,c_A \to \mathrm{Finset}(\mathrm{Fin}\,d)$ partitioning the
-complement $L_A := \mathrm{Fin}\,d \setminus S_A$, so that every $A_a$ lies in the $F$-span of
-$\{\lean{intervalMaskRotMatrix}(F, I, e)\}$ with $I \subseteq S_A$, $I = \mathrm{coarse}_A(i)$, or
-$I = \mathrm{Fin}\,d$ (\lean{HasCoarseFineIntervalDecomposition}), and similarly $(S_B, c_B)$ on side
-$B$ ($s_B = \abs{S_B}$, $L_B = \mathrm{Fin}\,d \setminus S_B$). For any $S \subseteq \mathrm{Fin}\,d$,
-write $\dot{m}(S) := \lean{cyclicRunEndpointCount}(S) = \abs{\{r \in S : (r + 1) \bmod d \notin S\}}$
+To exploit sparsity on \emph{both} sides simultaneously in a two-scale (coarse--fine) setting over an
+arbitrary field $F$, suppose the intervals used on side $A$ separate into a ``fine'' coordinate set
+$S_A \subseteq \mathrm{Fin}\,d$ of cardinality $s_A = \abs{S_A}$ and $c_A$ pairwise-disjoint nonempty
+coarse cyclic intervals $\mathrm{coarse}_A : \mathrm{Fin}\,c_A \to \mathrm{Finset}(\mathrm{Fin}\,d)$
+partitioning the complement $L_A := \mathrm{Fin}\,d \setminus S_A$, so that every $A_a$ lies in the
+$F$-span of $\{\lean{intervalMaskRotMatrix}(F, I, e)\}$ with $I \subseteq S_A$,
+$I = \mathrm{coarse}_A(i)$, or $I = \mathrm{Fin}\,d$ (\lean{HasCoarseFineIntervalDecomposition}), and
+similarly $(S_B, c_B)$ on side $B$ ($s_B = \abs{S_B}$, $L_B = \mathrm{Fin}\,d \setminus S_B$). Note
+that \lean{HasCoarseFineIntervalDecomposition} allows only masks supported in $S$, single coarse
+intervals partitioning $\mathrm{Fin}\,d \setminus S$, or the full set $\mathrm{Fin}\,d$: nested
+dyadic families with three or more active scales force intermediate-scale intervals into $S$, so
+\Cref{thm:two-sided-coarse-fine} below is a bound for two-scale (coarse--fine) families rather than a
+general multi-scale profile bound for \cite[Problem~9.3]{SeventeenthPaper2026}. For any
+$S \subseteq \mathrm{Fin}\,d$, write
+$\dot{m}(S) := \lean{cyclicRunEndpointCount}(S) = \abs{\{r \in S : (r + 1) \bmod d \notin S\}}$
 and $m(S) := \lean{cyclicRunCount}(S)$ ($= 1$ if $S = \mathrm{Fin}\,d$ and $\dot{m}(S)$ otherwise, so
 $\dot{m}(S) \le m(S)$), and set (\lean{theorem3UnsymmetrizedBound})
 \begin{align*}
@@ -248,13 +261,20 @@ On the concrete family \lean{InContiguousCoarseFineSpan} generated on side $A$ b
 singleton masks $\{0\}, \dots, \{s_A - 1\}$ (\lean{contiguousFineSet}, $m_A = 1$) together with one
 complementary coarse interval $\{s_A, \dots, d - 1\}$ (\lean{contiguousCoarseComplement}, $c_A = 1$)
 and full rotations---and analogously $s_B$ contiguous singletons plus one coarse complement on side
-$B$---one-sided endpoint refinement (\Cref{prop:multiscale-interval}) sees $s_A + 1$ and $s_B + 1$
-intervals and gives leading coefficient $\frac{1}{2} + \frac{1}{2}\min(\alpha, \beta)$ (where
-$\alpha = s_A / d$ and $\beta = s_B / d$), whereas \Cref{thm:two-sided-coarse-fine} achieves a
-strictly smaller leading coefficient for all $\alpha, \beta \in (0, 1)$:
+$B$---applying Theorem~TP's interval clause (\cite[Theorem~6.4]{SeventeenthPaper2026}, $(d^2 + Md)/2$)
+to one side at a time partitions $\mathrm{Fin}\,d$ into $M = s_A + 1$ cyclic intervals on side $A$ (so
+$\sum_a A_a X B_a^{\T} = X^{\T}$ makes $X^{\T}$ an $(s_A + 1)$-class-uniform code) and $s_B + 1$
+cyclic intervals on side $B$ (passing to $Y = X^{\T}$). That one-sided Theorem~TP baseline gives
+$(d^2 + (\min(s_A, s_B) + 1)d)/2$, with leading coefficient $\frac{1}{2} + \frac{1}{2}\min(\alpha,
+\beta)$ ($\alpha = s_A / d$, $\beta = s_B / d$), whereas \Cref{thm:two-sided-coarse-fine} achieves a
+strictly smaller leading coefficient for all $\alpha, \beta \in (0, 1)$ (note that at small $d$ or
+$s = 1$, Theorem~TP can be tighter: on $s_A = s_B = s$,
+$\frac{1}{2}(d^2 + (s+1)d) - B_{\mathrm{cf}}(d; s,1,1; s,1,1) = \frac{1}{4}\bigl(s(d - s) - 2s - d\bigr)$,
+and if $S$ is scattered with $\dot{m}(S) = \Theta(d)$, such as the even residues, $B_{\mathrm{cf}}$
+can exceed $d^2$):
 
-\begin{corollary}[Strict two-sided win over one-sided Theorem~TP and $\frac{11}{16}d^2 + d$ benchmark]\label{cor:two-sided-win}
-\formal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_ConcreteWinOverTP,swapCode_finrank_le_contiguousCoarseFine}
+\begin{corollary}[Leading-coefficient win over one-sided Theorem~TP and $\frac{11}{16}d^2 + d$ benchmark]\label{cor:two-sided-win}
+\partformal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_ConcreteWinOverTP,swapCode_finrank_le_contiguousCoarseFine}{applying \cite[Theorem~6.4]{SeventeenthPaper2026} to \lean{InContiguousCoarseFineSpan} to obtain the one-sided baseline $(d^2 + (\min(s_A, s_B) + 1)d)/2$ (part~(a) in Lean is the real-coefficient inequality).}
 \begin{enumerate}[label=(\alph*)]
 \item For all real $\alpha, \beta \in (0, 1)$,
   \[
@@ -283,8 +303,13 @@ strictly smaller leading coefficient for all $\alpha, \beta \in (0, 1)$:
   which is strictly less than $\frac{3}{4}\,d^2$ for all even $d = 2k \ge 18$ ($k \ge 9$).
 \end{enumerate}
 \end{corollary}
-\begin{outline}
-In~(a), assuming $\alpha \le \beta$ by symmetry gives
+\begin{outline}[Outline of the formal proof and proof of the one-sided baseline]
+For the one-sided baseline (proved in text), on any $A$ in \lean{InContiguousCoarseFineSpan}$(s_A)$,
+every $A_a$ acts on each of the $s_A + 1$ cyclic intervals $\{0\}, \dots, \{s_A - 1\},
+\{s_A, \dots, d - 1\}$ as a fixed linear combination of rotations, so $\sum_a A_a X B_a^{\T} = X^{\T}$
+places $X^{\T}$ in an $(s_A + 1)$-interval class-uniform code of dimension at most
+$(d^2 + (s_A + 1)d)/2$ by \cite[Theorem~6.4]{SeventeenthPaper2026} (and $(d^2 + (s_B + 1)d)/2$ on
+$X$ by symmetry). In~(a), assuming $\alpha \le \beta$ by symmetry gives
 $\min\bigl(\beta(1+\alpha), \alpha(1+\beta)\bigr) \le \alpha(1+\beta) < 2\alpha = 2\min(\alpha,\beta)$
 since $\alpha > 0$ and $1 + \beta < 2$. In~(b), $\lean{contiguousFineSet}(s)$ has cardinality $s$ and
 a single cyclic run ($m = 1$) while $\lean{contiguousCoarseComplement}(s)$ is a single cyclic interval
@@ -298,14 +323,23 @@ $B_{\mathrm{cf}}(2k;\, k,1,1;\, k,1,1) = 2k^2 + \frac{1}{4}k^2 + \frac{1}{2}k^2 
 $\frac{11}{16}d^2 + d < \frac{3}{4}d^2 \iff d > 16 \iff k \ge 9$.
 \end{outline}
 
-\begin{remark}[Numerical: small-grid SVD values for two-sided interval partitions]\label{rem:two-sided-numerical}
-Across small two-sided interval partitions tested numerically by singular-value decomposition over
-$\R$ at $d \in \{5, 6, 7, 8\}$ (not formalized; no proof in this paper uses this computation), the
-largest observed dimension of \leanname{SwapRigidity.swapCode}$(A, B)$ matched the sharper expression
-$\bigl\lfloor \frac{1}{2}\bigl(d^2 + \sum_{i, j} \min(\abs{I_i}, \abs{J_j})\bigr)
-\bigr\rfloor$, which would give $\frac{5}{8}d^2 + O(d)$ at $\alpha = \beta = 1/2$ (attained by
-swapping one boundary entry per singleton). Whether that formula holds for all two-sided interval
-partitions remains open.
+\begin{remark}[Numerical: rank-minimization search on small two-sided interval partitions]\label{rem:two-sided-numerical}
+A generic random operator $K \in \mathcal{U}(\mathcal{I}) \otimes \mathcal{U}(\mathcal{J})$ in the
+two-sided interval-rotation span has $\dim\ker(\mathrm{sw} - K) = 0$. To probe maximum swap-code
+dimensions over $\R$ at $d \in \{5, 6, 7, 8\}$ (reproducible via
+\leanfile{tools/verify_two_sided_svd.py}; not formalized, and no proof in this paper uses this
+computation), we ran Nesterov-accelerated alternating projections with adaptive restart between
+$\mathcal{U}(\mathcal{I}) \otimes \mathcal{U}(\mathcal{J})$ and bounded-rank manifolds
+$\{K : \rank(\mathrm{sw} - K) \le d^2 - D\}$ via truncated SVD across random restarts. Writing
+$D_{\diamond}(\mathcal{I}, \mathcal{J}) := \bigl\lfloor \frac{1}{2}\bigl(d^2 + \sum_{i, j}
+\min(\abs{I_i}, \abs{J_j})\bigr)\bigr\rfloor$, no tested partition achieved residual close to zero at
+$D = D_{\diamond} + 1$. On the contiguous fine-singleton + coarse-complement partitions with
+$s \ge \lfloor d/2\rfloor$ (including the half-density case $\alpha = \beta = 1/2$, where
+$D_{\diamond} = \frac{5}{8}d^2 + O(d)$) and the $d = 6$ two-run partition, bounded-norm operators
+converged to machine precision ($\le 10^{-11}$) at $D = D_{\diamond}$, whereas on some partitions
+with $s < d - s$ (such as $d = 7, s = 3$, where $D_{\diamond} = 34$), bounded-norm operators stayed
+strictly below $D_{\diamond}$ (attaining $32$). Whether $D_{\diamond}(\mathcal{I}, \mathcal{J})$ is
+an upper bound for all two-sided interval partitions remains open.
 \end{remark}
 
 By contrast, if ``scale-$j$ dyadic mask'' means the periodic Walsh/Rademacher bit projector
@@ -346,4 +380,5 @@ operators $P_{W_j, 1}\sigma^s$.
 \end{outline}
 
 Whether $\dim_F \leanname{SwapRigidity.swapCode}(A, B)$ is bounded away from $d^2$ when both $A$ and
-$B$ lie in the $(m+1)2^m$-dimensional Walsh-masked rotation span remains open.
+$B$ lie in the $(m+1)2^m$-dimensional Walsh-masked rotation span (a periodic variant of
+\cite[Problem~9.3]{SeventeenthPaper2026}) remains open.

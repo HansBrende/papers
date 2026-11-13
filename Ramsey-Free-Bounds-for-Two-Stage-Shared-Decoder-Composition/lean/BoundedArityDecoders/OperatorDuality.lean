@@ -4,10 +4,10 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Dimension.Finrank
 
 /-!
-# Anti-Diagonal Untwisting & Restricted Shuffle-and-Local Operator Pipelines
+# Anti-Diagonal Untwisting & Restricted Shuffle and Row/Column-Uniform Pipelines
 
 Definitions and proposition types for anti-diagonal tensor separation and Operator Schmidt Rank
-on restricted shuffle-and-local pipelines (proved in `BoundedArityDecoders.OperatorDualityProofs`):
+on restricted shuffle and row/column-uniform pipelines (proved in `BoundedArityDecoders.OperatorDualityProofs`):
 
 1. **Pairwise Shift-Collision Characterization & Anti-Diagonal Tensor Separation**:
    * `PairwiseShiftCollisionCharacterizationSpec`: a linear source `C ≤ State d A` admits
@@ -20,7 +20,7 @@ on restricted shuffle-and-local pipelines (proved in `BoundedArityDecoders.Opera
      and maps general shift-set covariance `H_E(p)` onto matrices whose column profile at each
      anti-diagonal `a` is constant on the connected components of `SwapRigidity.Link p E`.
 
-2. **Operator Schmidt Rank for Restricted Shuffle-and-Local Pipelines**:
+2. **Operator Schmidt Rank for Restricted Shuffle and Row/Column-Uniform Pipelines**:
    * `HasOperatorSchmidtRankLe` & `HasExactOperatorSchmidtRank` across
      `End_F(F^d_row) ⊗ End_F(F^d_col ⊗ F^b)`.
    * `OperatorSchmidtRankSubmultiplicativeSpec`: submultiplicativity under composition and
@@ -37,7 +37,7 @@ on restricted shuffle-and-local pipelines (proved in `BoundedArityDecoders.Opera
        in linear time; meanwhile every alternating product `D_s U_s D_{s-1} ⋯ U_1 D_0` sends at most
        `2^s` source rows to each output row, so `D_s U_s D_{s-1} ⋯ U_1 D_0 = swap` forces `m ≤ s`),
      - `Control_SkewOneTimePadInformationTrapSpec` (`W = Xᵀ ⊕ X` satisfies `W ⊕ X = Xᵀ` while
-       every single cell `W_{r, c}` is statistically independent of every target column `X_{:, c'}`).
+       every single cell `W_{r, c}` is statistically independent of every source column `X_{:, c'}`).
 -/
 
 namespace BoundedArityDecoders

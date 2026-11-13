@@ -7,17 +7,26 @@ For approximate two-stage compositions at fixed class counts $M_1, M_2 \ge 1$, w
   r \;:=\; \rank_F(\tau - K_2 \circ K_1).
 \]
 In \cite[Theorem~6.6]{SharedDecoders2026}, extracting a monochromatic progression of length
-$\ell = (2M_2 + 1)k - 1$ inside $p_1$ gave $r \ge bk(d - N_0 + 1)/2$ with $N_0 = \mathsf{W}(M_1, \ell)$
-over every field $F$ with $\operatorname{char}(F) \nmid d$ ($(d : F) \ne 0$), proving
-$r/(bd) \to \infty$ as $d \to \infty$. Because \cite[Theorem~6.6]{SharedDecoders2026} uses
-qualitative finiteness of $\mathsf{W}(M_1, \ell)$ via the Hales--Jewett theorem \cite{HalesJewett1963}
-without a quantitative bound on $\mathsf{W}$ (and even the longest monochromatic progression in a
-$2$-coloring of $\Z_d$ has worst-case length $O(\log d)$, or $< 3$ at $M_1 = 2^{O(\sqrt{\log d})}$ by
-\cite{Behrend1946}), it does not supply an explicit growth rate for $r/(bd)$.
+$\ell = (2M_2 + 1)k - 1$ inside $p_1$ gave $r \ge bk(d - N_0 + 1)/2$ for all $d \ge N_0$ with
+$N_0 = \mathsf{W}(M_1, \ell)$ over every field $F$ with $\operatorname{char}(F) \nmid d$
+($(d : F) \ne 0$), proving $r/(bd) \to \infty$ as $d \to \infty$. At $M_1 = 1$,
+$\mathsf{W}(1, \ell) = \ell$ with $k \approx d/(2(2M_2 + 1))$ already yields a quadratic rank deficit
+$\Omega(bd^2 / M_2)$ for all $d$ (\cite[Theorem~6.6]{SharedDecoders2026},
+\leanname{SharedDecoders.twoHop_rank_interval_any_field}). For $M_1 \ge 2$, however,
+\cite[Theorem~6.6]{SharedDecoders2026} is stated with qualitative $\mathsf{W}(M_1, \ell)$ via the
+Hales--Jewett theorem \cite{HalesJewett1963}, and substituting Gowers' van der Waerden bound
+\cite{Gowers2001} gives only an iterated-logarithmic growth rate for $r/(bd)$ (moreover, non-wrapping
+monochromatic progressions in $\{0, \dots, d-1\}$ under random $2$-colorings have length $O(\log d)$
+by a standard first-moment calculation \cite{GRS1990,AlonSpencer2016}, and translate-covering $\Z_d$
+by a Behrend set \cite{Behrend1946} limits progressions modulo~$d$ to length $< 3$ at
+$M_1 = 2^{O(\sqrt{\log d})}$). Throughout this section, $\log$ denotes the natural logarithm
+(\leanname{Real.log}).
 
 Over any field $F$ in which $d$ is invertible ($(d : F) \ne 0$), we pass to a splitting field $E/F$
 carrying an injective additive character $\chi : \Z_d \to E^\times$ and replace progressions by
-$(n + 1)$-fold monochromatic sumsets at $n = 2M_2 - 1$: an \emph{unshifted} $(n+1)$-fold monochromatic
+$(n + 1)$-fold monochromatic sumsets at $n = 2M_2 - 1$ (still at frequency width $k = O(\log d)$, but
+replacing tower-type van der Waerden thresholds for $M_1 \ge 2$ by K\H{o}v\'ari--S\'os--Tur\'an
+density bounds): an \emph{unshifted} $(n+1)$-fold monochromatic
 sumset in class $m_1$ consists of a base set $J_0 \subseteq \Z_d$ ($\abs{J_0} = k$) and $n$
 natural-number shift sets $B_0, \dots, B_{n-1} \subseteq \N$ ($\abs{B_t} = k + 1$) whose cast sumset in
 $\Z_d$ satisfies
@@ -34,7 +43,7 @@ subset sums remain in $p_1^{-1}(m_1)$ simultaneously.
 
 \begin{lemma}[Minimum-shifting monochromatic sumsets]\label{lem:sumset-shift}
 \formal{SumsetRankDeficitProofs.lean}{unshiftedToShiftedSumset}
-\formal{SumsetRankConsequences.lean}{finsetNatDiam_shift_min,unshiftedToShiftedSumset_intrinsicDiam}
+\formal{SumsetRankConsequences.lean}{finsetNatDiam_shift_min,unshiftedToShiftedSumset_explicit,unshiftedToShiftedSumset_intrinsicDiam}
 Let $d, M_1 \ge 1$ and $p_1 : \Z_d \to \mathrm{Fin}\,M_1$. Given any unshifted monochromatic sumset
 $J_0 + B_0 + \cdots + B_{n-1} \subseteq p_1^{-1}(m_1)$ ($J_0 \subseteq \Z_d$, $B_t \subseteq \N$) with
 $\abs{J_0} = k$, $\abs{B_t} = k + 1$, and $B_t \subseteq [0, L_0]$, setting
@@ -45,8 +54,9 @@ $\diam_{\N}(\widetilde{B}_t) = \diam_{\N}(B_t) \le L_0$, $\abs{\widetilde{J}_0} 
   \widetilde{J}_0 + \sum_{t \in S} \widetilde{B}_t \;\subseteq\; p_1^{-1}(m_1)
   \qquad \text{for every subset } S \subseteq \{0,\dots,n-1\}
 \]
-(packaged directly at $n = 2M_2 - 1$ with $\mathrm{diamB}_t = \diam_{\N}(B_t)$ for $M_2 \ge 1$ in
-\lean{unshiftedToShiftedSumset_intrinsicDiam}).
+(proved directly for the explicit definitions $\widetilde{B}_t, \widetilde{J}_0$ in
+\lean{unshiftedToShiftedSumset_explicit}, and packaged with $\mathrm{diamB}_t = \diam_{\N}(B_t)$ at
+$n = 2M_2 - 1$ for $M_2 \ge 1$ in \lean{unshiftedToShiftedSumset_intrinsicDiam}).
 \end{lemma}
 \begin{outline}
 Choosing $b_t \in \widetilde{B}_t$ for $t \in S$ and $0 \in \widetilde{B}_t$ for $t \notin S$
@@ -149,9 +159,9 @@ $r := \rank_F(\tau - K_2 \circ K_1)$,
 \end{theorem}
 \begin{outline}
 Since $(d : F) \ne 0$, $Z^d - 1$ is separable over $F$; passing to a cyclotomic splitting field
-$E/F$ does not increase---indeed preserves---$\rank(\tau - K_2 \circ K_1)$
-(\leanname{SharedDecoders.stateExtension_rank_le}) and furnishes an injective character
-$\chi : \Z_d \to E^\times$.
+$E/F$ satisfies $\rank_E(\tau - K_2 \circ K_1) \le \rank_F(\tau - K_2 \circ K_1)$
+(\leanname{SharedDecoders.stateExtension_rank_le}, so any lower bound over $E$ transfers to $F$) and
+furnishes an injective character $\chi : \Z_d \to E^\times$.
 Let $W \le A_{\mathrm{band}}$ ($\dim_E A_{\mathrm{band}} \le b M_2 k d$) be the pullback subspace
 from \Cref{lem:vandermonde-subset}(b) on $\widetilde{J}_0$, with $\dim_E W \ge b k d - r$, and let $P_t$
 be the sparse annihilating polynomial on $\widetilde{B}_t$ from \Cref{lem:sumset-poly}. Because
@@ -198,7 +208,8 @@ $k^{2M_2 - 1}$, balancing at $k = \Theta_{M_1,M_2}\bigl((\log d)^{1/(2M_2-1)}\bi
 \formal{SumsetRankDeficitProofs.lean}{theorem2B_TwoStageLogPowerRankDeficit}
 \formal{SumsetRankConsequences.lean}{theorem2B_ExplicitConstant,theorem2BExplicitConst_pos,theorem2BExplicitThreshold_eq_pow}
 For all integers $M_1, M_2 \ge 1$, define the explicit constant and dimension threshold
-(\lean{theorem2BExplicitConst}, \lean{theorem2BExplicitThreshold})
+(\lean{theorem2BExplicitConst}, \lean{theorem2BExplicitThreshold}, with natural logarithm
+$\log = \leanname{Real.log}$)
 \begin{align*}
   c(M_1, M_2) &\;:=\; \frac{1}{144\,\bigl(\log(16 M_1 M_2)\bigr)^{\frac{1}{2M_2 - 1}}} \;>\; 0, \\
   D_0(M_1, M_2) &\;:=\; \max\!\Bigl(4M_2,\; \bigl\lceil \exp\bigl(36^{2M_2-1}\log(16 M_1 M_2)\bigr)\bigr\rceil + 2\Bigr) \\
@@ -219,13 +230,25 @@ $k = \bigl\lfloor \bigl(\frac{\log d}{18^{2M_2-1}\log(16M_1 M_2)}\bigr)^{1/(2M_2
 for $d \ge D_0(M_1, M_2)$, and substitute into $4r \ge b k d$ from \Cref{thm:sumset-rank}.
 \end{outline}
 
-\begin{remark}[Asymptotic threshold and characteristic restriction]\label{rem:2b-threshold}
-Two limitations of \Cref{thm:2b} should be noted explicitly. First, the formalized threshold
-$D_0(M_1, M_2)$ is purely asymptotic: already at $M_1 = M_2 = 1$ one has
-$D_0(1,1) = 16^{36} + 2 = 2^{144} + 2 \approx 2.23 \times 10^{43}$, and for larger $M_2$ the
-exponent $36^{2M_2 - 1}$ grows exponentially in $M_2$. Second, like
-\cite[Theorem~6.6]{SharedDecoders2026} (and unlike \Cref{thm:2a}), \Cref{thm:2b} requires
-$(d : F) \ne 0$ (excluding $\F_2$ at $d = 2^m$) so that $\Z_d$ admits $d$ distinct character values.
+\begin{remark}[Comparison with {\cite[Theorem~6.6]{SharedDecoders2026}}, asymptotic threshold, and characteristic restriction]\label{rem:2b-threshold}
+Three qualifications on \Cref{thm:2b} should be noted explicitly:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Parameter comparison}: \Cref{thm:2b} improves on \cite[Theorem~6.6]{SharedDecoders2026}
+  only when $M_1 \ge 2$ and $d$ is sufficiently large. At $M_1 = 1$, $\mathsf{W}(1, \ell) = \ell$
+  already gives a quadratic rank deficit $\Omega(bd^2 / M_2)$ for all $d$
+  (\cite[Theorem~6.6]{SharedDecoders2026}, \leanname{SharedDecoders.twoHop_rank_interval_any_field}).
+  At $M_1 = 2$ and $M_2 = 1$, \cite[Theorem~6.6]{SharedDecoders2026} at $k = 2$ with
+  $\mathsf{W}(2, 5) = 178$ gives $r \ge b(d - 177)$, which \Cref{thm:2b}
+  ($c(2,1) = \frac{1}{144\log 32}$) beats only for $d \gtrsim 10^{216}$. For fixed $M_1 \ge 2$ as
+  $d \to \infty$, however, \Cref{thm:2b} replaces the iterated-logarithmic growth rates obtained from
+  Gowers' van der Waerden bound \cite{Gowers2001} by $(\log d)^{1/(2M_2 - 1)}$.
+\item \emph{Threshold size}: the formalized threshold $D_0(M_1, M_2)$ is purely asymptotic: already
+  at $M_1 = M_2 = 1$ one has $D_0(1,1) = 16^{36} + 2 = 2^{144} + 2 \approx 2.23 \times 10^{43}$, and
+  the exponent $36^{2M_2 - 1}$ grows exponentially in $M_2$.
+\item \emph{Characteristic}: like \cite[Theorem~6.6]{SharedDecoders2026} (and unlike \Cref{thm:2a}),
+  \Cref{thm:2b} requires $(d : F) \ne 0$ (excluding $\F_2$ at $d = 2^m$) so that $\Z_d$ admits $d$
+  distinct character values.
+\end{enumerate}
 \end{remark}
 
 \begin{corollary}[Single-class second stage: $\Omega(b\,d\log d)$ rank deficit]\label{cor:2b-m2-one}
@@ -241,36 +264,39 @@ $1$-class $K_2$ on $\Mat_{d\times d}(F^b)$,
 Specialize \Cref{thm:2b} to $M_2 = 1$, where $\frac{1}{2M_2 - 1} = 1$.
 \end{outline}
 
-\subsection{Abstract band relaxation control at \texorpdfstring{$d = 12$}{d = 12}}\label{sec:d12-band}
+\subsection{Single-band witness without sumset iteration at \texorpdfstring{$d = 12$}{d = 12}}\label{sec:d12-band}
 
-\Cref{thm:sumset-rank} uses stage-1 class-uniformity across all shifts of a $(2M_2)$-fold sumset
-rather than relaxing stage~1 to an arbitrary linear readout $L$ on the $q$-channel ambient space
-\leanname{SharedDecoders.ColumnAmbient} of $H$ over a single half-density subset $J \subseteq \Z_d$
-and a single $k = 2$ band. The following $4$-channel witness at $d = 12$ shows that this abstract
-relaxation admits full $kd$-dimensional solutions.
+\Cref{thm:sumset-rank} iterates the sparse annihilating-polynomial step across all $2M_2 - 1$ summands
+of a $(2M_2)$-fold monochromatic sumset rather than stopping at a single half-density subset
+$J \subseteq \Z_d$ and a single $k = 2$ band (with one fixed shift-covariant linear readout $L$
+applied to $T_c w$ for $c \in J$). The following $4$-channel witness at $d = 12$ shows that without
+the $(2M_2)$-fold sumset iteration, a single half-density band admits $kd = 24$-dimensional
+shift-covariant solutions.
 
-\begin{example}[Abstract $4$-channel band witness at $d = 12$ over $\C$]\label{ex:d12-band}
+\begin{example}[Shift-covariant $4$-channel band witness at $d = 12$ over $\C$]\label{ex:d12-band}
 \formal{SumsetRankDeficitProofs.lean}{control_D12SingleClassAbstractBand}
-\formal{SumsetRankConsequences.lean}{exists_primitive_twelfth_root_complex,d12AddChar_injective_and_primitive,control_D12_UnconditionalExists,control_D12_BandRowSpaceChannelEquiv}
-At $d = 12$ and $k = 2$ on the $4$-channel cyclic module $(\Z_{12} \to \C^4)$ ($q = 4$, corresponding
-to scalar lane width $b = 1$ with $M_2 = 2, k = 2$ where $24 = bkd$, or via
-\lean{control_D12_BandRowSpaceChannelEquiv} to \leanname{SharedDecoders.ColumnAmbient} over
-\leanname{SharedDecoders.bandRowSpace} for $(\chi, p_0, 2)$ (where $p_0 : \Z_{12} \to \mathrm{Fin}\,1$
-is the single-class partition)
-at $b = 2, M_2 = 1, k = 2$ when $L$ reads $12$ scalar coordinates per shift), let
-$J_{12} = \{0, 1, 3, 4, 7, 9\} \subseteq \Z_{12}$ ($\abs{J_{12}} = 6$). With
-$\zeta_{12} = \exp(2\pi i / 12) \in \C$, there exist a linear readout
+\partformal{SumsetRankConsequences.lean}{exists_primitive_twelfth_root_complex,d12AddChar_injective_and_primitive,control_D12_UnconditionalExists,control_D12_BandRowSpaceChannelEquiv}{the alternative $(b = 1, M_2 = 2)$ parameter reading of $q = b M_2 k = 4$ (Lean proves the shift-equivariant \leanname{SharedDecoders.bandRowSpace} bridge for $b = 2, M_2 = 1, k = 2$, where $24 = kd$ is half of $bkd = 48$).}
+At $d = 12$ and $k = 2$ on the $4$-channel cyclic module $(\Z_{12} \to \C^4)$ ($q = 4$, identified
+shift-equivariantly via \lean{control_D12_BandRowSpaceChannelEquiv} with
+\leanname{SharedDecoders.ColumnAmbient} over \leanname{SharedDecoders.bandRowSpace} for
+$(\chi, p_0, 2)$ on the single-class partition $p_0 : \Z_{12} \to \mathrm{Fin}\,1$ at
+$b = 2, M_2 = 1, k = 2$, where $L$ reads $12$ scalar coordinates per shift and $24 = kd = \frac{1}{2}bkd$;
+in text, $q = 4$ also matches the dimension bound $\dim H \le b M_2 k$ at $b = 1, M_2 = 2, k = 2$
+where $24 = bkd$), let $J_{12} = \{0, 1, 3, 4, 7, 9\} \subseteq \Z_{12}$ ($\abs{J_{12}} = 6$). With
+$\zeta_{12} = \exp(2\pi i / 12) \in \C$, there exist a fixed linear readout
 $L : (\Z_{12} \to \C^4) \to \C^{12}$ and a $24$-dimensional subspace $W \le (\Z_{12} \to \C^4)$ on
-which stacked evaluation over $J_{12}$ is injective and realizes every pair
-$(a_0, a_1) \in (\C^{12})^2$ as $L(T_c w) = a_0 + \zeta_{12}^c a_1$ for all $c \in J_{12}$.
+which stacked shift-covariant evaluation $w \mapsto (L(T_c w))_{c \in J_{12}}$ is injective and
+realizes every pair $(a_0, a_1) \in (\C^{12})^2$ as $L(T_c w) = a_0 + \zeta_{12}^c a_1$ for all
+$c \in J_{12}$.
 \end{example}
 \begin{outline}
 Verify that $\zeta_{12} = \exp(2\pi i / 12)$ has exact multiplicative order~$12$ in $\C$, construct
-the explicit $24$-dimensional $4$-channel encoding whose shifts on $J_{12}$ output
-$a_0 + \zeta_{12}^c a_1$, and identify $(\Z_{12} \to \C^4)$ shift-equivariantly with
-\leanname{SharedDecoders.ColumnAmbient} over \leanname{SharedDecoders.bandRowSpace} for
-$(\chi, p_0, 2)$ at
-$b = 2, M_2 = 1, k = 2$. Because $q = 4$ corresponds to $b M_2 = 2$ rather than $b = M_2 = 1$, this
-example isolates the failure of the abstract band relaxation when stage-1 shift covariance is
-dropped, rather than providing an actual $b = 1, M_1 = M_2 = 1$ two-stage factorization.
+the explicit $24$-dimensional $4$-channel encoding whose shifts on $J_{12}$ satisfy
+$L(T_c w) = a_0 + \zeta_{12}^c a_1$ for one fixed linear map $L$, and identify $(\Z_{12} \to \C^4)$
+shift-equivariantly with \leanname{SharedDecoders.ColumnAmbient} over
+\leanname{SharedDecoders.bandRowSpace} for $(\chi, p_0, 2)$ at $b = 2, M_2 = 1, k = 2$. Thus a single
+half-density shift set $J_{12}$ without $(2M_2)$-fold sumset iteration allows $kd = 24$-dimensional
+shift-covariant solutions, showing that the sumset iteration in \Cref{thm:sumset-rank} is essential
+(note that because $q = 4$ corresponds to $b M_2 = 2$ rather than $b = M_2 = 1$, this example does not
+provide a $b = 1, M_1 = M_2 = 1$ matrix factorization).
 \end{outline}

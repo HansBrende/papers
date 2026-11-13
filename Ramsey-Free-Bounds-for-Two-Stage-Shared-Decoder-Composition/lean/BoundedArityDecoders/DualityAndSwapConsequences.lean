@@ -29,7 +29,7 @@ Kernel-verified theorems extending `OperatorDualityProofs` and `SwapCodeAnswersP
 3. **Discrete Shannon Mutual Information `= 0` & Row-Diagonal Gauge Invariance**:
    * `uniformShannonMI`, `uniformShannonMI_eq_zero_of_indep`, &
      `skewOneTimePad_ShannonMutualInfoZero`: under uniform `X ∈ State d (Fin b → Bool)`, every cell
-     `W_{r, c}` of `W = Xᵀ ⊕ X` has zero discrete Shannon mutual information with every target
+     `W_{r, c}` of `W = Xᵀ ⊕ X` has zero discrete Shannon mutual information with every source
      column `X_{:, c'}`.
    * `rowDiagonal_SourceArityGaugeInvariance`: output-row source arity is invariant under two-sided
      multiplication by `IsRowDiagonalOp` gauges `D₁ ∘ K ∘ D₀`, in contrast to Operator Schmidt Rank
@@ -987,6 +987,166 @@ theorem boundedOSRPipelinePassLowerBound (F : Type*) [Field F] {d b R : ℕ}
   have hLogR_pos : 0 < Real.log (R : ℝ) := Real.log_pos hR_gt_one
   exact (div_le_iff₀ hLogR_pos).mpr hLogLe
 
+private lemma stoneShuffle_iter_coord_bound {m k r c : ℕ} (hk : k ≤ m)
+    (hr : r < 2 ^ m) :
+    (c % 2 ^ k) * 2 ^ (m - k) + r / 2 ^ k < 2 ^ m := by
+  have hpow : 2 ^ k * 2 ^ (m - k) = 2 ^ m := by
+    rw [← pow_add, Nat.add_sub_cancel' hk]
+  have hc_lt : c % 2 ^ k < 2 ^ k := Nat.mod_lt c (Nat.two_pow_pos k)
+  have hr_lt : r / 2 ^ k < 2 ^ (m - k) := by
+    apply Nat.div_lt_of_lt_mul
+    rwa [hpow]
+  have h1 : (c % 2 ^ k + 1) * 2 ^ (m - k) ≤ 2 ^ k * 2 ^ (m - k) :=
+    Nat.mul_le_mul_right _ hc_lt
+  have h2 : (c % 2 ^ k) * 2 ^ (m - k) + r / 2 ^ k < (c % 2 ^ k + 1) * 2 ^ (m - k) := by
+    linarith
+  linarith
+
+private lemma nat_mod_two_pow_succ_decomp (c k : ℕ) :
+    ((c / 2 ^ k) % 2) * 2 ^ k + c % 2 ^ k = c % 2 ^ (k + 1) := by
+  let P := 2 ^ k
+  let q := c / P
+  let rem := c % P
+  have hP_pos : 0 < P := Nat.two_pow_pos k
+  have hrem_lt : rem < P := Nat.mod_lt c hP_pos
+  have hc_eq : c = P * q + rem := (Nat.div_add_mod c P).symm
+  have hq_eq : q = 2 * (q / 2) + q % 2 := (Nat.div_add_mod q 2).symm
+  have hq_mod : q % 2 < 2 := Nat.mod_lt q (by omega)
+  have hlt : (q % 2) * P + rem < P * 2 := by nlinarith
+  have hpow : 2 ^ (k + 1) = P * 2 := pow_succ 2 k
+  rw [hpow]
+  change (q % 2) * P + rem = c % (P * 2)
+  have hdecomp : c = (P * 2) * (q / 2) + ((q % 2) * P + rem) := by
+    calc c = P * (2 * (q / 2) + q % 2) + rem := by rw [hc_eq, ← hq_eq]
+      _ = (P * 2) * (q / 2) + ((q % 2) * P + rem) := by ring
+  rw [hdecomp, Nat.mul_add_mod, Nat.mod_eq_of_lt hlt]
+
+private lemma stoneShuffle_iter_step_coord {n k r c : ℕ} (hk : k ≤ n) :
+    let m := n + 1
+    let r_k := (c % 2 ^ k) * 2 ^ (m - k) + r / 2 ^ k
+    let c_k := (r % 2 ^ k) * 2 ^ (m - k) + c / 2 ^ k
+    (c_k % 2) * 2 ^ n + r_k / 2 =
+      (c % 2 ^ (k + 1)) * 2 ^ (m - (k + 1)) + r / 2 ^ (k + 1) := by
+  intro m r_k c_k
+  have hm_sub : m - k = (n - k) + 1 := by omega
+  have hm_sub_succ : m - (k + 1) = n - k := by omega
+  have hpow_mk : 2 ^ (m - k) = 2 ^ (n - k) * 2 := by rw [hm_sub, pow_succ]
+  have hck_mod : c_k % 2 = (c / 2 ^ k) % 2 := by
+    dsimp [c_k]
+    rw [hpow_mk, ← mul_assoc]
+    let A := (r % 2 ^ k) * 2 ^ (n - k)
+    let B := c / 2 ^ k
+    have hmod2 : (A * 2 + B) % 2 = B % 2 := by omega
+    exact hmod2
+  have hrk_div : r_k / 2 = (c % 2 ^ k) * 2 ^ (n - k) + r / 2 ^ (k + 1) := by
+    dsimp [r_k]
+    rw [hpow_mk, ← mul_assoc]
+    let A := (c % 2 ^ k) * 2 ^ (n - k)
+    let B := r / 2 ^ k
+    have hdiv2 : (A * 2 + B) / 2 = A + B / 2 := by omega
+    have hdiv_pow : B / 2 = r / 2 ^ (k + 1) := by
+      dsimp [B]
+      rw [Nat.div_div_eq_div_mul, ← pow_succ]
+    exact hdiv2.trans (congrArg (A + ·) hdiv_pow)
+  have hpow_n : 2 ^ n = 2 ^ k * 2 ^ (n - k) := by
+    rw [← pow_add, Nat.add_sub_cancel' hk]
+  rw [hck_mod, hrk_div, hm_sub_succ, hpow_n]
+  calc ((c / 2 ^ k) % 2) * (2 ^ k * 2 ^ (n - k)) +
+        ((c % 2 ^ k) * 2 ^ (n - k) + r / 2 ^ (k + 1))
+      = (((c / 2 ^ k) % 2) * 2 ^ k + c % 2 ^ k) * 2 ^ (n - k) + r / 2 ^ (k + 1) := by ring
+    _ = (c % 2 ^ (k + 1)) * 2 ^ (n - k) + r / 2 ^ (k + 1) := by
+          rw [nat_mod_two_pow_succ_decomp]
+
+/-- **Attainment of the Stone-Shuffle Pass Lower Bound (`S^m = τ`).**
+Iterating Stone's 1-bit shuffle `stoneShuffleGridLinear F m b` `m` times (`d = 2^m`, `m ≥ 0`)
+realizes the exact matrix transpose `gridSwapLinear F (2^m) b`, showing that `t = m` in
+`stoneShufflePipelinePassLowerBound` is attained with zero row/column-uniform passes. -/
+theorem stoneShuffleGridLinear_iterate_eq_swap (F : Type*) [Semiring F] (m b : ℕ) :
+    composeGridOps (List.replicate m (stoneShuffleGridLinear F m b)) =
+      gridSwapLinear F (2 ^ m) b := by
+  cases m with
+  | zero =>
+      apply LinearMap.ext
+      intro X
+      funext r c ℓ
+      have hr : r = ⟨0, by decide⟩ := Fin.ext (by have := r.isLt; omega)
+      have hc : c = ⟨0, by decide⟩ := Fin.ext (by have := c.isLt; omega)
+      subst hr hc
+      rfl
+  | succ n =>
+      have hiter : ∀ k : ℕ, (hk : k ≤ n + 1) →
+          ∀ (X : GridState F (2 ^ (n + 1)) b) (r c : Fin (2 ^ (n + 1))) (ℓ : Fin b),
+            composeGridOps (List.replicate k (stoneShuffleGridLinear F (n + 1) b)) X r c ℓ =
+              X ⟨(c.val % 2 ^ k) * 2 ^ (n + 1 - k) + r.val / 2 ^ k,
+                  stoneShuffle_iter_coord_bound hk r.isLt⟩
+                ⟨(r.val % 2 ^ k) * 2 ^ (n + 1 - k) + c.val / 2 ^ k,
+                  stoneShuffle_iter_coord_bound hk c.isLt⟩ ℓ := by
+        intro k
+        induction k with
+        | zero =>
+            intro hk X r c ℓ
+            simp only [List.replicate_zero, composeGridOps, LinearMap.id_apply]
+            have hr0 : (⟨(c.val % 2 ^ 0) * 2 ^ (n + 1 - 0) + r.val / 2 ^ 0,
+                stoneShuffle_iter_coord_bound hk r.isLt⟩ : Fin (2 ^ (n + 1))) = r := by
+              apply Fin.ext; dsimp; rw [Nat.mod_one, zero_mul, zero_add, Nat.div_one]
+            have hc0 : (⟨(r.val % 2 ^ 0) * 2 ^ (n + 1 - 0) + c.val / 2 ^ 0,
+                stoneShuffle_iter_coord_bound hk c.isLt⟩ : Fin (2 ^ (n + 1))) = c := by
+              apply Fin.ext; dsimp; rw [Nat.mod_one, zero_mul, zero_add, Nat.div_one]
+            rw [hr0, hc0]
+        | succ k ih =>
+            intro hk X r c ℓ
+            have hk_le_n : k ≤ n := Nat.le_of_succ_le_succ hk
+            have hk_le : k ≤ n + 1 := Nat.le_of_lt hk
+            simp only [List.replicate_succ, composeGridOps, LinearMap.comp_apply]
+            rw [ih hk_le]
+            let rk_fin : Fin (2 ^ (n + 1)) :=
+              ⟨(c.val % 2 ^ k) * 2 ^ (n + 1 - k) + r.val / 2 ^ k,
+                stoneShuffle_iter_coord_bound hk_le r.isLt⟩
+            let ck_fin : Fin (2 ^ (n + 1)) :=
+              ⟨(r.val % 2 ^ k) * 2 ^ (n + 1 - k) + c.val / 2 ^ k,
+                stoneShuffle_iter_coord_bound hk_le c.isLt⟩
+            change stoneShuffleGridLinear F (n + 1) b X rk_fin ck_fin ℓ = _
+            dsimp [stoneShuffleGridLinear]
+            have hbound1 : (ck_fin.val % 2) * 2 ^ n + rk_fin.val / 2 < 2 ^ (n + 1) :=
+              stoneShuffle_iter_coord_bound (Nat.succ_le_of_lt (Nat.succ_pos n)) rk_fin.isLt
+            have hbound2 : (rk_fin.val % 2) * 2 ^ n + ck_fin.val / 2 < 2 ^ (n + 1) :=
+              stoneShuffle_iter_coord_bound (Nat.succ_le_of_lt (Nat.succ_pos n)) ck_fin.isLt
+            have hr_eq : (⟨((ck_fin.val % 2) * 2 ^ n + rk_fin.val / 2) % 2 ^ (n + 1),
+                Nat.mod_lt _ (Nat.two_pow_pos (n + 1))⟩ : Fin (2 ^ (n + 1))) =
+              ⟨(c.val % 2 ^ (k + 1)) * 2 ^ (n + 1 - (k + 1)) + r.val / 2 ^ (k + 1),
+                stoneShuffle_iter_coord_bound hk r.isLt⟩ := by
+              apply Fin.ext
+              dsimp
+              rw [Nat.mod_eq_of_lt hbound1]
+              exact stoneShuffle_iter_step_coord hk_le_n
+            have hc_eq : (⟨((rk_fin.val % 2) * 2 ^ n + ck_fin.val / 2) % 2 ^ (n + 1),
+                Nat.mod_lt _ (Nat.two_pow_pos (n + 1))⟩ : Fin (2 ^ (n + 1))) =
+              ⟨(r.val % 2 ^ (k + 1)) * 2 ^ (n + 1 - (k + 1)) + c.val / 2 ^ (k + 1),
+                stoneShuffle_iter_coord_bound hk c.isLt⟩ := by
+              apply Fin.ext
+              dsimp
+              rw [Nat.mod_eq_of_lt hbound2]
+              exact stoneShuffle_iter_step_coord hk_le_n
+            rw [hr_eq, hc_eq]
+      apply LinearMap.ext
+      intro X
+      funext r c ℓ
+      rw [hiter (n + 1) (le_refl _)]
+      dsimp [gridSwapLinear]
+      have hr_final : (⟨(c.val % 2 ^ (n + 1)) * 2 ^ (n + 1 - (n + 1)) + r.val / 2 ^ (n + 1),
+          stoneShuffle_iter_coord_bound (le_refl _) r.isLt⟩ : Fin (2 ^ (n + 1))) = c := by
+        apply Fin.ext
+        dsimp
+        rw [Nat.mod_eq_of_lt c.isLt, Nat.sub_self, pow_zero, mul_one,
+          Nat.div_eq_of_lt r.isLt, add_zero]
+      have hc_final : (⟨(r.val % 2 ^ (n + 1)) * 2 ^ (n + 1 - (n + 1)) + c.val / 2 ^ (n + 1),
+          stoneShuffle_iter_coord_bound (le_refl _) c.isLt⟩ : Fin (2 ^ (n + 1))) = r := by
+        apply Fin.ext
+        dsimp
+        rw [Nat.mod_eq_of_lt r.isLt, Nat.sub_self, pow_zero, mul_one,
+          Nat.div_eq_of_lt c.isLt, add_zero]
+      rw [hr_final, hc_final]
+
 end BoundedOSRPipeline
 
 /-! ### 3. Discrete Shannon Mutual Information `= 0` & Row-Diagonal Gauge Invariance -/
@@ -1095,7 +1255,7 @@ theorem rowDiagonal_SourceArityGaugeInvariance :
 
 end MutualInfoAndRowDiagGauge
 
-/-! ### 4. Bonus 1 Unified `Remark 5.6` Disproof Corollary -/
+/-! ### 4. Unified Three-Term Swap-Code Examples (`Remark 5.6` of Paper 17) -/
 
 section Bonus1Unified
 

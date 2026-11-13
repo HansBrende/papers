@@ -10,17 +10,19 @@ This module provides:
    `Γ`-cut fibre `IsFrozenTraceCutFibre M d T inPos workPos emitStep Γ C`, depth-`D` `(1 + M.k)`-ary
    causal-cone trees evaluate purely via `M.δ`, touch at most `(M.k + 1)^D` input cells, and agree
    with `M`'s live execution on `C`.
-2. **Why column classes cannot absorb per-entry cut labels (`perColumnCutAbsorption_bracket_neg`)**:
+2. **Negative brackets for two specific per-column cut-absorption schemes
+   (`perColumnCutAbsorption_bracket_neg`)**:
    Along the control-state spine `u → u + 1`, every `Γ`-avoiding causal cone of depth `≤ D` starting
-   at step `v ≥ D` touches a cut step `u ∈ Γ` within `[v - D, v)`. Consequently:
+   at step `v ≥ D` touches a cut step `u ∈ Γ` within `[v - D, v)`. Consequently, for two naive
+   column-class reductions:
    * Discarding cut-touching outputs leaves at most `D` unbroken entries (`d^2 - |E| ≤ D`), making
      the column-class bracket `d^2 - |E| - d * M₀ * Δ` strictly negative for every `M₀ ≥ 1`;
-   * Refining column classes by `L_cut` cut slots per column covers at most `D + d * L_cut * D`
-     unbroken entries while inflating the class count to `M₀ * ((M.q + 1) * (M.g + 1)^M.k)^L_cut`,
+   * Positing a worst-case full-product class count `M_cls = M₀ * ((M.q + 1) * (M.g + 1)^M.k)^L_cut`
+     across `L_cut` cut slots per column covers at most `D + d * L_cut * D` unbroken entries while
      making `d^2 - |E_sched| - d * M_cls * Δ` strictly negative whenever `1 ≤ M₀` and
-     `2 ≤ (M.q + 1) * (M.g + 1)^M.k`.
-   This formalizes why bridging periodic machine stretches requires the per-position fixed-alphabet
-   form of Problem 9.4(b) rather than column-level shared-decoder classes.
+     `2 ≤ (M.q + 1) * (M.g + 1)^M.k` (using `M_cls ≥ L_cut + 1`).
+   This illustrates why those two column-class schemes fail (as noted in the commentary on Paper 17
+   Problem 9.4(b), per-entry cut patterns point instead to per-position recovery functions).
 3. **Work-tape padding (`padDummyWorkTape_transposesWithin`)**: adding a dummy work tape when
    `M₀.k = 0` preserves `Transpose.TransposesWithin` for every time bound `T`.
 -/

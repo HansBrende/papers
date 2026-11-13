@@ -58,7 +58,7 @@ We write $\operatorname{char}(F) \nmid n$ for the predicate \lean{CoprimeToChar}
 
 \begin{proposition}[Linear class-uniform bridges and scalar-extension transfer]\label{prop:linear-model-bridges}
 \formal{ExtensionLinearRun.lean}{laneRot_apply}
-\formal{ExtensionLinearRunSharpness.lean}{extension_LinearModelAndCharBridges}
+\formal{ExtensionLinearRunSharpness.lean}{extension_LinearModelAndCharBridges,laneOneMatrixEquiv_laneRot,matrixToSharedStateEquiv_laneRot}
 \formal{ExtensionFieldTransfer.lean}{coprimeToChar_iff_natCast_ne_zero,exists_isPrimitiveRoot_of_isAlgClosed,exists_isPrimitiveRoot_algebraicClosure,linearIndependent_fin_pi_ringHom,finrank_le_of_pi_ringHom,extendLinearMapPi_comp_map}
 Let $F$ be a field and let $d \ge 1$ and $b \in \N$.
 \begin{enumerate}[label=(\alph*)]
@@ -90,10 +90,12 @@ In~(a), \lean{laneOneMatrixEquiv} drops the unique coordinate $0 \in \mathrm{Fin
 $\Z_d \to \Z_d \to \mathrm{Fin}\,b \to F$; if $X \in \mathcal{X}$ and $\rot_s(X) \in \mathcal{X}$ with
 $p(c) = p(c + s) = m$, then
 $X_{c+s, j} = \mathcal{A}_m(\rot_{c+s}(X))_j = \mathcal{A}_m(\rot_c(\rot_s(X)))_j =
-\rot_s(X)_{c, j} = X_{c, j+s}$. In~(b), $(n : F) = 0$ iff $\operatorname{char}(F) \mid n$; when
-$(n : F) \ne 0$, $Z^n - 1$ has $n$ distinct roots in $\overline{F}$ ($n Z^{n-1} \ne 0$ at every root),
-and partitioning those roots by exact multiplicative order across divisors $m \mid n$ with at most
-$\varphi(m)$ elements per divisor forces $\varphi(n) \ge 1$ primitive $n$-th roots via
+\rot_s(X)_{c, j} = X_{c, j+s}$. In~(b), $(n : F) = 0$ iff $\operatorname{char}(F) \mid n$, and for
+any field extension $K/F$ the injectivity of $\mathrm{algebraMap}\,F\,K$ gives
+$(n : K) \ne 0 \iff (n : F) \ne 0$; when $(n : K) \ne 0$ in an algebraically closed extension $K$
+(in particular $K = \overline{F}$), $Z^n - 1$ has $n$ distinct roots in $K$ ($n Z^{n-1} \ne 0$ at
+every root), and partitioning those roots by exact multiplicative order across divisors $m \mid n$
+with at most $\varphi(m)$ elements per divisor forces $\varphi(n) \ge 1$ primitive $n$-th roots via
 $\sum_{m \mid n} \varphi(m) = n$. In~(c), preservation of linear independence is proved by induction on
 the family size via Gaussian pivot elimination over $F$ at a nonzero coordinate, and
 \lean{extendLinearMapPi} expands $L$ in the standard basis of $F^\iota$.

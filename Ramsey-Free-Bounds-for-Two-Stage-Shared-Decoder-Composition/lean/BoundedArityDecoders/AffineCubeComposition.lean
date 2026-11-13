@@ -15,8 +15,9 @@ Definitions and proposition types for Theorem 2A and its finite controls
 * `Control_D13TwoCubeAPFreeSharpnessSpec`: at prime `d = 13`, `q = 2` (`dim A = 26`), the
   2-cube `J = {0, 1, 4, 5}` contains no non-constant 3-term arithmetic progression mod `13`
   (so Paper 19's progression bound sees at most `ℓ = 2` points and yields only `D ≤ 14`),
-  forces `3 * finrank F W ≤ 30` (`finrank F W ≤ 10`), and admits an exact `(W, L)` over `ℝ` of
-  dimension `D = 9` (refuting the `2^k D ≤ dim A + (2^k - 1) q` strengthening `D ≤ 8`).
+  forces `3 * finrank F W ≤ 30` (`finrank F W ≤ 10`), and admits an explicit `(W, L)` over `ℝ` of
+  dimension `D = 9` (establishing `9 ≤ max dim ≤ 10` over `ℝ` and refuting the
+  `2^k D ≤ dim A + (2^k - 1) q` strengthening `D ≤ 8`; whether `10` is attainable is not settled).
 * `Control_D4SameIntervalCodedFactorizationSpec`: at `d = 4` with identical interval partitions
   `p₁ = p₂ = [0, 0, 1, 1]`, uncoded entry-copying two-stage rules over any alphabet `|Σ| ≥ 2`
   cannot realize `swap`, whereas coded linear `ClassUniform` maps `K₁, K₂` over `ℝ` satisfy

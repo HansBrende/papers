@@ -9,9 +9,10 @@ read-write work tapes and a one-way write-only output tape
 (\cite[Sections~2.1--2.2 and Definition~2.1]{FirstPaper2026}).
 Statement~(T) (\cite[Definition~2.1]{FirstPaper2026}, \leanname{Transpose.LinearTimeTransposable})
 asserts that some such machine transposes all $d \times d$ matrices of $b$-bit entries within
-$O(L)$ steps; Conjecture~9.1 of \cite{FirstPaper2026} formulates a stronger asymmetric bipartite
-storage-coding conjecture (the Tape Coding Conjecture) whose refutation of Statement~(T) is
-Lean-verified there (\cite[Theorem~9.2]{FirstPaper2026}), and by Harvey and
+$O(L)$ steps; Conjecture~9.1 of \cite{FirstPaper2026} (the Tape Coding Conjecture) conjectures, in a
+robust co-entropy form, that no causal code solves complete exchange at the profile capacities on the
+block networks of linear-length tape diagrams, and its refutation of Statement~(T) is Lean-verified
+there (\cite[Theorem~9.2]{FirstPaper2026}). By Harvey and
 van der Hoeven \cite[Corollary~6.9]{HvdH2025}, if Statement~(T) is false then no linear-time
 multitape integer multiplier exists either.
 
@@ -42,59 +43,74 @@ $K_1$ has $M_1$ column classes and $K_2$ has $M_2$ column classes:
   $\mathsf{W}(2,3) \le 9$ to obtain the small-parameter bound $d \le 16$.
 \item For approximate factorizations over any field $F$ with $(d : F) \ne 0$,
   Theorem~6.6 of \cite{SharedDecoders2026}
-  proved that $r := \rank_F(\tau - K_2 \circ K_1)$ satisfies
+  proved that for all $d \ge N_0$, $r := \rank_F(\tau - K_2 \circ K_1)$ satisfies
   \[
     r \;\ge\; \frac{b k (d - N_0 + 1)}{2},
     \qquad
     \ell = (2M_2 + 1)k - 1,\quad N_0 = \mathsf{W}(M_1, \ell),
   \]
-  showing that $r / (bd) \to \infty$ as $d \to \infty$ for every fixed pair $(M_1, M_2)$, using qualitative finiteness of van der Waerden numbers via the Hales--Jewett theorem \cite{HalesJewett1963} without substituting a numerical upper bound for $\mathsf{W}(M_1, \ell)$.
+  showing that $r / (bd) \to \infty$ as $d \to \infty$ for every fixed pair $(M_1, M_2)$, using
+  qualitative finiteness of van der Waerden numbers via the Hales--Jewett theorem
+  \cite{HalesJewett1963} without substituting a quantitative upper bound for $\mathsf{W}(M_1, \ell)$.
 \end{itemize}
 
 This paper is primarily a sequel to \cite{SharedDecoders2026} and \cite{SeventeenthPaper2026} in
 that same linear algebraic model. We state the model boundary up front: \emph{no multitape Turing
 machine is known to decompose into one- or two-stage linear class-uniform stages}, and none of the
 results of this paper decides Statement~(T) or bridges general adaptive or oblivious machines to
-linear shared decoders. Within the linear class-uniform and swap-code models, however, exploiting
-\emph{linearity of the shared decoders} removes two separate ceilings from prior work: in two-stage
+linear shared decoders. Throughout this paper, ``Ramsey-free'' means avoiding van der Waerden and
+Hales--Jewett progression numbers by substituting Cauchy--Schwarz density cube extraction
+\cite{Szemeredi1969,GRS1990} and K\H{o}v\'ari--S\'os--Tur\'an extremal graph bounds
+\cite{KovariSosTuran1954}. Within the linear class-uniform and swap-code models, exploiting
+\emph{linearity of the shared decoders} addresses three open questions from prior work: in two-stage
 composition (\cite[Section~6]{SharedDecoders2026}), replacing arithmetic progressions (which
-Behrend's construction \cite{Behrend1946} limits to length $< 3$ at $M_1 = 2^{O(\sqrt{\log d})}$ and
-whose worst-case monochromatic length is $O(\log d)$ even at $M_1 = 2$) by \emph{affine Hilbert cubes}
-(over every field) and \emph{shifted monochromatic sumsets} (when $\operatorname{char}(F) \nmid d$,
-i.e.\ $(d : F) \ne 0$) removes Ramsey numbers; and in
-one-stage capacity (\cite[Problem~9.1(a)--(b)]{SeventeenthPaper2026};
-\cite[Section~3 and Appendix~C]{SharedDecoders2026}), run-extension equations at the right endpoints
-of monochromatic cyclic runs push strictly past the $\frac{5}{8}$ certificate floor imposed by
-$C \cap \rot_s^{-1}(C) \le H_{\{0,s\}}$ for nonlinear decoders and determine
-$D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
+translate-covering $\Z_d$ by a Behrend set \cite{Behrend1946} limits to length $< 3$ at
+$M_1 = 2^{O(\sqrt{\log d})}$, and whose non-wrapping monochromatic length in $\{0, \dots, d-1\}$ is
+$O(\log d)$ even under a random $2$-coloring \cite{GRS1990,AlonSpencer2016}) by \emph{affine Hilbert
+cubes} (over every field) and \emph{shifted monochromatic sumsets} (when $\operatorname{char}(F) \nmid d$,
+i.e.\ $(d : F) \ne 0$) eliminates tower-type van der Waerden dependencies \cite{Gowers2001} for
+$M_1 \ge 2$; in one-stage linear capacity (\cite[Problem~9.1(a)]{SeventeenthPaper2026};
+\cite[Section~3 and Appendix~C]{SharedDecoders2026}), when $\operatorname{char}(F) \nmid d$,
+run-extension equations at the right endpoints of monochromatic cyclic runs push strictly below the
+$\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} and the $\frac{5}{8} - o(1)$ floor
+for the nested-component certificates of \cite[Theorem~C.6]{SharedDecoders2026} (whose isolation
+variant \cite[Theorem~C.7]{SharedDecoders2026} reaches $\frac{9}{16}$ on almost all two-class
+partitions); and on \cite[Problem~9.1(b)]{SeventeenthPaper2026} (where run-extension alone gives
+$\le 26$), a coupled six-mode Fourier analysis determines $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$
+outside characteristics~$2$ and~$3$.
 
 \subsection{Summary of results}\label{sec:results-overview}
 
 \begin{enumerate}[label=\arabic*.]
 \item \textbf{Ramsey-free cutoff for exact two-stage linear composition (\Cref{sec:cubes}).}
-  Over an \emph{arbitrary} field $F$, \Cref{lem:affine-cube} proves that if a subspace $W \le A$
-  admits an injective linear readout invariant under the $2^k$ ordered products
-  $R_{k-1}^{\eps_{k-1}} \cdots R_0^{\eps_0}$ of $k$ endomorphisms $R_0, \dots, R_{k-1} \in \End_F(A)$,
-  then
+  Over an \emph{arbitrary} field $F$, \Cref{lem:affine-cube} generalizes
+  \cite[Lemma~6.1]{SharedDecoders2026} from powers of a single endomorphism to ordered products
+  $R_{k-1}^{\eps_{k-1}} \cdots R_0^{\eps_0}$ of $k$ endomorphisms $R_0, \dots, R_{k-1} \in \End_F(A)$:
+  if $W \le A$ admits an injective linear readout invariant under those $2^k$ products, then
   \[
     (k + 1)\dim_F W \;\le\; \dim_F A \;+\; \sum_{t=0}^{k-1} \dim_F\ker(R_t - \mathrm{id}_A).
   \]
   Extracting a monochromatic affine $M_2$-cube with small steps $1 \le s_t \le \lfloor d/(2M_2^2)\rfloor$
-  by iterated Cauchy--Schwarz (\Cref{lem:cs-cube}) yields \Cref{thm:2a}: whenever $b, M_1, M_2 \ge 1$
-  and two $F$-linear class-uniform stages $K_1, K_2$ on $\Mat_{d\times d}(F^b)$ with $M_1$ and $M_2$
-  classes satisfy $K_2 \circ K_1 = \tau$, one has
+  by the classical Cauchy--Schwarz density cube lemma (\Cref{lem:cs-cube};
+  \cite{Szemeredi1969,GRS1990}) yields \Cref{thm:2a}: whenever $b, M_1, M_2 \ge 1$ and two $F$-linear
+  class-uniform stages $K_1, K_2$ on $\Mat_{d\times d}(F^b)$ with $M_1$ and $M_2$ classes satisfy
+  $K_2 \circ K_1 = \tau$, one has
   \[
     d \;\le\; \max\!\Bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\Bigr).
   \]
-  For fixed $M_2$, this rules out exact factorizations for growing $M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$,
-  including $3$-AP-free Behrend partitions with $M_1(d) = 2^{O(\sqrt{\log d})}$. At small constant
-  class counts, however, \Cref{thm:2a} is weaker than van der Waerden extraction: at $M_1 = M_2 = 2$,
-  \Cref{thm:2a} gives $d \le 256$, whereas Corollary~6.4 of \cite{SharedDecoders2026} gives $d \le 16$.
-  Two finite controls accompany \Cref{thm:2a}: at $d = 13, q = 2$ on the $3$-AP-free $2$-cube
-  $J_{13} = \{0,1,4,5\} \subseteq \Z_{13}$, \Cref{ex:d13-sharpness} shows
-  $9 \le \max\dim_F W \le 10$ over fields with $(13 : F) \ne 0$ (refuting a naive $2^k$-multiplier
-  bound $\dim_F W \le 8$); and at $d = 4 = M_1 M_2$ on the identical two-interval partition
-  $p_1 = p_2 = [0,0,1,1]$, \Cref{ex:d4-coded} constructs exact linear coded factorizations
+  For fixed $M_2 \ge 2$, this cutoff is polynomial in $M_1$---ruling out exact factorizations whenever
+  $M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$, including partitions of $\Z_d$ into
+  $M_1(d) = 2^{O(\sqrt{\log d})}$ $3$-AP-free classes obtained by translate-covering $\Z_d$ with a
+  Behrend set \cite{Behrend1946}---whereas every progression-based cutoff from
+  \cite[Theorem~6.3]{SharedDecoders2026} is at least $M_2\bigl(\mathsf{W}(M_1, 3) - 1\bigr)$, which is
+  superpolynomial in $M_1$. At $M_2 = 1$, $M_1 = 1$, and small constant class counts, however,
+  \cite[Theorem~6.3 and Corollary~6.4]{SharedDecoders2026} are stronger: they give $d \le M_1$ at
+  $M_2 = 1$, $d \le M_2^2$ at $M_1 = 1$, and $d \le 16$ at $M_1 = M_2 = 2$, where \Cref{thm:2a} gives
+  $\max(8M_1, 4M_1^2)$, $\max(8M_2^2, 2^{2^{M_2}})$, and $256$. Two finite controls accompany
+  \Cref{thm:2a}: at $d = 13, q = 2$ on the $3$-AP-free $2$-cube $J_{13} = \{0,1,4,5\} \subseteq
+  \Z_{13}$, \Cref{ex:d13-witness} shows $9 \le \max\dim_F W \le 10$ over fields with
+  $(13 : F) \ne 0$ (refuting a naive $2^k$-multiplier bound $\dim_F W \le 8$); and at $d = 4 = M_1 M_2$
+  on $p_1 = p_2 = [0,0,1,1]$, \Cref{ex:d4-coded} constructs exact linear coded factorizations
   $K_2 \circ K_1 = \tau$ for all lane widths $b \ge 0$ over every field with $(5 : F) \ne 0$ (leaving
   characteristic~$5$ open for $b \ge 1$), while showing that entry-copy and bit-lane-copy
   factorizations fail for $b \ge 1$.
@@ -112,50 +128,63 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   (\Cref{lem:sumset-poly}). Combining the resulting rank inequality
   $2\rank_F(\tau - K_2 \circ K_1) \ge bk\bigl(d - \sum_t \diam_{\N}(\widetilde{B}_t)\bigr)$
   (\Cref{thm:sumset-rank}) with iterated K\H{o}v\'ari--S\'os--Tur\'an sumset extraction
-  (\Cref{lem:kst-sumset}) yields \Cref{thm:2b}: for all $b, M_1, M_2 \ge 1$ and all
-  $d \ge D_0(M_1, M_2)$ with $(d : F) \ne 0$,
+  (\Cref{lem:kst-sumset}, with $k = O(\log d)$) yields \Cref{thm:2b}: for all $b, M_1, M_2 \ge 1$ and
+  all $d \ge D_0(M_1, M_2)$ with $(d : F) \ne 0$,
   \[
     \rank_F(\tau - K_2 \circ K_1)
     \;\ge\;
     c(M_1, M_2)\,b\,d\,(\log d)^{\frac{1}{2M_2 - 1}},
   \]
-  and in particular $\Omega(b\,d\log d)$ when $M_2 = 1$ (\Cref{cor:2b-m2-one}). The bound is
-  asymptotic: the formalized threshold $D_0(M_1, M_2)$ printed in \Cref{thm:2b} satisfies
-  $D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$. \Cref{ex:d12-band} constructs an explicit
-  $24$-dimensional $4$-channel band witness ($q = 4$, $b M_2 = 2$) over $\C$ at $d = 12$ showing that
-  stage-1 shift invariance cannot be relaxed to an abstract linear readout on a single $k = 2$ band
-  space.
+  and in particular $\Omega(b\,d\log d)$ when $M_2 = 1$ (\Cref{cor:2b-m2-one}). For $M_1 \ge 2$ and
+  sufficiently large $d$, this replaces the iterated-logarithmic growth rates obtained from
+  \cite[Theorem~6.6]{SharedDecoders2026} via Gowers' van der Waerden bound \cite{Gowers2001} by an
+  explicit log-power rate. By contrast, at $M_1 = 1$, $\mathsf{W}(1, \ell) = \ell$ already gives
+  $\Omega(bd^2/M_2)$ for all $d$ in \cite[Theorem~6.6]{SharedDecoders2026}; at $M_1 = 2, M_2 = 1$,
+  $k = 2$ with $\mathsf{W}(2, 5) = 178$ gives $b(d - 177)$, which \Cref{cor:2b-m2-one} beats only for
+  $d \gtrsim 10^{216}$ (and the formalized threshold satisfies
+  $D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$). \Cref{ex:d12-band} constructs an explicit
+  $24$-dimensional shift-covariant $4$-channel band witness ($q = 4$, $b = 2$, $M_2 = 1$) over $\C$ at
+  $d = 12$ showing that a single half-density band ($k = 2$) without the $(2M_2)$-fold sumset
+  iteration admits $kd = 24$-dimensional solutions, so the iteration in \Cref{thm:sumset-rank} is
+  essential.
 
 \item \textbf{Run-extension bounds for one-stage linear shared decoders (\Cref{sec:linear-capacity}).}
   In \cite[Theorem~3.4 and Theorem~C.6]{SharedDecoders2026}, iterating
   $C \cap \rot_s^{-1}(C) \le H_{\{0,s\}}$ gave $\frac{41}{64}\,bd^2 + \frac{5}{3}\,bd^{3/2}$ for two
-  classes and hit a $(\frac{5}{8} - o(1))bd^2$ certificate floor because $C \cap \rot_s^{-1}(C) \le
-  H_{\{0,s\}}$ holds for nonlinear deterministic decoders. For $F$-linear decoders
-  (\cite[Definition~6.3]{SeventeenthPaper2026}), evaluating $\rot_s(X) \in \mathcal{X}$ at the right
-  endpoint of each maximal monochromatic run along each cycle of $c \mapsto c + s$ supplies an extra
-  linear equation per run. Filtering by $\rot_s$-eigenmodes over $\overline{F}$ proves the
-  single-shift bound $B_{\mathrm{run}}(b, p, s)$ (\Cref{thm:1a-single-shift}) whenever
-  $\operatorname{char}(F) \nmid (d/\gcd(d,s))$, whose value $\frac{1}{4}d^2 + \frac{3}{2}d$ (versus
-  $\dim_F H_{\{0,1\}} = d^2$) on the alternating two-coloring for even $d = 2m \ge 2$ at $b = 1, s = 1$
-  is realized over \emph{every} field (\Cref{thm:1a-sharpness}, attaining \Cref{thm:1a-single-shift}
-  whenever $\operatorname{char}(F) \nmid 2m$). Averaging over
-  shifts proves $D_b(p) \le \frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ for two classes whenever
-  $\operatorname{char}(F) \nmid d$ (\Cref{thm:1b-two-class}, strictly below $\frac{5}{8} <
-  \frac{41}{64}$, while positive characteristics dividing $d$ and the gap from $\frac{19}{32}$ to
-  $\frac{1}{2}$ remain open) and
-  $D_b(p) \le \bigl(1 - \frac{5}{4M} + \frac{1}{M^2} - \frac{1}{4M^3}\bigr)bd^2 + bMd$ for $M \ge 3$
-  at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}). Its leading coefficient $c_M$
-  beats the flag bound $1 - \frac{1}{2M}$ of
+  classes, while the nested-component certificates of \cite{SharedDecoders2026} cannot go below
+  $(\frac{5}{8} - o(1))bd^2$ on almost every two-class partition (\cite[Theorem~C.6]{SharedDecoders2026};
+  their isolation variant \cite[Theorem~C.7]{SharedDecoders2026} has floor $\frac{9}{16} - o(1)$). For
+  $F$-linear decoders (extending the $b = 1$ model of \cite[Definition~6.3 and
+  Problem~9.1(a)]{SeventeenthPaper2026} to $b$ lanes), evaluating $\rot_s(X) \in \mathcal{X}$ at the
+  right endpoint of each maximal monochromatic run along each non-monochromatic cycle of
+  $c \mapsto c + s$ supplies an extra linear equation per run. Filtering by $\rot_s$-eigenmodes over
+  $\overline{F}$ proves the single-shift bound $B_{\mathrm{run}}(b, p, s)$
+  (\Cref{thm:1a-single-shift}) whenever $\operatorname{char}(F) \nmid (d/\gcd(d,s))$, whose value
+  $\frac{1}{4}d^2 + \frac{3}{2}d$ (versus $\dim_F H_{\{0,1\}} = d^2$) on the alternating two-coloring
+  for even $d = 2m \ge 2$ at $b = 1, s = 1$ is realized over \emph{every} field
+  (\Cref{thm:1a-sharpness}, attaining \Cref{thm:1a-single-shift} whenever
+  $\operatorname{char}(F) \nmid 2m$). Averaging over shifts proves
+  $D_b(p) \le \frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ for two classes whenever
+  $\operatorname{char}(F) \nmid d$ (\Cref{thm:1b-two-class}, non-vacuous and improving on
+  \cite[Theorem~3.4]{SharedDecoders2026} for $d \ge 14$, below $\frac{3}{4}\,bd^2$ for $d \ge 93$, and
+  with leading coefficient $\frac{19}{32} < \frac{5}{8} < \frac{41}{64}$; positive characteristics
+  dividing $d$ and the gap from $\frac{19}{32}$ to $\frac{1}{2}$ remain open) and
+  $D_b(p) \le c_M\,bd^2 + \bigl(\frac{5}{4} - \frac{1}{4M}\bigr)bd$ with
+  $c_M = 1 - \frac{5}{4M} + \frac{1}{M^2} - \frac{1}{4M^3}$ for $M \ge 2$ at primes
+  $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}, giving $\frac{19}{32}\,bd^2 + \frac{9}{8}\,bd$
+  at $M = 2$). Its leading coefficient $c_M$ beats the flag bound $1 - \frac{1}{2M}$ of
   \cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026}
   (coordinate form of Theorem~5.1 Lean-verified; Corollary~5.9(b) and Remark~5.10 proved in text)
-  for every $M \ge 2$, and is smaller than the leading coefficient $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$
-  of Theorem~3.5 of \cite{SharedDecoders2026} for $2 \le M \le 49$ and $51 \le M \le 54$---improving
-  on Theorem~3.5 for sufficiently large primes $d \ne \operatorname{char}(F)$ at $M \ge 3$, and for
-  $d \ge 29$ with $\operatorname{char}(F) \nmid d$ via \Cref{thm:1b-two-class} at $M = 2$ (whereas
-  \Cref{thm:1b-two-class} improves on \cite[Theorem~3.4]{SharedDecoders2026} for all $d \ge 1$ with
-  $\operatorname{char}(F) \nmid d$). Conversely, Theorem~3.5 of \cite{SharedDecoders2026} has a
-  smaller $\Theta(M^{-1/2})$ leading coefficient at $M = 50$ and $M \ge 55$, carries no $+bMd$ error
-  term, and applies to composite $d \ge 2M$ and arbitrary characteristic.
+  for every $M \ge 2$ (whereas the difference-cover bound \cite[Theorem~3.5, eq.~(6)]{SharedDecoders2026}
+  beats the flag bound for $M \ge 7$ and its square-root specialization eq.~(7) does so for $M \ge 11$).
+  Against the optimized difference-cover bound \cite[Theorem~3.5, eq.~(6)]{SharedDecoders2026}, $c_M$
+  has a strictly smaller leading coefficient if and only if $2 \le M \le 40$---improving on
+  \cite[Theorem~3.5]{SharedDecoders2026} at primes $d \ne \operatorname{char}(F)$ past finite
+  crossovers (from $d \ge 7$ at $M = 2$ up to $d \ge 39{,}163$ at $M = 40$) and, via
+  \Cref{thm:1b-two-class}, for composite $d \ge 35$ with $\operatorname{char}(F) \nmid d$ at $M = 2$.
+  Conversely, \cite[Theorem~3.5, eq.~(6)]{SharedDecoders2026} has a $1 - \Theta(M^{-1/2})$ leading
+  coefficient that is strictly smaller for every $M \ge 41$, and applies to arbitrary composite $d$
+  and arbitrary field characteristic.
 
 \item \textbf{Exact dimension $25$ for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$ outside characteristics $2$ and $3$ (\Cref{sec:aperiodic-six}).}
   On \cite[Problem~9.1(b)]{SeventeenthPaper2026}, combining six-mode column-Fourier decomposition on
@@ -164,8 +193,11 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   $\dim_F(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})) \le 14$ (\Cref{lem:aperiodic-six-shift-14}) and
   hence $D_1\bigl(\{0,1,3\},\{2,4,5\}\bigr) = 25$ over every field with
   $\operatorname{char}(F) \notin \{2, 3\}$ (\Cref{thm:aperiodic-six-25}, paired with the lower bound
-  of \cite[Theorem~3.2]{ClassUniformMemo2026}); characteristics~$2$ ($25 \le D_1 \le 28$) and~$3$
-  ($24 \le D_1 \le 28$, \cite[Problem~6.1]{ClassUniformMemo2026}) remain open.
+  of \cite[Theorem~3.2]{ClassUniformMemo2026}); characteristics~$2$ ($25 \le D_1 \le 28$,
+  \cite[Theorem~6.4 and Proposition~8.2]{SeventeenthPaper2026}, \cite[Theorem~3.2]{ClassUniformMemo2026})
+  and~$3$ ($21 \le D_1 \le 28$ from symmetric matrices and \cite[Theorem~6.4]{SeventeenthPaper2026};
+  whether $25$ is attainable in characteristic~$3$ is \cite[Problem~6.1]{ClassUniformMemo2026}) remain
+  open.
 
 \item \textbf{Three-term swap codes and one- and two-sided interval-mask bounds (\Cref{sec:swapcodes}).}
   In \cite[Remark~5.6]{SeventeenthPaper2026}, examples of three-term swap codes
@@ -178,51 +210,58 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   every field; $d = 5$ and every $d \ge 8$ outside $\{9, 12\}$ remain open. On
   \cite[Problem~9.3]{SeventeenthPaper2026}, after recording the one-sided endpoint-refinement baseline
   $(d^2 + d\min(\beta_A, \beta_B))/2$ (\Cref{prop:multiscale-interval}), we prove a
-  characteristic-free two-sided coarse--fine bound (\Cref{thm:two-sided-coarse-fine,cor:two-sided-win})
-  whose leading coefficient $\frac{1}{2} + \frac{1}{4}\min\bigl(\beta(1+\alpha),\alpha(1+\beta)\bigr)$
-  is strictly below one-sided Theorem~TP's $\frac{1}{2} + \frac{1}{2}\min(\alpha,\beta)$ for all
-  $\alpha, \beta \in (0,1)$ (giving $\frac{11}{16}d^2 + d < \frac{3}{4}d^2$ at $\alpha = \beta = 1/2$
-  for all even $d \ge 18$), while \Cref{prop:walsh-dichotomy} contrasts interval boundaries ($\le 2$)
-  with periodic Walsh digit masks ($2^{j+1}$ boundaries, profile $2$ per scale, and operator span
-  dimension $\le (m+1)2^m$).
+  characteristic-free two-sided bound for two-scale (coarse--fine) families
+  (\Cref{thm:two-sided-coarse-fine,cor:two-sided-win}) whose leading coefficient on contiguous fine
+  singletons plus one coarse complement,
+  $\frac{1}{2} + \frac{1}{4}\min\bigl(\beta(1+\alpha),\alpha(1+\beta)\bigr)$, is strictly below
+  one-sided Theorem~TP's $\frac{1}{2} + \frac{1}{2}\min(\alpha,\beta)$
+  (\cite[Theorem~6.4]{SeventeenthPaper2026}) for all $\alpha, \beta \in (0,1)$ (giving
+  $\frac{11}{16}d^2 + d < \frac{3}{4}d^2$ at $\alpha = \beta = 1/2$ for all even $d \ge 18$), while
+  \Cref{prop:walsh-dichotomy} contrasts interval boundaries ($\le 2$) with periodic Walsh digit masks
+  ($2^{j+1}$ boundaries, profile $2$ per scale, and operator span dimension $\le (m+1)2^m$).
 
-\item \textbf{Restricted shuffle-and-local operator pipelines and anti-diagonal untwisting (\Cref{sec:duality}).}
+\item \textbf{Restricted shuffle and row/column-uniform operator pipelines and anti-diagonal untwisting (\Cref{sec:duality}).}
   Across the row/column tensor cut $F_{\mathrm{row}}^d \otimes_F (F_{\mathrm{col}}^d \otimes_F F^b)$,
   Operator Schmidt Rank satisfies $\OSR(\tau) = d^2$ and $\OSR(S) = \OSR(S^{-1}) = 4$ for Stone's
-  perfect shuffle and unshuffle \cite{Stone1971} on $d = 2^m \ge 2$ (\Cref{thm:osr-swap}), forcing
-  $t \ge m = \log_2 d$ shuffle/unshuffle passes in any pipeline composed solely of $S, S^{-1}$,
-  row-uniform operators $I_d \otimes B$, and column-uniform operators $A \otimes I_{db}$
-  (\Cref{thm:osr-pass}). As we emphasize at the start of \Cref{sec:duality}, this applies only to
-  that restricted operator pipeline and \emph{does not} answer \cite[Problem~9.5]{SeventeenthPaper2026}:
-  within-row cyclic shear $X_{r,c} \mapsto X_{r, (c+r)\bmod d}$ has $\OSR = d$
-  (\Cref{prop:shear-control}) yet runs in $O(L)$ time on a $2$-work-tape Turing machine
-  (\Cref{prop:stone-tm}, proved in the shared library \texttt{lean-machine} alongside $3$-tape
-  shuffle and $2$-tape unshuffle). \Cref{sec:antidiag} also records the anti-diagonal coordinate
-  isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$ (where
-  $(\sigma^t v)_a = v_{a+t}$, \Cref{thm:anti-diagonal})
-  and the two-subspace Grassmann relaxation (\Cref{prop:mask-floors}).
+  perfect shuffle and unshuffle \cite{Stone1971,Nielsen2003,Tyson2003} on $d = 2^m \ge 2$
+  (\Cref{thm:osr-swap}), forcing $t \ge m = \log_2 d$ shuffle/unshuffle passes (attained by
+  $S^m = \tau$) in any pipeline composed solely of $S, S^{-1}$, row-uniform operators $I_d \otimes B$,
+  and column-uniform operators $A \otimes I_{db}$ (\Cref{thm:osr-pass}). As we emphasize at the start
+  of \Cref{sec:duality}, this applies only to that restricted operator pipeline and \emph{does not}
+  answer \cite[Problem~9.5]{SeventeenthPaper2026}: within-row cyclic shear
+  $X_{r,c} \mapsto X_{r, (c+r)\bmod d}$ has $\OSR = d$ (\Cref{prop:shear-control}; see also
+  \cite[Proposition~6.25(a)]{SeventeenthPaper2026} for affine row-coset stages) yet runs in $O(L)$
+  time on a $2$-work-tape Turing machine (\Cref{prop:stone-tm}, proved in the shared library
+  \texttt{lean-machine} alongside $3$-tape shuffle and $2$-tape unshuffle). \Cref{sec:antidiag}
+  repackages the shift-covariance characterization of \cite[Lemma~3.1]{SharedDecoders2026} via an
+  explicit \leanname{TensorProduct} isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$
+  (where $(\sigma^t v)_a = v_{a+t}$, \Cref{thm:anti-diagonal}) and records the two-subspace Grassmann
+  relaxation (\Cref{prop:mask-floors}).
 
-\item \textbf{Cut-cone evaluation, random-order set capacity, and why column classes cannot absorb per-entry cut labels (\Cref{sec:sweep}).}
-  On frozen trace/cut fibres of \leanname{Transpose.TM}, \Cref{lem:tm-cut-cone} constructs depth-$D$
-  symbolic \lean{CausalConeTree}s directly from $M.\delta$ whose syntactic input-cell support has
-  size at most $b(M.k+1)^D$. \Cref{thm:random-order-capacity} formalizes in Lean the
+\item \textbf{Cut-cone evaluation, random-order set capacity, and negative brackets for two column-class cut reductions (\Cref{sec:sweep}).}
+  On frozen trace/cut fibres of \leanname{Transpose.TM}, \Cref{lem:tm-cut-cone} extends the causal-cone
+  lemmas of \cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, \cite{MergeDepth2026}, and
+  \cite{AdaptiveTransfer2026} by constructing depth-$D$ symbolic \lean{CausalConeTree}s directly from
+  $M.\delta$ whose syntactic input-cell support has size at most $b(M.k+1)^D$.
+  \Cref{thm:random-order-capacity} formalizes in Lean the column-class analogue of the
   $1/(\Delta+1)$ random-order acyclic-subgraph bound of
-  \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (after \cite[Theorem~3]{BBJK2011}) in the
-  column-class setting. Finally, \Cref{rem:sweep-negative} and \Cref{prop:negative-brackets} explain
-  why neither discarding cut-touching outputs nor refining column classes by per-column cut slots
-  yields a non-vacuous sweep bound: causal spine edges $u \to u+1$ force at least $d^2 - D$ outputs
-  to touch the cut, while column-level cut slots multiply the class count exponentially, showing why
-  bridging periodic stretches requires the per-position fixed-alphabet form of
-  \cite[Problem~9.4(b)]{SeventeenthPaper2026}.
+  \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (after \cite[Theorem~3]{BBJK2011}). Finally,
+  \Cref{rem:sweep-negative} and \Cref{prop:negative-brackets} illustrate that two naive column-class
+  cut reductions---discarding cut-touching outputs, or positing a worst-case full-product class count
+  across per-column cut slots---produce strictly negative deficit brackets along the control spine
+  $u \to u+1$, reinforcing the observation in the commentary on
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026} regarding per-position fixed-alphabet recovery.
 \end{enumerate}
 
 \subsection{Formalization conventions}\label{sec:conventions}
 
-Every numbered theorem, lemma, proposition, corollary, and example in this paper is completely
-proved and kernel-verified in Lean~4 (version \texttt{v4.34.1} with Mathlib \cite{Mathlib2026})
-across the \texttt{BoundedArityDecoders} package and the shared \texttt{LeanMachine.ShuffleShear}
-modules in \texttt{lean-machine}, depending solely on Lean's three standard axioms
-(\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}), with zero \texttt{sorry},
-\texttt{admit}, \texttt{native\_decide}, or custom axioms. Each numbered result carries a
-\textsf{Lean:} status line citing proved \texttt{theorem} declarations, followed by an outline of
-the formal proof.
+Every numbered theorem, lemma, proposition, corollary, and example in this paper has a kernel-verified
+Lean~4 counterpart (version \texttt{v4.34.1} with Mathlib \cite{Mathlib2026}) across the
+\texttt{BoundedArityDecoders} package and the shared \texttt{LeanMachine.ShuffleShear} modules in
+\texttt{lean-machine}, depending solely on Lean's three standard axioms (\texttt{propext},
+\texttt{Classical.choice}, and \texttt{Quot.sound}), with zero \texttt{sorry}, \texttt{admit},
+\texttt{native\_decide}, or custom axioms. Each numbered result carries a \textsf{Lean:} status line
+citing proved \texttt{theorem} declarations, followed by an outline of the proof; where a companion
+asymptotic formulation, external-theorem specialization, or parameter re-reading is proved in the text
+only, the status line marks the result \emph{partially formalized} and states the text-only gap
+explicitly (summarized in \Cref{sec:formalization}).

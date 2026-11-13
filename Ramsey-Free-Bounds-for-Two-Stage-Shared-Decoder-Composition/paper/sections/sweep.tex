@@ -1,4 +1,4 @@
-\section{Cut-cone evaluation, random-order capacity, and per-entry cut labels}\label{sec:sweep}
+\section{Cut-cone evaluation, random-order capacity, and negative-bracket cut examples}\label{sec:sweep}
 
 \subsection{Cut-causal cone evaluation on frozen \texttt{Transpose.TM} fibres}\label{sec:sweep-trees}
 
@@ -16,12 +16,19 @@ $\Gamma$-free (\lean{IsCutFreeCausalPath}) if none of its strict predecessors li
 resulting $\Gamma$-truncated causal cone of step $v$ is \lean{trueConeSteps} (\lean{InCutCausalCone}),
 and its syntactic input-cell support is \lean{cutConeInputCells}.
 
-In \leanfile{MachineSweepConsequences.lean}, we also represent each cone syntactically as a rooted
-$(1 + M.k)$-ary symbolic tree (\lean{CausalConeTree}) extracted relative to column $c$
-(\lean{traceConeTree}) and evaluated bottom-up on $\rot_c(X)$ directly through $M.\delta$
-(\lean{evalConeTree}, syntactic support \lean{treeCellSupport}):
+The causal-cone determination principle goes back in text to
+\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, with earlier Lean formalizations for abstract
+functional DAGs in \cite{MergeDepth2026} (\leanname{MergeDepth/FieldDag.lean},
+\leanname{MergeDepth.FunDag.cone}) and for native cut replay in \cite{AdaptiveTransfer2026}
+(\leanname{AdaptiveTransfer/FrozenCutInvoice.lean},
+\leanname{AdaptiveTransfer.stepValue_eq_of_uncut_native_cut},
+\leanname{AdaptiveTransfer.native_cut_recovers}). What is new in \Cref{lem:tm-cut-cone} below are
+the Lean $(M.k + 1)^D$ size bound on \leanname{Transpose.TM} cones and the rooted $(1 + M.k)$-ary
+symbolic tree representation (\lean{CausalConeTree} in \leanfile{MachineSweepConsequences.lean}),
+extracted relative to column $c$ (\lean{traceConeTree}) and evaluated bottom-up on $\rot_c(X)$
+directly through $M.\delta$ (\lean{evalConeTree}, syntactic support \lean{treeCellSupport}):
 
-\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres]\label{lem:tm-cut-cone}
+\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres; cf.\ {\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}}, {\cite{MergeDepth2026,AdaptiveTransfer2026}}]\label{lem:tm-cut-cone}
 \formal{NativeSweepInterfaceProofs.lean}{tmTraceCutConeDetermination}
 \formal{MachineSweepConsequences.lean}{evalConeTree_cellSupport,evalConeTree_entryCellSupport_card_le,evalConeTree_traceConeTree_eq}
 Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \ge 1$, and let
@@ -48,7 +55,7 @@ causal path $\pi$ has at most $D$ vertices ($\pi.\mathrm{length} \le D$).
 \begin{outline}
 Each step $w < T$ has at most $1 + M.k$ direct causal predecessors ($w - 1$ for the control state and
 at most one last-visit step per work tape), so inducting on the depth budget $m \le D$ gives the
- geometric sum bound $1 + (M.k+1)\bigl((M.k+1)^{m-1} - 1\bigr) < (M.k+1)^m$. Defining
+geometric sum bound $1 + (M.k+1)\bigl((M.k+1)^{m-1} - 1\bigr) < (M.k+1)^m$. Defining
 $Q_{\mathrm{bit}} = \lean{cutConeInputCells}$ explicitly as the union of input cells read along
 \lean{trueConeSteps} avoids self-referential singleton footprints: strong induction on $w < T$ shows
 that inputs in $C$ agreeing on $Q_{\mathrm{bit}}$ induce identical transitions $M.\delta$ throughout
@@ -64,9 +71,9 @@ ordering gives a maximum acyclic induced subgraph of size at least $(\text{\#cle
 and hence rate at most $1 - 1/(\Delta + 1)$ up to self-referential entries. This elementary bound has
 been in the series since \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (proved in text there, with
 the $1 - 1/(\Delta+1)$ and acyclic-subgraph forms recalled in
-\cite[Sections~4.1 and~6.7]{SeventeenthPaper2026}). We record its Lean~4 formalization in the
-notation of
-\Cref{def:bounded-arity-set-code}.
+\cite[Sections~4.1 and~6.7]{SeventeenthPaper2026}, and ordered-recovery injectivity formalized in
+\leanname{LeanMachine.OrderedRecovery.eq_of_rank}). We record the Lean~4 formalization of its
+column-class storage-code analogue in the notation of \Cref{def:bounded-arity-set-code}.
 
 Given $p : \Z_d \to \mathrm{Fin}\,M$ and $Q : \mathrm{Fin}\,M \to \Z_d \to \mathrm{Finset}(\Z_d \times \Z_d)$,
 evaluating $f_{p(c)}(\rot_c(X))_r$ reads the shifted footprint (\lean{shiftedFootprint})
@@ -107,7 +114,8 @@ $\lean{IsBoundedAritySetCode}(\Delta, p, \mathcal{E}, f, Q, C)$.
 \item For every ranking $\mathrm{rk} : \Z_d \times \Z_d \to \N$, let
   $A(\mathrm{rk}) := \lean{orderedRecoverableCells}(p, Q, \mathcal{E}, \mathrm{rk})$ be the set of
   clean entries $(c, r)$ satisfying $\mathrm{rk}(y) < \mathrm{rk}(c, r)$ for all $y \in F_{c,r}$.
-  Then restriction to $(\Z_d \times \Z_d) \setminus A(\mathrm{rk})$ is injective on $C$, so
+  Then restriction to $(\Z_d \times \Z_d) \setminus A(\mathrm{rk})$ is injective on $C$ (cf.\
+  \leanname{LeanMachine.OrderedRecovery.eq_of_rank}), so
   $\abs{C} \le \abs{\Sigma}^{d^2 - \abs{A(\mathrm{rk})}}$, and averaging over all permutations of
   $\Z_d \times \Z_d$ produces an injective ranking $\mathrm{rk}_*$ with
   $(\Delta + 1)\abs{A(\mathrm{rk}_*)} \ge \abs{\lean{cleanEntries}(p, Q, \mathcal{E})}$.
@@ -147,8 +155,8 @@ for all $d \ge 2$ and $\abs{\Sigma} \ge 2$ (\lean{boundaryControl_DeficitVanishe
 \lean{unrestrictedArity_RateLowerBoundAndTendstoOne}, and
 \lean{unrestrictedArity_ExactLogarithmicAsymptoticAllDimensions}):
 $\abs{C} = \lfloor\abs{\Sigma}^d / d\rfloor^d$ at cell arity $\Delta = d$ (where the clean-entry
-coefficient $d^2 - dM\Delta$ vanishes), $\abs{C} \ge \abs{\Sigma}^{d(d-1)}$ at whole-column support
-$d$ and cell arity $\Delta = 2d - 1$, and $\abs{C} \ge \abs{\Sigma}^{d^2}/d$ for prime $d$ and
+coefficient $d^2 - dM\Delta$ vanishes), $\abs{C} \ge \abs{\Sigma}^{d(d-1)}$ at cell arity
+$\Delta = 2d - 1$, and $\abs{C} \ge \abs{\Sigma}^{d^2}/d$ for prime $d$ and
 $\abs{C} \ge \abs{\Sigma}^{d^2}/(2d)$ for all $d \ge 2$ at $\Delta = d^2$ (wrapping the full-view
 orbit construction of \cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}, which reaches rate
 $1 - o(1)$). At $\Delta \le 2$, stronger results (proved
@@ -164,7 +172,7 @@ at fixed windows $w \ge 3$ over a \emph{fixed} alphabet of $q$ symbols, rather t
 $< 1$.\par}
 \end{remark}
 
-\subsection{Why column classes cannot absorb per-entry cut labels}\label{sec:sweep-remark}
+\subsection{Negative brackets for two column-class cut reductions}\label{sec:sweep-remark}
 
 \begin{remark}[Why subspace bounds and column-class set capacity stop short of Statement~(T)]\label{rem:sweep-negative}
 It is natural to ask whether the linear shared-decoder bounds of
@@ -183,33 +191,38 @@ distinct barriers prevent a direct reduction:
   so any set-level bridge must enforce a bounded read window.
 \item \emph{Depth-$D$ cut cost exceeds the $1/(\Delta+1)$ deficit
   (\cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}, proved in text).}
-  Cutting all causal paths down to length $D$ over a run of length $T$ requires revealing a cut word
-  of bit-cost $\eps L = \Omega(L/D)$, whereas $(M.k + 1)^{D+1} > 1/\eps$ and the entry-level cone arity
-  $\Delta = b(M.k + 1)^D$ grows exponentially in $D$ (and includes the word-width factor
-  $b = \max(1, \clog{d})$). Thus an $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and,
-  as already proved in \cite[Proposition~4.14(c)]{FourthPaper2026}, cannot by itself contradict a
-  transposer.
-\item \emph{Per-entry cut labels from spine edges, and separated high-rate storage codes
-  (\cite{StorageCodes2026,HighRate2026}).}
-  Even before comparing $1/(\Delta+1)$ against cut advice, for any column class count $M_0 \ge 1$ the
-  numerator $d^2 - \abs{\mathcal{E}} - d M_0 \Delta$ in \Cref{thm:random-order-capacity}(b) is
-  \emph{strictly negative} whenever one attempts to turn a $\Gamma$-cut fibre of depth $D$ into a
-  column-class code, either by discarding output entries whose cones touch $\Gamma$ or by refining
-  column classes using $L_{\mathrm{cut}}$ frozen cut slots per column (\Cref{prop:negative-brackets}
-  below). Because
-  \lean{TMDepStep} includes the control-state spine edge $u \to u + 1$, every emission step $v \ge D$
-  encounters a cut step $u \in \Gamma \cap [v - D, v)$ along the spine alone. Cut labels therefore
-  attach to individual output entries rather than whole columns, requiring the \emph{per-position}
-  fixed-alphabet window formulation of \cite[Problem~9.4(b)]{SeventeenthPaper2026}; and because fast
-  machines can use curved multi-scale head motion across $\Theta(\log d)$ scales rather than uniform
-  home-based passes (\cite[Section~3]{FourthPaper2026}) while \cite{StorageCodes2026,HighRate2026}
+  In \cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}, path depth counts edges (stated for
+  oblivious machines, with the same spine-window counting argument applying to the common trajectory of
+  a frozen-trace fibre), so a $\Gamma$-free path of at most $D$ vertices (\Cref{lem:tm-cut-cone}) has
+  edge-depth at most $D - 1$: cutting all causal paths down to $D$ vertices over a run of length $T \ge L$
+  at cut bit-cost $\eps L = \Omega(L/D)$ forces $(M.k + 1)^D > 1/\eps$ (evaluating
+  \cite[Proposition~4.14(c)]{FourthPaper2026} at edge-depth $D - 1$), while the entry-level cone arity
+  $\Delta = b(M.k + 1)^D$ grows exponentially in $D$ and includes $b = \max(1, \clog{d})$. Thus an
+  $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and, as proved in
+  \cite[Proposition~4.14(c)]{FourthPaper2026}, cannot by itself contradict a transposer.
+\item \emph{Per-entry cut labels along spine edges, and separated high-rate storage codes
+  (\cite[commentary on Problem~9.4(b)]{SeventeenthPaper2026}; \cite{StorageCodes2026,HighRate2026}).}
+  \Cref{prop:negative-brackets} below illustrates that two naive column-class reductions of a
+  depth-$D$ $\Gamma$-cut fibre---discarding all cut-touching outputs, or positing a worst-case
+  full-product class count $M_{\mathrm{cls}} := M_0\bigl((M.q+1)(M.g+1)^{M.k}\bigr)^{L_{\mathrm{cut}}}$
+  across $L_{\mathrm{cut}}$ per-column cut slots---make the numerator $d^2 - \abs{\mathcal{E}} - d M \Delta$
+  in \Cref{thm:random-order-capacity}(b) strictly negative. (Note that \Cref{prop:negative-brackets}(b)
+  uses only $M_{\mathrm{cls}} \ge L_{\mathrm{cut}} + 1$ and does not bound how many cut patterns
+  actually occur: on periodic stretches few cut patterns may occur, where the bracket need not be
+  negative and the obstruction is instead item~(2) above.) As already observed in the commentary on
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026}, because \lean{TMDepStep} includes the control-state
+  spine edge $u \to u + 1$, cut labels attach to individual output positions rather than whole
+  columns, motivating the per-position fixed-alphabet window formulation of
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026}. Meanwhile, linear-time transposers can use curved,
+  head-dependent, non-piecewise-affine motion on interacting work tapes rather than uniform
+  home-based passes (\cite[Section~3]{FourthPaper2026}), and \cite{StorageCodes2026,HighRate2026}
   construct bounded-degree paired-distance-separated storage codes above rate $\frac{1}{2}$ and
-  approaching rate $1$, graph degree and separation alone cannot rule out linear-time transposition
+  approaching rate $1$, so graph degree and separation alone cannot rule out linear-time transposition
   without exploiting one-dimensional head trajectory geometry.
 \end{enumerate}
 \end{remark}
 
-\begin{proposition}[Negative brackets for per-column cut absorption]\label{prop:negative-brackets}
+\begin{proposition}[Negative brackets for two specific column-class cut reductions]\label{prop:negative-brackets}
 \formal{MachineSweepConsequences.lean}{perColumnCutAbsorption_bracket_neg}
 Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \in \N$, and let
 $C \subseteq \Sigma_d^{d\times d}$ be a \emph{nonempty} fibre satisfying \lean{IsFrozenTraceCutFibre}
@@ -225,11 +238,11 @@ $\Delta := \leanname{Transpose.entryBits}(d) \cdot (M.k + 1)^D$.
   \[
     d^2 - \abs{\mathcal{E}} - d M_0 \Delta \;<\; 0.
   \]
-\item \emph{Refining column classes by per-column cut slots}: suppose every cut step $u \in \Gamma$
-  touched by a bit cone of an unbroken output $(r, c) \notin \mathcal{E}_{\mathrm{sched}}$ lies among
-  $L_{\mathrm{cut}}$ column-indexed cut slots $\mathrm{colCutStep}(c) : \mathrm{Fin}\,L_{\mathrm{cut}} \to \N$.
+\item \emph{Worst-case full-product class refinement across per-column cut slots}: suppose every cut
+  step $u \in \Gamma$ touched by a bit cone of an unbroken output $(r, c) \notin \mathcal{E}_{\mathrm{sched}}$
+  lies among $L_{\mathrm{cut}}$ column-indexed cut slots $\mathrm{colCutStep}(c) : \mathrm{Fin}\,L_{\mathrm{cut}} \to \N$.
   Then $d^2 \le \abs{\mathcal{E}_{\mathrm{sched}}} + D + d L_{\mathrm{cut}} D$, and for every
-  $M_0 \ge 1$, whenever $(M.q + 1)(M.g + 1)^{M.k} \ge 2$, the refined class count
+  $M_0 \ge 1$, whenever $(M.q + 1)(M.g + 1)^{M.k} \ge 2$, the worst-case full-product class count
   $M_{\mathrm{cls}} := M_0 \bigl((M.q + 1)(M.g + 1)^{M.k}\bigr)^{L_{\mathrm{cut}}}$ satisfies
   \[
     d^2 - \abs{\mathcal{E}_{\mathrm{sched}}} - d M_{\mathrm{cls}} \Delta \;<\; 0.
@@ -257,32 +270,43 @@ Statement~(T) remains open. Within the models studied in this paper and in
 \cite{SeventeenthPaper2026,ClassUniformMemo2026,SharedDecoders2026}, four concrete algebraic and
 combinatorial problems remain unresolved:
 \begin{enumerate}[label=\arabic*.]
-\item \textbf{Macroscopic rank deficit and positive characteristic in two-stage linear composition.}
-  Can the $\Omega\bigl(bd(\log d)^{1/(2M_2 - 1)}\bigr)$ error-rank bound of \Cref{thm:2b} be
-  strengthened to $\Omega_{M_1,M_2}(bd^2)$ for fixed $M_1, M_2$, and extended to fields in which
-  $\operatorname{char}(F) \mid d$ (such as $\F_2$ at $d = 2^m$)?
+\item \textbf{Macroscopic rank deficit for $M_1 \ge 2$ and positive characteristic in two-stage linear composition (\cite[Sections~6 and~8]{SharedDecoders2026}).}
+  For fixed $M_1 \ge 2$ and $M_2 \ge 1$ (at $M_1 = 1$, \cite[Theorem~6.6]{SharedDecoders2026} already
+  gives $\Omega(bd^2 / M_2)$), can the $\Omega\bigl(bd(\log d)^{1/(2M_2 - 1)}\bigr)$ error-rank bound
+  of \Cref{thm:2b} be strengthened to a positive normalized deficit $\Omega_{M_1,M_2}(bd^2)$ as asked
+  in \cite[Section~8]{SharedDecoders2026}, and extended to fields in which $\operatorname{char}(F) \mid d$
+  (such as $\F_2$ at $d = 2^m$)?
 \item \textbf{Closing $\frac{19}{32}$ to $\frac{1}{2} + o(1)$ and positive characteristics in Problem~9.1(a)--(b).}
   Can the $\frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ two-class ceiling of \Cref{thm:1b-two-class}
-  be lowered to $(\frac{1}{2} + o(1))bd^2$ or extended to fields with $\operatorname{char}(F) \mid d$
-  (\cite[Problem~9.1(a)]{SeventeenthPaper2026})? And for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$
-  (\Cref{thm:aperiodic-six-25}), what is $D_1(\{0,1,3\},\{2,4,5\})$ over fields of characteristic~$2$
-  ($25 \le D_1 \le 28$) and characteristic~$3$ ($24 \le D_1 \le 28$,
+  be lowered to $(\frac{1}{2} + o(1))bd^2$, can the averaged multi-class bound of
+  \Cref{thm:1b-multi-class} ($M \ge 3$) be extended from primes to composite $d$, and can
+  \Cref{thm:1a-single-shift,thm:1b-two-class,thm:1b-multi-class} be extended to fields with
+  $\operatorname{char}(F) \mid d$ (\cite[Problem~9.1(a)]{SeventeenthPaper2026})? And for
+  $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$ (\Cref{thm:aperiodic-six-25}), what is
+  $D_1(\{0,1,3\},\{2,4,5\})$ over fields of characteristic~$2$ ($25 \le D_1 \le 28$) and
+  characteristic~$3$ ($21 \le D_1 \le 28$ from symmetric matrices and
+  \cite[Theorem~6.4]{SeventeenthPaper2026}; whether $25$ is attainable in characteristic~$3$ is
   \cite[Problem~6.1]{ClassUniformMemo2026})?
-\item \textbf{Remaining dimensions in Remark~5.6, sharp two-sided interval bounds, and Walsh-masked swap codes in Problem~9.3.}
+\item \textbf{Remaining dimensions in Remark~5.6, two-sided multi-scale bounds in Problem~9.3, and periodic Walsh masks.}
   Does any three-term swap code exceed $d(d+1)/2$ at $d = 5$ or at any $d \ge 8$ outside $\{9, 12\}$
-  (\cite[Remark~5.6]{SeventeenthPaper2026})? Does the conjectured $\bigl\lfloor \frac{1}{2}\bigl(d^2 +
-  \sum_{i, j} \min(\abs{I_i}, \abs{J_j})\bigr)\bigr\rfloor$ bound of
-  \Cref{rem:two-sided-numerical} hold for all two-sided interval partitions? And on $d = 2^m$, when
-  both $A_a$ and $B_a$ lie in the $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed
-  with rotations (\Cref{prop:walsh-dichotomy}), is
-  $\dim_F {}$\leanname{SwapRigidity.swapCode}$(A, B) \le (1 - c)d^2$ for a constant $c > 0$
-  (\cite[Problem~9.3]{SeventeenthPaper2026})?
-\item \textbf{Per-position fixed-alphabet windows and machine reductions (\cite[Problems~9.4 and~9.5]{SeventeenthPaper2026}).}
+  (\cite[Remark~5.6]{SeventeenthPaper2026})? Is $\bigl\lfloor \frac{1}{2}\bigl(d^2 +
+  \sum_{i, j} \min(\abs{I_i}, \abs{J_j})\bigr)\bigr\rfloor$ (\Cref{rem:two-sided-numerical}) an upper
+  bound on swap-code dimension for all two-sided interval partitions, and can
+  \Cref{thm:two-sided-coarse-fine} be extended from two scales to general multi-scale dyadic interval
+  profiles (\cite[Problem~9.3]{SeventeenthPaper2026})? On the periodic variant of
+  \cite[Problem~9.3]{SeventeenthPaper2026} ($d = 2^m$), when both $A_a$ and $B_a$ lie in the
+  $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed with rotations
+  (\Cref{prop:walsh-dichotomy}), is $\dim_F {}$\leanname{SwapRigidity.swapCode}$(A, B) \le (1 - c)d^2$
+  for a constant $c > 0$?
+\item \textbf{Fixed-alphabet windows, oblivious/adaptive interfaces, and multi-scale invariants (\cite[Problems~9.4 and~9.5]{SeventeenthPaper2026}).}
   Over a fixed finite alphabet of $q$ symbols and a fixed window $w \ge 3$ on a spread one-class
   relation, does the $\frac{1}{2} + o(1)$ rate bound hold with a separate recovery function for each
-  position (\cite[Problem~9.4(b)]{SeventeenthPaper2026}), as needed when cut labels vary from entry
-  to entry (\Cref{rem:sweep-negative})? Beyond periodic stretches, finding a machine-level reduction
-  from adaptive schedules or a subadditive multi-scale invariant that is unaffected by single
-  linear-time operations such as within-row shear (\cite[Problems~9.4(a) and~9.5]{SeventeenthPaper2026})
-  remains the central barrier to Statement~(T).
+  position or a single shared function (\cite[Problem~9.4(b)]{SeventeenthPaper2026}), or in its
+  whole-row $\rho$-code form (\cite[Problem~9.4(c)]{SeventeenthPaper2026})? On the machine side,
+  \cite[Problem~9.4(a)]{SeventeenthPaper2026} asks for a cone-system analogue of Theorem~TP on
+  \emph{oblivious} schedules (while \cite[Theorem~H.5 and Corollary~H.6]{AdaptiveTransfer2026} transfer
+  entry-relation storage bounds to cut runs of \emph{adaptive} transposers), and
+  \cite[Problem~9.5]{SeventeenthPaper2026} asks for a quantity subadditive over machine steps, large for
+  the swap at every scale separately, and \emph{``not raised at all scales by a single linear-time
+  operation''}.
 \end{enumerate}

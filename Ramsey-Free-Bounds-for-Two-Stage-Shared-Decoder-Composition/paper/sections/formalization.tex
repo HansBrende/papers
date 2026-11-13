@@ -43,9 +43,11 @@ Inside \leanfile{lean/BoundedArityDecoders/}, twenty-seven public modules are or
   \leanfile{SwapCodeAnswersProofs.lean},
   \leanfile{OperatorDualityProofs.lean},
   \leanfile{NativeSweepInterfaceProofs.lean}, and
-  \leanfile{BoundedAritySetCapacityProofs.lean}), proving the two-stage composition theorems,
-  the one-stage linear run-extension and $\Z_6$ bounds, the two-sided coarse--fine swap-code bound,
-  and the finite controls; and
+  \leanfile{BoundedAritySetCapacityProofs.lean}), proving the two-stage composition theorems and
+  finite controls, the one-stage linear run-extension and $\Z_6$ bounds, the two-sided coarse--fine
+  and three-term/interval swap-code theorems, the Operator Schmidt Rank bounds and row-shear /
+  mutual-information controls, the frozen-fibre cut-causal cone determination theorem, and the
+  one-hop bounded-arity set-capacity and clean-entry bounds; and
 \item \emph{Seven consequence, transfer, and bridge modules}
   (\leanfile{ExtensionFieldTransfer.lean},
   \leanfile{AffineCubeConsequences.lean},
@@ -55,13 +57,27 @@ Inside \leanfile{lean/BoundedArityDecoders/}, twenty-seven public modules are or
   \leanfile{MachineSweepConsequences.lean}, and
   \leanfile{SetCapacityConsequences.lean}), proving the algebraic-closure primitive-root and
   scalar-extension transfer lemmas, the explicit constants $c(M_1, M_2)$ and
-  $D_0(M_1, M_2)$, the general-field finite controls at $d = 13$, $d = 4$, and $d = 12$, the
-  \leanname{TensorProduct} anti-diagonal equivalences, the transport of
-  \leanname{LeanMachine.ShuffleShear} to \leanname{Transpose.TM}, the symbolic
+  $D_0(M_1, M_2)$, the general-field finite controls at $d = 13$, $d = 4$, and $d = 12$, Stone's
+  iteration $S^m = \tau$ and the \leanname{TensorProduct} anti-diagonal equivalences, the transport
+  of \leanname{LeanMachine.ShuffleShear} to \leanname{Transpose.TM}, the symbolic
   \lean{CausalConeTree} evaluator, the $1/(\Delta+1)$ random-order bound, and the negative
-  per-column cut-absorption bounds.
+  column-class cut-reduction bounds.
 \end{enumerate}
 
-Every numbered theorem, lemma, proposition, corollary, and example in the manuscript is proved as a
-\texttt{theorem} declaration in these modules; there are no unformalized or partially formalized
-numbered results.
+Every numbered theorem, lemma, proposition, corollary, and example in the manuscript carries a
+proved \texttt{theorem} declaration in these modules ($37$ marked \verb|\formal| and $3$ marked
+\verb|\partformal|). The parts proved in the text only are:
+\begin{itemize}[leftmargin=1.5em]
+\item in \Cref{thm:2a}, the asymptotic $o\bigl(d^{1/2^{M_2}}\bigr)$ and $(1 - \eps)\log_2\log_2 d$
+  specializations of the Lean pointwise inequality and the greedy translate-covering step turning
+  Behrend's $3$-AP-free set \cite{Behrend1946} into a $2^{O(\sqrt{\log d})}$-class partition of $\Z_d$;
+\item in \Cref{ex:d12-band}, the alternative $(b = 1, M_2 = 2)$ parameter reading of $q = b M_2 k = 4$
+  (Lean proves the shift-equivariant \leanname{SharedDecoders.bandRowSpace} bridge for
+  $b = 2, M_2 = 1, k = 2$);
+\item in \Cref{cor:two-sided-win}, applying \cite[Theorem~6.4]{SeventeenthPaper2026} to
+  \lean{InContiguousCoarseFineSpan} for the one-sided baseline $(d^2 + (\min(s_A, s_B) + 1)d)/2$; and
+\item outside theorem environments, the general $(m, s)$ padded dimension formula
+  $4m(m+1) + \frac{s(s+1)}{2} + 2ms$ in \Cref{sec:remark-5-6} (verified in Lean at $(m, d) \in
+  \{(1,4), (1,5), (2,7)\}$), the positive-characteristic Mahler binomial observation in
+  \Cref{rem:char-dividing-d}, and the numerical search in \Cref{rem:two-sided-numerical}.
+\end{itemize}

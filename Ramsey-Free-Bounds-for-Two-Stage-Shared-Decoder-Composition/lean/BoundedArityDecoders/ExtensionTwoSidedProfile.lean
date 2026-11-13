@@ -28,8 +28,8 @@ comparing the two-sided coarse–fine bound against one-sided `Theorem TP`):
      `1/2 + (1/4) min(β(1 + α), α(1 + β))`, which is **strictly smaller** than one-sided
      `Theorem TP`'s `1/2 + (1/2) min(α, β)` for every `α, β ∈ (0, 1)`.
    * At `α = β = 1/2` (`d = 2k`, `s_A = s_B = k`), `Theorem 3` gives `(11/16) d^2 + d`
-     (`11/16 = 0.6875 < 3/4`), strictly below `(3/4) d^2` for all even `d = 2k ≥ 18` (and strictly below
-     one-sided `Theorem TP`'s `(3/4) d^2 + d/2` for all `d ≥ 10`, i.e. `k ≥ 5`).
+     (`11/16 = 0.6875 < 3/4`), proved in the formal statement to lie strictly below `(3/4) d^2`
+     for all `k ≥ 9` (`d = 2k ≥ 18`).
 -/
 
 namespace BoundedArityDecoders

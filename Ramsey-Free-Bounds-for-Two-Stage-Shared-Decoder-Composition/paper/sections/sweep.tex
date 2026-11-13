@@ -26,7 +26,7 @@ $(1 + M.k)$-ary symbolic tree (\lean{CausalConeTree}) extracted relative to colu
 \formal{MachineSweepConsequences.lean}{evalConeTree_cellSupport,evalConeTree_entryCellSupport_card_le,evalConeTree_traceConeTree_eq}
 Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \ge 1$, and let
 $C \subseteq \Sigma_d^{d\times d}$ satisfy \lean{IsFrozenTraceCutFibre} such that every $\Gamma$-free
-causal path has at most $D$ vertices ($\pi.\mathrm{length} \le D$).
+causal path $\pi$ has at most $D$ vertices ($\pi.\mathrm{length} \le D$).
 \begin{enumerate}[label=(\alph*)]
 \item For every step $v < T$, $\abs{\lean{trueConeSteps}(\mathrm{workPos}, T, \Gamma, v)} \le
   (M.k + 1)^D$. For every output bit $(r, c, \ell)$ emitted at step
@@ -118,8 +118,9 @@ $\lean{IsBoundedAritySetCode}(\Delta, p, \mathcal{E}, f, Q, C)$.
   \]
   At $M = 1, \mathcal{E} = \emptyset$, this gives rate at most $\frac{1}{2} + \frac{1}{2d}$ at
   $\Delta = 1$ and $\frac{2}{3} + \frac{2}{3d}$ at $\Delta = 2$; and for any fixed $\Delta \ge 1$,
-  $\delta \in (0, 1]$, $\abs{\mathcal{E}_d} \le (1 - \delta)d^2$, and $M_d = o(d/\Delta)$, the rate
-  is eventually at most $1 - \frac{\delta}{2(\Delta + 1)}$.
+  $\delta \in (0, 1]$, any sequence of finite alphabets $(\Sigma_d)$ with $\abs{\Sigma_d} \ge 2$,
+  $\abs{\mathcal{E}_d} \le (1 - \delta)d^2$, and $M_d = o(d/\Delta)$, the rate is eventually at most
+  $1 - \frac{\delta}{2(\Delta + 1)}$.
 \end{enumerate}
 \end{theorem}
 \begin{outline}
@@ -133,16 +134,21 @@ $\log\abs{\Sigma} > 0$ gives~(b) (with $\log 0 = 0$ in Lean handling $C = \empty
 \end{outline}
 
 \begin{remark}[Comparison with small-window and unrestricted-arity bounds]\label{rem:capacity-context}
-In \leanfile{BoundedAritySetCapacityProofs.lean} (\lean{oneHopRecoverableInjective},
-\lean{existsRecoverableSubsetBound}, \lean{theorem1_BoundedAritySetCapacity},
-\lean{growingClassesPositiveDeficit}) we also formalized the weaker one-hop product-Bernoulli
-variant with factor $\Delta^\Delta/(\Delta+1)^{\Delta+1} \in \bigl(1/(e(\Delta+1)),\, 1/(2(\Delta+1))\bigr]$,
-together with boundary constructions at $\Delta = d$, $\Delta = 2d - 1$, and $\Delta = d^2$
-(\lean{boundaryControl_DeficitVanishesAtDeltaEqD},
+In \leanfile{BoundedAritySetCapacityProofs.lean} and \leanfile{SetCapacityConsequences.lean}
+(\lean{oneHopRecoverableInjective}, \lean{existsRecoverableSubsetBound},
+\lean{theorem1_BoundedAritySetCapacity}, \lean{growingClassesPositiveDeficit},
+\lean{pMin_two_sided_theta_inv_arity}) we also formalized the weaker one-hop product-Bernoulli
+variant with factor $\Delta^\Delta/(\Delta+1)^{\Delta+1} \in \bigl(1/(e(\Delta+1)),\,
+1/(2(\Delta+1))\bigr]$, together with explicit $M = 1, \mathcal{E} = \emptyset$ nonlinear lower bounds
+for all $d \ge 2$ and $\abs{\Sigma} \ge 2$ (\lean{boundaryControl_DeficitVanishesAtDeltaEqD},
 \lean{unrestrictedArity_RateLowerBoundAndTendstoOne},
-\lean{unrestrictedArity_ExactLogarithmicAsymptoticAllDimensions}, wrapping the $\abs{C} \ge
-\abs{\Sigma}^{d^2}/(2d)$ orbit construction of \cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026},
-where full-view nonlinear codes reach rate $1 - o(1)$). At $\Delta \le 2$, stronger results (proved
+\lean{unrestrictedArity_ExactLogarithmicAsymptoticAllDimensions}):
+$\abs{C} = \lfloor\abs{\Sigma}^d / d\rfloor^d$ at cell arity $\Delta = d$ (where the clean-entry
+coefficient $d^2 - dM\Delta$ vanishes), $\abs{C} \ge \abs{\Sigma}^{d(d-1)}$ at whole-column support
+$d$ and cell arity $\Delta = 2d - 1$, and $\abs{C} \ge \abs{\Sigma}^{d^2}/d$ for prime $d$ and
+$\abs{C} \ge \abs{\Sigma}^{d^2}/(2d)$ for all $d \ge 2$ at $\Delta = d^2$ (wrapping the full-view
+orbit construction of \cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}, which reaches rate
+$1 - o(1)$). At $\Delta \le 2$, stronger results (proved
 in text, allowing a separate recovery function for each position) are already in
 \cite{SeventeenthPaper2026}: at window $w = 1$, \cite[Proposition~6.21(b)]{SeventeenthPaper2026}
 gives the same exponent $\abs{C} \le q^{(d^2 + Md)/2}$ (rate $\frac{1}{2} + \frac{1}{2d}$ at
@@ -157,7 +163,7 @@ $< 1$.
 
 \subsection{Why column classes cannot absorb per-entry cut labels}\label{sec:sweep-remark}
 
-\begin{remark}[Why subspace bounds and column-class set capacity stop short of Question~$(\T)$]\label{rem:sweep-negative}
+\begin{remark}[Why subspace bounds and column-class set capacity stop short of Statement~(T)]\label{rem:sweep-negative}
 It is natural to ask whether the linear shared-decoder bounds of
 \Cref{sec:cubes,sec:sumsets,sec:linear-capacity,sec:aperiodic-six} or the set-capacity infrastructure
 of \Cref{lem:tm-cut-cone} and \Cref{thm:random-order-capacity} can bound a periodic stretch of a
@@ -175,18 +181,19 @@ distinct barriers prevent a direct reduction:
 \item \emph{Depth-$D$ cut cost exceeds the $1/(\Delta+1)$ deficit
   (\cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}).}
   Cutting all causal paths down to length $D$ over a run of length $T$ requires revealing a cut word
-  of bit-cost $\eps L = \Omega(L/D)$, whereas $(k+1)^{D+1} > 1/\eps$ and the entry-level cone arity
+  of bit-cost $\eps L = \Omega(L/D)$, whereas $(M.k + 1)^{D+1} > 1/\eps$ and the entry-level cone arity
   $\Delta = b(M.k + 1)^D$ grows exponentially in $D$ (and includes the word-width factor
   $b = \clog{d}$). Thus an $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and,
   as already proved in \cite[Proposition~4.14(c)]{FourthPaper2026}, cannot by itself contradict a
   transposer.
 \item \emph{Per-entry cut labels from spine edges, and separated high-rate storage codes
   (\cite{StorageCodes2026,HighRate2026}).}
-  Even before comparing $1/(\Delta+1)$ against cut advice, the numerator
-  $d^2 - \abs{\mathcal{E}} - d M \Delta$ in \Cref{thm:random-order-capacity}(b) is \emph{strictly
-  negative} whenever one attempts to turn a $\Gamma$-cut fibre of depth $D$ into a column-class code,
-  either by discarding output entries whose cones touch $\Gamma$ or by refining column classes using
-  $L_{\mathrm{cut}}$ frozen cut slots per column (\Cref{prop:negative-brackets} below). Because
+  Even before comparing $1/(\Delta+1)$ against cut advice, for any column class count $M_0 \ge 1$ the
+  numerator $d^2 - \abs{\mathcal{E}} - d M_0 \Delta$ in \Cref{thm:random-order-capacity}(b) is
+  \emph{strictly negative} whenever one attempts to turn a $\Gamma$-cut fibre of depth $D$ into a
+  column-class code, either by discarding output entries whose cones touch $\Gamma$ or by refining
+  column classes using $L_{\mathrm{cut}}$ frozen cut slots per column (\Cref{prop:negative-brackets}
+  below). Because
   \lean{TMDepStep} includes the control-state spine edge $u \to u + 1$, every emission step $v \ge D$
   encounters a cut step $u \in \Gamma \cap [v - D, v)$ along the spine alone. Cut labels therefore
   attach to individual output entries rather than whole columns, requiring the \emph{per-position}
@@ -243,7 +250,7 @@ and $D < \Delta$ yields $d(L_{\mathrm{cut}} + 1)D < d M_{\mathrm{cls}} \Delta$.
 
 \subsection{Open problems}\label{sec:open}
 
-Question~$(\T)$ remains open. Within the models studied in this paper and in
+Statement~(T) remains open. Within the models studied in this paper and in
 \cite{SeventeenthPaper2026,ClassUniformMemo2026,SharedDecoders2026}, four concrete algebraic and
 combinatorial problems remain unresolved:
 \begin{enumerate}[label=\arabic*.]
@@ -255,17 +262,17 @@ combinatorial problems remain unresolved:
   Can the $\frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ two-class ceiling of \Cref{thm:1b-two-class}
   be lowered to $(\frac{1}{2} + o(1))bd^2$ or extended to fields with $\operatorname{char}(F) \mid d$
   (\cite[Problem~9.1(a)]{SeventeenthPaper2026})? And for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$
-  (\Cref{thm:aperiodic-six-25}), what is $D(\{0,1,3\},\{2,4,5\})$ over fields of characteristic~$2$
-  ($25 \le D \le 28$) and characteristic~$3$ ($24 \le D \le 28$,
+  (\Cref{thm:aperiodic-six-25}), what is $D_1(\{0,1,3\},\{2,4,5\})$ over fields of characteristic~$2$
+  ($25 \le D_1 \le 28$) and characteristic~$3$ ($24 \le D_1 \le 28$,
   \cite[Problem~6.1]{ClassUniformMemo2026})?
 \item \textbf{Remaining dimensions in Remark~5.6, sharp two-sided interval bounds, and Walsh-masked swap codes in Problem~9.3.}
   Does any three-term swap code exceed $d(d+1)/2$ at $d = 5$ or at any $d \ge 8$ outside $\{9, 12\}$
   (\cite[Remark~5.6]{SeventeenthPaper2026})? Does the conjectured $\bigl\lfloor \frac{1}{2}\bigl(d^2 +
-  \sum_{\alpha,\beta} \min(\abs{I_\alpha}, \abs{J_\beta})\bigr)\bigr\rfloor$ bound of
+  \sum_{i, j} \min(\abs{I_i}, \abs{J_j})\bigr)\bigr\rfloor$ bound of
   \Cref{rem:two-sided-numerical} hold for all two-sided interval partitions? And on $d = 2^m$, when
   both $A_a$ and $B_a$ lie in the $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed
   with rotations (\Cref{prop:walsh-dichotomy}), is
-  $\dim_F \leanname{SwapRigidity.swapCode}(A, B) \le (1 - c)d^2$ for a constant $c > 0$
+  $\dim_F {}$\leanname{SwapRigidity.swapCode}$(A, B) \le (1 - c)d^2$ for a constant $c > 0$
   (\cite[Problem~9.3]{SeventeenthPaper2026})?
 \item \textbf{Per-position fixed-alphabet windows and machine reductions (\cite[Problems~9.4 and~9.5]{SeventeenthPaper2026}).}
   Over a fixed finite alphabet of $q$ symbols and a fixed window $w \ge 3$ on a spread one-class
@@ -274,5 +281,5 @@ combinatorial problems remain unresolved:
   to entry (\Cref{rem:sweep-negative})? Beyond periodic stretches, finding a machine-level reduction
   from adaptive schedules or a subadditive multi-scale invariant that is unaffected by single
   linear-time operations such as within-row shear (\cite[Problems~9.4(a) and~9.5]{SeventeenthPaper2026})
-  remains the central barrier to~$(\T)$.
+  remains the central barrier to Statement~(T).
 \end{enumerate}

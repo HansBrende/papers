@@ -6,12 +6,13 @@ Let $d \ge 2$, let $b = \clog{d}$ be the canonical entry bit-width, and let
 $L = d^2 b = \Theta(d^2\log d)$ be the bit-length of a $d \times d$ matrix of $b$-bit entries laid
 out row by row on the read-only input tape of a deterministic multitape Turing machine with $k$
 read-write work tapes and a one-way write-only output tape
-(\cite[Section~2.1 and Definition~2.1]{FirstPaper2026}).
-Question~$(\T)$ asks whether every such machine that outputs the transposed matrix $X^{\T}$ for all
-inputs $X$ requires $\omega(L)$ steps; \cite[Conjecture~9.1]{FirstPaper2026} formulates a stronger
-asymmetric bipartite storage-coding conjecture (the Tape Coding Conjecture) that implies a negative
-answer to~$(\T)$, and by Harvey and van der Hoeven \cite[Corollary~6.9]{HvdH2025}, if no linear-time
-multitape transposer exists then no linear-time multitape integer multiplier exists either.
+(\cite[Sections~2.1--2.2 and Definition~2.1]{FirstPaper2026}).
+Statement~(T) (\cite[Definition~2.1]{FirstPaper2026}, \leanname{Transpose.LinearTimeTransposable})
+asserts that some such machine transposes all $d \times d$ matrices of $b$-bit entries within
+$O(L)$ steps; \cite[Conjecture~9.1]{FirstPaper2026} formulates a stronger asymmetric bipartite
+storage-coding conjecture (the Tape Coding Conjecture) that refutes Statement~(T), and by Harvey and
+van der Hoeven \cite[Corollary~6.9]{HvdH2025}, if Statement~(T) is false then no linear-time
+multitape integer multiplier exists either.
 
 The synthesis paper \emph{Order, Symmetry and the Swap} \cite{SeventeenthPaper2026} organized the
 algebraic obstacles studied across the series into two one-stage mechanisms on $\Mat_{d\times d}(F)$:
@@ -49,7 +50,7 @@ $K_1$ has $M_1$ column classes and $K_2$ has $M_2$ column classes:
 This paper is primarily a sequel to \cite{SharedDecoders2026} and \cite{SeventeenthPaper2026} in
 that same linear algebraic model. We state the model boundary up front: \emph{no multitape Turing
 machine is known to decompose into one- or two-stage linear class-uniform stages}, and none of the
-results of this paper closes Question~$(\T)$ or bridges general adaptive or oblivious machines to
+results of this paper decides Statement~(T) or bridges general adaptive or oblivious machines to
 linear shared decoders. Within the linear class-uniform and swap-code models, however, exploiting
 \emph{linearity of the shared decoders} removes two separate ceilings from prior work: in two-stage
 composition (\cite[Section~6]{SharedDecoders2026}), replacing arithmetic progressions (which
@@ -60,7 +61,7 @@ one-stage capacity (\cite[Problem~9.1(a)--(b)]{SeventeenthPaper2026};
 \cite[Section~3 and Appendix~C]{SharedDecoders2026}), run-extension equations at the right endpoints
 of monochromatic cyclic runs push strictly past the $\frac{5}{8}$ certificate floor imposed by
 $C \cap \rot_s^{-1}(C) \le H_{\{0,s\}}$ for nonlinear decoders and determine
-$D(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
+$D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
 
 \subsection{Summary of results}\label{sec:results-overview}
 
@@ -95,8 +96,8 @@ $D(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
 \item \textbf{Log-power error-rank lower bound for approximate two-stage composition (\Cref{sec:sumsets}).}
   Over any field $F$ with $(d : F) \ne 0$, we pass to a splitting field carrying an injective
   additive character $\chi : \Z_d \to E^\times$ and replace progressions of length $(2M_2 + 1)k - 1$
-  by $(2M_2)$-fold monochromatic sumsets $\widetilde{J}_0 + \widetilde{B}_1 + \cdots +
-  \widetilde{B}_{2M_2 - 1}$ with $\abs{\widetilde{J}_0} = k$, $0 \in \widetilde{B}_t$, and
+  by $(2M_2)$-fold monochromatic sumsets $\widetilde{J}_0 + \widetilde{B}_0 + \cdots +
+  \widetilde{B}_{2M_2 - 2}$ with $\abs{\widetilde{J}_0} = k$, $0 \in \widetilde{B}_t$, and
   $\abs{\widetilde{B}_t} = k + 1$. Because $\bigl(\chi(\nu c)\bigr)_{c \in \widetilde{J}_0, 0 \le \nu < k}$
   is a Vandermonde matrix in the distinct scalars $\chi(c)$ ($c \in \widetilde{J}_0$), stacked
   evaluation over any $k$-element set $\widetilde{J}_0$ is injective on the frequency-$< k$ band
@@ -145,8 +146,8 @@ $D(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   $\dim_F(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})) \le 14$ (\Cref{lem:aperiodic-six-shift-14}) and
   hence $D_1\bigl(\{0,1,3\},\{2,4,5\}\bigr) = 25$ over every field with
   $\operatorname{char}(F) \notin \{2, 3\}$ (\Cref{thm:aperiodic-six-25}, paired with the lower bound
-  of \cite[Theorem~3.2]{ClassUniformMemo2026}); characteristics~$2$ ($25 \le D \le 28$) and~$3$
-  ($24 \le D \le 28$, \cite[Problem~6.1]{ClassUniformMemo2026}) remain open.
+  of \cite[Theorem~3.2]{ClassUniformMemo2026}); characteristics~$2$ ($25 \le D_1 \le 28$) and~$3$
+  ($24 \le D_1 \le 28$, \cite[Problem~6.1]{ClassUniformMemo2026}) remain open.
 
 \item \textbf{Three-term swap codes and one- and two-sided interval-mask bounds (\Cref{sec:swapcodes}).}
   In \cite[Remark~5.6]{SeventeenthPaper2026}, examples of three-term swap codes
@@ -179,7 +180,8 @@ $D(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   (\Cref{prop:shear-control}) yet runs in $O(L)$ time on a $2$-work-tape Turing machine
   (\Cref{prop:stone-tm}, proved in the shared library \texttt{lean-machine} alongside $3$-tape
   shuffle and $2$-tape unshuffle). \Cref{sec:antidiag} also records the anti-diagonal coordinate
-  isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$ (\Cref{thm:anti-diagonal})
+  isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$ (where
+  $(\sigma^t v)_a = v_{a+t}$, \Cref{thm:anti-diagonal})
   and the two-subspace Grassmann relaxation (\Cref{prop:mask-floors}).
 
 \item \textbf{Cut-cone evaluation, random-order set capacity, and why column classes cannot absorb per-entry cut labels (\Cref{sec:sweep}).}

@@ -223,6 +223,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.orderedCubeMap
 #print axioms BoundedArityDecoders.orderedRecoverableCells
 #print axioms BoundedArityDecoders.outputBitIdx
+#print axioms BoundedArityDecoders.pMin_two_sided_theta_inv_arity
 #print axioms BoundedArityDecoders.rowShearLinear
 #print axioms BoundedArityDecoders.rowShearTMMatrix
 #print axioms BoundedArityDecoders.rowShearTransposeTM

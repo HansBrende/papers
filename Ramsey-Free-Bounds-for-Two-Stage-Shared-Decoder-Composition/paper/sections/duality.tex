@@ -32,7 +32,7 @@ $R' < R$ suffices.
 \begin{lemma}[Submultiplicativity and unit-rank operators]\label{lem:osr-submult}
 \formal{OperatorDualityProofs.lean}{operatorSchmidtRankSubmultiplicative}
 \formal{DualityAndSwapConsequences.lean}{isRowOrColUniform_rankLe_one}
-Over any field $F$:
+Over any commutative semiring $F$ (and in particular any field):
 \begin{enumerate}[label=(\alph*)]
 \item If $\OSR(K_1) \le R_1$ and $\OSR(K_2) \le R_2$, then $\OSR(K_2 \circ K_1) \le R_2 R_1$.
 \item Every row-uniform column operator $I_d \otimes B$ (\lean{IsRowUniformColOp}, $(KX)_r = B(X_r)$)
@@ -67,7 +67,7 @@ decomposition on row-localized lane-$0$ basis inputs produces $R$ matrices spann
 forcing $R \ge d^2$. In~(b), for $m \ge 1$, Stone's shuffle sends $(r, c)$ to $(r', c')$ by moving
 the top bit of $r$ into the low bit of $c'$ and the top bit of $c$ into the low bit of $r'$;
 splitting on $(\text{low bit of } c',\, \text{low bit of } r') \in \{0,1\}^2$ gives a $4$-term
-decomposition whose four non-zero quadrant blocks are linearly independent once $2^m \ge 2$ (and
+decomposition whose four nonzero quadrant blocks are linearly independent once $2^m \ge 2$ (and
 symmetrically for $S^{-1}$).
 \end{outline}
 
@@ -135,7 +135,10 @@ Let $F$ be any field, $d \ge 1$, and $b \ge 1$.
 \item Within-row cyclic shear \lean{rowShearLinear} on $(F, d, b)$ lies in the row-diagonal subalgebra
   \lean{IsRowDiagonalOp} ($(KX)_r = B_r(X_r)$) yet has operator Schmidt rank~$d$.
 \item Output-row source arity (\lean{HasOutputRowSourceArityLe}) is invariant under two-sided
-  composition $D_1 \circ K \circ D_0$ with arbitrary row-diagonal operators $D_0, D_1$.
+  composition $D_1 \circ K \circ D_0$ with arbitrary row-diagonal operators $D_0, D_1$ (over any
+  commutative semiring $F$), whereas $\OSR(\mathrm{id}) \le 1 < d = \OSR(\mathcal{S}_{d,b} \circ
+  \mathrm{id})$ separates $\OSR$ from row-diagonal gauge invariance for all $d \ge 2$ (writing
+  $\mathcal{S}_{d,b} := {}$\lean{rowShearLinear}$(F, d, b)$).
 \item On $d = 2^m$ ($m \ge 0$), every alternating product $D_s U_s D_{s-1} \cdots U_1 D_0$
   (\lean{alternatingRowDiagProduct}) of $s + 1$ row-diagonal operators $D_i$ and $s$ shuffle or
   unshuffle passes $U_j \in \{S, S^{-1}\}$ has output-row source arity at most $2^s$; if it equals
@@ -143,7 +146,8 @@ Let $F$ be any field, $d \ge 1$, and $b \ge 1$.
 \end{enumerate}
 \end{proposition}
 \begin{outline}
-In~(a), $\lean{rowShearLinear} = \sum_{r=0}^{d-1} E_{r,r} \otimes \sigma^r$, and linear independence
+In~(a), \lean{rowShearLinear}${} = \sum_{r=0}^{d-1} E_{r,r} \otimes \sigma^r$ (where
+$(\sigma v)_{c,\ell} = v_{c+1,\ell}$), and linear independence
 of the $d$ cyclic column shifts $\sigma^0, \dots, \sigma^{d-1}$ forces $\OSR = d$. In~(b) and~(c),
 row-diagonal operators act within each row without mixing source rows, while each $S$ or $S^{-1}$
 combines at most two source rows into each output row; since row~$0$ of $\tau(X)$ depends on all
@@ -236,7 +240,9 @@ Let $F$ be a field, $d \ge 1$, and $A$ a finite-dimensional $F$-vector space.
   \[
     d^2\dim_F A + \dim_F H_{\{0,s\}}(p) \;\le\; 2\dim_F C_0 + d\dim_F A.
   \]
-\item On even $d = 2m$ ($m \ge 2$) with alternating partition $p(c) = (c \bmod 2 == 1)$, shift
+\item On even $d = 2m$ ($m \ge 2$) with the alternating parity partition
+  $p : \Z_{2m} \to \mathrm{Bool}$ ($p(c) = \texttt{true} \iff c \text{ is odd}$, for
+  $c \in \{0,\dots,2m-1\}$), shift
   $s = 1$ satisfies $p(c) \ne p(c+1)$ everywhere so $U_{\{0,1\}}(p) = \top$ and
   $H_{\{0,1\}}(p) = \top$, whereas shift $s = 2$ has $\dim_F U_{\{0,2\}}(p) = 2$ and forces
   $2\dim_F C \le ((2m)^2 + 4m)\dim_F A$ for every shared code $C$.

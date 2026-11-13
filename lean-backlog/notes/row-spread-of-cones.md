@@ -512,31 +512,134 @@ extraction mechanism; only the work-planarity inference is refuted (X13).
 
 ## 9. Rates at growing windows: simplex codes (Fable, 13 November 2026)
 
-Status: Proposition 9.1 has the written proof below, **not reviewed**. It is a family of codes at windows that
-grow with d. It says nothing about a fixed window, where the question stays open.
+Status: **written proof only; not Lean-formalized**. For each fixed integer
+$m\ge3$ this constructs codes at windows growing with $d$. The case $m=2$
+recovers the pairing rate. It gives no asymptotic rate above one half at a
+fixed window.
 
-**Proposition 9.1.** Let m ≥ 2 and let n be a prime power. Take as rows the points and as columns the
-hyperplanes of the projective space PG(m − 1, n), and let ρ(r) be the set of points of the hyperplane r. So
-d = (n^m − 1)/(n − 1) and the window is w = (n^{m−1} − 1)/(n − 1), about d^{(m−2)/(m−1)}. Over any alphabet that is an
-abelian group there are whole-row codes for ρ, in which every entry reads m − 1 other entries, of rate
-tending to 1 − 1/m as n grows.
+**Proposition 9.1 (projective simplex codes).** Fix an integer $m\ge2$. For
+each prime power $q$, take as rows the points and as columns the hyperplanes
+of $\operatorname{PG}(m-1,q)$, with $\rho(H)$ the points on hyperplane $H$.
+Then
 
-*Proof.* Let c_1, …, c_m be points in general position and r_j the hyperplane spanned by the points other
-than c_j. The cells (c_j, r_j) are not loops, since c_j is not on r_j, and each of them has the other m − 1 in
-its helper rows, since c_i lies on r_j for i ≠ j. Impose on these m cells the single relation that their
-entries sum to zero. Two cells (c, r), (c′, r′) with c′ on r and c on r′ lie in a common simplex only through
-m − 2 points of r ∩ r′, so the number of simplices through two cells is smaller than the number through one
-by a factor of order n^{2(m−2)}; for m = 2 a cell lies in one simplex. By the theorem of Pippenger and Spencer
-on nearly perfect matchings of hypergraphs with small codegrees, all but a vanishing share of the cells
-that are not loops can be covered by pairwise disjoint simplices. Leave the loops free, set the uncovered
-cells to zero, and impose one relation per simplex. The loops are a share w/d of the cells. ∎
+$$d=\frac{q^m-1}{q-1},\qquad w=\frac{q^{m-1}-1}{q-1}.$$
 
-- For m = 2 the space is a line, a hyperplane is a point, ρ is the identity, a simplex is a pair of
-  transposed cells, and the code is the pairing code. So **pairing is the first member of this family**:
-  rate 1 − 1/m at window about d^{(m−2)/(m−1)}, that is 1/2 at bounded window, 2/3 at window √d (projective
-  planes: triangles of points with their opposite sides), 3/4 at d^{2/3}.
-- In terms of α = log w / log d the family has rate 1 − (1 − α)/(2 − α). I do not know a code that beats this
-  curve at any α, nor a bound that matches it. A proof of the half bound at fixed window has to fail for
-  windows that are powers of d, and this family is where it has to fail.
-- The machines need the limit α → 0 only: the window of Proposition 2 is fixed while d grows. No uniformity
-  in the window is needed beyond that.
+For every finite alphabet $A$ of size $a\ge2$ there are whole-row codes
+$C\subseteq A^{d\times d}$ for this relation whose normalized rates
+$\log_a|C|/d^2$ tend to $1-1/m$ as $q\to\infty$ through prime powers. The
+convergence is uniform in $A$: for every $\eta>0$, a threshold
+$q_0(m,\eta)$ works for all such alphabets. The codes can be chosen so that
+each coordinate is recovered from at most $m-1$ other coordinates in its
+allowed helper rows. Alternatively, incident cells may be left free and
+recovered by self-reading, giving the slightly larger finite rate below.
+The code alphabet and the projective field are unrelated.
+
+*Proof.* Put $V=\mathbb F_q^m$. A projective basis is an unordered set of
+$m$ independent one-dimensional subspaces $P_1,\ldots,P_m$. Let $H_j$ be the
+span of the other $m-1$ points. Its simplex consists of the $m$ cells
+$(P_j,H_j)$. These are nonincident, and $P_i\subset H_j$ for $i\ne j$, so
+each cell's allowed rows contain all the other cells of its simplex.
+
+Form the $m$-uniform hypergraph on the nonincident cells, with these
+simplices as edges. There are
+
+$$N=d(d-w)=dq^{m-1}$$
+
+vertices. Write $B_0(q)=1$ and
+
+$$B_r(q)=\frac{|\operatorname{GL}_r(q)|}{(q-1)^r r!},$$
+
+the number of unordered projective bases of an $r$-dimensional space. A
+simplex containing $(P,H)$ is determined by a projective basis of $H$;
+thus every vertex has degree $\Delta=B_{m-1}(q)$. Two distinct vertices
+$(P,H),(P',H')$ have codegree zero unless $P'\subset H$ and $P\subset H'$.
+When these incidences hold,
+$V=P\oplus P'\oplus(H\cap H')$, and a common simplex is determined by a
+projective basis of $H\cap H'$. Its codegree is exactly
+$\lambda=B_{m-2}(q)$. Consequently
+
+$$\frac{\lambda}{\Delta}
+=\frac{(m-1)(q-1)}{q^{m-2}(q^{m-1}-1)}
+\sim(m-1)q^{-2(m-2)}.$$
+
+For fixed $m\ge3$, $\Delta\to\infty$ and $\lambda=o(\Delta)$. The
+[Pippenger–Spencer theorem, *Asymptotic behavior of the chromatic index for
+hypergraphs*, JCTA 51(1), 24–42 (1989)](https://doi.org/10.1016/0097-3165(89)90074-5)
+gives an edge colouring with $(1+o(1))\Delta$ colours. Since the hypergraph
+is regular, its largest colour class is a matching covering $(1-o(1))N$
+vertices. Let this matching have $\nu$ edges and leave $U=N-m\nu=o(N)$
+vertices uncovered. For $m=2$, instead use the exact perfect matching of
+ordered pairs $(P,Q)$ with $(Q,P)$: then $\nu=N/2$ and $U=0$. The
+small-codegree theorem is not needed in that case, where
+$\Delta=\lambda=1$.
+
+Identify $A$ with the cyclic group of order $a$. On each matched simplex
+impose a single sum-zero constraint; it has $a^{m-1}$ solutions and lets
+each cell read the other $m-1$ cells. Fix uncovered nonincident cells to
+zero. Initially leave all $dw$ incident cells free; they can self-read
+because their own row belongs to $\rho(H)$. The constraints occupy disjoint
+cells, so
+
+$$|C|=a^{dw+(m-1)\nu},\qquad
+\frac{\log_a|C|}{d^2}
+=1-\frac1m+\frac{w}{md}-\frac{(m-1)U}{md^2}.$$
+
+Here $w/d\to0$. If self-reading is forbidden, fix the incident cells to
+zero as well. The rate becomes
+$(1-1/m)(1-w/d-U/d^2)$, with the same limit; constant cells require no
+helpers. The matching depends only on $m,q$, which proves the stated
+uniformity in the alphabet. ∎
+
+**Remark (exact vector code; written proof only).** For any finite $q$,
+using the entry alphabet $A^\Delta$ removes the packing loss altogether.
+Give each nonincident cell $\Delta$ lanes, one for each incident simplex.
+On every simplex impose a sum-zero constraint on its dedicated lane at
+each of its $m$ cells. Each underlying nonincident $A$-symbol belongs to exactly one
+constraint, so these $N\Delta/m$ constraints use disjoint variables. Leave
+incident cells free. The resulting code has
+
+$$|C_{\mathrm{vec}}|=a^{\Delta d^2-N\Delta/m},\qquad
+\frac{\log_{a^\Delta}|C_{\mathrm{vec}}|}{d^2}
+=1-\frac1m+\frac{w}{md}.$$
+
+Each nonincident lane uses $m-1$ other lanes in allowed rows. A whole entry
+may use up to $(m-1)\Delta$ other entries, while the whole-row window stays
+$w$; free incident cells still self-read. Unlike Proposition 9.1, this
+exact finite construction uses selected alphabet powers and does not
+assert that they fit canonical entry widths in general.
+
+For the Fano plane ($m=3,q=2$), $d=7$, $w=3$ and $\Delta=3$. With binary
+lanes this does fit the canonical width $b(7)=3$: there are $147$ bits and
+$28$ independent triple constraints, giving $2^{119}$ codewords and rate
+$119/147=17/21$. Disjoint scalar simplices have at most
+$21+2\lfloor28/3\rfloor=39$ free entry-symbols here; the vector construction
+has normalized dimension $119/3>39$. The scalar gadget count is not a
+capacity bound for arbitrary codes.
+
+This uses the established fractional clique-cover strategy of
+[Christofides and Markström, *The Guessing Number of Undirected Graphs*,
+EJC 18(1), P192 (2011), §4](https://doi.org/10.37236/679), also discussed
+after the “Guessing numbers” corollary of
+[Paper 7](../../Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/paper/sections/consequences.tex).
+The application here is to the projective relation; the vector-coding
+mechanism is not new.
+
+- At $m=2$, $d=q+1$ and $w=1$. With free incident cells, the code has the
+  usual pairing cardinality $a^{d(d+1)/2}$ and rate $(d+1)/(2d)$.
+  At $m=3$, the simplices are triangles of projective points with their
+  opposite sides: the limiting rate is $2/3$ at $w\sim\sqrt d$.
+- For each fixed $m$, $\log w/\log d\to\alpha_m=(m-2)/(m-1)$ and the
+  limiting rate is $1/(2-\alpha_m)$. These are the discrete exponents
+  $0,1/2,2/3,3/4,\ldots$; the proof gives neither every real exponent nor a
+  uniform assertion with $m$ growing with $q$. No matching upper bound is
+  proved. The [random triangle construction](simplex-code-calibration.md)
+  attains limiting rate $2/3$ with $w=(1+o(1))d^{1/3}\log d$, beating the
+  formula $1/(2-\alpha)$ at $\alpha=1/3$. In particular a uniform half-rate
+  bound cannot extend to these growing-window families.
+- Proposition 2 supplies a **fixed** window before dimension grows.
+  This implies $\log w/\log d\to0$; the converse fails, for example when
+  $w=\log d$. The machine/crux consequences require a **common positive
+  deficit across all fixed windows**. Their dimension thresholds may
+  depend on the window; no threshold uniform along a growing $w(d)$ is
+  required. The simplex construction leaves that common-deficit question
+  open.

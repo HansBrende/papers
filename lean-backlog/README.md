@@ -118,6 +118,13 @@ Native extraction and source audit:
   canonical growing alphabets, would imply the full native crux at each fixed depth.
   This last implication retains a written proof. No capacity bound or new machine
   exclusion is asserted.
+- [Simplex-code calibration](notes/simplex-code-calibration.md): a reviewed written
+  construction of rate $2/3-o(1)$ at window $(1+o(1))d^{1/3}\log d$, improving
+  the projective-plane window exponent. Exact finite controls include the Fano
+  three-bit code with 119 information bits, and computer-assisted scalar Fano
+  dimension 39 over both $\mathbb F_2$ and $\mathbb F_3$. These results are not
+  Lean-formalized and do not settle the fixed-window question. The linked
+  reproduction folder supplies independent certificate checks.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

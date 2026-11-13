@@ -157,11 +157,21 @@ $< 1$.
 
 \subsection{Why column classes cannot absorb per-entry cut labels}\label{sec:sweep-remark}
 
-\begin{remark}[Two obstructions to bridging periodic stretches via column-class set capacity]\label{rem:sweep-negative}
-It is natural to ask whether \Cref{lem:tm-cut-cone} and \Cref{thm:random-order-capacity} can bound a
-periodic stretch of a Turing machine by conditioning on a bounded-depth trace cut $\Gamma$. Two
-separate obstructions prevent this:
+\begin{remark}[Why subspace bounds and column-class set capacity stop short of Question~$(\T)$]\label{rem:sweep-negative}
+It is natural to ask whether the linear shared-decoder bounds of
+\Cref{sec:cubes,sec:sumsets,sec:linear-capacity,sec:aperiodic-six} or the set-capacity infrastructure
+of \Cref{lem:tm-cut-cone} and \Cref{thm:random-order-capacity} can bound a periodic stretch of a
+multitape Turing machine by conditioning on genie advice or a bounded-depth trace cut $\Gamma$. Three
+distinct barriers prevent a direct reduction:
 \begin{enumerate}[label=(\arabic*)]
+\item \emph{Nonlinear set fibres versus linear subspaces
+  (\cite[Problem~9.4(b)]{SeventeenthPaper2026}; \cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}).}
+  Freezing genie advice or a cut transcript on a finite-alphabet machine selects a \emph{nonlinear
+  subset} $C \subseteq \Sigma_d^{d\times d}$ rather than a linear subspace, so the linear decoder and
+  Fourier-filtration bounds of \Cref{sec:cubes,sec:sumsets,sec:linear-capacity,sec:aperiodic-six} do
+  not apply directly. Moreover, \cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026} prove that
+  shared set decoders with unbounded window reach rate $1 - o(1)$ ($\abs{C} \ge \abs{\Sigma}^{d^2}/(2d)$),
+  so any set-level bridge must enforce a bounded read window.
 \item \emph{Depth-$D$ cut cost exceeds the $1/(\Delta+1)$ deficit
   (\cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}).}
   Cutting all causal paths down to length $D$ over a run of length $T$ requires revealing a cut word
@@ -170,17 +180,22 @@ separate obstructions prevent this:
   $b = \clog{d}$). Thus an $O(1/\Delta)$ rate deficit is always smaller than the cut-advice rate and,
   as already proved in \cite[Proposition~4.14(c)]{FourthPaper2026}, cannot by itself contradict a
   transposer.
-\item \emph{Column classes cannot absorb per-entry cut labels.}
+\item \emph{Per-entry cut labels from spine edges, and separated high-rate storage codes
+  (\cite{StorageCodes2026,HighRate2026}).}
   Even before comparing $1/(\Delta+1)$ against cut advice, the numerator
   $d^2 - \abs{\mathcal{E}} - d M \Delta$ in \Cref{thm:random-order-capacity}(b) is \emph{strictly
   negative} whenever one attempts to turn a $\Gamma$-cut fibre of depth $D$ into a column-class code,
   either by discarding output entries whose cones touch $\Gamma$ or by refining column classes using
   $L_{\mathrm{cut}}$ frozen cut slots per column (\Cref{prop:negative-brackets} below). Because
   \lean{TMDepStep} includes the control-state spine edge $u \to u + 1$, every emission step $v \ge D$
-  encounters a cut step $u \in \Gamma \cap [v - D, v)$ along the spine alone. Consequently, cut
-  labels are attached to individual output entries rather than whole columns, which is why bridging
-  periodic machine stretches requires the \emph{per-position} fixed-alphabet formulation of
-  \cite[Problem~9.4(b)]{SeventeenthPaper2026} rather than column-shared decoder classes.
+  encounters a cut step $u \in \Gamma \cap [v - D, v)$ along the spine alone. Cut labels therefore
+  attach to individual output entries rather than whole columns, requiring the \emph{per-position}
+  fixed-alphabet window formulation of \cite[Problem~9.4(b)]{SeventeenthPaper2026}; and because fast
+  machines can use curved multi-scale head motion across $\Theta(\log d)$ scales rather than uniform
+  home-based passes (\cite[Section~3]{FourthPaper2026}) while \cite{StorageCodes2026,HighRate2026}
+  construct bounded-degree paired-distance-separated storage codes above rate $\frac{1}{2}$ and
+  approaching rate $1$, graph degree and separation alone cannot rule out linear-time transposition
+  without exploiting one-dimensional head trajectory geometry.
 \end{enumerate}
 \end{remark}
 
@@ -229,19 +244,29 @@ and $D < \Delta$ yields $d(L_{\mathrm{cut}} + 1)D < d M_{\mathrm{cls}} \Delta$.
 \subsection{Open problems}\label{sec:open}
 
 Question~$(\T)$ remains open. Within the models studied in this paper and in
-\cite{SeventeenthPaper2026,SharedDecoders2026}, three concrete algebraic and combinatorial problems
-remain unresolved:
+\cite{SeventeenthPaper2026,ClassUniformMemo2026,SharedDecoders2026}, four concrete algebraic and
+combinatorial problems remain unresolved:
 \begin{enumerate}[label=\arabic*.]
 \item \textbf{Macroscopic rank deficit and positive characteristic in two-stage linear composition.}
   Can the $\Omega\bigl(bd(\log d)^{1/(2M_2 - 1)}\bigr)$ error-rank bound of \Cref{thm:2b} be
   strengthened to $\Omega_{M_1,M_2}(bd^2)$ for fixed $M_1, M_2$, and extended to fields in which
   $\operatorname{char}(F) \mid d$ (such as $\F_2$ at $d = 2^m$)?
-\item \textbf{Remaining dimensions in Remark~5.6 and Walsh-masked swap codes in Problem~9.3.}
+\item \textbf{Closing $\frac{19}{32}$ to $\frac{1}{2} + o(1)$ and positive characteristics in Problem~9.1(a)--(b).}
+  Can the $\frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ two-class ceiling of \Cref{thm:1b-two-class}
+  be lowered to $(\frac{1}{2} + o(1))bd^2$ or extended to fields with $\operatorname{char}(F) \mid d$
+  (\cite[Problem~9.1(a)]{SeventeenthPaper2026})? And for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$
+  (\Cref{thm:aperiodic-six-25}), what is $D(\{0,1,3\},\{2,4,5\})$ over fields of characteristic~$2$
+  ($25 \le D \le 28$) and characteristic~$3$ ($24 \le D \le 28$,
+  \cite[Problem~6.1]{ClassUniformMemo2026})?
+\item \textbf{Remaining dimensions in Remark~5.6, sharp two-sided interval bounds, and Walsh-masked swap codes in Problem~9.3.}
   Does any three-term swap code exceed $d(d+1)/2$ at $d = 5$ or at any $d \ge 8$ outside $\{9, 12\}$
-  (\cite[Remark~5.6]{SeventeenthPaper2026})? And on $d = 2^m$, when both $A_a$ and $B_a$ lie in the
-  $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed with rotations
-  (\Cref{prop:walsh-dichotomy}), is $\dim_F \leanname{SwapRigidity.swapCode}(A, B) \le (1 - c)d^2$
-  for a constant $c > 0$ (\cite[Problem~9.3]{SeventeenthPaper2026})?
+  (\cite[Remark~5.6]{SeventeenthPaper2026})? Does the conjectured $\bigl\lfloor \frac{1}{2}\bigl(d^2 +
+  \sum_{\alpha,\beta} \min(\abs{I_\alpha}, \abs{J_\beta})\bigr)\bigr\rfloor$ bound of
+  \Cref{rem:two-sided-numerical} hold for all two-sided interval partitions? And on $d = 2^m$, when
+  both $A_a$ and $B_a$ lie in the $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed
+  with rotations (\Cref{prop:walsh-dichotomy}), is
+  $\dim_F \leanname{SwapRigidity.swapCode}(A, B) \le (1 - c)d^2$ for a constant $c > 0$
+  (\cite[Problem~9.3]{SeventeenthPaper2026})?
 \item \textbf{Per-position fixed-alphabet windows and machine reductions (\cite[Problems~9.4 and~9.5]{SeventeenthPaper2026}).}
   Over a fixed finite alphabet of $q$ symbols and a fixed window $w \ge 3$ on a spread one-class
   relation, does the $\frac{1}{2} + o(1)$ rate bound hold with a separate recovery function for each

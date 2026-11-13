@@ -27,6 +27,72 @@ generally, \leanname{SharedDecoders.IsSharedCode} (\cite[Definition~2.1]{SharedD
 restricts the code $C \le \Mat_{d\times d}(A)$ to an $F$-linear submodule while allowing arbitrary
 deterministic maps $f_m$.
 
+For the one-stage linear capacity bounds of \Cref{sec:linear-capacity,sec:aperiodic-six}, we write
+\lean{laneRot} for the column-rotation map $\rot_s(X)_{i,j} = X_{i, j+s}$ on
+\leanname{Matrix (ZMod d) (ZMod d) (Fin b -> F)}. An $F$-linear submodule
+$\mathcal{X} \le \Mat_{d\times d}(F^b)$ is a \emph{$b$-lane linear class-uniform code} for
+$p : \Z_d \to \kappa$ (\lean{IsLinearClassUniformCode}) if there exist $F$-linear decoders
+$\mathcal{A}_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ ($m \in \kappa$) such that
+\[
+  X_{c, r} \;=\; \mathcal{A}_{p(c)}\bigl(\rot_c(X)\bigr)_r
+  \qquad
+  \text{for all } X \in \mathcal{X} \text{ and all } c, r \in \Z_d.
+\]
+Its maximum dimension over all such subspaces $\mathcal{X}$ is
+$D_b(p) := \lean{linearClassUniformMaxDim}(F, b, p)$. For a single shift $s \in \Z_d$, the
+\emph{single-shift link-covariance space} (\lean{ShiftLinkCovarianceSpace}, formulated symmetrically in
+Lean over two-element shift links $\delta, \delta' \in \{0, s\}$ with $p(c) = p(c')$ and
+$c + \delta = c' + \delta'$) is
+\[
+  H_{\{0, s\}}
+  \;:=\;
+  \Bigl\{X \in \Mat_{d\times d}(F^b) \;:\;
+    \forall c \in \Z_d,\; p(c) = p(c + s) \implies
+    \forall j \in \Z_d,\; X_{c + s, j} = X_{c, j + s}\Bigr\}.
+\]
+We write $\operatorname{char}(F) \nmid n$ for the predicate \lean{CoprimeToChar} $F$ $n$
+($\operatorname{char}(F) = 0$ or $\gcd(n, \operatorname{char}(F)) = 1$).
+
+\begin{proposition}[Linear class-uniform bridges and scalar-extension transfer]\label{prop:linear-model-bridges}
+\formal{ExtensionLinearRun.lean}{laneRot_apply}
+\formal{ExtensionLinearRunSharpness.lean}{extension_LinearModelAndCharBridges}
+\formal{ExtensionFieldTransfer.lean}{coprimeToChar_iff_natCast_ne_zero,exists_isPrimitiveRoot_of_isAlgClosed,exists_isPrimitiveRoot_algebraicClosure,linearIndependent_fin_pi_ringHom,finrank_le_of_pi_ringHom,extendLinearMapPi_comp_map}
+Let $F$ be a field and let $d \ge 1$ and $b \in \N$.
+\begin{enumerate}[label=(\alph*)]
+\item At $b = 1$, pushing forward along \lean{laneOneMatrixEquiv} identifies
+  \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$ with
+  \leanname{SwapRigidity.IsClassUniformCode} $p$ $\mathcal{X}$
+  (\cite[Definition~6.3]{SeventeenthPaper2026}) and intertwines \lean{laneRot} $s$ with
+  \leanname{SwapRigidity.rot} $s$. For arbitrary $b$, pushing forward along
+  \lean{matrixToSharedStateEquiv} embeds every \lean{IsLinearClassUniformCode} into
+  \leanname{SharedDecoders.IsSharedCode} (\cite[Definition~2.1]{SharedDecoders2026}) and intertwines
+  \lean{laneRot} $s$ with \leanname{SharedDecoders.rot} $s$; moreover,
+  $\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}) \le H_{\{0, s\}}$ for every $s \in \Z_d$.
+\item For every $n \ge 1$, $\lean{CoprimeToChar}(F, n)$ holds if and only if $(n : F) \ne 0$, in
+  which case every algebraically closed extension of $F$---and in particular $\overline{F}$
+  (\leanname{AlgebraicClosure F})---contains a primitive $n$-th root of unity.
+\item For every injective field homomorphism $\varphi : F \to K$ and finite index types $\iota, \tau$,
+  coordinatewise application of $\varphi$ preserves linear independence of finite vector families in
+  $F^\iota$, satisfies $\dim_F U \le \dim_K W$ whenever $U \le F^\iota$ and $W \le K^\iota$ obey
+  $\varphi(U) \subseteq W$, and extends every $F$-linear map $L : F^\iota \to F^\tau$ to a $K$-linear
+  map $\lean{extendLinearMapPi}(\varphi, L) : K^\iota \to K^\tau$ commuting with coordinatewise
+  application of $\varphi$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+In~(a), \lean{laneOneMatrixEquiv} drops the unique coordinate $0 \in \mathrm{Fin}\,1$ and
+\lean{matrixToSharedStateEquiv} unfolds $\Mat_{d\times d}(F^b)$ to
+$\Z_d \to \Z_d \to \mathrm{Fin}\,b \to F$; if $X \in \mathcal{X}$ and $\rot_s(X) \in \mathcal{X}$ with
+$p(c) = p(c + s) = m$, then
+$X_{c+s, j} = \mathcal{A}_m(\rot_{c+s}(X))_j = \mathcal{A}_m(\rot_c(\rot_s(X)))_j =
+\rot_s(X)_{c, j} = X_{c, j+s}$. In~(b), $(n : F) = 0$ iff $\operatorname{char}(F) \mid n$; when
+$(n : F) \ne 0$, $Z^n - 1$ is separable over $\overline{F}$ ($n Z^{n-1} \ne 0$ at every nonzero root),
+so its $n$ roots form a cyclic subgroup of $\overline{F}^\times$ of order $n$. In~(c), an $F$-basis of
+$U$ pushes forward to a $K$-linearly independent family in $W$ by clearing denominators through a
+row-reduced pivot test over $F$, and \lean{extendLinearMapPi} expands $L$ in the standard basis of
+$F^\iota$.
+\end{outline}
+
 For arbitrary subsets $C \subseteq \Sigma^{d\times d}$ over a finite alphabet $\Sigma$ (used in
 \Cref{sec:sweep}), we also record syntactic cell footprints:
 
@@ -54,7 +120,7 @@ Let $d \ge 1$, let $M, \Delta \in \N$, and let $\Sigma$ be a finite alphabet.
 \subsection{Multitape Turing machines, canonical words, and grid bridges}\label{sec:defs-tm}
 
 In \Cref{sec:duality,sec:sweep} we interface with the multitape Turing machine model
-\leanname{Transpose.TM} imported unchanged from \cite[Definition~2.1]{FirstPaper2026}: a machine $M$
+\leanname{Transpose.TM} imported unchanged from \cite[Section~2.1 and Definition~2.1]{FirstPaper2026}: a machine $M$
 has state set $\mathrm{Fin}(M.q + 1)$, work alphabet $\mathrm{Fin}(M.g + 1)$, $M.k$ two-way
 read-write work tapes, one two-way read-only binary input tape of length $L = d^2 b$ where
 $b = \leanname{Transpose.entryBits}(d)$, and one one-way write-only binary output tape. The canonical

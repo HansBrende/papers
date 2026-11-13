@@ -1,0 +1,113 @@
+\section{Exact dimension \texorpdfstring{$25$}{25} for the aperiodic partition of \texorpdfstring{$\Z_6$}{Z\_6}}\label{sec:aperiodic-six}
+
+\cite[Problem~9.1(b)]{SeventeenthPaper2026} asks for the exact maximum dimension
+$D\bigl(\{0,1,3\},\,\{2,4,5\}\bigr)$ of a scalar ($b = 1$) linear class-uniform code on $\Z_6$ for the
+aperiodic two-class partition $J_0 = \{0,1,3\}$, $J_1 = \{2,4,5\}$
+(\leanname{SwapRigidity.aperiodicCls}, the smallest partition of $\Z_d$ with no shift almost-period in
+which a code beats the interval value $(d^2 + Md)/2 = 24$). Prior to this work, the known bounds were
+$25 \le D \le 28$ over every field in which $3 \ne 0$ (and $24 \le D \le 28$ in characteristic~$3$):
+Theorem~TP (\cite[Theorem~6.4]{SeventeenthPaper2026}) gives $D \le 28$ over every field, while a
+$25$-dimensional code was constructed over $\F_2$ in \cite[Proposition~8.2]{SeventeenthPaper2026} and
+extended to every field with $3 \ne 0$ via two integer echelon certificates in
+\cite[Theorem~3.2]{ClassUniformMemo2026} (\leanname{ClassUniformMemo.exists_code_of_three_ne_zero}).
+Note that \Cref{thm:1a-single-shift}(b) alone at $d = 6, b = 1, s = 1$ ($d_{0,0} = d_{1,0} = 3$,
+$T_{0,0} = T_{1,0} = 2$) gives $\dim_F\bigl(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})\bigr) \le
+2\bigl(2\cdot 3 - \frac{1}{2}\cdot 4 + \frac{1}{2}\cdot 2\bigr) + 6 = 16$, yielding
+$2\dim_F\mathcal{X} \le 36 + 16 = 52$, i.e.\ $\dim_F\mathcal{X} \le 26$, still one dimension above $25$.
+
+By analyzing the coupled cross-mode constraints across all six column-Fourier modes of $H_{\{0,1\}}$
+simultaneously, we sharpen the single-shift intersection bound to $14$ and establish
+$D\bigl(\{0,1,3\},\,\{2,4,5\}\bigr) = 25$ in \cite[Problem~9.1(b)]{SeventeenthPaper2026} over every
+field of characteristic outside $\{2, 3\}$.
+
+\begin{lemma}[Single-shift intersection bound $14$ for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$]\label{lem:aperiodic-six-shift-14}
+\formal{ExtensionAperiodicSixProofs.lean}{extension_Theorem2_Preliminaries,aperiodicSix_shift_inf_finrank_le_14}
+Let $F$ be a field.
+\begin{enumerate}[label=(\alph*)]
+\item The Boolean partition $\leanname{SwapRigidity.aperiodicCls} : \Z_6 \to \mathrm{Bool}$ has
+  \texttt{true}-fiber $\{0, 1, 3\}$ and \texttt{false}-fiber $\{2, 4, 5\}$, and for every field $F$
+  the three conditions $\bigl(\operatorname{char}(F) \ne 2 \wedge \operatorname{char}(F) \ne 3\bigr)$,
+  $\bigl((2 : F) \ne 0 \wedge (3 : F) \ne 0\bigr)$, and $\lean{CoprimeToChar}(F, 6)$ are equivalent.
+\item Whenever $\operatorname{char}(F) \notin \{2, 3\}$, every subspace
+  $\mathcal{X} \le \Mat_{6\times 6}(F)$ satisfying
+  \leanname{SwapRigidity.IsClassUniformCode} \leanname{SwapRigidity.aperiodicCls} $\mathcal{X}$ obeys
+  \[
+    \dim_F\bigl(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})\bigr) \;\le\; 14.
+  \]
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Part~(a) is direct verification on $\Z_6$ and prime factors of $6$. For~(b), extend scalars to
+$K = \overline{F}$ via \Cref{prop:linear-model-bridges}(b)--(c) and choose a primitive $6$th root of
+unity $\zeta \in K^\times$ ($\zeta^2 = \zeta - 1$, with $(2 : K) \ne 0$ and $(3 : K) \ne 0$). Because
+$W := \mathcal{X}_K \cap \rot_1^{-1}(\mathcal{X}_K)$ lies in $H_{\{0,1\}}$ ($X_{1,j} = X_{0,j+1}$ and
+$X_{5,j} = X_{4,j+1}$), $H_{\{0,1\}}$ has dimension $4 \cdot 6 = 24$ and decomposes into six
+$4$-dimensional column-Fourier eigenspaces $V_\eta = \{Y \in H_{\{0,1\}} : \rot_1(Y) = \zeta^\eta Y\}$
+($\eta \in \Z_6$). Let $K_\eta := W \cap V_\eta$, $W_{\mathrm{pure}} := \bigoplus_{\eta \in \Z_6} K_\eta$,
+$S_K := \sum_{\eta \in \Z_6} \dim_K K_\eta$, and $Q := W / W_{\mathrm{pure}}$, so
+$\dim_K W = S_K + \dim_K Q$.
+\begin{enumerate}[label=\arabic*.,leftmargin=1.5em]
+\item \emph{Pure-mode cap $S_K \le 12$}: on a single mode $Y \in V_\eta$, $\rot_c(Y) = \zeta^{c\eta} Y$,
+  so the linear decoder $\mathcal{A}_{m,K}$ outputs $\zeta^{c\eta}\mathcal{A}_{m,K}(Y)$ across every
+  $c \in J_m$ ($m \in \{0,1\}$), forcing $Y$ to be class-shift covariant on all of $J_0$ and all of
+  $J_1$; this cuts each $K_\eta$ down to a $2$-dimensional subspace $L_\eta \le V_\eta$ and gives
+  $\dim_K K_\eta \le 2$ for every $\eta \in \Z_6$, hence $S_K \le 12$.
+\item \emph{Antipodal quotient inequality $3\dim_K Q + S_K \le 24$}: for each $a \in \{0, 1, 2\}$, let
+  $S_a := \Z_6 \setminus \{a, a + 3\}$ and $W_{S_a} := W \cap \bigoplus_{\eta \in S_a} V_\eta$. Because
+  both classes have size $3$ with antipodal cancellation and $(Z^6 - 1)/(Z - \zeta^{c_0})$ has all six
+  coefficients nonzero, any $Y \in W_{S_a}$ has each of its four mode components $\pi_\eta(Y)$
+  ($\eta \in S_a$) individually in $W$, i.e.\ $W_{S_a} = \bigoplus_{\eta \in S_a} K_\eta$. Thus the
+  induced map $Q \to (V_a / K_a) \oplus (V_{a+3} / K_{a+3})$ is injective for each $a \in \{0,1,2\}$.
+  Summing $\dim_K Q \le 8 - \dim_K K_a - \dim_K K_{a+3}$ over $a \in \{0,1,2\}$ yields
+  $3\dim_K Q + S_K \le 24$. Whenever $S_K \le 10$, this immediately gives
+  $\dim_K W = S_K + \dim_K Q \le S_K + \lfloor(24 - S_K)/3\rfloor \le 14$.
+\item \emph{Closing $S_K = 11$ and $S_K = 12$}: using the exact anti-diagonal zeros of the $\Z_6$ DFT
+  interpolation matrices at shift $\eta + 3 \leftrightarrow \eta$ to eliminate the single unconstrained
+  column ($c = 5$ for $J_0$, $c = 1$ for $J_1$), pairwise disjointness of the antipodal projection
+  kernels eliminates $S_K = 11, \dim_K Q \ge 4$ (where a $2 + 2$ kernel decomposition forces two coupled
+  blocks to vanish and forces two kernels to coincide) and reduces $S_K = 12, \dim_K Q \ge 3$ to a
+  parameter-free $4 \times 4$ linear system over $\Z[\zeta, \frac{1}{6}]$ (determinant $\frac{16}{3}$,
+  or $3^4 \cdot \frac{16}{3} = 432 = 2^4 \cdot 3^3$ with entries $\pm 3, \pm(2\zeta - 1)$ after clearing
+  thirds) proved nonsingular by direct row elimination using $(2 : K) \ne 0$, $(3 : K) \ne 0$, and
+  $(2\zeta - 1)^2 = -3 \ne 0$. Hence $\dim_K W \le 14$ in all cases.
+\end{enumerate}
+\end{outline}
+
+\begin{theorem}[Exact dimension $25$ for $\{0,1,3\} \mid \{2,4,5\}$ outside characteristics $2$ and $3$]\label{thm:aperiodic-six-25}
+\formal{ExtensionAperiodicSixProofs.lean}{aperiodicSix_finrank_le_25,aperiodicSix_maxDim_eq_25,extension_Theorem2_AperiodicSixExact}
+Let $F$ be any field with $\operatorname{char}(F) \ne 2$ and $\operatorname{char}(F) \ne 3$.
+\begin{enumerate}[label=(\alph*)]
+\item Every subspace $\mathcal{X} \le \Mat_{6\times 6}(F)$ satisfying
+  \leanname{SwapRigidity.IsClassUniformCode} \leanname{SwapRigidity.aperiodicCls} $\mathcal{X}$ obeys
+  $2\dim_F \mathcal{X} \le 36 + 14 = 50$ and hence $\dim_F \mathcal{X} \le 25$.
+\item Combining~(a) with \cite[Theorem~3.2]{ClassUniformMemo2026}
+  (\leanname{ClassUniformMemo.exists_code_of_three_ne_zero}), the set of achievable dimensions
+  $\{\dim_F \mathcal{X}\}$ over all $\mathcal{X}$ satisfying
+  \leanname{SwapRigidity.IsClassUniformCode} \leanname{SwapRigidity.aperiodicCls} $\mathcal{X}$
+  has greatest element $25$, and
+  \[
+    D_1\bigl(\{0,1,3\},\,\{2,4,5\}\bigr) \;=\; 25
+  \]
+  (formalized as \lean{linearClassUniformMaxDim}$(F, 1, \mathrm{cls}) = 25$ at
+  $\mathrm{cls} = {}$\leanname{SwapRigidity.aperiodicCls}).
+  The same bounds and exact maximum $25$ hold for every coloring $\mathrm{cls} : \Z_6 \to \kappa$ with
+  fibers $\{0,1,3\}$ and $\{2,4,5\}$ (\lean{IsAperiodicSixPartition}).
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+Since $\rot_1$ is an $F$-linear automorphism of $\Mat_{6\times 6}(F)$ of ambient dimension $36$,
+Grassmann's formula $\dim_F(\mathcal{X} + \rot_1^{-1}(\mathcal{X})) +
+\dim_F(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})) = 2\dim_F \mathcal{X}$ together with
+\Cref{lem:aperiodic-six-shift-14}(b) yields $2\dim_F \mathcal{X} \le 36 + 14 = 50$, so
+$\dim_F \mathcal{X} \le 25$. Since $\operatorname{char}(F) \ne 3$ implies $(3 : F) \ne 0$,
+\leanname{ClassUniformMemo.exists_code_of_three_ne_zero} supplies a $25$-dimensional code over $F$,
+proving \leanname{IsGreatest} and \lean{linearClassUniformMaxDim}${} = 25$; re-indexing the two fibers
+transfers the result to any $\mathrm{cls}$ satisfying \lean{IsAperiodicSixPartition}.
+\end{outline}
+
+\begin{remark}[Remaining characteristics $2$ and $3$]\label{rem:aperiodic-six-chars}
+Over $\operatorname{char}(F) = 2$ ($25 \le D \le 28$, \cite[Proposition~8.2]{SeventeenthPaper2026}) and
+$\operatorname{char}(F) = 3$ ($24 \le D \le 28$, \cite[Problem~6.1]{ClassUniformMemo2026}), $Z^6 - 1$
+factors with repeated roots as $(Z^3 - 1)^2$ and $(Z^2 - 1)^3$, so $\Z_6$ is not semisimple over
+$\overline{F}$ and both characteristics remain open.
+\end{remark}

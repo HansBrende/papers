@@ -1,0 +1,305 @@
+\section{Run-extension bounds for one-stage linear shared decoders}\label{sec:linear-capacity}
+
+\subsection{Why nonlinear translate certificates stall at \texorpdfstring{$5/8$}{5/8}, and run-extension for linear decoders}\label{sec:run-extension}
+
+We now turn from two-stage compositions to the one-stage linear shared-decoder capacity problem posed
+in \cite[Problem~9.1(a)]{SeventeenthPaper2026}: for a partition $p : \Z_d \to \kappa$ into $M$ column
+classes, bound the maximum dimension $D_b(p) = \lean{linearClassUniformMaxDim}(F, b, p)$ of an
+$F$-linear class-uniform code $\mathcal{X} \le \Mat_{d\times d}(F^b)$
+(\lean{IsLinearClassUniformCode}). When each class is a cyclic interval, Theorem~TP
+(\cite[Theorem~6.4]{SeventeenthPaper2026}) gives $D_1(p) \le (d^2 + M d)/2$, whereas scattered classes
+can exceed that interval value (\cite[Proposition~6.17, Corollary~6.19, and Proposition~8.2]{SeventeenthPaper2026};
+\cite[Theorem~4.8 and Corollary~4.10]{ClassUniformMemo2026}).
+
+In \cite{SharedDecoders2026}, \cite[Theorem~3.4]{SharedDecoders2026} proved the universal two-class
+ceiling $D_b(p) \le \frac{41}{64}\,b d^2 + \frac{5}{3}\,b d^{3/2}$ over every field by iterating the
+single-shift inclusion $\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}) \le H_{\{0, s\}}$ along doubled
+shift sets $E_0 = \{0\}, E_j = E_{j-1} \cup (E_{j-1} + t_j)$ (\cite[Theorem~3.2]{SharedDecoders2026}),
+and \cite[Theorem~3.5]{SharedDecoders2026} proved
+$D_b(p) \le \bigl(1 - 1/(4\lceil\sqrt{2M}\,\rceil)\bigr) b d^2$ for $M \le d/2$, which improves on the
+flag bound $(1 - \frac{1}{2M}) b d^2 + O(bd)$
+(\cite[Theorem~5.1, Corollary~5.9(b), and Problem~9.1(a)]{SeventeenthPaper2026}) when
+$M \ge 11$. At the same time, \cite[Theorem~C.6]{SharedDecoders2026} proved that this nested-component
+translate certificate method cannot go below $(\frac{5}{8} - o(1)) b d^2$
+($\frac{5}{8} = \frac{40}{64} = 0.625$) on almost every two-class partition (and its full-ambient
+isolation variant cannot go below $(\frac{9}{16} - o(1)) b d^2$,
+\cite[Theorem~C.7]{SharedDecoders2026}). The structural reason for that ceiling is that
+$C \cap \rot_s^{-1}(C) \le H_{\{0, s\}}$ uses only equality of decoder outputs across monochromatic
+edges $p(c) = p(c + s)$, a property shared by \emph{arbitrary nonlinear deterministic decoders}
+$f_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ (\leanname{SharedDecoders.IsSharedCode}).
+
+When the class decoders $\mathcal{A}_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ are \emph{$F$-linear}
+(\cite[Definition~6.3]{SeventeenthPaper2026}), the single-shift intersection
+$U := \mathcal{X} \cap \rot_s^{-1}(\mathcal{X})$ satisfies strictly more linear constraints than
+$H_{\{0, s\}}$. Fix $s \in \Z_d$, let $g_s := \gcd(d, s.\mathrm{val})$ (\lean{shiftGcd}) and
+$n := d / g_s$ (\lean{shiftOrbitLen}), and partition $\Z_d$ into the $g_s$ cyclic orbits $O_a$
+($a \in \mathrm{Fin}\,g_s$, \lean{shiftOrbit}) of $c \mapsto c + s$, each of length $n$. Along $O_a$,
+consider any maximal contiguous monochromatic run
+$I_r = \{c_r, c_r + s, \dots, c_r + (\ell_r - 1)s\} \subseteq J_m \cap O_a$ of class $m$, where
+$J_m = p^{-1}(m)$:
+\begin{itemize}[leftmargin=1.5em]
+\item Since $U \le H_{\{0, s\}}$, all $\ell_r$ matrices $\rot_{c_r + t s}(X)$ ($0 \le t \le \ell_r - 1$)
+  have shifted rows $X_{c_r + t s, \cdot} = \rot_s^t(x^{(a)}_r)$ determined by the single vector
+  $x^{(a)}_r := X_{c_r, \cdot} \in (F^b)^{\Z_d}$ (writing $(\rot_s v)_j := v_{j + s}$ on
+  $(F^b)^{\Z_d}$), and $X \in \mathcal{X}$ gives
+  $\mathcal{A}_m\bigl(\rot_{c_r + t s}(X)\bigr) = \rot_s^t(x^{(a)}_r)$ for $0 \le t \le \ell_r - 1$.
+\item Because $\rot_s(X)$ \emph{also} lies in $\mathcal{X}$ and the right endpoint
+  $c_r + (\ell_r - 1)s$ still belongs to $J_m$, evaluating the class-$m$ rule for $\rot_s(X)$ at
+  column $c_r + (\ell_r - 1)s$ yields \emph{one additional linear equation} at $t = \ell_r$:
+  \[
+    \mathcal{A}_m\bigl(\rot_{c_r + \ell_r s}(X)\bigr)
+    \;=\;
+    \mathcal{A}_m\bigl(\rot_{c_r + (\ell_r - 1)s}(\rot_s(X))\bigr)
+    \;=\;
+    \rot_s(X)_{c_r + (\ell_r - 1)s, \cdot}
+    \;=\;
+    \rot_s^{\ell_r}(x^{(a)}_r),
+  \]
+  even though $c_r + \ell_r s \notin J_m$. Thus $\mathcal{A}_m$ is pinned down at $\ell_r + 1$ points
+  along $I_r$ rather than $\ell_r$.
+\end{itemize}
+
+When $\operatorname{char}(F) \nmid n$, passing to $\overline{F}$ with a primitive $n$-th root of unity
+$\omega_n$ (\Cref{prop:linear-model-bridges}(b)--(c)) expands $\rot_c(X)$ in $\rot_s$-eigenmodes and
+turns those run-extended equations into root-vanishing conditions on polynomials of bounded degree:
+
+\begin{lemma}[Polynomial root-vanishing bound]\label{lem:vanish-coeffs}
+\formal{ExtensionLinearRunSingleShift.lean}{finrank_vanishCoeffs_le}
+Let $K$ be any field, let $D \in \N$, and let $S \subseteq K$ be a finite subset. The subspace
+\lean{vanishCoeffs} $(K, D, S) \le K^{\mathrm{Fin}\,D}$ of coefficient tuples $(c_0, \dots, c_{D-1})$
+satisfying $\sum_{j=0}^{D-1} c_j z^j = 0$ for all $z \in S$ has dimension at most $D - \abs{S}$
+(with truncated subtraction in $\N$, hence $0$ whenever $\abs{S} \ge D$).
+\end{lemma}
+\begin{outline}
+Induct on $D$. At $D = 0$ the ambient space $K^{\mathrm{Fin}\,0}$ is zero-dimensional. For $D + 1$
+and nonempty $S$, choose $z_0 \in S$; every polynomial $P(Z)$ of degree $\le D$ vanishing at $z_0$
+factors uniquely as $(Z - z_0) Q(Z)$ via a $K$-linear quotient map on coefficient tuples,
+injectively mapping $\lean{vanishCoeffs}(K, D + 1, S)$ into
+$\lean{vanishCoeffs}(K, D, S \setminus \{z_0\})$.
+\end{outline}
+
+For each orbit $a \in \mathrm{Fin}\,g_s$ and class $m \in \mathrm{Fin}\,M$, denote the orbit class size
+and right-endpoint run count (\lean{orbitClassCard}, \lean{orbitRunCount}) by
+\[
+  d_{m,a} \;:=\; \abs{J_m \cap O_a},
+  \qquad
+  T_{m,a} \;:=\; \abs{\bigl\{c \in J_m \cap O_a \;:\; c + s \notin J_m\bigr\}}.
+\]
+Write the single-shift quadratic bound (\lean{theorem1ASingleShiftBound}) as
+\[
+  B_{\mathrm{run}}(b, p, s)
+  \;:=\;
+  b g_s \sum_{a=0}^{g_s - 1} \sum_{m=0}^{M - 1}
+    \Bigl(T_{m,a}(n - d_{m,a}) \;-\; \tfrac{1}{2}\,T_{m,a}^2 \;+\; \tfrac{1}{2}\,T_{m,a}\Bigr)
+  \;+\; b g_s d.
+\]
+
+\begin{theorem}[Single-shift run-extension bound for linear shared decoders]\label{thm:1a-single-shift}
+\formal{ExtensionLinearRunSingleShift.lean}{extension_Theorem1A_SingleShift,linearClassUniform_singleShift_finrank_le}
+Let $F$ be a field, let $d, M, b \ge 1$, let $p : \Z_d \to \mathrm{Fin}\,M$, and let
+$s \in \Z_d$ with $g_s = \gcd(d, s.\mathrm{val})$ and $n = d / g_s$.
+\begin{enumerate}[label=(\alph*)]
+\item For every $a \in \mathrm{Fin}\,g_s$ and $m \in \mathrm{Fin}\,M$, $T_{m,a} \le n - d_{m,a}$.
+\item Whenever $\operatorname{char}(F) \nmid n$ (\lean{CoprimeToChar} $F$ $n$), every subspace
+  $\mathcal{X} \le \Mat_{d\times d}(F^b)$ satisfying \lean{IsLinearClassUniformCode} $p$
+  $\mathcal{X}$ obeys
+  \[
+    \dim_F\bigl(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X})\bigr)
+    \;\le\;
+    B_{\mathrm{run}}(b, p, s).
+  \]
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+Part~(a) holds because the map $c \mapsto c + s$ injects $\{c \in J_m \cap O_a : c + s \notin J_m\}$
+into $O_a \setminus J_m$. For~(b), extend scalars to $K = \overline{F}$ via
+\Cref{prop:linear-model-bridges}(b)--(c) and pick a primitive $n$-th root of unity $\omega \in K^\times$.
+Decompose $K$-matrices into $\rot_s$-eigenmodes $E_\eta = \{Y : \rot_s(Y) = \omega^\eta Y\}$
+($0 \le \eta < n$) via \lean{fourierCoeffs} and \lean{modeLift}, and apply
+\leanname{LeanMachine.SequentialDimension.finrank_le_sum_of_prefix} in descending degree order
+$D = n - 1 - k$ ($0 \le k < n$). When modes $> D$ of $X \in \mathcal{X}_K \cap \rot_s^{-1}(\mathcal{X}_K)$
+vanish, on each row-orbit $O_a$, class $m$, and column-orbit $a' \in \mathrm{Fin}\,g_s$, evaluating
+$\mathcal{A}_{m,K}$ on both $X$ and $\rot_s(X)$ expresses the mode-$D$ coefficients along
+$c = a_0 + t s \in J_m \cap O_a$ via a $(K^b)$-valued polynomial $P(Z) = \sum_{\eta=0}^D v_\eta Z^\eta$
+obeying both $P(\omega^t) = \alpha_D(a_0 + t s, a')$ and
+$P(\omega^{t+1}) = \omega^D \alpha_D(a_0 + t s, a')$. Hence the twisted values $\omega^{-t D} P(\omega^t)$
+are constant across all $\ell_r + 1$ points $t_r, \dots, t_r + \ell_r$ of each run of $J_m \cap O_a$, and
+$P(\omega Z) - \omega^D P(Z) = \sum_{\eta=0}^{D-1} (\omega^\eta - \omega^D) v_\eta Z^\eta$ vanishes at all
+$d_{m,a}$ roots $\omega^t$ ($a_0 + t s \in J_m \cap O_a$). Since $\omega^\eta \ne \omega^D$ for $\eta < D$,
+\Cref{lem:vanish-coeffs} bounds each $(a, m, a')$ block at step $D$ by
+$b \cdot {}$\lean{stepRunBound}$(d_{m,a}, T_{m,a}, D)$, where \lean{stepRunBound} equals $0$ if $d_{m,a} = 0$,
+$1$ if $d_{m,a} = n$ ($T_{m,a} = 0$, summing over $0 \le D < n$ to $n = d_{m,a}$), and
+$\min\bigl(T_{m,a},\, 1 + \max(0, D - d_{m,a})\bigr)$ when $1 \le d_{m,a} < n$ ($T_{m,a} \ge 1$). In the
+latter case, using $T_{m,a} \le n - d_{m,a}$, the $d_{m,a}$ steps $0 \le D < d_{m,a}$ contribute $1$ each
+($+ d_{m,a}$) and the remaining steps $d_{m,a} \le D < n$ contribute
+$\sum_{u=0}^{n - d_{m,a} - 1} \min(T_{m,a}, 1 + u) = T_{m,a}(n - d_{m,a} - T_{m,a}) + \binom{T_{m,a}+1}{2}
+= T_{m,a}(n - d_{m,a}) - \frac{1}{2}T_{m,a}^2 + \frac{1}{2}T_{m,a}$. Summing over
+$a' \in \mathrm{Fin}\,g_s$, $a \in \mathrm{Fin}\,g_s$, and $m \in \mathrm{Fin}\,M$ with
+$\sum_{a, m} d_{m,a} = d$ gives $B_{\mathrm{run}}(b, p, s)$.
+\end{outline}
+
+Unlike $H_{\{0, 1\}}$, which has full dimension $d^2$ whenever no two adjacent columns share a class,
+\Cref{thm:1a-single-shift} cuts the single-shift intersection down to $\frac{1}{4}d^2 + \frac{3}{2}d$
+on the alternating two-coloring, and this bound is attained with equality over \emph{every} field:
+
+\begin{theorem}[All-field sharpness of \Cref{thm:1a-single-shift} on the alternating coloring]\label{thm:1a-sharpness}
+\formal{ExtensionLinearRunSharpness.lean}{extension_Theorem1A_AlternatingSharpness,alternatingSharpCode_finrank_and_shift_inf}
+Let $F$ be \emph{any} field (of arbitrary characteristic) and let $m \ge 1$ and $d = 2m$. For the
+alternating two-coloring $p(c) = c.\mathrm{val} \bmod 2$ (\lean{altTwoColoring}) at $b = 1$ and shift
+$s = 1$:
+\begin{enumerate}[label=(\alph*)]
+\item $g_1 = 1$, $n = 2m$, $d_{0,0} = d_{1,0} = m$, $T_{0,0} = T_{1,0} = m$, the nonlinear covariance
+  space $H_{\{0,1\}}$ has $\dim_F H_{\{0,1\}} = (2m)^2 = d^2$, and
+  $B_{\mathrm{run}}(1, p, 1) = m^2 + 3m = \frac{1}{4}d^2 + \frac{3}{2}d$.
+\item The explicit position-space symmetric decoder pair \lean{alternatingSharpDecoder} defines a
+  linear class-uniform code $\mathcal{X} := \lean{alternatingSharpCode}(F, m)$
+  (\leanname{SwapRigidity.IsClassUniformCode}) satisfying
+  \[
+    \dim_F \mathcal{X} \;=\; 2m(m + 1) \;=\; \frac{1}{2}d^2 + d,
+    \qquad
+    \dim_F\bigl(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})\bigr)
+    \;=\;
+    m^2 + 3m
+    \;=\;
+    \frac{1}{4}d^2 + \frac{3}{2}d,
+  \]
+  attaining \Cref{thm:1a-single-shift}(b) with equality over every field $F$ (and showing in
+  characteristic~$2$, when $2 \mid m$, that the bound $m^2 + 3m$ cannot be lowered there either).
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+Because $p(c) \ne p(c + 1)$ for all $c \in \Z_{2m}$, the implication in $H_{\{0,1\}}$ is vacuous,
+giving $\dim_F H_{\{0,1\}} = (2m)^2$. Decomposing $X \in \Mat_{2m\times 2m}(F)$ into four $m \times m$
+parity blocks $(B_{i,j}, A_{i,j}, C_{i,j}, D_{i,j}) = (X_{2i,2j}, X_{2i,2j+1}, X_{2i+1,2j},
+X_{2i+1,2j+1})$ ($i, j \in \Z_m$), \lean{alternatingSharpDecoder} reads only even rows at class~$0$ and
+only odd rows at class~$1$, so $X \in \mathcal{X}$ if and only if $B$ and $C$ are symmetric
+($M_{i,j} = M_{j,i}$) while $A$ and $D$ are shifted-symmetric ($M_{i,j} = M_{j+1, i-1}$). Over every
+field $F$, each of the four blocks is parameterized by unordered pairs in $\mathrm{Sym}^2(\Z_m)$ of
+dimension $\frac{m(m+1)}{2}$, giving $\dim_F \mathcal{X} = 4 \cdot \frac{m(m+1)}{2} = 2m(m+1)$.
+Intersecting with $\rot_1^{-1}(\mathcal{X})$ keeps $B$ and $C$ symmetric ($\frac{m(m+1)}{2}$ each) and
+forces $A$ and $D$ to be both symmetric and shifted-symmetric, hence constant along cyclic
+anti-diagonals $i + j \in \Z_m$ (dimension $m$ each), leaving exact dimension
+$2 \cdot \frac{m(m+1)}{2} + 2m = m^2 + 3m$.
+\end{outline}
+
+\subsection{Universal \texorpdfstring{$19/32$}{19/32} two-class ceiling and prime-\texorpdfstring{$d$}{d} multi-class bounds}\label{sec:19-32}
+
+Averaging \Cref{thm:1a-single-shift} across shifts $s \in \Z_d$ via the Grassmann identity
+$2\dim_F \mathcal{X} \le b d^2 + \dim_F\bigl(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X})\bigr)$ yields
+universal dimension bounds that improve strictly on the $\frac{5}{8}$ nested-component certificate
+floor of \cite[Theorem~C.6]{SharedDecoders2026} for two classes and beat the flag bound
+$(1 - \frac{1}{2M}) b d^2$ for every $M \ge 2$ at prime dimensions:
+
+\begin{theorem}[Universal $19/32$ capacity ceiling for two-class linear shared decoders]\label{thm:1b-two-class}
+\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_TwoClass,linearClassUniform_twoClass_finrank_le}
+Let $F$ be a field and let $d, b \ge 1$. For any finite set $\kappa$, any $p : \Z_d \to \kappa$, and
+any $s \in \Z_d$, write $Q_s := \abs{\{c \in \Z_d : p(c) \ne p(c + s)\}}$
+(\lean{shiftTransitionCount}).
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Per-shift orbit-aggregated bound}: for every $p : \Z_d \to \mathrm{Fin}\,2$ and every
+  $s \in \Z_d$ with $\operatorname{char}(F) \nmid (d / g_s)$, every $\mathcal{X}$ satisfying
+  \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$ obeys
+  \[
+    \dim_F\bigl(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X})\bigr)
+    \;\le\;
+    b\Bigl(\frac{1}{2}\,Q_s d \;-\; \frac{1}{4}\,Q_s^2 \;+\; \frac{1}{2}\,g_s Q_s \;+\; g_s d\Bigr).
+  \]
+\item \emph{Universal two-class bound}: whenever $\operatorname{char}(F) \nmid d$, for every finite set
+  $\kappa$ with $\abs{\kappa} \le 2$ and every $p : \Z_d \to \kappa$, every $\mathcal{X}$ satisfying
+  \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$---and hence
+  $D_b(p) = \lean{linearClassUniformMaxDim}(F, b, p)$---satisfies
+  \[
+    \dim_F \mathcal{X}
+    \;\le\;
+    \frac{19}{32}\,b d^2 \;+\; \frac{3}{2}\,b d^{3/2}.
+  \]
+  Here $\frac{19}{32} = \frac{38}{64} = 0.59375 < \frac{5}{8} = \frac{40}{64} < \frac{41}{64}$, strictly
+  below both the $\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} and the $\frac{5}{8}$
+  nested-component certificate floor of \cite[Theorem~C.6]{SharedDecoders2026}.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+Re-index $\kappa$ into $\mathrm{Fin}\,2$. On each orbit $O_a$ of $c \mapsto c + s$, a two-coloring has
+equal transition counts $T_{0,a} = T_{1,a} =: t_a$ with $(n - d_{0,a}) + (n - d_{1,a}) = n$ and
+$2\sum_{a=0}^{g_s - 1} t_a = Q_s$. Thus \Cref{thm:1a-single-shift}(b) gives
+$B_{\mathrm{run}}(b, p, s) = b g_s \sum_a (t_a n - t_a^2 + t_a) + b g_s d$, and Cauchy--Schwarz across
+the $g_s$ orbits ($g_s \sum_a t_a^2 \ge (Q_s/2)^2$) cancels $g_s$ in the quadratic term to prove~(a).
+For~(b), since $n_s = d / g_s \mid d$, $\operatorname{char}(F) \nmid d$ implies
+$\operatorname{char}(F) \nmid n_s$ for all $s \in \Z_d$. Averaging
+$2\dim_F \mathcal{X} \le b d^2 + \dim_F(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}))$ uniformly over all
+$d$ shifts $s \in \Z_d$ uses $\frac{1}{d}\sum_s Q_s = 2\alpha(1 - \alpha)d \le d/2$ (where $\alpha d$
+is a class size), $\frac{1}{d}\sum_s Q_s^2 \ge \bigl(\frac{1}{d}\sum_s Q_s\bigr)^2$ by Cauchy--Schwarz,
+$\max_{q \in [0, 1/2]}\bigl(\frac{1}{2} + \frac{1}{4}q - \frac{1}{8}q^2\bigr) = \frac{19}{32}$ at
+$q = \frac{1}{2}$, $Q_s \le d$, and divisor counting
+$\sum_{s \in \Z_d} g_s = \sum_{g \mid d} g\,\varphi(d/g) \le d \cdot \#\{g : g \mid d\} \le 2 d^{3/2}$,
+which contributes $\frac{1}{2}\cdot \frac{3}{2} b g_s d$ on average, i.e.\ $\frac{3}{2} b d^{3/2}$.
+\end{outline}
+
+\begin{theorem}[Multi-class linear capacity ceiling at prime dimensions]\label{thm:1b-multi-class}
+\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_MultiClassPrime,linearClassUniform_multiClass_prime_finrank_le}
+For $M \ge 2$, define the rational leading coefficient (\lean{multiClassLeadingCoeff})
+\[
+  c_M \;:=\; 1 \;-\; \frac{5}{4M} \;+\; \frac{1}{M^2} \;-\; \frac{1}{4M^3}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Unique simplex maximum}: for every $M \ge 2$ and every probability vector
+  $\alpha : \mathrm{Fin}\,M \to \R$ ($\alpha_m \ge 0$, $\sum_{m=0}^{M-1} \alpha_m = 1$),
+  \[
+    \frac{1}{2} \;+\; \frac{1}{2}\sum_{m=0}^{M-1} \alpha_m(1 - \alpha_m)^2\Bigl(1 - \frac{\alpha_m}{2}\Bigr)
+    \;\le\;
+    c_M,
+  \]
+  with equality if and only if $\alpha_m = 1/M$ for all $m \in \mathrm{Fin}\,M$.
+\item \emph{Prime-$d$ bound}: for every prime $d$, every field $F$ with $\operatorname{char}(F) \ne d$,
+  every $M \ge 3$, every $b \ge 1$, and every $p : \Z_d \to \mathrm{Fin}\,M$, every subspace
+  $\mathcal{X}$ satisfying \lean{IsLinearClassUniformCode} $p$ $\mathcal{X}$---and hence
+  $D_b(p)$---obeys
+  \[
+    \dim_F \mathcal{X} \;\le\; c_M\,b d^2 \;+\; b M d.
+  \]
+\item \emph{Strict win over the flag bound for all $M \ge 2$}: for every $M \ge 2$,
+  \[
+    c_M \;<\; 1 - \frac{1}{2M}
+    \qquad
+    \left(\text{difference } \frac{(M - 1)(3M - 1)}{4M^3} > 0\right);
+  \]
+  in particular $c_3 = \frac{37}{54} \approx 0.6852 < \frac{5}{6}$ and
+  $c_4 = \frac{191}{256} \approx 0.7461 < \frac{7}{8}$.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+For~(a), let $f(x) := x(1-x)^2(1 - x/2)$. When $M = 2$, $\alpha_1 = 1 - \alpha_0$ and the explicit
+sum-of-squares identity
+$2 f(1/2) - \bigl(f(x) + f(1 - x)\bigr) = (x - 1/2)^2\bigl(\frac{1}{2} + (x - 1/2)^2\bigr) \ge 0$
+vanishes if and only if $x = 1/2$. When $M \ge 3$, set $c := 1/M \le 1/3$; for every $x \in [0, 1]$,
+the global tangent-line sum-of-squares identity
+\[
+  f(c) + f'(c)(x - c) - f(x)
+  \;=\;
+  (x - c)^2\Bigl(\tfrac{1}{2}(1 - x)(3 - x - 2c)
+    + \tfrac{3}{2}\bigl(\tfrac{1}{3} - c\bigr)^2
+    + 2\bigl(\tfrac{1}{3} - c\bigr)
+    + \tfrac{1}{6}\Bigr)
+  \;\ge\;
+  \tfrac{1}{6}(x - c)^2
+\]
+sums over $m \in \mathrm{Fin}\,M$ using $\sum_m (\alpha_m - c) = 0$ to give
+$\sum_m f(\alpha_m) \le M f(1/M)$, with equality if and only if every $\alpha_m = 1/M$. For~(b), when
+$d$ is prime, every $s \in \Z_d \setminus \{0\}$ has $g_s = 1$ and $n_s = d$; summing
+\Cref{thm:1a-single-shift}(b) over $s \ne 0$ (with $T_{m,0}(0) = 0$) uses
+$\sum_{s \ne 0} T_{m,0}(s) = d_m(d - d_m)$, Cauchy--Schwarz over all $d$ shifts
+$d\sum_{s \ne 0} T_{m,0}(s)^2 \ge d_m^2(d - d_m)^2$, and~(a) at $\alpha_m = d_m / d$, leaving a linear
+error term $\frac{5}{4} b d \le b M d$ for $M \ge 3$. Part~(c) is direct algebra.
+\end{outline}
+
+\begin{remark}[Scope in positive characteristic dividing $d$, and remaining gap to $1/2$]\label{rem:char-dividing-d}
+Because \Cref{thm:1a-single-shift}(b) relies on distinct $n$-th roots of unity in $\overline{F}$,
+\Cref{thm:1b-two-class}(b) requires $\operatorname{char}(F) \nmid d$ and does not apply, for example,
+at $d = 2^m$ in characteristic~$2$ (where Mahler binomial polynomials $\binom{c}{j} \bmod 2$ can vanish
+on more than $j$ elements of $\Z_{2^m}$). Even when $\operatorname{char}(F) \nmid d$, the constant
+$\frac{19}{32} = 0.59375$ narrows the gap toward $\frac{1}{2} + o(1)$ in
+\cite[Problem~9.1(a)]{SeventeenthPaper2026} (and drops below the $\frac{5}{8} = 0.625$ nested-component
+floor of \cite[Theorem~C.6]{SharedDecoders2026}, while remaining above the $\frac{9}{16} = 0.5625$
+full-ambient isolation floor of \cite[Theorem~C.7]{SharedDecoders2026}), leaving
+$D_b(p) \le (\frac{1}{2} + o(1))b d^2$ open.
+\end{remark}

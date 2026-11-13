@@ -1,4 +1,4 @@
-\section{Three-term swap codes and multi-scale interval masks}\label{sec:swapcodes}
+\section{Three-term swap codes and one- and two-sided interval-mask bounds}\label{sec:swapcodes}
 
 \subsection{Three-term swap codes exceeding \texorpdfstring{$d(d+1)/2$}{d(d+1)/2} at \texorpdfstring{$d \in \{6, 7, 9, 12\}$}{d in \{6, 7, 9, 12\}} and over all fields at \texorpdfstring{$d = 4$}{d = 4}}\label{sec:remark-5-6}
 
@@ -108,13 +108,15 @@ $120 = 120$ at $d = 15$, and strictly less than $d(d+1)/2$ once $m \ge 6$). Thus
 three-term swap code can exceed $d(d+1)/2$ remains open for $d = 5$ and for every $d \ge 8$ outside
 $\{9, 12\}$.
 
-\subsection{An observation on multi-scale interval masks and Walsh digit masks (Problem~9.3)}\label{sec:problem-9-3}
+\subsection{One-sided and two-sided bounds for multi-scale interval masks (Problem~9.3)}\label{sec:problem-9-3}
 
 \cite[Problem~9.3]{SeventeenthPaper2026} asks for upper bounds on $\dim_F \leanname{SwapRigidity.swapCode}(A, B)$
 when $d = 2^m$ and both $A_a$ and $B_a$ lie in the span of dyadic masks across all scales composed
 with cyclic rotations (\cite[Corollary~6.13]{SeventeenthPaper2026} covers one-sided tensor-factor
-rules commuting with a single non-derogatory matrix on one address digit). We record a simple
-observation separating contiguous interval masks from periodic Walsh digit masks.
+rules commuting with a single non-derogatory matrix on one address digit). We first record the
+one-sided endpoint-refinement baseline, then prove a characteristic-free two-sided coarse--fine
+bound that improves strictly on it whenever both sides localize fine intervals to proper regions of
+$\Z_d$, and finally contrast interval masks with periodic Walsh digit masks.
 
 For contiguous cyclic or aligned dyadic intervals (\lean{IsCyclicInterval},
 \lean{IsAlignedDyadicInterval}; spans \lean{InMultiscaleIntervalRotSpan},
@@ -162,6 +164,142 @@ Note the scope of \Cref{prop:multiscale-interval}: the bound uses only the spars
 rather than any two-sided interaction between $A$ and $B$, carries no matching sparse lower bound,
 and becomes vacuous ($\ge d^2$) as soon as $\min(\beta_A, \beta_B) \ge d$---in particular at the full
 profile $M_{\mathrm{full}}(j) = 2^{j+1}$ for $m \ge 2$, where $\beta = 4d - 4 > d$.
+
+To exploit sparsity on \emph{both} sides simultaneously over an arbitrary field $F$, suppose the
+intervals used on side $A$ separate into a ``fine'' coordinate set $S_A \subseteq \mathrm{Fin}\,d$ of
+cardinality $s_A = \abs{S_A}$ and $c_A$ pairwise-disjoint nonempty coarse cyclic intervals
+$\mathrm{coarse}_A : \mathrm{Fin}\,c_A \to \mathrm{Finset}(\mathrm{Fin}\,d)$ partitioning the
+complement $L_A := \mathrm{Fin}\,d \setminus S_A$, so that every $A_a$ lies in the $F$-span of
+$\{\lean{intervalMaskRotMatrix}(F, I, e)\}$ with $I \subseteq S_A$, $I = \mathrm{coarse}_A(i)$, or
+$I = \mathrm{Fin}\,d$ (\lean{HasCoarseFineIntervalDecomposition}), and similarly $(S_B, c_B)$ on side
+$B$ ($s_B = \abs{S_B}$, $L_B = \mathrm{Fin}\,d \setminus S_B$). For any $S \subseteq \mathrm{Fin}\,d$,
+write $\dot{m}(S) := \lean{cyclicRunEndpointCount}(S) = \abs{\{r \in S : (r + 1) \bmod d \notin S\}}$
+and $m(S) := \lean{cyclicRunCount}(S)$ ($= 1$ if $S = \mathrm{Fin}\,d$ and $\dot{m}(S)$ otherwise, so
+$\dot{m}(S) \le m(S)$), and set (\lean{theorem3UnsymmetrizedBound})
+\begin{align*}
+  B_{\mathrm{cf}}(d;\, s_A, m_A, c_A;\, s_B, m_B, c_B)
+  &\;:=\;
+  \frac{1}{2}\,d^2
+  + \frac{1}{4}\,s_B(d - s_A)
+  + \frac{1}{2}\,s_A s_B \\
+  &\quad + \frac{1}{2}\,c_B d
+  + \frac{1}{4}\,c_A s_B
+  + \frac{1}{2}\,s_B m_A
+  + \frac{1}{4}\,m_B(d - s_A).
+\end{align*}
+
+\begin{theorem}[Characteristic-free two-sided coarse--fine bound for interval-rotation swap codes]\label{thm:two-sided-coarse-fine}
+\formal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_TwoSidedCoarseFine,swapCode_finrank_le_twoSidedCoarseFine}
+Let $F$ be \emph{any} field (of arbitrary characteristic), let $d \ge 1$, let $\alpha$ be a finite
+index type, and let $A, B : \alpha \to \Mat_{d\times d}(F)$ satisfy
+\lean{HasCoarseFineIntervalDecomposition} $(S_A, c_A, A)$ and
+\lean{HasCoarseFineIntervalDecomposition} $(S_B, c_B, B)$ with $s_A = \abs{S_A}$ and
+$s_B = \abs{S_B}$. Then with either $(m_A, m_B) = \bigl(\dot{m}(S_A), \dot{m}(S_B)\bigr)$ or
+$(m_A, m_B) = \bigl(m(S_A), m(S_B)\bigr)$,
+\begin{align*}
+  \dim_F \leanname{SwapRigidity.swapCode}(A, B)
+  &\;\le\;
+  \min\!\Bigl(
+    B_{\mathrm{cf}}(d;\, s_A, m_A, c_A;\, s_B, m_B, c_B), \\
+  &\qquad\qquad
+    B_{\mathrm{cf}}(d;\, s_B, m_B, c_B;\, s_A, m_A, c_A)
+  \Bigr).
+\end{align*}
+\end{theorem}
+\begin{outline}
+Identify $\mathrm{Fin}\,d$ with $\Z_d$ and let $K(X) := \sum_{a \in \alpha} A_a X B_a^{\T}$, so
+$\mathcal{X} := \leanname{SwapRigidity.swapCode}(A, B) = \{X : X^{\T} = K(X)\}$.
+\begin{enumerate}[label=\arabic*.,leftmargin=1.5em]
+\item \emph{Corner perturbation}: subtracting the fine-by-fine corner $X \mapsto P_{S_A} K(X) P_{S_B}$
+  (image dimension $\le s_A s_B$) gives $\dim_F \mathcal{X} \le s_A s_B + \dim_F \mathcal{Y}$, where
+  $\mathcal{Y} := \{X : X^{\T} = K(X) - P_{S_A} K(X) P_{S_B}\}$. Every $X \in \mathcal{Y}$ has
+  $(X^{\T})_{r,c} = 0$ on $S_A \times S_B$, i.e.\ $X_{b,a} = 0$ for all $(b,a) \in S_B \times S_A$.
+\item \emph{Column-shift Grassmann step}: for $\sigma_{\mathrm{col}}(X)_{b,a} := X_{b, a+1}$, the sum
+  $\mathcal{Y} + \sigma_{\mathrm{col}}^{-1}(\mathcal{Y})$ vanishes on
+  $S_B \times \{a \in S_A : a - 1 \in S_A\}$ of cardinality $s_B(s_A - \dot{m}(S_A))$, so
+  $2\dim_F \mathcal{Y} + s_B(s_A - \dot{m}(S_A)) \le d^2 + \dim_F \mathcal{Y}_1$ where
+  $\mathcal{Y}_1 := \mathcal{Y} \cap \sigma_{\mathrm{col}}^{-1}(\mathcal{Y})$.
+\item \emph{$B$-side coarse anchors}: along each $B$-coarse interval $\mathrm{coarse}_B(j)$ with start
+  $\mathrm{start}_B(j)$, shift covariance of the $B_a$ forces $X_{b+1, a} = X_{b, a+1}$ across all
+  $a \in \Z_d$ for every $X \in \mathcal{Y}_1$ and every interior step of $\mathrm{coarse}_B(j)$.
+  Setting the $c_B d$ anchor entries $X_{\mathrm{start}_B(j), a} = 0$ defines $\mathcal{Z}_0 \le
+  \mathcal{Y}_1$ with $\dim_F \mathcal{Y}_1 \le c_B d + \dim_F \mathcal{Z}_0$, and every
+  $X \in \mathcal{Z}_0$ vanishes outside $S_B \times L_A$.
+\item \emph{Row-shift Grassmann step}: for $\sigma_{\mathrm{row}}(X)_{b,a} := X_{b+1, a}$, the sum
+  $\mathcal{Z}_0 + \sigma_{\mathrm{row}}^{-1}(\mathcal{Z}_0)$ is supported inside
+  $(S_B \cup (S_B + 1)) \times L_A$ of size at most $(s_B + \dot{m}(S_B))(d - s_A)$, while on
+  $\mathcal{Z}_1 := \mathcal{Z}_0 \cap \sigma_{\mathrm{row}}^{-1}(\mathcal{Z}_0)$ shift covariance of
+  the $A_a$ along each $A$-coarse interval forces $X_{b, \mathrm{start}_A(i) + u} =
+  X_{b + u, \mathrm{start}_A(i)}$, injecting $\mathcal{Z}_1$ into $F^{\mathrm{Fin}\,c_A \times S_B}$ of
+  dimension $c_A s_B$. Hence $2\dim_F \mathcal{Z}_0 \le (s_B + \dot{m}(S_B))(d - s_A) + c_A s_B$.
+\end{enumerate}
+Combining steps~1--4 gives $\dim_F \mathcal{X} \le B_{\mathrm{cf}}(d;\, s_A, \dot{m}(S_A), c_A;\,
+s_B, \dot{m}(S_B), c_B)$; transposing $Y = X^{\T}$ swaps $(A, S_A, c_A)$ with $(B, S_B, c_B)$, and
+monotonicity in $(m_A, m_B)$ gives the $m(S)$ form since $d - s_A \ge 0$.
+\end{outline}
+
+On the concrete family \lean{InContiguousCoarseFineSpan} generated on side $A$ by $s_A$ contiguous
+singleton masks $\{0\}, \dots, \{s_A - 1\}$ (\lean{contiguousFineSet}, $m_A = 1$) together with one
+complementary coarse interval $\{s_A, \dots, d - 1\}$ (\lean{contiguousCoarseComplement}, $c_A = 1$)
+and full rotations---and analogously $s_B$ contiguous singletons plus one coarse complement on side
+$B$---one-sided endpoint refinement (\Cref{prop:multiscale-interval}) sees $s_A + 1$ and $s_B + 1$
+intervals and gives leading coefficient $\frac{1}{2} + \frac{1}{2}\min(\alpha, \beta)$ (where
+$\alpha = s_A / d$ and $\beta = s_B / d$), whereas \Cref{thm:two-sided-coarse-fine} achieves a
+strictly smaller leading coefficient for all $\alpha, \beta \in (0, 1)$:
+
+\begin{corollary}[Strict two-sided win over one-sided Theorem~TP and $\frac{11}{16}d^2 + d$ benchmark]\label{cor:two-sided-win}
+\formal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_ConcreteWinOverTP,swapCode_finrank_le_contiguousCoarseFine}
+\begin{enumerate}[label=(\alph*)]
+\item For all real $\alpha, \beta \in (0, 1)$,
+  \[
+    \frac{1}{2} \;+\; \frac{1}{4}\min\bigl(\beta(1 + \alpha),\; \alpha(1 + \beta)\bigr)
+    \;<\;
+    \frac{1}{2} \;+\; \frac{1}{2}\min(\alpha, \beta).
+  \]
+\item For every field $F$, every $d \ge 2$, every $1 \le s_A, s_B < d$ ($\alpha := s_A / d$,
+  $\beta := s_B / d$), and all $A, B : \alpha_0 \to \Mat_{d\times d}(F)$ satisfying
+  \lean{InContiguousCoarseFineSpan} $(s_A, A)$ and \lean{InContiguousCoarseFineSpan} $(s_B, B)$, both
+  sides satisfy \lean{HasCoarseFineIntervalDecomposition} with $c_A = c_B = m_A = m_B = 1$, and
+  \[
+    \dim_F \leanname{SwapRigidity.swapCode}(A, B)
+    \;\le\;
+    \left(\frac{1}{2} + \frac{1}{4}\min\bigl(\beta(1 + \alpha),\; \alpha(1 + \beta)\bigr)\right) d^2
+    \;+\; \frac{5}{4}\,d.
+  \]
+\item At the half-fine benchmark $d = 2k$ ($k \ge 1$) with $s_A = s_B = k$ ($\alpha = \beta = 1/2$),
+  one has $B_{\mathrm{cf}}(2k;\, k, 1, 1;\, k, 1, 1) = \frac{11}{16}\,d^2 + d$
+  ($\frac{11}{16} = 0.6875 < \frac{3}{4}$), so every pair $A, B$ in
+  \lean{InContiguousCoarseFineSpan} $(k)$ satisfies
+  \[
+    \dim_F \leanname{SwapRigidity.swapCode}(A, B) \;\le\; \frac{11}{16}\,d^2 + d,
+  \]
+  which is strictly less than $\frac{3}{4}\,d^2$ for all even $d = 2k \ge 18$ ($k \ge 9$).
+\end{enumerate}
+\end{corollary}
+\begin{outline}
+In~(a), assuming $\alpha \le \beta$ by symmetry gives
+$\min\bigl(\beta(1+\alpha), \alpha(1+\beta)\bigr) \le \alpha(1+\beta) < 2\alpha = 2\min(\alpha,\beta)$
+since $\alpha > 0$ and $1 + \beta < 2$. In~(b), $\lean{contiguousFineSet}(s)$ has cardinality $s$ and
+a single cyclic run ($m = 1$) while $\lean{contiguousCoarseComplement}(s)$ is a single cyclic interval
+of length $d - s$ ($c = 1$), and substituting $c_A = c_B = m_A = m_B = 1$ into
+\Cref{thm:two-sided-coarse-fine} yields
+$\frac{1}{2}d^2 + \frac{1}{4}s_B d + \frac{1}{4}s_A s_B + \frac{1}{2}d + \frac{3}{4}s_B +
+\frac{1}{4}(d - s_A) \le (\frac{1}{2} + \frac{1}{4}\beta(1+\alpha))d^2 + \frac{5}{4}d$ when
+$s_B \le s_A$ (and symmetrically when $s_A \le s_B$). Part~(c) evaluates
+$B_{\mathrm{cf}}(2k;\, k,1,1;\, k,1,1) = 2k^2 + \frac{1}{4}k^2 + \frac{1}{2}k^2 + k + \frac{1}{4}k +
+\frac{1}{2}k + \frac{1}{4}k = \frac{11}{4}k^2 + 2k = \frac{11}{16}d^2 + d$, which satisfies
+$\frac{11}{16}d^2 + d < \frac{3}{4}d^2 \iff d > 16 \iff k \ge 9$.
+\end{outline}
+
+\begin{remark}[Numerical: small-grid SVD values for two-sided interval partitions]\label{rem:two-sided-numerical}
+Across small two-sided interval partitions tested numerically by singular-value decomposition over
+$\R$ at $d \in \{5, 6, 7, 8\}$ (not formalized; no proof in this paper uses this computation), the
+largest observed dimension of $\leanname{SwapRigidity.swapCode}(A, B)$ matched the sharper expression
+$\bigl\lfloor \frac{1}{2}\bigl(d^2 + \sum_{\alpha, \beta} \min(\abs{I_\alpha}, \abs{J_\beta})\bigr)
+\bigr\rfloor$, which would give $\frac{5}{8}d^2 + O(d)$ at $\alpha = \beta = 1/2$ (attained by
+swapping one boundary entry per singleton). Whether that formula holds for all two-sided interval
+partitions remains open.
+\end{remark}
 
 By contrast, if ``scale-$j$ dyadic mask'' means the periodic Walsh/Rademacher bit projector
 $P_{W_j, b}$ onto $\{r \in \mathrm{Fin}(2^m) : \mathrm{bit}_j(r) = b\}$ (\lean{walshBitSet},

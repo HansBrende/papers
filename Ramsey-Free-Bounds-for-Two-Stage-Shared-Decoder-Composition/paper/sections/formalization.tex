@@ -6,7 +6,8 @@ both pinned to Lean~4 and Mathlib version \texttt{v4.34.1} \cite{Mathlib2026}. T
 dependencies in \leanfile{lean/lakefile.toml}, \texttt{BoundedArityDecoders} requires
 \leanname{SharedDecoders} (\cite{SharedDecoders2026}, which transitively imports
 \leanname{SwapRigidity} from \cite{SeventeenthPaper2026} and \leanname{Transpose} from
-\cite{FirstPaper2026}) together with \leanname{LeanMachine}. None of the earlier papers is modified,
+\cite{FirstPaper2026}), \leanname{ClassUniformMemo} (\cite{ClassUniformMemo2026}), and
+\leanname{LeanMachine}. None of the earlier papers is modified,
 and in \texttt{lean-machine} only the package root, axiom audit, and \texttt{README} are appended to
 register four new reusable modules under \leanfile{LeanMachine/ShuffleShear/}:
 \begin{itemize}[leftmargin=1.5em]
@@ -17,30 +18,43 @@ register four new reusable modules under \leanfile{LeanMachine/ShuffleShear/}:
   steps).
 \end{itemize}
 
-Inside \leanfile{lean/BoundedArityDecoders/}, eighteen public modules are organized into three layers:
+Inside \leanfile{lean/BoundedArityDecoders/}, twenty-seven public modules are organized into three layers:
 \begin{enumerate}[label=(\arabic*)]
-\item \emph{Six definition and specification modules}
+\item \emph{Nine definition and specification modules}
   (\leanfile{AffineCubeComposition.lean},
   \leanfile{SumsetRankDeficit.lean},
+  \leanfile{ExtensionLinearRun.lean},
+  \leanfile{ExtensionAperiodicSix.lean},
+  \leanfile{ExtensionTwoSidedProfile.lean},
   \leanfile{SwapCodeAnswers.lean},
   \leanfile{OperatorDuality.lean},
   \leanfile{NativeSweepInterface.lean}, and
-  \leanfile{BoundedAritySetCapacity.lean}), defining the algebraic operators, syntactic causal cones,
-  and named proposition types;
-\item \emph{Six primary proof modules}
+  \leanfile{BoundedAritySetCapacity.lean}), defining the algebraic operators, one-stage linear
+  run-extension invariants, coarse--fine interval decompositions, syntactic causal cones, and named
+  proposition types;
+\item \emph{Eleven primary proof modules}
   (\leanfile{AffineCubeCompositionProofs.lean},
   \leanfile{SumsetRankDeficitProofs.lean},
+  \leanfile{ExtensionLinearRunSingleShift.lean},
+  \leanfile{ExtensionLinearRunSharpness.lean},
+  \leanfile{ExtensionLinearRunProofs.lean},
+  \leanfile{ExtensionAperiodicSixProofs.lean},
+  \leanfile{ExtensionTwoSidedProfileProofs.lean},
   \leanfile{SwapCodeAnswersProofs.lean},
   \leanfile{OperatorDualityProofs.lean},
   \leanfile{NativeSweepInterfaceProofs.lean}, and
-  \leanfile{BoundedAritySetCapacityProofs.lean}), proving the core theorems and finite controls; and
-\item \emph{Six consequence and bridge modules}
-  (\leanfile{AffineCubeConsequences.lean},
+  \leanfile{BoundedAritySetCapacityProofs.lean}), proving the two-stage composition theorems,
+  the one-stage linear run-extension and $\Z_6$ bounds, the two-sided coarse--fine swap-code bound,
+  and the finite controls; and
+\item \emph{Seven consequence, transfer, and bridge modules}
+  (\leanfile{ExtensionFieldTransfer.lean},
+  \leanfile{AffineCubeConsequences.lean},
   \leanfile{SumsetRankConsequences.lean},
   \leanfile{DualityAndSwapConsequences.lean},
   \leanfile{ShuffleShearBridge.lean},
   \leanfile{MachineSweepConsequences.lean}, and
-  \leanfile{SetCapacityConsequences.lean}), proving the explicit constants $c(M_1, M_2)$ and
+  \leanfile{SetCapacityConsequences.lean}), proving the algebraic-closure primitive-root and
+  scalar-extension transfer lemmas, the explicit constants $c(M_1, M_2)$ and
   $D_0(M_1, M_2)$, the general-field finite controls at $d = 13$, $d = 4$, and $d = 12$, the
   \leanname{TensorProduct} anti-diagonal equivalences, the transport of
   \leanname{LeanMachine.ShuffleShear} to \leanname{Transpose.TM}, the symbolic

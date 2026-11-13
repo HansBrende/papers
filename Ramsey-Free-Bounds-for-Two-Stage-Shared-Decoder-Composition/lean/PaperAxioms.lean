@@ -5,6 +5,7 @@ import BoundedArityDecoders.BoundedAritySetCapacityProofs
 import BoundedArityDecoders.DualityAndSwapConsequences
 import BoundedArityDecoders.ExtensionAperiodicSixProofs
 import BoundedArityDecoders.ExtensionFieldTransfer
+import BoundedArityDecoders.ExtensionLinearRun
 import BoundedArityDecoders.ExtensionLinearRunProofs
 import BoundedArityDecoders.ExtensionLinearRunSharpness
 import BoundedArityDecoders.ExtensionLinearRunSingleShift
@@ -65,6 +66,8 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.extendLinearMapPi_comp_map
 #print axioms BoundedArityDecoders.finrank_le_of_pi_ringHom
 #print axioms BoundedArityDecoders.linearIndependent_fin_pi_ringHom
+-- ExtensionLinearRun.lean
+#print axioms BoundedArityDecoders.laneRot_apply
 -- ExtensionLinearRunProofs.lean
 #print axioms BoundedArityDecoders.extension_Theorem1B_MultiClassPrime
 #print axioms BoundedArityDecoders.extension_Theorem1B_TwoClass
@@ -76,6 +79,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.extension_Theorem1A_AlternatingSharpness
 -- ExtensionLinearRunSingleShift.lean
 #print axioms BoundedArityDecoders.extension_Theorem1A_SingleShift
+#print axioms BoundedArityDecoders.finrank_vanishCoeffs_le
 #print axioms BoundedArityDecoders.linearClassUniform_singleShift_finrank_le
 -- ExtensionTwoSidedProfileProofs.lean
 #print axioms BoundedArityDecoders.extension_Theorem3_ConcreteWinOverTP
@@ -145,31 +149,40 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 -- Other declarations named in the text.
 #print axioms BoundedArityDecoders.CanonicalWordAlphabet
 #print axioms BoundedArityDecoders.CausalConeTree
+#print axioms BoundedArityDecoders.CoprimeToChar
 #print axioms BoundedArityDecoders.GridState
+#print axioms BoundedArityDecoders.HasCoarseFineIntervalDecomposition
 #print axioms BoundedArityDecoders.HasExactOperatorSchmidtRank
 #print axioms BoundedArityDecoders.HasOperatorSchmidtRankLe
 #print axioms BoundedArityDecoders.HasOutputRowSourceArityLe
 #print axioms BoundedArityDecoders.InAlignedDyadicIntervalRotSpan
+#print axioms BoundedArityDecoders.InContiguousCoarseFineSpan
 #print axioms BoundedArityDecoders.InCutCausalCone
 #print axioms BoundedArityDecoders.InMultiscaleIntervalRotSpan
 #print axioms BoundedArityDecoders.InMultiscalePeriodicDyadicRotSpan
 #print axioms BoundedArityDecoders.InPairwiseShiftCovariance
 #print axioms BoundedArityDecoders.IsAlignedDyadicInterval
+#print axioms BoundedArityDecoders.IsAperiodicSixPartition
 #print axioms BoundedArityDecoders.IsBoundedAritySetCode
 #print axioms BoundedArityDecoders.IsColUniformRowOp
 #print axioms BoundedArityDecoders.IsCutFreeCausalPath
 #print axioms BoundedArityDecoders.IsCyclicInterval
 #print axioms BoundedArityDecoders.IsFrozenTraceCutFibre
 #print axioms BoundedArityDecoders.IsLastWorkVisit
+#print axioms BoundedArityDecoders.IsLinearClassUniformCode
 #print axioms BoundedArityDecoders.IsPeriodicScaleDyadicMask
 #print axioms BoundedArityDecoders.IsRowDiagonalOp
 #print axioms BoundedArityDecoders.IsRowUniformColOp
 #print axioms BoundedArityDecoders.IsThreeByThreeSymmetricZeroTraceBlocks
+#print axioms BoundedArityDecoders.ShiftLinkCovarianceSpace
 #print axioms BoundedArityDecoders.SyntacticCellSupport
 #print axioms BoundedArityDecoders.SyntacticColumnSupport
 #print axioms BoundedArityDecoders.TMDepStep
 #print axioms BoundedArityDecoders.ThreeAPFreeMod
+#print axioms BoundedArityDecoders.altTwoColoring
 #print axioms BoundedArityDecoders.alternatingRowDiagProduct
+#print axioms BoundedArityDecoders.alternatingSharpCode
+#print axioms BoundedArityDecoders.alternatingSharpDecoder
 #print axioms BoundedArityDecoders.antiDiagLinear
 #print axioms BoundedArityDecoders.antiDiagTensorEquiv
 #print axioms BoundedArityDecoders.boundaryControl_DeficitVanishesAtDeltaEqD
@@ -177,39 +190,61 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.cleanEntries
 #print axioms BoundedArityDecoders.composeGridOps
 #print axioms BoundedArityDecoders.computesWithin_toTransposeTM
+#print axioms BoundedArityDecoders.contiguousCoarseComplement
+#print axioms BoundedArityDecoders.contiguousFineSet
 #print axioms BoundedArityDecoders.coordShiftLinear
 #print axioms BoundedArityDecoders.cutConeInputCells
 #print axioms BoundedArityDecoders.cutTouchingOutputCells
 #print axioms BoundedArityDecoders.cyclicBoundaryCount
 #print axioms BoundedArityDecoders.cyclicChannelShift
+#print axioms BoundedArityDecoders.cyclicRunCount
+#print axioms BoundedArityDecoders.cyclicRunEndpointCount
 #print axioms BoundedArityDecoders.encodeTMMatrixToGrid
 #print axioms BoundedArityDecoders.evalConeTree
 #print axioms BoundedArityDecoders.existsRecoverableSubsetBound
+#print axioms BoundedArityDecoders.extendLinearMapPi
 #print axioms BoundedArityDecoders.finsetNatDiam
+#print axioms BoundedArityDecoders.fourierCoeffs
 #print axioms BoundedArityDecoders.fromAntiDiagLinear
 #print axioms BoundedArityDecoders.gridSwapLinear
 #print axioms BoundedArityDecoders.growingClassesPositiveDeficit
 #print axioms BoundedArityDecoders.halfIntervalPartition4
+#print axioms BoundedArityDecoders.intervalMaskRotMatrix
+#print axioms BoundedArityDecoders.laneOneMatrixEquiv
+#print axioms BoundedArityDecoders.laneRot
 #print axioms BoundedArityDecoders.leftComponentSubmodule
+#print axioms BoundedArityDecoders.linearClassUniformMaxDim
+#print axioms BoundedArityDecoders.matrixToSharedStateEquiv
+#print axioms BoundedArityDecoders.modeLift
+#print axioms BoundedArityDecoders.multiClassLeadingCoeff
 #print axioms BoundedArityDecoders.oneHopRecoverableInjective
+#print axioms BoundedArityDecoders.orbitClassCard
+#print axioms BoundedArityDecoders.orbitRunCount
 #print axioms BoundedArityDecoders.orderedCubeMap
 #print axioms BoundedArityDecoders.orderedRecoverableCells
 #print axioms BoundedArityDecoders.outputBitIdx
 #print axioms BoundedArityDecoders.rowShearLinear
 #print axioms BoundedArityDecoders.rowShearTMMatrix
 #print axioms BoundedArityDecoders.rowShearTransposeTM
+#print axioms BoundedArityDecoders.shiftGcd
+#print axioms BoundedArityDecoders.shiftOrbit
+#print axioms BoundedArityDecoders.shiftOrbitLen
 #print axioms BoundedArityDecoders.shiftSetCovarianceSubmodule
+#print axioms BoundedArityDecoders.shiftTransitionCount
 #print axioms BoundedArityDecoders.shiftedFootprint
 #print axioms BoundedArityDecoders.skewXorPad
+#print axioms BoundedArityDecoders.stepRunBound
 #print axioms BoundedArityDecoders.stoneShuffleGridLinear
 #print axioms BoundedArityDecoders.stoneShuffleTMMatrix
 #print axioms BoundedArityDecoders.stoneShuffleTransposeTM
 #print axioms BoundedArityDecoders.stoneUnshuffleGridLinear
 #print axioms BoundedArityDecoders.stoneUnshuffleTMMatrix
 #print axioms BoundedArityDecoders.stoneUnshuffleTransposeTM
+#print axioms BoundedArityDecoders.theorem1ASingleShiftBound
 #print axioms BoundedArityDecoders.theorem1_BoundedAritySetCapacity
 #print axioms BoundedArityDecoders.theorem2BExplicitConst
 #print axioms BoundedArityDecoders.theorem2BExplicitThreshold
+#print axioms BoundedArityDecoders.theorem3UnsymmetrizedBound
 #print axioms BoundedArityDecoders.threeTermBlockA
 #print axioms BoundedArityDecoders.threeTermBlockB
 #print axioms BoundedArityDecoders.threeTermPaddedA
@@ -220,5 +255,6 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.uniformShannonMI
 #print axioms BoundedArityDecoders.unrestrictedArity_ExactLogarithmicAsymptoticAllDimensions
 #print axioms BoundedArityDecoders.unrestrictedArity_RateLowerBoundAndTendstoOne
+#print axioms BoundedArityDecoders.vanishCoeffs
 #print axioms BoundedArityDecoders.walshBitSet
 #print axioms BoundedArityDecoders.walshDigitMaskRotMatrix

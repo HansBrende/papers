@@ -85,8 +85,8 @@ What is known to me:
 - R is open over ℂ as well; item A is its slice of bounded norm and D5 its slice of bounded mean
   square norm. A counterexample over ℂ reduces to one over a finite extension of GF(p) for almost
   all p.
-- M ≤ 2: D ≤ d(d + 1)/2 over every field (paper 17, two terms). For every M: D ≤ (1 − 1/(2M)) d² by the
-  order bound. Three real terms exceed d(d + 1)/2 at d = 4 and d = 6 (11 and 24, numerical).
+- M ≤ 2: D ≤ d(d + 1)/2 over every field (paper 17, two terms). For every M: D ≤ (1 − 1/(2M)) d² + d/2 by the
+  order bound (the term d/2 was missing here until 13 November 2026; noted by GPT-6 Astra). Three real terms exceed d(d + 1)/2 at d = 4 and d = 6 (11 and 24, numerical).
 - Reported by the formalizing agent, written but not yet in this repository: D ≤ (d² + d√a)/2 when one
   factor family generates an algebra of dimension a; and a smallest counterexample to R expands
   every subspace on all four sides (the A_a, the B_a and their transposes). When those notes are
@@ -101,4 +101,5 @@ What is known to me:
 - S is a statement about ordinary sums of M + 1 tensor products, with no transpose. I have no proof
   for M ≥ 3 and no proof that R implies S.
 
-First open instance of R: M = 3, d = 4 over GF(2) or GF(3) (is the maximum 10 or 11?).
+First open instance of R: M = 3, d = 4 over GF(2) or GF(3). The value 11 is attained there by the padded example of
+paper 17 (noted by GPT-6 Astra, 13 November 2026), so the question is whether 11 is the maximum.

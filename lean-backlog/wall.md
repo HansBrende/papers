@@ -16,28 +16,30 @@ update when a result lands. Last full review: 13 November 2026.
   the entry says so.
 
 Paper 17 is [Order, Symmetry and the Swap](../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/)
-(Sections 8 and 9 for the diagnosis and the open problems).
+(Sections 4 and 9 for the diagnosis and the open problems).
 
 ## 1. The wall
 
 **The objective.** Decide (T): is there a multitape Turing machine that transposes a d × d matrix
 of logarithmic-size entries in linear time? We hope for the machine.
 
-**Machine form** (paper 17, Section 8). For oblivious machines everything known reduces (T) to one
+**Machine form** (paper 17, Section 4). For oblivious machines everything known reduces (T) to one
 function. Let r(ε) be the best rate, for large d, of a storage code on the relations that are left
 when a genie reveals εL bits of a linear-time schedule.
 - A linear-time oblivious transposer needs r(ε) ≥ 1 − ε for every ε.
 - Pairing gives r(ε) ≥ ½.
 - **Nothing moves r(ε) off ½ in either direction, for all schedules.** That is the wall.
-- To exclude oblivious machines it is enough that r(ε) < 1 − ε for one ε. One half is the
-  conjectured truth, not the requirement: any bound below 1 that does not decay with the size of
-  the cones would do.
+- To exclude oblivious machines it is enough that r(ε) < 1 − ε for one ε. The cones that the
+  genie leaves have depth D(k, ε) with log log D = O(k² log(k/ε)) (paper 17, Section 3.3). So what
+  is needed is a rate bound 1 − δ on cone relations whose δ falls, as the cones grow, more slowly
+  than that function allows; any δ that does not depend on the size of the cones would do. One
+  half is the conjectured truth, not the requirement.
 
 A proof that no machine exists must hold for all schedules, fail for abstract relations (codes of
 rate near 1 exist there), fail for motion that ignores the data (padding), constrain all address
 scales at once, and use the shape of tapes. A machine, for its part, cannot avoid curved head
 motion, expanding relations, and codes that are neither gadgets of bounded size nor linear with
-bounded complex coefficients (paper 17, Section 8.5). For adaptive machines the same question sits on the machine's
+bounded complex coefficients (paper 17, Section 4.5). For adaptive machines the same question sits on the machine's
 own runs ([Macroscopic Information Transfer](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)).
 
 **One-hop form** (paper 17, Sections 5 to 7; this is where we work). A d × d matrix X; a decoder
@@ -48,6 +50,11 @@ Symmetric matrices give rate ½ (the *pairing value* d(d+1)/2).
 > (½ + o(1)) d²?**
 
 Known in general: window ≤ 2 gives at most d(d+1)/2 + d − 1; window w gives at most w d(d+1)/(w+1).
+
+Write R(w) for the best rate at window w as d grows, so ½ ≤ R(w) ≤ w/(w+1). Read in this model,
+a machine needs R(w) → 1, and an exclusion needs only that R(w) stays away from 1 (or approaches
+it very slowly). **No construction gives R(w) > ½ for any w, and no bound stays away from 1 as w
+grows.** The value at w = 3 is a test case; what the machines ask about is large w.
 
 **Why it is a wall.** Each of the three kinds of argument stops for a reason that machines meet:
 
@@ -97,7 +104,7 @@ has to deal with all of this at once:
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | Not written. Definitions exist in `LeanMachine.WholeRow`. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Revealed bits split the outputs of a periodic stretch into boundedly many classes | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
-| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open; untouched since paper 17 except the scoping in [pass-calculus](notes/pass-calculus.md) | Not written |
+| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open. First step done (13 November): the requirement is uniformity in the window, not the value ½ (Section 1). The three steps that paper 17, Section 7.4, lists (a hypothesis on cone systems, advice, many hops) are untouched. Scoping of stages in [pass-calculus](notes/pass-calculus.md). | Not written |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by a group G, row relation rΣ, decoders that commute with the diagonal translations; equivalently the rank over F[G] of (inversion with entries g) − (a matrix with entries in the span of Σ) ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; the blocks vary with the row and the relation expands | Half on ordered groups, by leading terms, every field. Open on finite quasirandom groups, which have no cone. Closed words give at most ½; anything above needs cancellation in the group ring. | Not written |
@@ -116,7 +123,7 @@ direct front.
 |---|---|---|---|
 | **I1** | *Boundedly many shared blocks* K = Σ_{a<M} A_a ⊗ B_a: at most (½ + o(1)) d² for fixed M? (Problems R, S of [item D](D-comparison.md); "three blocks never exceed pairing + 3") | Two blocks done. Three: special shapes done, general open; the involutive slice is parked while Astra works on I2. Lean: `ProblemR`, `ProblemS`, `problemR_of_problemS` in [StatementsD.lean](StatementsD.lean) (open). | Machines are not confined to bounded repertoire (shift above). Needs a version in which the blocks vary with the row, which is D1. |
 | **I2** | *The twisted swap* ([note](notes/twisted-swap.md), [controls](notes/twisted-swap-controls.md), [unpaired scalar theorem](notes/unpaired-scalar-decoding.md)): covariant decoders; per representation, least rank of ⊕ U_g − K′ with K′ ∈ M_d ⊗ W | Generic inverse-paired U and fixed simultaneously diagonalizable W, n ≥ 2: pairing optimal (written). **(U)** asks for kernel ≤ c_w d for independent generic U, uniformly in n. At w = 1 it is proved with exact complex/algebraically closed maximum d when n ≤ 2 or n ≥ (d−1)(d−2)−1; first remaining cases d = 4, n = 3,4. Numerical w = 3 counts 13 and 20 reproduced with saved witnesses; no general square-root theorem. | (i) generic U_g → π(g); (ii) covariant → arbitrary blocks. The new large-n range misses full-group irreducible dimensions n² ≤ d. Inversion fixed points have an explicit conditional correction. No direct-front chunk removed. Lean statement of (U): not written. **Tie (i) fails by the route through (U):** for the matrices of a quasirandom group, (U) is false (every half of the group contains order-d disjoint triples abc = e, each carrying kernel n; [twisted-swap §9](notes/twisted-swap.md)). The generic results stay as mechanisms; the group model is now D8. |
-| **I3** | *Affine helper families over ℂ* ([pass-calculus §5](notes/pass-calculus.md)): half bound without a parity, or a code on odd relations | Bounded-coefficient thresholds proved; coefficients near 1 without a parity open | Bounded complex coefficients are already excluded for machines (paper 17, Section 8.5): needs finite fields or unbounded coefficients |
+| **I3** | *Affine helper families over ℂ* ([pass-calculus §5](notes/pass-calculus.md)): half bound without a parity, or a code on odd relations | Bounded-coefficient thresholds proved; coefficients near 1 without a parity open | Bounded complex coefficients are already excluded for machines (paper 17, Section 4.5): needs finite fields or unbounded coefficients |
 | **I4** | *Comparison bounds* ([item D](D-comparison.md), D0–D6): D(K) ≤ d(d+1)/2 + dim ker(K + G ⊗ G⁻¹) and relatives | Written; Lean obligations open | A reformulation: settles no class until Problem S is known for it |
 | **I5** | *Minimal counterexamples expand* ([finite fields](notes/finite-field-expansion.md), [involutive](notes/involutive-product-spaces.md)) | Surgery reduces to cores that expand on all four sides (involutive case; outside characteristic 2 with equality) | Only for shared blocks, so the tie is that of I1 |
 
@@ -131,9 +138,10 @@ direct front.
 | **X5** | Small exhaustive searches for a separating instance in the array itself | At the sizes that can be searched every position is near the diagonal and local gains dominate; 29 of 30 relations sit on the baseline. Silence there proves nothing. | A family whose regime is set by a parameter other than d (I2 is one) |
 | **X6** | Gains from loops, polygons, witness pairs, products of local codes, repeated seeds | Each adds O(d) at bounded degrees (products: paper 17; seeds: [identity lifts](notes/identity-lift-comparison.md); polygons and witness pairs: proofs not yet in this repository) | — |
 | **X7** | Rate bounds for separated relations of bounded degree in general | False: codes of rate → 1 exist ([paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/), [paper 15](../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/)) | — (refuted). The open part is whether such codes fit an array with bounded windows, which is D7. |
-| **X8** | Conditions on head motion that do not look at the data | The padded machine satisfies them and transposes nothing (paper 17, Section 8.2) | — (refuted) |
+| **X8** | Conditions on head motion that do not look at the data | The padded machine satisfies them and transposes nothing (paper 17, Section 4.2) | — (refuted) |
 | **X9** | A single common-subspace compression that annihilates the decoder, in I2 | At n = 3, w = 2 its certified rank is at most d, while the generic paired minimum rank is 3d/2 ([twisted-swap §7](notes/twisted-swap.md)) | Combine constraints from multiple subcodes; the two-subcode step already does this |
 | **X10** | Reducing the group model to the unpaired model (bound the paired kernel by dn/2 plus an unpaired kernel) | On a quasirandom group the unpaired kernel is of order dn for every choice of half, by mixing ([twisted-swap §9](notes/twisted-swap.md)) | A group with a cone (a half with few short closed words): but there order arguments already work |
+| **X11** | Amplifying a small gain to rate near 1 by the sum of two tensor codes, S₁ ⊗ M + M ⊗ S₂ (deficiencies multiply) | Its decoder is τ₁ ⊗ K₂ + K₁ ⊗ τ₂ − K₁ ⊗ K₂, which contains full partial transposes, so the window is not bounded | A product whose decoder is built from K₁ and K₂ alone |
 
 ## Maintenance
 

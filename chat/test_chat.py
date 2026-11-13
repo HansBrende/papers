@@ -7,6 +7,7 @@ No GitHub access or real messages. Includes actual rejected pushes.
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import replace
 from io import StringIO
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -16,7 +17,7 @@ import unittest
 from unittest.mock import patch
 
 from chatlib import (DELIMITER, SEPARATOR, ChatError, check_history, listen,
-                     new_message, parse_chat)
+                     new_message, parse_chat, wake_codex)
 import send
 
 
@@ -44,6 +45,10 @@ def git(root, *args):
 
 class RepoCase(unittest.TestCase):
     def setUp(self):
+        # Integration tests must never enqueue messages to the real conversation.
+        environment = patch.dict(os.environ, {"CODEX_THREAD_ID": ""})
+        environment.start()
+        self.addCleanup(environment.stop)
         self.temp = tempfile.TemporaryDirectory(prefix="chat-test-")
         self.addCleanup(self.temp.cleanup)
         base = Path(self.temp.name)
@@ -369,6 +374,32 @@ class SendTests(RepoCase):
         for flag in ("--wake", "--no-wait", "--id", "--resume", "--since"):
             self.assertEqual(self.send_cli("--as", "astra", flag, "Do not post").returncode, 2)
         self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
+
+
+class WakeTests(unittest.TestCase):
+    def test_reply_is_queued_to_the_launching_thread(self):
+        with patch.dict(os.environ, {"CODEX_THREAD_ID": "test-thread",
+                                     "CODEX_APP_RUNTIME_CLI_PATH": "test-codex"}), \
+                patch("chatlib.subprocess.run") as run:
+            run.return_value.returncode = 0
+            wake_codex("A complete reply.")
+            self.assertEqual(run.call_args.args[0],
+                             ["test-codex", "queue", "--thread", "test-thread",
+                              "--message", "A complete reply."])
+
+    def test_other_runtimes_do_not_queue(self):
+        with patch.dict(os.environ, {"CODEX_THREAD_ID": ""}), \
+                patch("chatlib.subprocess.run") as run:
+            wake_codex("A complete reply.")
+            run.assert_not_called()
+
+    def test_queue_failure_is_reported(self):
+        with patch.dict(os.environ, {"CODEX_THREAD_ID": "test-thread"}), \
+                patch("chatlib.subprocess.run") as run:
+            run.return_value.returncode = 1
+            run.return_value.stderr = "queue unavailable"
+            with self.assertRaisesRegex(ChatError, "Could not queue.*queue unavailable"):
+                wake_codex("A complete reply.")
 
 
 class MessageTests(unittest.TestCase):

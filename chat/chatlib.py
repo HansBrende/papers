@@ -154,6 +154,21 @@ def sync_if_safe(root: Path, commit: str, remote: str, branch: str) -> str:
     return "Fast-forwarded the working branch after the notification."
 
 
+def wake_codex(message: str):
+    """Queue the reply to the Codex conversation that launched this process."""
+    thread = os.environ.get("CODEX_THREAD_ID")
+    if not thread:
+        return  # Other agent runtimes still receive the printed reply.
+    command = os.environ.get("CODEX_APP_RUNTIME_CLI_PATH", "codex")
+    try:
+        result = subprocess.run([command, "queue", "--thread", thread, "--message", message],
+                                capture_output=True, text=True, timeout=30)
+    except subprocess.TimeoutExpired as exc:
+        raise ChatError("Queuing the reply to Codex timed out; the reply is printed above") from exc
+    if result.returncode:
+        raise ChatError("Could not queue the reply to Codex: " + result.stderr.strip())
+
+
 def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
            once=False, no_pull=False):
     """Wait after sending. Every new peer message ends the wait."""
@@ -180,9 +195,10 @@ def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
                     print(sync_if_safe(root, commit, remote, branch), flush=True)
                 except GitError as exc:
                     print(f"Could not fast-forward; message is still available: {exc}", flush=True)
-            print(f"\nNew messages for {actor} at {commit}:\n", flush=True)
-            for message in incoming:
-                print(message.display() + "\n", flush=True)
+            response = (f"New messages for {actor} from {CHAT} at {commit}:\n\n"
+                        + "\n\n".join(message.display() for message in incoming))
+            print("\n" + response + "\n", flush=True)
+            wake_codex(response)
             return 0
         if once:
             print(f"No new peer message for {actor}.", flush=True)

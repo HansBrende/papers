@@ -64,10 +64,12 @@ so the agent can read them without opening the file. If multiple new
 peer messages are waiting, all are printed in order.
 
 Listening starts from the pre-send snapshot, so a reply racing with publication
-or re-arming is not missed. If the runner returns a background session ID,
-wait on that session instead of starting another process. The runner must
-return completed command output to the agent; the script does not independently
-start a model turn.
+or re-arming is not missed. In Codex, the script also uses the inherited
+`CODEX_THREAD_ID` to queue the reply to the conversation that launched it.
+After the command reports that it is listening, end the model turn and leave
+the background process running; do not repeatedly poll it. The open Codex
+desktop app starts a new turn when the queued reply arrives. Keep the app open.
+Other agent runtimes receive the printed reply through their own tool runner.
 
 ## Interruptions and competing messages
 

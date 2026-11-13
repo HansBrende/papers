@@ -868,3 +868,100 @@ written method obstruction, not a capacity bound. The known Paley tournament
 on seven vertices has binary dimension four with no mutual pairs, now
 Lean-verified along with the all-alphabet upper bound q⁴. Thus an oriented
 half-rate lemma is false. Neither control settles full-grid capacity.
+
+## 13. Odd sector walks are square roots: bounded coupling in a group (Fable, 13 November 2026)
+
+Status: 13.1, 13.2 and 13.5 have **short written proofs, unreviewed**; the
+formula of 13.1 is checked by brute force on four small groups
+([`sector_walks.py`](../tools/sector_walks.py)). 13.3 is a **proof sketch**
+that rests on two cited theorems not re-read here and on the row-separator
+bound of [the calibration note](window-pages-and-input-attachments.md#2-a-sufficient-row-separator-bound).
+Everything in this section concerns mutual helpers in the group model. It is
+front D1 and has no machine consequence by itself.
+
+**Setting.** G a group of order d, T ⊆ G with |T| = w ≥ 2, ρ(r) = rT. The
+*sector* of the cell (c, r) is g = c⁻¹r; each sector has d cells. A mutual
+step is (c, r) → (cgt, ct′⁻¹) with t, t′ ∈ T, and it sends the sector g to
+t⁻¹g⁻¹t′⁻¹. The *sector graph* has this move as its edges. Two steps send g
+to t₂⁻¹t′·g·t·t₂′⁻¹, so an even walk multiplies g on both sides by short words.
+
+**Proposition 13.1 (odd sector walks).** The sector g lies on a closed walk
+of odd length ℓ = 2j+1 in the sector graph if and only if
+
+  g·x·g = y  for some x ∈ T(T⁻¹T)^j, y ∈ T⁻¹(TT⁻¹)^j,
+
+equivalently (gx)² = yx. Hence the number of such sectors is at most
+w^{2ℓ}·R₂(G), where R₂(G) is the largest number of square roots of an
+element of G.
+
+*Proof.* After 2j steps the sector is a·g·b with a ∈ (T⁻¹T)^j and
+b ∈ (TT⁻¹)^j. The last step closes the walk when g = t⁻¹(agb)⁻¹t′⁻¹, that is
+g·(t′a)·g = t⁻¹b⁻¹. For fixed x and y, the element gx is a square root of
+yx. ∎
+
+By the Frobenius–Schur count, R₂(G) ≤ Σ_χ χ(1) ≤ √(k(G)·d), with k(G) the
+number of conjugacy classes. In a group of odd order R₂ = 1.
+
+**Corollary 13.2 (bounded blocks).** Partition the sectors into blocks of at
+most m sectors. Let C be any code over q symbols in which every cell is
+recovered from mutual helpers whose sectors lie in its own block
+(correlations between blocks are allowed). Then
+
+  log_q |C| ≤ d²/2 + w^{6m}·R₂(G)·d.
+
+*Proof.* The projection of C to the cells of a block is a storage code on
+the induced mutual graph. A bipartite component contributes at most half of
+its cells. If a component is not bipartite, the block's sector graph has an
+odd closed walk through each of its sectors, hence one of length at most 3m
+(reach an odd cycle, go round, return). By 13.1 at most
+Σ_{odd ℓ ≤ 3m} w^{2ℓ}R₂ ≤ 2w^{6m}R₂ sectors qualify. ∎
+
+So for groups of odd order the excess of block-wise mutual recovery is O(d)
+for fixed m and w, and for any family with k(G) ≤ d^{1−η} the blocks may
+have up to about (η/12)·log_w d sectors before the bound stops giving one half.
+
+**Theorem 13.3 (all groups; sketch).** Fix w, m and c > 0. For every finite
+group of large enough order d and every T of size w, block-wise mutual
+recovery as in 13.2 has log_q|C| ≤ (½ + c)d².
+
+*Sketch.* If R₂(G) < c·d/w^{6m}, this is 13.2. Otherwise
+k(G) ≥ (c/w^{6m})²·d, so the probability that two elements commute is
+bounded below. By P. M. Neumann's theorem (*Two combinatorial problems in
+group theory*, Bull. London Math. Soc. 21 (1989)), G then has normal
+subgroups K ≤ H with H/K abelian and |G:H|, |K| ≤ f(c, w, m). The balls of
+Cay(G, T ∪ T⁻¹) then have at most f²(2r+1)^{2wf} elements, so the row helper
+graphs of such groups have uniformly polynomial growth, hence are uniformly
+hyperfinite, and the row-separator bound gives one half for **every**
+whole-row code on them, not only for mutual recovery. ∎
+
+**What 13.1 says about a gain.** In the group model a mutual gain at positive
+density needs, through most sectors, odd closed sector walks. Unless the
+group is close to abelian (where separators already give one half), those
+walks have length at least about log(d/R₂)/(2 log w). The mutual question
+that survives is therefore the one with unboundedly many coupled sectors on
+an expanding group: bounded degree, no short odd closed walk, and the
+product structure of section 12.
+
+**Remark 13.4 (the Paley control is the first member of the trace family).**
+On ℤ/(2^m − 1) with helpers i + {1, 2, 4, …, 2^{m−1}}, the binary code
+x_i = Σ_t x_{i+t} is the cyclic code with check polynomial 1 + Tr(x), which
+has 2^{m−1} roots in the field of 2^m elements. Its rate is ½ + 1/(2n) at
+window m = log₂(n+1) (kernel dimensions checked for m ≤ 8). The Paley
+tournament on seven vertices is m = 3. So this control refutes the oriented
+half lemma, as recorded, but its excess is half a symbol per diagonal at a
+growing window.
+
+**Proposition 13.5 (directed diagonals in elementary abelian groups).** Let
+G = F_p^k and V₀ the span of T − T. For every sector g outside the coset
+−t₁ + V₀ (all but at most p^{w−1} sectors), the diagonal digraph
+Cay(G, g + T) of Proposition 11.1 admits a homomorphism to the directed
+p-cycle, and every storage code on it has at most q^{d/p} elements.
+
+*Proof.* A linear functional that vanishes on V₀ and takes the value 1 at
+g + t₁ takes the value 1 on all of g + T. Its level sets are p layers, every
+arc goes from one layer to the next, and deleting one layer leaves an
+acyclic digraph. ∎
+
+So in F_p^k with p odd, codes that recover each cell inside its own diagonal
+reach at most d²/p + O(d), below pairing. For p = 2 this is the
+bipartiteness of the generic diagonal in section 11.

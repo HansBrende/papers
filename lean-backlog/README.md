@@ -128,9 +128,19 @@ Native extraction and source audit:
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the
-  conditioned far-half principle, while leaving the global near-cell
-  allowance open. The note also states the required reverse-degree and
+  conditioned far-half principle; by itself it does not refute the global
+  near-cell allowance. The note also states the required reverse-degree and
   component-radius qualifications.
+- [Diagonal codes and window-dependent excess](notes/diagonal-code-calibration.md):
+  the reviewed hypercube construction rules out every fixed-radius allowance
+  with a window-independent constant. All odd folded cubes force an exponential
+  window coefficient. A general-group theorem also bounds mutual-only
+  within-diagonal decoding by half rate plus a vanishing term, with
+  correlations allowed and shared advice charged. The basis host at $d=16$ has exact all-alphabet capacity
+  $q^{176}$; the Clebsch binary case remains 210–211. A bounded two-sector
+  covariant enumeration supplies no gain. The placement lemma is strengthened
+  and Lean-verified for arbitrary functions; general rank and capacity arguments
+  have written proofs and exact controls, without a new native exclusion.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

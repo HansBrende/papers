@@ -647,8 +647,9 @@ mechanism is not new.
 ## 10. After the random-incidence code: global and conditional excess
 
 Fable's proposal of 13 November 2026, with Astra's scope audit and Clebsch
-countercontrol. The global conjecture below is open. Its stronger
-conditioned-far version is false.
+countercontrol. The conditioned-far version is false. Section 11 subsequently
+refutes the global version with a constant independent of the window;
+window-dependent additive and fixed-window limiting bounds remain open.
 
 **10.1 The proposed staircase.** The proved random triangle code has rate
 $2/3-o(1)$ at $w=(1+o(1))d^{1/3}\log d$. For a fixed $m$, the expected
@@ -680,7 +681,7 @@ imply $N_3=O(d)$: $\rho(c)=\{0,c\}$ has window two and every cell near.
 The paid reverse-degree reduction in Section 8 is needed before using
 such a count on arbitrary native row-spread relations.
 
-**Global conjecture (near-cell allowance).** There is an absolute constant
+**Former global conjecture (refuted in Section 11).** There is an absolute constant
 $C_0\ge0$ such that every whole-row code over $q\ge2$ symbols satisfies
 
 $$\log_q|C|\le d^2/2+C_0N_3.$$
@@ -700,8 +701,9 @@ counterexample is Lean-verified in [FarClebsch.lean](../FarClebsch.lean).
 It does not show an advantage from adding one-way helpers to the full
 mutual-helper graph.
 
-The global conjecture is not refuted: the example's full-array dimension
-is ten, far below $d^2/2=128$. A finite far-only excess does not provide the
+This single gadget does not refute the global conjecture: its full-array
+dimension is ten, far below $d^2/2=128$. Section 11 supplies a full-array
+family that does refute the proposed window-independent constant. A finite far-only excess does not provide the
 amplification or density needed to contradict that bound. Likewise, the
 small-component theorem charges port distances up to $2s-1$ for components
 of size $s$, not just distance three. Its proof is consistent with Clebsch.
@@ -709,58 +711,86 @@ of size $s$, not just distance three. Its proof is consistent with Clebsch.
 The next argument must bound global information, accounting for the
 entropy lost on the near coordinates as well as any gain on the far ones.
 The separately restricted cubic incidence/girth-ten-or-twelve question
-remains open; Clebsch has degree five and incidence girth four. That
-restriction needs its own justification as a route to the unrestricted
-fixed-window deficit. No larger-host search was required to settle the
+remains open; Clebsch has degree five and incidence girth four. It is parked
+because no tie from that restriction to native cone systems is supplied. No larger-host search was required to settle the
 unrestricted conditioned-far claim.
 
-## 11. Diagonals: the far gadget in general, and a family that corrects the near-cell conjecture (Fable, 13 November 2026)
+## 11. Diagonal codes and the window-dependent excess
 
-Status: Propositions 11.1 and 11.2 have the short written proofs below, **not reviewed**. 11.2 rests on the
-Clebsch code of the fourth paper and on paper 17's bound for rows inside address cosets.
+Fable's proposal of 13 November 2026, reviewed and strengthened by Astra.
+The [complete calibration](diagonal-code-calibration.md) supplies the
+folded-cube proof, finite certificates and scope. The placement statement
+is Lean-verified; the general hypercube bounds are reviewed written proofs.
 
-**Withdrawn.** My statement in the chat that the mutual helpers of far cells give one half is false: Astra's
-Clebsch code on the diagonal uses mutual helpers only and has 10 of 16 far cells free.
+**Proposition 11.1 (placement carries a row relation).** Let $f:[d]\to[d]$
+be any function. A finite storage code with helpers $i\mapsto\rho(f(i))$ embeds
+in the cells $(i,f(i))$ as a whole-row code for $\rho$, fixing other cells
+and preserving cardinality. No injectivity or linearity assumption is needed.
 
-**Proposition 11.1 (a diagonal carries the row relation).** Let π be a permutation of the indices. The cells
-(c, π(c)), each reading only cells of the same kind, form a copy of the digraph on the indices with an arc
-from c to every element of ρ(π(c)). So every storage code of that digraph, over any alphabet, is a whole-row
-code for ρ supported on d cells. If the indices form a group and ρ(r) = rT, the cells (c, cg) of displacement g
-carry the Cayley digraph with generators gT, and the array is the disjoint union of these d diagonals.
+*Outline of the formal proof.* Different coordinates occupy different
+rows. Recovery reads the placed coordinates in the supplied rows and
+applies the original storage-code rule. See `placedCode_isWholeRow` and
+`card_placedCode` in [FarClebsch.lean](../FarClebsch.lean); the old diagonal
+lemma is their identity-placement corollary. ∎
 
-*Proof.* The cell (c, π(c)) lies in column π(c), so it may read any cell in the rows ρ(π(c)), in particular
-(i, π(i)) for i in that set. For ρ(r) = rT and π(c) = cg these are the cells (cgs, cgsg), s ∈ T. ∎
+For a group $G$ and $\rho(c)=cT$, the functions $f_g(i)=ig$ partition the
+array into displacement diagonals, each carrying the Cayley relation
+$i\to igT$. Products of diagonal codes give whole-row codes. This is a
+construction, not an assertion that all codes decompose. Ordinary
+transposed-cell pairing needs self-row access (or a separately checked
+twisted pairing); it is not automatic for arbitrary $T$.
 
-Astra's far gadget is the case π = identity for ρ(c) the neighbours of c in the Clebsch graph. Two different
-diagonals π and π⁻¹ together carry the pairs of transposed cells; that is pairing.
+**Proposition 11.2 (the hypercube family, strengthened).** For $1\le w\le k$,
+$d=2^k$, and $T$ consisting of $w$ independent vectors in $\mathbb F_2^k$,
+put $\rho(c)=c+T$. A binary code attains
 
-**Proposition 11.2 (the hypercube family).** Let the indices be F₂^k, d = 2^k, and ρ(c) = c + T for a set T of w
-linearly independent vectors. Then there is a binary whole-row code for ρ of dimension at least
+$$\log_2|C|=d^2/2+dS(w),\qquad
+S(w)=\sum_{j\text{ odd}}\binom wj2^{-(j+1)/2}.$$
 
-  d²/2 + d · [ w/2 + C(w,3)/4 + C(w,5)/8 ],
+Every code over $q\ge2$ symbols has
+$\log_q|C|\le d^2/2+2^{w-2}d$.
 
-and every whole-row code for ρ has at most q^{(d² + 2^w d)/2} elements.
+*Proof.* A displacement which is a sum of $j$ odd distinct elements of $T$
+has selected helpers giving disjoint folded $j$-cube subgraphs. Their
+binary fitting rank is $(4^m-2^m)/2$ for $j=2m+1$, proved by the explicit
+square-zero group-ring recurrence in the calibration. Ignore extra edges
+and use those component codes. On remaining diagonals use a perfect
+matching. For the upper bound, helper sets lie in cosets of
+$\operatorname{span}\{t+t_0:t\in T\}$, of dimension $w-1$; Paper 17's
+Proposition `rows`(a,c) applies. ∎
 
-*Proof.* By 11.1 the diagonal of displacement g carries the Cayley graph of F₂^k with generators g + T, which
-is undirected. For g ∈ T it has a loop at every vertex, and the diagonal is free. For g the sum of three
-elements of T, three of the generators are the pairwise sums of those elements; they span a plane and make
-disjoint copies of K₄, which carry the sum-zero code of rate 3/4. For g the sum of five elements of T, five
-of the generators sum to zero and any four of them are independent, so they make disjoint copies of the
-Clebsch graph, which carries a binary code of rate 5/8. Every other diagonal has a perfect matching along one
-generator and gets rate 1/2. The upper bound is paper 17's bound for row relations inside address cosets:
-the rows of a column lie in a coset of the span of T, of size 2^w. ∎
+The original loop/$K_4$/Clebsch bound
+$d^2/2+d[w/2+\binom w3/4+\binom w5/8]$ is the subconstruction using
+$j=1,3,5$ only. Extra helpers may join its selected components, which
+causes no problem because the decoder can ignore them.
 
-**Consequences.**
-- *Far cells gain at distance five:* C(w,5)·d cells carry C(w,5)·d/8 symbols more than half. For odd j the
-  cell (c, c + g) is at distance exactly j in the incidence graph when g is a sum of j elements of T and of no
-  fewer. The number of near cells here is N₃ = d(w + C(w,3)). So the **conjecture of Section 10 is false with a constant that does
-  not depend on the window**: it would need C ≥ C(w,5)/(8(w + C(w,3))), which grows like w².
-- *What survives.* In this family the excess over d²/2 lies between d[w/2 + C(w,3)/4 + C(w,5)/8] and 2^{w−1}d: it
-  is of order d for fixed window, with a factor that grows fast in the window. The statement to aim at is
-  the strong form of Problem 9.4(c) with a constant depending on both windows:
-  at most q^{d²/2 + F(w, w′) d} elements. The limit of fixed window is unaffected.
-- *Why the gain dies with distance here.* The Cayley graph on a diagonal is bipartite unless g is a sum of an
-  odd number j of elements of T, and then its odd girth is j. Translation by g keeps a relation among j
-  generators only if jg = 0. In characteristic two every diagonal is undirected but odd relations are lost;
-  in odd characteristic relations of length p survive every translation but the diagonals become directed.
-  A group in which both held for most g would give far gains of positive density. I do not know one.
+For every fixed radius $r\ge1$,
+$N_r=d\sum_{j\le r,\ j\text{ odd}}\binom wj$.
+Since $S(w)$ grows exponentially while this sum is polynomial in $w$,
+**no window-independent constant multiplying $N_r$ bounds all excess**,
+for any fixed radius. The surviving additive question permits a coefficient
+$F(w,w')$, necessarily at least $S(w)$ when $w'=w$. At fixed $w$ the
+constructed rate still tends to one half; the native question remains open.
+
+**Finite coupling calibration.** On $\mathbb F_2^4$, $T$ a basis has exact
+whole-array capacity $q^{176}$ for every finite alphabet, attained by the
+diagonal construction. The Clebsch helper set has binary diagonal dimension
+210 and whole-array upper bound 211. All three types of covariant
+binary two-sector coupling were enumerated exactly and none improves the
+diagonal baseline; unrestricted coupling and vector/nonlinear gains remain
+open. The characteristic-two group algebra does not admit the proposed
+16-character Fourier reduction. See the linked calibration for the exact
+scope and reproduction commands.
+
+**General-group mutual-helper theorem (reviewed written proof).** For every
+fixed window, only $O_w(d/\log d)$ displacement diagonals in any finite
+group have non-bipartite mutual-helper graphs. A code recovered within each
+diagonal using only its mutual helpers therefore has rate at most
+$1/2+O_w(1/\log d)$, even with correlations between diagonals; a shared
+advice value adds its stated information cost. The proof counts symmetric
+translates using the central involutions of the subgroup generated by a
+normalized helper set, then takes a finite union over helper subsets.
+See [the complete proof](diagonal-code-calibration.md#5-most-translated-mutual-helper-graphs-are-bipartite).
+This closes the proposed positive-density undirected/non-bipartite route.
+One-way helpers and cross-diagonal recovery remain possible; no native
+normal form has been proved.

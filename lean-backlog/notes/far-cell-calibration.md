@@ -85,7 +85,10 @@ of far cells. The following two proposed statements differ:
 - **Conditioned far-half:** after fixing all near coordinates, every
   resulting code has at most $q^{F/2}$ words. Proposition 1 refutes this.
 - **Global near-cell allowance:** some absolute $C_0$ satisfies
-  $|C|\le q^{d^2/2+C_0N}$ for all whole-row codes. This remains open.
+  $|C|\le q^{d^2/2+C_0N}$ for all whole-row codes. This single gadget leaves the assertion undecided; the later
+  [hypercube construction](diagonal-code-calibration.md) refutes a constant
+  independent of the helper window. A window-dependent additive bound
+  remains open.
 
 The first would imply the second with $C_0=1/2$ by counting at most
 $q^N$ fibres. The converse does not follow. A code with near cells fixed
@@ -129,8 +132,9 @@ does not give $N_3=O(d)$: the relation $\rho(c)=\{0,c\}$ has forward
 degree at most two, but every row-column pair is within distance three
 via the common hub row. Its reverse degree is unbounded.
 
-The global conjecture with $C_0\ge0$ would nevertheless imply the fixed-forward-window
-half-rate limit using the existing paid reverse-degree reduction. Fix an
+The now-refuted global conjecture with $C_0\ge0$ would nevertheless imply the fixed-forward-window
+half-rate limit using the existing paid reverse-degree reduction. This
+conditional implication does not rescue the refuted premise. Fix an
 integer $R\ge1$. Freeze
 rows used by more than $R$ columns, costing at most $wd^2/(R+1)$ symbols,
 and remove these rows from every helper set. Each conditional code remains

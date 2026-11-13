@@ -27,60 +27,87 @@ instance {d : ℕ} (ρ : Fin d → Finset (Fin d)) (i c : Fin d) :
 def farCells {d : ℕ} (ρ : Fin d → Finset (Fin d)) : Finset (Entry d) :=
   univ.filter fun p => ¬ NearThree ρ p.1 p.2
 
-section Diagonal
+section Placement
 
 variable {d : ℕ} {α : Type*}
 
-/-- Store a word on the diagonal and fix every other entry to one symbol. -/
-def diagonalWord (zero : α) (x : Fin d → α) (p : Entry d) : α :=
-  if p.1 = p.2 then x p.1 else zero
+/-- Store coordinate `i` at `(i, f i)` and fix other entries. The placement
+function need not be injective: different rows already separate its cells. -/
+def placedWord (f : Fin d → Fin d) (zero : α) (x : Fin d → α) (p : Entry d) : α :=
+  if f p.1 = p.2 then x p.1 else zero
 
-@[simp] theorem diagonalWord_same (zero : α) (x : Fin d → α) (i : Fin d) :
-    diagonalWord zero x (i, i) = x i := by simp [diagonalWord]
+@[simp] theorem placedWord_same (f : Fin d → Fin d) (zero : α)
+    (x : Fin d → α) (i : Fin d) :
+    placedWord f zero x (i, f i) = x i := by simp [placedWord]
 
-theorem diagonalWord_injective (zero : α) : Function.Injective (diagonalWord (d := d) zero) := by
+theorem placedWord_injective (f : Fin d → Fin d) (zero : α) :
+    Function.Injective (placedWord f zero) := by
   intro x y h
   funext i
-  simpa using congrFun h (i, i)
+  simpa using congrFun h (i, f i)
 
-noncomputable def diagonalCode (zero : α) (C : Finset (Fin d → α)) :
+noncomputable def placedCode (f : Fin d → Fin d) (zero : α) (C : Finset (Fin d → α)) :
     Finset (Entry d → α) := by
   classical
-  exact C.image (diagonalWord zero)
+  exact C.image (placedWord f zero)
 
-@[simp] theorem card_diagonalCode (zero : α) (C : Finset (Fin d → α)) :
-    (diagonalCode zero C).card = C.card := by
+@[simp] theorem card_placedCode (f : Fin d → Fin d) (zero : α) (C : Finset (Fin d → α)) :
+    (placedCode f zero C).card = C.card := by
   classical
-  exact card_image_of_injective C (diagonalWord_injective zero)
+  exact card_image_of_injective C (placedWord_injective f zero)
 
 /-- This embedding works for arbitrary alphabets and nonlinear storage
-codes; it assumes neither symmetry nor linearity of the row relation. -/
-theorem diagonalCode_isWholeRow (zero : α) (ρ : Fin d → Finset (Fin d))
-    (C : Finset (Fin d → α)) (hC : IsStorageCode ρ C) :
-    IsWholeRowCodeExcept ρ ∅ (diagonalCode zero C) := by
+codes and every placement function, not merely permutations. -/
+theorem placedCode_isWholeRow (f : Fin d → Fin d) (zero : α)
+    (ρ : Fin d → Finset (Fin d)) (C : Finset (Fin d → α))
+    (hC : IsStorageCode (fun i => ρ (f i)) C) :
+    IsWholeRowCodeExcept ρ ∅ (placedCode f zero C) := by
   classical
   rw [wholeRowCode_iff]
   intro x hx y hy r _ hxy i
   obtain ⟨u, hu, rfl⟩ := mem_image.mp hx
   obtain ⟨v, hv, rfl⟩ := mem_image.mp hy
-  by_cases hir : i = r
-  · subst i
-    simp only [diagonalWord_same]
-    apply hC u hu v hv r
+  by_cases hfi : f i = r
+  · simp only [placedWord, hfi, ite_true]
+    apply hC u hu v hv i
     intro j hj
-    simpa using hxy j hj j
-  · simp [diagonalWord, hir]
+    simpa using hxy j (by simpa [hfi] using hj) (f j)
+  · simp [placedWord, hfi]
 
-/-- Off-diagonal entries stay at the chosen constant. Keeping this generic
+/-- Entries outside the placement stay constant. Keeping this generic
 avoids unfolding an enumerated concrete code to extract an image witness. -/
-theorem diagonalCode_offDiagonal_zero (zero : α) (C : Finset (Fin d → α))
-    (x : Entry d → α) (hx : x ∈ diagonalCode zero C) (i c : Fin d) (hic : i ≠ c) :
+theorem placedCode_offGraph_zero (f : Fin d → Fin d) (zero : α)
+    (C : Finset (Fin d → α)) (x : Entry d → α) (hx : x ∈ placedCode f zero C)
+    (i c : Fin d) (hfic : f i ≠ c) :
     x (i, c) = zero := by
   classical
   obtain ⟨u, _, rfl⟩ := mem_image.mp hx
-  simp [diagonalWord, hic]
+  simp [placedWord, hfic]
 
-end Diagonal
+/-- The former diagonal embedding is exactly identity placement. -/
+abbrev diagonalWord (zero : α) := placedWord (d := d) id zero
+
+@[simp] theorem diagonalWord_same (zero : α) (x : Fin d → α) (i : Fin d) :
+    diagonalWord zero x (i, i) = x i := placedWord_same id zero x i
+
+theorem diagonalWord_injective (zero : α) : Function.Injective (diagonalWord (d := d) zero) :=
+  placedWord_injective id zero
+
+noncomputable abbrev diagonalCode (zero : α) := placedCode (d := d) id zero
+
+@[simp] theorem card_diagonalCode (zero : α) (C : Finset (Fin d → α)) :
+    (diagonalCode zero C).card = C.card := card_placedCode id zero C
+
+theorem diagonalCode_isWholeRow (zero : α) (ρ : Fin d → Finset (Fin d))
+    (C : Finset (Fin d → α)) (hC : IsStorageCode ρ C) :
+    IsWholeRowCodeExcept ρ ∅ (diagonalCode zero C) :=
+  placedCode_isWholeRow id zero ρ C hC
+
+theorem diagonalCode_offDiagonal_zero (zero : α) (C : Finset (Fin d → α))
+    (x : Entry d → α) (hx : x ∈ diagonalCode zero C) (i c : Fin d) (hic : i ≠ c) :
+    x (i, c) = zero := placedCode_offGraph_zero id zero C x hx i c hic
+
+end Placement
 
 /-- In the Clebsch incidence double, exactly the unequal-index cells are
 at distance one or three. This is finite kernel-checked computation. -/
@@ -129,6 +156,8 @@ theorem farClebschCode_exceeds_half :
   rw [clebsch_farCells_card, farClebschCode_card]
   decide
 
+#print axioms placedCode_isWholeRow
+#print axioms card_placedCode
 #print axioms diagonalCode_isWholeRow
 #print axioms clebsch_nearThree_iff
 #print axioms farClebschCode_isWholeRow

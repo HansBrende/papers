@@ -254,3 +254,54 @@ Thus fixed $K,a,\ell$ and $o(L)$ exceptions cannot cover these unit-speed
 geometries. This refutes the stronger geometry-only inference, not row
 spread or an extraction claim restricted to correct transposers. The control
 does not transpose arbitrary inputs.
+
+## 7. What the capacity statement is about (additions by Fable, 13 November 2026)
+
+Status: Propositions 7.1 and 7.2 have the short written proofs below, **not reviewed**. The remark between
+them is a reading, not a theorem.
+
+**Proposition 7.1 (a small deficit forces expansion at linear scale).** Let S be a set of d × d matrices
+over an alphabet of q symbols in which every column r is a function of the rows ρ(r), with q^{(1 − δ)d²}
+elements. Then for every set A of indices
+
+- (a) (d − |A|) · #{r : ρ(r) ⊆ A} ≤ δd²;
+- (b) (d − |A|) · #{i ∈ A : every column that reads row i lies in A} ≤ δd².
+
+*Proof.* The deficit of a marginal (number of positions minus entropy in symbols, for the uniform law on
+S) is at most the deficit δd² of S. (a) The rows of A determine the n columns r with ρ(r) ⊆ A. The
+positions of these rows and columns number |A|d + (d − |A|)n and have entropy at most |A|d. (b) Let A° be
+the set of rows counted in (b) and B its complement. A column outside A reads only rows of B. So the
+block of the rows A° and the columns outside A is a function of the rows of B, and the positions of the
+rows of B together with this block have deficit at least |A°|(d − |A|). ∎
+
+So for |A| = d/2: at most 2δd columns have all their helper rows in A, and at most 2δd rows of A are read
+only by columns of A. By row spread, the row relation of a linear-time transposer has both properties
+with δ of order ε.
+
+**Remark (covers stop at 1/(w + 1)).** Take as patches the rows ρ(R) together with the columns R, for
+sets R of columns, and combine their deficits by Shearer's inequality or by the patch bound of the
+fifteenth paper. A patch has deficit at most |R|(d − |ρ(R)|) for free and |ρ(R)|d + |R|(d − |ρ(R)|) positions,
+so where |ρ(R)| is about w|R| the ratio is at most 1/(w + 1). On expanding relations no argument of this
+type gives a deficit that does not fall with w; the order bound is the best of them.
+
+**Proposition 7.2 (the window graph has 2k pages).** For one work tape, put the windows on a line in the
+order of time and join a window v to an earlier window u when v visits a cell whose last visit before v
+began was in u. The edges that come from cells to the left of the head's position at the beginning of v
+are pairwise non-crossing, and so are those from cells to the right.
+
+*Proof.* Let v → u and v′ → u′ be two left edges with u′ < u < v′ < v, from cells y and y′. If y′ < y: at the
+beginning of v′ the head is to the right of y′, and it is not to the right of y or on y, because it would
+visit y on its way to y′ and y would then carry a label at least v′ at the beginning of v. So it is to the
+left of y; at the beginning of v it is to the right of y; hence it visits y in between, and y carries a
+label greater than u at the beginning of v. If y′ > y: in u the head is on y, at the beginning of v′ it is
+to the right of y′, so it visits y′ after u′, and y′ does not carry the label u′ at the beginning of v′.
+If y′ = y the label of y at the beginning of v′ is at least u. Each case contradicts the choice of the
+edges. ∎
+
+So the window graph of a machine with k work tapes is a path together with 2k non-crossing families of
+chords, and by Lemma 1 its average in-degree is at most 3k + 1, whatever ε and D are. The row relation of
+Proposition 2 is: an output row, its at most M′ + 1 windows, the windows within D steps of them in this
+graph, and the two input rows under the input head in each. The capacity statement that the machines
+need is therefore the whole-row statement for relations of this kind only, which is less than D1 for
+every relation. For one work tape the window graph is planar; whether the half bound for uniformly
+hyperfinite relations then applies to the row relation has not been checked.

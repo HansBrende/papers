@@ -10,7 +10,7 @@ Complete kernel-verified proofs of all five formal specifications in
 `BoundedArityDecoders.AffineCubeComposition`:
 
 1. `lemma_AffineCubeCommonMessageGrowth : Lemma_AffineCubeCommonMessageGrowthSpec`
-2. `control_D13TwoCubeAPFreeSharpness : Control_D13TwoCubeAPFreeSharpnessSpec`
+2. `control_D13TwoCubeAPFreeWitness : Control_D13TwoCubeAPFreeWitnessSpec`
 3. `control_D4SameIntervalCodedFactorization : Control_D4SameIntervalCodedFactorizationSpec`
 4. `cauchySchwarzAffineCubeExtraction : CauchySchwarzAffineCubeExtractionSpec`
 5. `theorem2A_TwoStageRamseyFreeCutoff : Theorem2A_TwoStageRamseyFreeCutoffSpec`
@@ -236,8 +236,8 @@ private theorem cyclicChannelShift_ker_finrank_le {F : Type*} [Field F]
   have hle := LinearMap.finrank_le_finrank_of_injective hinj
   simpa [Module.finrank_pi] using hle
 
-theorem control_D13TwoCubeAPFreeSharpness : Control_D13TwoCubeAPFreeSharpnessSpec := by
-  dsimp only [Control_D13TwoCubeAPFreeSharpnessSpec]
+theorem control_D13TwoCubeAPFreeWitness : Control_D13TwoCubeAPFreeWitnessSpec := by
+  dsimp only [Control_D13TwoCubeAPFreeWitnessSpec]
   have h3ap : ThreeAPFreeMod ({0, 1, 4, 5} : Finset (ZMod 13)) := by
     unfold ThreeAPFreeMod; decide
   refine ⟨h3ap, ?_, ?_, ?_⟩

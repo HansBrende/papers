@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproducible rank-minimization check for Remark 7.6 (two-sided interval partitions).
+"""Reproducible rank-minimization search for Remark 7.6 (two-sided interval partitions).
 
 Usage:
     python3 tools/verify_two_sided_svd.py
@@ -12,22 +12,24 @@ linear operator subspace U(I) (x) U(J) (spanned by interval-mask rotations
 P_I sigma^e (x) P_J sigma^f) and the bounded-rank manifold {K : rank(sw - K) <= d^2 - D}
 via truncated SVD across deterministic random restarts.
 
-Across the 9 benchmark interval partitions at d in {5, 6, 7, 8}, this script verifies:
+Across the 9 benchmark interval partitions at d in {5, 6, 7, 8}, this script checks:
   1. Generic random elements K_rand in U(I) (x) U(J) have nullity dim ker(sw - K_rand) = 0.
-  2. Never-exceeded upper bound: at D = D_diamond(I, J) + 1, where
+  2. Absence of witnesses at D = D_diamond(I, J) + 1: where
          D_diamond(I, J) := floor((d^2 + sum_{I, J} min(|I|, |J|)) / 2),
-     the tail singular-value norm ||sigma_{> d^2 - D}(sw - K)||_2 stays bounded well
-     away from zero (> 0.1) across every tested partition.
-  3. Attainment at s >= floor(d / 2): on the contiguous fine-singleton + coarse-complement
-     partitions with s >= floor(d / 2) (including the half-density benchmark s = d / 2,
-     where D_diamond = (5/8) d^2 + O(d)) and the d = 6 two-run partition, bounded-norm
-     operators K converge to ||sigma_{> d^2 - D_diamond}(sw - K)||_2 < 1e-11 with a clear
-     nonzero singular-value gap sigma_{d^2 - D_diamond}(sw - K) > 0.5.
-  4. Strict inequality on some partitions with s < d - s or unequal coarse blocks:
+     the budgeted search finds no witness at D_diamond + 1 on any tested partition
+     (tail singular-value norm ||sigma_{> d^2 - D}(sw - K)||_2 > 0.1 across the restarts).
+  3. Witnesses at D = D_diamond for s >= floor(d / 2): on the contiguous fine-singleton +
+     coarse-complement partitions with s >= floor(d / 2) (including the half-density
+     benchmark s = d / 2, where D_diamond = (5/8) d^2 + O(d)) and the d = 6 two-run
+     partition, the search finds bounded-norm operators K converging to
+     ||sigma_{> d^2 - D_diamond}(sw - K)||_2 < 1e-11 with singular-value gap
+     sigma_{d^2 - D_diamond}(sw - K) > 0.5.
+  4. Sub-D_diamond witnesses on three partitions with s < d - s or unequal coarse blocks:
      on d = 7, s = 3 (D_diamond = 34), d = 7 asymmetric (1+1+5 vs 2+2+3, D_diamond = 31),
-     and d = 8, s = 3 (D_diamond = 42), the tail singular-value norm at D = D_diamond stays
-     bounded well away from zero (> 0.15, even without a Frobenius norm cap), while bounded-norm
-     operators attain D = 32 (< 34), D = 27 (< 31), and D = 40 (< 42) to < 1e-11.
+     and d = 8, s = 3 (D_diamond = 42), the budgeted search finds no witness at
+     D = D_diamond (tail > 0.15 across the tested restarts) and finds bounded-norm
+     witnesses of dimensions D = 32, D = 27, and D = 40 to < 1e-11 (intermediate
+     dimensions between those witnesses and D_diamond are not ruled out by local search).
 
 No formal proof in the manuscript depends on this numerical script.
 """
@@ -175,8 +177,8 @@ ATTAINING_CASES: list[tuple[str, int, list[list[int]], list[list[int]]]] = [
     ),
 ]
 
-# Tuple: (label, d, part_a, part_b, realized_d, witness_seed, witness_restarts, witness_steps)
-UPPER_BOUND_ONLY_CASES: list[
+# Tuple: (label, d, part_a, part_b, witness_d, witness_seed, witness_restarts, witness_steps)
+SUB_DIAMOND_WITNESS_CASES: list[
     tuple[str, int, list[list[int]], list[list[int]], int, int, int, int]
 ] = [
     (
@@ -229,7 +231,7 @@ def check_generic_nullity_zero(
 def main() -> None:
     t0 = time.perf_counter()
     rng = np.random.default_rng(20261113)
-    print("1. Verifying D_diamond attainment on s >= floor(d/2) and two-run partitions...")
+    print("1. Checking D_diamond witnesses on s >= floor(d/2) and two-run partitions...")
     for label, d, part_a, part_b in ATTAINING_CASES:
         assert sorted(x for iv in part_a for x in iv) == list(range(d)), label
         assert sorted(x for iv in part_b for x in iv) == list(range(d)), label
@@ -262,17 +264,17 @@ def main() -> None:
             f"Unexpected witness at D_diamond+1={d_diamond + 1} for {label}: tail={tail_above:.3e}"
         )
 
-    print("2. Verifying strict gap (< D_diamond) on s < d - s / general interval partitions...")
+    print("2. Checking sub-D_diamond witnesses and budgeted search at D_diamond...")
     for (
         label,
         d,
         part_a,
         part_b,
-        realized_d,
+        witness_d,
         w_seed,
         w_restarts,
         w_steps,
-    ) in UPPER_BOUND_ONLY_CASES:
+    ) in SUB_DIAMOND_WITNESS_CASES:
         assert sorted(x for iv in part_a for x in iv) == list(range(d)), label
         assert sorted(x for iv in part_b for x in iv) == list(range(d)), label
         basis_a = interval_rot_basis(d, part_a)
@@ -288,7 +290,7 @@ def main() -> None:
             proj_a,
             proj_b,
             sw_mat,
-            realized_d,
+            witness_d,
             restarts=w_restarts,
             steps=w_steps,
             rng=np.random.default_rng(w_seed),
@@ -301,22 +303,22 @@ def main() -> None:
             d, proj_a, proj_b, sw_mat, d_diamond + 1, restarts=5, steps=300, rng=rng, norm_cap=None
         )
         print(
-            f"  [{label}] D_diamond={d_diamond:2d}, realized={realized_d:2d}: "
-            f"tail({realized_d})={tail_real:.2e} (gap={gap_real:.2f}, ||K||_F={norm_real:.1f}), "
+            f"  [{label}] D_diamond={d_diamond:2d}, witness_D={witness_d:2d}: "
+            f"tail({witness_d})={tail_real:.2e} (gap={gap_real:.2f}, ||K||_F={norm_real:.1f}), "
             f"tail(D_diamond)={tail_dd:.2e}, tail(D_diamond+1)={tail_above:.2e}"
         )
         assert tail_real < 1e-11 and gap_real > 0.5 and norm_real < 60.0, (
-            f"Failed to realize D={realized_d} on {label}: tail={tail_real:.3e}"
+            f"Failed to find witness at D={witness_d} on {label}: tail={tail_real:.3e}"
         )
         assert tail_dd > 0.15, (
-            f"Expected strict gap below D_diamond={d_diamond} on {label}: {tail_dd:.3e}"
+            f"Unexpected witness at D_diamond={d_diamond} on {label}: {tail_dd:.3e}"
         )
         assert tail_above > 0.1, (
             f"Unexpected witness above D_diamond={d_diamond} on {label}: {tail_above:.3e}"
         )
 
     elapsed = time.perf_counter() - t0
-    total = len(ATTAINING_CASES) + len(UPPER_BOUND_ONLY_CASES)
+    total = len(ATTAINING_CASES) + len(SUB_DIAMOND_WITNESS_CASES)
     print(f"ALL CHECKS PASSED ({total} cases across d in {{5,6,7,8}} in {elapsed:.2f}s).")
 
 

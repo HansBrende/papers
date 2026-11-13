@@ -23,7 +23,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 
 -- AffineCubeCompositionProofs.lean
 #print axioms BoundedArityDecoders.cauchySchwarzAffineCubeExtraction
-#print axioms BoundedArityDecoders.control_D13TwoCubeAPFreeSharpness
+#print axioms BoundedArityDecoders.control_D13TwoCubeAPFreeWitness
 #print axioms BoundedArityDecoders.control_D4SameIntervalCodedFactorization
 #print axioms BoundedArityDecoders.lemma_AffineCubeCommonMessageGrowth
 #print axioms BoundedArityDecoders.theorem2A_TwoStageRamseyFreeCutoff

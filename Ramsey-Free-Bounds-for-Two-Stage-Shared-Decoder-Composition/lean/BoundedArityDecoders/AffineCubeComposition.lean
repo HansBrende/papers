@@ -12,7 +12,7 @@ Definitions and proposition types for Theorem 2A and its finite controls
 * `orderedCubeMap`: ordered operator cube vertices `R_{k-1}^{ε_{k-1}} ⋯ R_0^{ε_0}`.
 * `Lemma_AffineCubeCommonMessageGrowthSpec`: over every field `F`,
   `(k + 1) * finrank F W ≤ finrank F A + ∑ t, finrank F (ker (R_t - id))`.
-* `Control_D13TwoCubeAPFreeSharpnessSpec`: at prime `d = 13`, `q = 2` (`dim A = 26`), the
+* `Control_D13TwoCubeAPFreeWitnessSpec`: at prime `d = 13`, `q = 2` (`dim A = 26`), the
   2-cube `J = {0, 1, 4, 5}` contains no non-constant 3-term arithmetic progression mod `13`
   (so Paper 19's progression bound sees at most `ℓ = 2` points and yields only `D ≤ 14`),
   forces `3 * finrank F W ≤ 30` (`finrank F W ≤ 10`), and admits an explicit `(W, L)` over `ℝ` of
@@ -96,7 +96,7 @@ def Lemma_AffineCubeCommonMessageGrowthSpec : Prop :=
    satisfies `3 * finrank F W ≤ 26 + 2 + 2` and `finrank F W ≤ 10` (`< 13`).
 3. Conversely, over `ℝ`, there exists such a pair `(W, L)` of exact dimension `finrank ℝ W = 9`
    (`4 * 9 = 36 > 26 + 6 = 32`, refuting `D ≤ 8`). -/
-def Control_D13TwoCubeAPFreeSharpnessSpec : Prop :=
+def Control_D13TwoCubeAPFreeWitnessSpec : Prop :=
   let J13 : Finset (ZMod 13) := {0, 1, 4, 5}
   ThreeAPFreeMod J13 ∧
   (∀ (ℓ : ℕ) (c₀ s : ZMod 13), s ≠ 0 →

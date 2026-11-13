@@ -18,7 +18,8 @@ multitape integer multiplier exists either.
 The synthesis paper \emph{Order, Symmetry and the Swap} \cite{SeventeenthPaper2026} organized the
 algebraic obstacles studied across the series into two one-stage mechanisms on $\Mat_{d\times d}(F)$:
 an order bound for two-term operators $A_1 X B_1^{\T} + A_2 X B_2^{\T} = X^{\T}$ giving dimension at
-most $d(d+1)/2$ (\cite[Theorem~5.1 and Corollary~5.5]{SeventeenthPaper2026}; Theorem~5.1 Lean-verified),
+most $d(d+1)/2$ (\cite[Theorem~5.1 and Corollary~5.5]{SeventeenthPaper2026}; coordinate form of
+Theorem~5.1 Lean-verified, Corollary~5.5 proved in text),
 and a translate-pigeonhole bound (Theorem~TP, \cite[Definition~6.3 and Theorem~6.4]{SeventeenthPaper2026},
 Lean-verified)
 for class-uniform rules in which column $c$ of the output is computed by applying one of $M$ shared
@@ -110,7 +111,7 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   (\Cref{lem:sumset-poly}). Combining the resulting rank inequality
   $2\rank_F(\tau - K_2 \circ K_1) \ge bk\bigl(d - \sum_t \diam_{\N}(\widetilde{B}_t)\bigr)$
   (\Cref{thm:sumset-rank}) with iterated K\H{o}v\'ari--S\'os--Tur\'an sumset extraction
-  (\Cref{lem:kst-sumset}) yields \Cref{thm:2b}: for all $M_1, M_2 \ge 1$ and all
+  (\Cref{lem:kst-sumset}) yields \Cref{thm:2b}: for all $b, M_1, M_2 \ge 1$ and all
   $d \ge D_0(M_1, M_2)$ with $(d : F) \ne 0$,
   \[
     \rank_F(\tau - K_2 \circ K_1)
@@ -144,10 +145,13 @@ $D_1(\{0,1,3\},\{2,4,5\}) = 25$ on $\Z_6$ outside characteristics~$2$ and~$3$.
   at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}, whose leading coefficient
   beats the flag bound $1 - \frac{1}{2M}$ of
   \cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026}
-  for every $M \ge 2$ and improves on Theorem~3.5 of \cite{SharedDecoders2026} on primes for
-  $2 \le M \le 49$ and $51 \le M \le 59$, whereas Theorem~3.5 of \cite{SharedDecoders2026} has a
-  stronger $\Theta(M^{-1/2})$ deficit at $M = 50$ and $M \ge 60$ and applies to composite $d$ and
-  arbitrary characteristic).
+  (coordinate form of Theorem~5.1 Lean-verified; Corollary~5.9(b) and Remark~5.10 proved in text)
+  for every $M \ge 2$ and is smaller than the leading coefficient $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ of
+  Theorem~3.5 of \cite{SharedDecoders2026} for $2 \le M \le 49$ and $51 \le M \le 54$---improving on it
+  for sufficiently large primes $d \ne \operatorname{char}(F)$ at $M \ge 3$, and for coprime $d \ge 29$
+  via \Cref{thm:1b-two-class} at $M = 2$---whereas Theorem~3.5 of \cite{SharedDecoders2026} has a
+  smaller $\Theta(M^{-1/2})$ leading coefficient at $M = 50$ and $M \ge 55$, carries no $+bMd$ error
+  term, and applies to composite $d \ge 2M$ and arbitrary characteristic).
 
 \item \textbf{Exact dimension $25$ for $\{0,1,3\} \mid \{2,4,5\}$ on $\Z_6$ outside characteristics $2$ and $3$ (\Cref{sec:aperiodic-six}).}
   On \cite[Problem~9.1(b)]{SeventeenthPaper2026}, combining six-mode column-Fourier decomposition on

@@ -21,12 +21,17 @@ shift sets $E_0 = \{0\}, E_j = E_{j-1} \cup (E_{j-1} + t_j)$ (\cite[Theorem~3.2]
 and Theorem~3.5 of \cite{SharedDecoders2026} proved
 $D_b(p) \le \bigl(1 - 1/(4\lceil\sqrt{2M}\,\rceil)\bigr) b d^2$ for $M \le d/2$, which improves on the
 flag bound $(1 - \frac{1}{2M}) b d^2 + O(bd)$
-(\cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026}) when
-$M \ge 11$. (Conversely, while \Cref{thm:1b-multi-class} below has a $\Theta(1/M)$ deficit that beats
-$1 - \frac{1}{2M}$ for all $M \ge 2$ and beats $1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ on primes
-$d \ne \operatorname{char}(F)$ for $2 \le M \le 49$ and $51 \le M \le 59$, the $\Theta(M^{-1/2})$
-deficit of \cite[Theorem~3.5]{SharedDecoders2026} is strictly stronger at $M = 50$ and for all
-$M \ge 60$, and applies to composite $d$ and arbitrary characteristic.) At the same time,
+(\cite[Theorem~5.1, Corollary~5.9(b), Remark~5.10, and Problem~9.1(a)]{SeventeenthPaper2026};
+coordinate form of Theorem~5.1 Lean-verified, Corollary~5.9(b) and Remark~5.10 proved in text) when
+$M \ge 11$. (Conversely, while the leading coefficient $c_M$ of \Cref{thm:1b-multi-class} below has a
+$\Theta(1/M)$ deficit that beats $1 - \frac{1}{2M}$ for all $M \ge 2$ and is smaller than
+$1 - 1/(4\lceil\sqrt{2M}\,\rceil)$ for $2 \le M \le 49$ and $51 \le M \le 54$---so
+\Cref{thm:1b-two-class} at $M = 2$ for coprime $d \ge 29$ and \Cref{thm:1b-multi-class}(b) for
+$M \ge 3$ at sufficiently large primes $d \ne \operatorname{char}(F)$ improve on
+\cite[Theorem~3.5]{SharedDecoders2026} once $d$ exceeds the subleading crossover---the
+$\Theta(M^{-1/2})$ leading coefficient of \cite[Theorem~3.5]{SharedDecoders2026} is strictly smaller
+at $M = 50$ and for all $M \ge 55$, carries no $+bMd$ error term, and applies to composite
+$d \ge 2M$ and arbitrary characteristic.) At the same time,
 Theorem~C.6 of \cite{SharedDecoders2026} proved that this nested-component
 translate certificate method cannot go below $(\frac{5}{8} - o(1)) b d^2$
 ($\frac{5}{8} = \frac{40}{64} = 0.625$) on almost every two-class partition (and its full-ambient
@@ -248,7 +253,7 @@ averages over $s \in \Z_d$ to at most $\frac{3}{4} b \cdot 2 d^{3/2} = \frac{3}{
 \end{outline}
 
 \begin{theorem}[Multi-class linear capacity ceiling at prime dimensions]\label{thm:1b-multi-class}
-\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_MultiClassPrime,linearClassUniform_multiClass_prime_finrank_le}
+\formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_MultiClassPrime,multiClass_simplex_max_iff,linearClassUniform_multiClass_prime_finrank_le,linearClassUniform_multiClass_prime_maxDim_le}
 For $M \ge 2$, define the rational leading coefficient (\lean{multiClassLeadingCoeff})
 \[
   c_M \;:=\; 1 \;-\; \frac{5}{4M} \;+\; \frac{1}{M^2} \;-\; \frac{1}{4M^3}.

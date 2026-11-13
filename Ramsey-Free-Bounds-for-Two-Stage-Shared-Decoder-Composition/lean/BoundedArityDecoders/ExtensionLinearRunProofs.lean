@@ -1152,7 +1152,32 @@ theorem extension_Theorem1B_MultiClassPrime : Extension_Theorem1B_MultiClassPrim
     unfold multiClassLeadingCoeff
     norm_num
 
-/-- Direct unpacked theorem for `Theorem 1B`, Part 2: prime-`d` (`d ≠ char F`) multi-class
+/-- Direct unpacked theorem for `Theorem 1B`, Part 2(a): on the `M`-simplex (`M ≥ 2`),
+`1/2 + (1/2) ∑ α_m (1 - α_m)^2 (1 - α_m / 2)` is bounded above by `multiClassLeadingCoeff M`,
+with equality if and only if `α_m = 1 / M` for every `m : Fin M`. -/
+theorem multiClass_simplex_max_iff
+    (M : ℕ) (hM : 2 ≤ M) (α : Fin M → ℝ)
+    (hα_nn : ∀ m, 0 ≤ α m) (hα_sum : ∑ m, α m = 1) :
+    (1 / 2 : ℝ) + (1 / 2 : ℝ) * ∑ m : Fin M,
+        α m * (1 - α m) ^ 2 * (1 - α m / 2) ≤ multiClassLeadingCoeff M ∧
+      ((1 / 2 : ℝ) + (1 / 2 : ℝ) * ∑ m : Fin M,
+          α m * (1 - α m) ^ 2 * (1 - α m / 2) = multiClassLeadingCoeff M ↔
+        ∀ m, α m = 1 / (M : ℝ)) := by
+  have hcl := simplex_maximization_clause M hM α hα_nn hα_sum
+  refine ⟨hcl.1, ⟨?_, ?_⟩⟩
+  · intro heq
+    by_contra hnot
+    exact ne_of_lt (hcl.2 (not_forall.mp hnot)) heq
+  · intro hall
+    have hsum_eq :
+        (∑ m : Fin M, α m * (1 - α m) ^ 2 * (1 - α m / 2)) =
+          (M : ℝ) * simplexQuartic (1 / (M : ℝ)) := by
+      simp_rw [hall, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      rfl
+    rw [hsum_eq]
+    exact half_add_mul_simplexQuartic_inv_eq M hM
+
+/-- Direct unpacked theorem for `Theorem 1B`, Part 2(b): prime-`d` (`d ≠ char F`) multi-class
 dimension ceiling (`C = 1`) for `b`-lane linear class-uniform codes with `M ≥ 3` classes. -/
 theorem linearClassUniform_multiClass_prime_finrank_le
     (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
@@ -1164,5 +1189,18 @@ theorem linearClassUniform_multiClass_prime_finrank_le
       multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
         (b : ℝ) * (M : ℝ) * (d : ℝ) := by
   simpa [one_mul] using theorem1B_multiClass_prime_finrank_le F hd hchar hM p 𝒳 hLin
+
+/-- Companion supremum form (`C = 1`) of `linearClassUniform_multiClass_prime_finrank_le` for
+`linearClassUniformMaxDim F b p`. -/
+theorem linearClassUniform_multiClass_prime_maxDim_le
+    (F : Type*) [Field F] {d M b : ℕ} [NeZero b]
+    (hd : Nat.Prime d) (hchar : d ≠ ringChar F) (hM : 3 ≤ M)
+    (p : ZMod d → Fin M) :
+    (linearClassUniformMaxDim F b p : ℝ) ≤
+      multiClassLeadingCoeff M * (b : ℝ) * (d : ℝ) ^ 2 +
+        (b : ℝ) * (M : ℝ) * (d : ℝ) := by
+  have : NeZero d := ⟨hd.ne_zero⟩
+  exact linearClassUniformMaxDim_real_le p fun 𝒳 hLin =>
+    linearClassUniform_multiClass_prime_finrank_le F hd hchar hM p 𝒳 hLin
 
 end BoundedArityDecoders

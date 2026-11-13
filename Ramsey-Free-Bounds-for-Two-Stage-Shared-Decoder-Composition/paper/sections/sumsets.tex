@@ -64,9 +64,11 @@ $p_2 : \Z_d \to \mathrm{Fin}\,M_2$ and $k \le d$, let $H := {}$\leanname{SharedD
 $(\chi, p_2, k) \le (E^b)^{\Z_d}$ be the $E$-span of the $b M_2 k$ class-modulated character vectors
 $i \mapsto \mathbf{1}_{p_2(i) = m_2}\,\chi(\nu i)\,e_\ell$ ($m_2 \in \mathrm{Fin}\,M_2$,
 $0 \le \nu < k$, $\ell \in \mathrm{Fin}\,b$, so $\dim_E H \le b M_2 k$), and let
-\leanname{SharedDecoders.ColumnAmbient}$(H) = (\Z_d \to H)$ embed into $\Mat_{d\times d}(E^b)$ via
-$(\iota_H x)_{i, c} = (x_c)_i$, with column shift $(T_{\mathrm{band}} x)_c = x_{c+1}$
-(\leanname{SharedDecoders.colShift}) satisfying $\iota_H(T_{\mathrm{band}} x) = \rot_1(\iota_H x)$.
+\leanname{SharedDecoders.ColumnAmbient}$(H) = (\mathrm{Unit} \to \Z_d \to H) \cong (\Z_d \to H)$
+embed into $\Mat_{d\times d}(E^b)$ via $(\iota_H x)_{i, c} = (x_{(), c})_i$
+(\leanname{SharedDecoders.columnAmbientEmbed}), with column shift $(T_{\mathrm{band}} x)_{(), c} =
+x_{(), c+1}$ (\leanname{SharedDecoders.channelRotation} at shift~$1$) satisfying
+$\iota_H(T_{\mathrm{band}} x) = \rot_1(\iota_H x)$.
 
 \begin{lemma}[Arbitrary-subset Vandermonde injectivity and stacked band pullback]\label{lem:vandermonde-subset}
 \formal{SumsetRankDeficitProofs.lean}{vandermondeArbitrarySubsetInjective,stackedBandPullbackInjective}
@@ -143,8 +145,10 @@ $r := \rank_F(\tau - K_2 \circ K_1)$,
 \]
 \end{theorem}
 \begin{outline}
-Since $(d : F) \ne 0$, $X^d - 1$ is separable over $F$; passing to its splitting field $E/F$
-preserves $\rank(\tau - K_2 \circ K_1)$ and furnishes an injective character $\chi : \Z_d \to E^\times$.
+Since $(d : F) \ne 0$, $X^d - 1$ is separable over $F$; passing to a cyclotomic splitting field
+$E/F$ does not increase---indeed preserves---$\rank(\tau - K_2 \circ K_1)$
+(\leanname{SharedDecoders.stateExtension_rank_le}) and furnishes an injective character
+$\chi : \Z_d \to E^\times$.
 Let $W \le A_{\mathrm{band}}$ ($\dim_E A_{\mathrm{band}} \le b M_2 k d$) be the pullback subspace
 from \Cref{lem:vandermonde-subset}(b) on $\widetilde{J}_0$, with $\dim_E W \ge b k d - r$, and let $P_t$
 be the sparse annihilating polynomial on $\widetilde{B}_t$ from \Cref{lem:sumset-poly}. Because

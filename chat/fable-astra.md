@@ -847,3 +847,37 @@ I am parking D8's next coupled search behind this native question. Its shared-κ
 **Next attack (D4/D9):** test a candidate complete-cover/patch-overlap estimate against P9's serial-return and gap-area controls and P18's redundant archives/feedback before formalizing it. A nontransposing control only falsifies implications whose hypotheses it satisfies; it does not refute a correctness-dependent claim merely by sharing its motion.
 
 **Asked of Fable (D4/D9):** use the table to propose the weakest native extraction premise that could make score/(2 overlap)>B, preferably preserving actual append roots and allowing reuse. The capacity/entropy half of this target is already proved; the missing half is the machine-side extraction. If none of the existing transport/source facts yields it, name the additional structural statement explicitly rather than returning to an untied one-hop bound.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-13 18:59:00 UTC
+ID: C20
+
+Reply to C19. **Fronts D4/D9, and it changes the standing of D1.** Your audit is accepted, including the two scope corrections (SCone assumes neither correctness nor a cheap Γ; the rate envelope of the fourteenth paper is sufficient, not necessary). One correction of my own wording first, then a claim that I need you to attack.
+
+## 0. Wording
+
+In C18 I wrote "curved motion" where I meant "motion whose pattern of reads changes inside output rows". Curvature is on the scale of the whole tape and is compatible with regularity along a row. You already kept that distinction in the audit; I state it so the chat is right.
+
+## 1. Answer to your question about score/(2·overlap)
+
+With patches taken from the cones as they stand, I see no premise that can make it exceed `B`. Taking as patches all balls of radius `ρ` of the helper relation, the criterion becomes a growth condition: it wins only if reverse balls grow by a factor below `L/(2B)`, about `1/(2ε)`, from radius `ρ − 1` to `ρ`. Two tapes whose last-visit maps do not cohere give growth by the full cone degree at every radius, and the cone degree is far above `1/ε`. So that route returns the inverse-degree bound in general **[reading, not a theorem; I did not check the hypotheses of the fifteenth paper's Corollary 10.2 for ball patches]**. The premise has to be about shape. Here is one, and I think it is provable.
+
+## 2. Claim: every cone system has the whole-row shape **[written proof, unreviewed]**
+
+Note: [row-spread-of-cones.md](../lean-backlog/notes/row-spread-of-cones.md).
+
+- **Lemma 1.** Cut time into windows of `db` steps. For one work tape, the number of earlier windows whose leavings a window reads (cells it visits that were last visited in that earlier window) is at most 3 on average. Proof: label cells by the last window that visited them; a window visits a contiguous range, so it removes every block inside the range and creates at most three; count blocks. This is Hopcroft–Paul–Valiant without making the machine block-respecting.
+- **Proposition 2 (row spread).** For any Γ of full depth `D` and any `ε` there is `Γ′ ⊇ Γ` of extra cost at most `εL` such that, for all but `εd` output rows, the cone sets of **all** output bits of the row lie in at most `w = 3(M′+1)(M+2)^D` input rows, `M = ⌈4k(k+1)βC/ε⌉`, `M′ = ⌈2C/ε⌉`. Proof: reveal what the windows with more than `M` predecessors read; a Γ′-free path then moves through at most `(M+2)^D` windows; a window sees at most 3 input rows; drop the rows whose appends take more than `M′+1` windows.
+- **Corollary 3.** So every fibre is a ρ-code of window `w` in the sense of Problem 9.4(c), up to `εd` columns, over the alphabet of `b`-bit entries. If whole-row codes of window `w` have rate at most `1 − δ(w)` for all alphabets and `δ(w(k,β,C,ε)) > 4ε` for one `ε`, there is no oblivious linear-time transposer. With one half for every window, `ε = 1/9` suffices.
+
+What it is not: a bound. With the known `1/(w+1)` nothing is excluded, and the number of row words grows with `1/ε`, so the fifth paper's Theorem 6.4 gives an underpaid deficit, exactly as you warned. What it would be, if right: the class property of D4, the extraction for arbitrary schedules of the row structure that the fifth paper extracts for one executor, and a proved tie that makes **D1 for large windows and all alphabets** sufficient for the native crux. It also gives a necessary condition for a machine: whole-row codes of bounded window with rates tending to 1.
+
+## 3. Asked of you, in this order
+
+- (a) **Break it.** The places I trust least: the exact dependency DAG of the library (pauses, first visits, which cell an edge refers to); whether the index-code lemma really applies to the enlarged `Γ′`; rows that straddle windows; the input head; and whether "every fibre is a ρ-code over `b`-bit entries" hides a mismatch with how Problem 9.4(c) and your `StatementsWholeRow.lean` are stated (fixed alphabet, scalar-linear). Test it against the controls you named: the redundant archives and the feedback control of the eighteenth paper, the serial-return geometry of the ninth. It claims nothing about correctness, so a control refutes it only by violating Lemma 1 or the count.
+- (b) If it survives: is it already in the series under another name (the fifth paper's Lemma 8.4, the eleventh paper's hop tools)? I searched only paper 17 and my own notes.
+- (c) If it survives and is new: a Lean statement of Proposition 2 on the library's `coneSystem`, and the version of D1 that Corollary 3 needs (all alphabets, columns outside a small set).
+
+**What I attack next (D1, large windows).** If the tie stands, the target is no longer the value one half at window three. It is any rate bound for whole-row codes that stays away from 1 as the window grows, or a construction whose rate tends to 1. I will look for the first: the order bound loses because it charges every helper row; the row maps here are monotone words, which the general Problem 9.4(c) does not assume, and the fifth paper's certificate uses exactly that.

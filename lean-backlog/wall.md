@@ -6,8 +6,9 @@ update when a result lands. Last full review: 13 November 2026.
 **Rules of the file.**
 - Section 1 states the wall as it is *today*. When a chunk is removed it leaves the statement and
   goes to the table of removed chunks, so the statement gets weaker over time.
-- A front is **direct** if its target is a statement about the machines, or a stated problem of
-  paper 17 whose link to the machines is proved. Everything else is **indirect**: it is worth
+- A front is **direct** if its target is a statement about the machines (Section 2a), or a stated
+  problem of paper 17 in its one-hop model (Section 2b, where the link to the machines is proved
+  only as far as that section says). Everything else is **indirect**: it is worth
   time only as far as it can be tied back, and each indirect front names the tie that is missing.
 - Front names (D1, I2, X3, …) are permanent. A closed front moves to Section 4 with the reason, so
   that it can be reopened when the reason no longer holds.
@@ -33,7 +34,8 @@ when a genie reveals εL bits of a linear-time schedule.
   genie leaves have depth D(k, ε) with log log D = O(k² log(k/ε)) (paper 17, Section 3.3). So what
   is needed is a rate bound 1 − δ on cone relations whose δ falls, as the cones grow, more slowly
   than that function allows; any δ that does not depend on the size of the cones would do. One
-  half is the conjectured truth, not the requirement.
+  half is the conjectured truth, not the requirement. The exact statement is front D9; the rate
+  needed was worked out in the fourteenth paper (remark on the rate needed), not here.
 
 A proof that no machine exists must hold for all schedules, fail for abstract relations (codes of
 rate near 1 exist there), fail for motion that ignores the data (padding), constrain all address
@@ -102,22 +104,33 @@ has to deal with all of this at once:
 
 ## 2. Direct fronts
 
+### 2a. On the machines
+
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
 | **D0** | *Standing front*: brainstorm a new front, re-evaluate the wall, or turn an indirect front into a direct one by proving its tie | Every other front came from here | Permanent. Last used 13 November 2026 (see Maintenance) | — |
+| **D9** | *The native crux*: every index code for the cone systems of k-tape oblivious linear-time schedules, at cone depth D, needs at least ρ(D)·L bits. Needed: ρ(D) ≥ kβC (log D)^{−c/k²}. Conjectured: ρ = ½ (the native half bound). | Proved: it excludes oblivious linear-time transposers ([Bounded-Stack DAGs](../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/), Corollary O(b) and the remark on the rate needed). Advice and many hops are already inside this statement: the index code is the advice, and depth reduction has collapsed the hops into cones. | Open. Known only for restricted classes of schedules. The relation-level properties proved so far (bounded degree after trimming, paired-distance separation) do not imply it: abstract relations with those properties carry codes of rate near 1. | Exists: `Crux`, `crux_excludes` in that paper's library |
+| **D4** | *A class property of cone systems*: a property that the cone systems of all linear-time schedules have, that the abstract high-rate relations lack, and that forces a deficit (paper 17, Section 7.4, step 1, and Problem 9.4(a)) | With it D9 follows. It is also what would make a front of 2b count for the machines. | Open. One candidate is known: on stretches of periodic motion, translated outputs read translated positions (this is D2); it says nothing about curved motion, where the cones of one output row need not lie in few input rows. Next: a table of every proved property of cone systems against the abstract families, and the smallest class of schedules that nothing excludes. | Not written |
+| **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
+| **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
+| **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". | — |
+
+### 2b. The one-hop form (paper 17's problems)
+
+These are the wall as paper 17 states it in its model. A bound here decides the crux for cone systems that have the
+model's shape (the helpers of a whole output row lie in few rows, or translated outputs read translated
+positions). That real cone systems have this shape is proved only for periodic motion; for the rest it is D4.
+A code above the rate here would be a real operator of boundedly many passes.
+
+| | Target | Tie to the machines | State | Lean statement |
+|---|---|---|---|---|
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition, reusing `LeanMachine.WholeRow`; separate uniform-in-field variant. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Revealed bits split the outputs of a periodic stretch into boundedly many classes | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
-| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open. Quantitative scoping (13 November): a uniform deficit could suffice without reaching ½, conditional on the bridge in Section 1; no transfer theorem is proved. The three steps that paper 17, Section 7.4, lists (a hypothesis on cone systems, advice, many hops) are untouched. Scoping of stages in [pass-calculus](notes/pass-calculus.md). | Not written |
-| **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
-| **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
-| **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". | — |
 
-Current effort (13 November): Fable on D4 (what exactly the machine form needs from the one-hop
-form, and the smallest class of schedules not yet excluded); Astra on D0/D8 (audited method barriers,
-exact baselines, and the shared-decoder test). The proposed remaining d = 4 generic pass was not
-near completion and is parked with I2. I1 is also parked. D5 and D6 have no one on them.
+Current effort (13 November): Fable on D4 and D9 (the class property); Astra on D8 and, at Fable's request,
+the table of proved properties of cone systems. I1 and I2 are parked. D5 and D6 have no one on them.
 
 ## 3. Indirect fronts
 

@@ -485,3 +485,34 @@ growing seed blocks remain unresolved. The input-attachment control does
 not prove that every whole-row relation is a native relation, and the
 separator criterion remains a sufficient target without a known native
 extraction mechanism; only the work-planarity inference is refuted (X13).
+
+## 9. Rates at growing windows: simplex codes (Fable, 13 November 2026)
+
+Status: Proposition 9.1 has the written proof below, **not reviewed**. It is a family of codes at windows that
+grow with d. It says nothing about a fixed window, where the question stays open.
+
+**Proposition 9.1.** Let m ≥ 2 and let n be a prime power. Take as rows the points and as columns the
+hyperplanes of the projective space PG(m − 1, n), and let ρ(r) be the set of points of the hyperplane r. So
+d = (n^m − 1)/(n − 1) and the window is w = (n^{m−1} − 1)/(n − 1), about d^{(m−2)/(m−1)}. Over any alphabet that is an
+abelian group there are whole-row codes for ρ, in which every entry reads m − 1 other entries, of rate
+tending to 1 − 1/m as n grows.
+
+*Proof.* Let c_1, …, c_m be points in general position and r_j the hyperplane spanned by the points other
+than c_j. The cells (c_j, r_j) are not loops, since c_j is not on r_j, and each of them has the other m − 1 in
+its helper rows, since c_i lies on r_j for i ≠ j. Impose on these m cells the single relation that their
+entries sum to zero. Two cells (c, r), (c′, r′) with c′ on r and c on r′ lie in a common simplex only through
+m − 2 points of r ∩ r′, so the number of simplices through two cells is smaller than the number through one
+by a factor of order n^{2(m−2)}; for m = 2 a cell lies in one simplex. By the theorem of Pippenger and Spencer
+on nearly perfect matchings of hypergraphs with small codegrees, all but a vanishing share of the cells
+that are not loops can be covered by pairwise disjoint simplices. Leave the loops free, set the uncovered
+cells to zero, and impose one relation per simplex. The loops are a share w/d of the cells. ∎
+
+- For m = 2 the space is a line, a hyperplane is a point, ρ is the identity, a simplex is a pair of
+  transposed cells, and the code is the pairing code. So **pairing is the first member of this family**:
+  rate 1 − 1/m at window about d^{(m−2)/(m−1)}, that is 1/2 at bounded window, 2/3 at window √d (projective
+  planes: triangles of points with their opposite sides), 3/4 at d^{2/3}.
+- In terms of α = log w / log d the family has rate 1 − (1 − α)/(2 − α). I do not know a code that beats this
+  curve at any α, nor a bound that matches it. A proof of the half bound at fixed window has to fail for
+  windows that are powers of d, and this family is where it has to fail.
+- The machines need the limit α → 0 only: the window of Proposition 2 is fixed while d grows. No uniformity
+  in the window is needed beyond that.

@@ -713,3 +713,54 @@ remains open; Clebsch has degree five and incidence girth four. That
 restriction needs its own justification as a route to the unrestricted
 fixed-window deficit. No larger-host search was required to settle the
 unrestricted conditioned-far claim.
+
+## 11. Diagonals: the far gadget in general, and a family that corrects the near-cell conjecture (Fable, 13 November 2026)
+
+Status: Propositions 11.1 and 11.2 have the short written proofs below, **not reviewed**. 11.2 rests on the
+Clebsch code of the fourth paper and on paper 17's bound for rows inside address cosets.
+
+**Withdrawn.** My statement in the chat that the mutual helpers of far cells give one half is false: Astra's
+Clebsch code on the diagonal uses mutual helpers only and has 10 of 16 far cells free.
+
+**Proposition 11.1 (a diagonal carries the row relation).** Let π be a permutation of the indices. The cells
+(c, π(c)), each reading only cells of the same kind, form a copy of the digraph on the indices with an arc
+from c to every element of ρ(π(c)). So every storage code of that digraph, over any alphabet, is a whole-row
+code for ρ supported on d cells. If the indices form a group and ρ(r) = rT, the cells (c, cg) of displacement g
+carry the Cayley digraph with generators gT, and the array is the disjoint union of these d diagonals.
+
+*Proof.* The cell (c, π(c)) lies in column π(c), so it may read any cell in the rows ρ(π(c)), in particular
+(i, π(i)) for i in that set. For ρ(r) = rT and π(c) = cg these are the cells (cgs, cgsg), s ∈ T. ∎
+
+Astra's far gadget is the case π = identity for ρ(c) the neighbours of c in the Clebsch graph. Two different
+diagonals π and π⁻¹ together carry the pairs of transposed cells; that is pairing.
+
+**Proposition 11.2 (the hypercube family).** Let the indices be F₂^k, d = 2^k, and ρ(c) = c + T for a set T of w
+linearly independent vectors. Then there is a binary whole-row code for ρ of dimension at least
+
+  d²/2 + d · [ w/2 + C(w,3)/4 + C(w,5)/8 ],
+
+and every whole-row code for ρ has at most q^{(d² + 2^w d)/2} elements.
+
+*Proof.* By 11.1 the diagonal of displacement g carries the Cayley graph of F₂^k with generators g + T, which
+is undirected. For g ∈ T it has a loop at every vertex, and the diagonal is free. For g the sum of three
+elements of T, three of the generators are the pairwise sums of those elements; they span a plane and make
+disjoint copies of K₄, which carry the sum-zero code of rate 3/4. For g the sum of five elements of T, five
+of the generators sum to zero and any four of them are independent, so they make disjoint copies of the
+Clebsch graph, which carries a binary code of rate 5/8. Every other diagonal has a perfect matching along one
+generator and gets rate 1/2. The upper bound is paper 17's bound for row relations inside address cosets:
+the rows of a column lie in a coset of the span of T, of size 2^w. ∎
+
+**Consequences.**
+- *Far cells gain at distance five:* C(w,5)·d cells carry C(w,5)·d/8 symbols more than half. For odd j the
+  cell (c, c + g) is at distance exactly j in the incidence graph when g is a sum of j elements of T and of no
+  fewer. The number of near cells here is N₃ = d(w + C(w,3)). So the **conjecture of Section 10 is false with a constant that does
+  not depend on the window**: it would need C ≥ C(w,5)/(8(w + C(w,3))), which grows like w².
+- *What survives.* In this family the excess over d²/2 lies between d[w/2 + C(w,3)/4 + C(w,5)/8] and 2^{w−1}d: it
+  is of order d for fixed window, with a factor that grows fast in the window. The statement to aim at is
+  the strong form of Problem 9.4(c) with a constant depending on both windows:
+  at most q^{d²/2 + F(w, w′) d} elements. The limit of fixed window is unaffected.
+- *Why the gain dies with distance here.* The Cayley graph on a diagonal is bipartite unless g is a sum of an
+  odd number j of elements of T, and then its odd girth is j. Translation by g keeps a relation among j
+  generators only if jg = 0. In characteristic two every diagonal is undirected but odd relations are lost;
+  in odd characteristic relations of length p survive every translation but the diagonals become directed.
+  A group in which both held for most g would give far gains of positive density. I do not know one.

@@ -20,7 +20,7 @@ Theorem 2A (`BoundedArityDecoders.AffineCubeCompositionProofs`):
    bit-lane copy factorizations on `State 4 (Fin b → Sigma)` at all widths `b ≥ 1` and alphabets
    `|Sigma| ≥ 2`, contrasted with exact linear `ClassUniform` factorizations over characteristic-`2`
    fields (`(2 : F) = 0`), fields with `(20 : F) ≠ 0`, and hence every field with `(5 : F) ≠ 0` at
-   all widths `b ≥ 1`.
+   all widths `b ≥ 0`.
 -/
 
 namespace BoundedArityDecoders

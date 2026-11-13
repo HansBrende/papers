@@ -3,8 +3,8 @@ import BoundedArityDecoders.SwapCodeAnswers
 /-!
 # Extension Result 3: Characteristic-Free Two-Sided Coarse–Fine Bound (`Problem 9.3`)
 
-Formal statement specifications corresponding to **Result 3** (`Theorem 3` and its concrete
-comparison against one-sided `Theorem TP`) in `extension.md`:
+Formal statement specifications for Section 7.2 of the manuscript (Theorem 7.4 and Corollary 7.5,
+comparing the two-sided coarse–fine bound against one-sided `Theorem TP`):
 
 1. **Coarse–Fine Interval-Rotation Decomposition (`HasCoarseFineIntervalDecomposition`)**:
    * `cyclicRunEndpointCount` & `cyclicRunCount`: number of cyclic runs `m_S` of a subset
@@ -28,7 +28,7 @@ comparison against one-sided `Theorem TP`) in `extension.md`:
      `1/2 + (1/4) min(β(1 + α), α(1 + β))`, which is **strictly smaller** than one-sided
      `Theorem TP`'s `1/2 + (1/2) min(α, β)` for every `α, β ∈ (0, 1)`.
    * At `α = β = 1/2` (`d = 2k`, `s_A = s_B = k`), `Theorem 3` gives `(11/16) d^2 + d`
-     (`11/16 = 0.6875 < 3/4`), strictly below `(3/4) d^2` for all `d ≥ 17` (and strictly below
+     (`11/16 = 0.6875 < 3/4`), strictly below `(3/4) d^2` for all even `d = 2k ≥ 18` (and strictly below
      one-sided `Theorem TP`'s `(3/4) d^2 + d/2` for all `d ≥ 10`, i.e. `k ≥ 5`).
 -/
 

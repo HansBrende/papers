@@ -7,8 +7,8 @@ linear class-uniform
 factorization; working within the same algebraic model, this paper replaces arithmetic progressions
 by Ramsey-free additive structures and proves two main composition bounds in Lean~4.
 
-First (\Cref{thm:2a}), over any field $F$, replacing progressions by affine Hilbert cubes extracted
-via iterated Cauchy--Schwarz proves that $K_2 \circ K_1 = \tau$ forces
+First (\Cref{thm:2a}), over any field $F$ and for $b, M_1, M_2 \ge 1$, replacing progressions by
+affine Hilbert cubes extracted via iterated Cauchy--Schwarz proves that $K_2 \circ K_1 = \tau$ forces
 \[
   d \;\le\; \max\bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\bigr).
 \]
@@ -16,8 +16,8 @@ This rules out exact two-stage linear factorizations for growing class schedules
 $M_1 = o\bigl(d^{1/2^{M_2}}\bigr)$ at fixed $M_2$ (including $3$-AP-free Behrend partitions with
 $M_1 = 2^{O(\sqrt{\log d})}$) and $M_2 \le (1-\eps)\log_2\log_2 d$ at fixed $M_1$ and
 $\eps \in (0, 1)$ (giving $d \le \max(8M_1, 4M_1^2)$ at $M_2 = 1$), though at small
-constant class counts such as $M_1 = M_2 = 2$ it gives $d \le 256$ where
-\cite[Corollary~6.4]{SharedDecoders2026} gives $d \le 16$. Second (\Cref{thm:2b}), over any field
+constant class counts such as $M_1 = M_2 = 2$ it gives $d \le 256$ where Corollary~6.4 of
+\cite{SharedDecoders2026} gives $d \le 16$. Second (\Cref{thm:2b}), over any field
 $F$ with $(d : F) \ne 0$, combining shifted $(2M_2)$-fold monochromatic sumsets, arbitrary-subset
 Vandermonde pullbacks, sparse annihilating polynomials, and iterated K\H{o}v\'ari--S\'os--Tur\'an
 extraction proves that for all $M_1, M_2 \ge 1$ and all $d \ge D_0(M_1, M_2)$,
@@ -34,14 +34,16 @@ Three further sections prove one-stage linear shared-decoder and two-sided swap-
 problems of \cite{SeventeenthPaper2026}, alongside two shorter companion sections:
 (i)~on \cite[Problem~9.1(a)]{SeventeenthPaper2026}, exploiting decoder linearity on maximal
 monochromatic cyclic runs proves an explicit single-shift intersection bound (\Cref{thm:1a-single-shift},
-attained over every field on the alternating two-coloring, \Cref{thm:1a-sharpness}) and yields
+attained over every field on the alternating two-coloring for even $d = 2m \ge 2$ at $b = 1, s = 1$,
+\Cref{thm:1a-sharpness}) and yields
 $D_b(p) \le \frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ for two classes whenever
 $\operatorname{char}(F) \nmid d$ (\Cref{thm:1b-two-class}, strictly below both the $\frac{41}{64}$
 bound of \cite[Theorem~3.4]{SharedDecoders2026} and the $\frac{5}{8}$ nonlinear-decoder certificate
 floor of \cite[Theorem~C.6]{SharedDecoders2026}) together with
 $D_b(p) \le \bigl(1 - \frac{5}{4M} + \frac{1}{M^2} - \frac{1}{4M^3}\bigr)bd^2 + bMd$ for $M \ge 3$
-at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}, beating the flag bound
-$1 - \frac{1}{2M}$ for every $M \ge 2$);
+at primes $d \ne \operatorname{char}(F)$ (\Cref{thm:1b-multi-class}, whose leading coefficient beats
+the flag bound $1 - \frac{1}{2M}$ for every $M \ge 2$, while Theorem~3.5 of \cite{SharedDecoders2026}
+is stronger for large $M \ge 60$ and composite $d$);
 (ii)~on \cite[Problem~9.1(b)]{SeventeenthPaper2026}, coupled $\Z_6$ Fourier-mode elimination proves
 $\dim_F(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})) \le 14$ and hence
 $D_1\bigl(\{0,1,3\},\{2,4,5\}\bigr) = 25$ over every field with

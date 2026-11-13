@@ -99,6 +99,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.antiDiagonalTensorSeparation
 #print axioms BoundedArityDecoders.control_RowShearAndRowDiagonalAlternation
 #print axioms BoundedArityDecoders.control_SkewOneTimePadInformationTrap
+#print axioms BoundedArityDecoders.hasOperatorSchmidtRankLe_comp
 #print axioms BoundedArityDecoders.operatorSchmidtRankStoneShuffle
 #print axioms BoundedArityDecoders.operatorSchmidtRankSubmultiplicative
 #print axioms BoundedArityDecoders.operatorSchmidtRankSwap

@@ -112,7 +112,8 @@ Let $d \ge 1$, let $M, \Delta \in \N$, and let $\Sigma$ be a finite alphabet.
   $Y_1, Y_2 \in \Sigma^{d\times d}$ agree on every cell $q \in Q_{m,r}$, one has
   $f_m(Y_1)_r = f_m(Y_2)_r$. (Its whole-column analogue is \lean{SyntacticColumnSupport}.)
 \item Given $p : \Z_d \to \mathrm{Fin}\,M$, a broken-output set
-  $\mathcal{E} \subseteq \Z_d \times \Z_d$, and $C \subseteq \Sigma^{d\times d}$, the data
+  $\mathcal{E} \subseteq \Z_d \times \Z_d$ (indexed by output coordinates $(r,c)$ of
+  $\tau(X)_{r,c} = X_{c,r}$), and $C \subseteq \Sigma^{d\times d}$, the data
   $(\Delta, p, \mathcal{E}, f, Q)$ form a \emph{bounded-arity shared set code on $C$}
   (\lean{IsBoundedAritySetCode}) if $(f, Q)$ has syntactic cell support $\le \Delta$ and
   \[
@@ -158,8 +159,8 @@ in \lean{GridState}$(F, d, b) = (\mathrm{Fin}\,d \to \mathrm{Fin}\,d \to \mathrm
 \begin{proposition}[Equivariance of the matrix-to-grid bridge]\label{prop:tm-grid-bridge}
 \formal{ShuffleShearBridge.lean}{tmMatrix_gridLinear_bridges}
 For every ring $F$, \lean{encodeTMMatrixToGrid} intertwines \lean{stoneShuffleTMMatrix} with
-\lean{stoneShuffleGridLinear} (for $d = 2^m$), \lean{stoneUnshuffleTMMatrix} with
-\lean{stoneUnshuffleGridLinear} (for $d = 2^m$), \lean{rowShearTMMatrix} with \lean{rowShearLinear}
+\lean{stoneShuffleGridLinear} (for $d = 2^m, m \ge 0$), \lean{stoneUnshuffleTMMatrix} with
+\lean{stoneUnshuffleGridLinear} (for $d = 2^m, m \ge 0$), \lean{rowShearTMMatrix} with \lean{rowShearLinear}
 (for $d \ge 1$), and \leanname{Transpose.transpose} with \lean{gridSwapLinear}.
 \end{proposition}
 \begin{outline}

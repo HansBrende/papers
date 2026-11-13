@@ -30,7 +30,7 @@ and we write $\OSR(K) = R$ (\lean{HasExactOperatorSchmidtRank}) when $\OSR(K) \l
 $R' < R$ suffices.
 
 \begin{lemma}[Submultiplicativity and unit-rank operators]\label{lem:osr-submult}
-\formal{OperatorDualityProofs.lean}{operatorSchmidtRankSubmultiplicative}
+\formal{OperatorDualityProofs.lean}{operatorSchmidtRankSubmultiplicative,hasOperatorSchmidtRankLe_comp}
 \formal{DualityAndSwapConsequences.lean}{isRowOrColUniform_rankLe_one}
 Over any commutative semiring $F$ (and in particular any field):
 \begin{enumerate}[label=(\alph*)]
@@ -47,7 +47,6 @@ using $R_2 R_1$ terms; $I_d \otimes B$ and $A \otimes I_{db}$ are single element
 \end{outline}
 
 \begin{theorem}[Operator Schmidt Rank of transpose and Stone's shuffle]\label{thm:osr-swap}
-\label{thm:osr-shuffle}
 \formal{OperatorDualityProofs.lean}{operatorSchmidtRankSwap,operatorSchmidtRankStoneShuffle}
 Let $F$ be any field and let $b \ge 1$.
 \begin{enumerate}[label=(\alph*)]
@@ -72,7 +71,6 @@ symmetrically for $S^{-1}$).
 \end{outline}
 
 \begin{theorem}[Pass lower bounds for restricted shuffle-and-local pipelines]\label{thm:osr-pass}
-\label{cor:general-osr-pass}
 \formal{OperatorDualityProofs.lean}{stoneShufflePipelinePassLowerBound}
 \formal{DualityAndSwapConsequences.lean}{boundedOSRPipelinePassLowerBound}
 Let $F$ be any field and let $b \ge 1$.
@@ -87,7 +85,7 @@ Let $F$ be any field and let $b \ge 1$.
 \end{enumerate}
 \end{theorem}
 \begin{outline}
-By \Cref{lem:osr-submult} and \Cref{thm:osr-shuffle}(b), the composed pipeline has $\OSR \le 4^t$
+By \Cref{lem:osr-submult} and \Cref{thm:osr-swap}(b), the composed pipeline has $\OSR \le 4^t$
 (respectively $\OSR \le R^t$), whereas $\OSR(\tau) = d^2$ by \Cref{thm:osr-swap}(a). Taking real
 logarithms when $R \ge 2$ gives $2\log d \le t\log R$.
 \end{outline}

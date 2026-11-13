@@ -62,7 +62,8 @@ For any recovery relation of maximum footprint size $\Delta$, the acyclic-subgra
 Bar-Yossef, Birk, Jayram, and Kol \cite[Theorem~3]{BBJK2011} combined with a uniformly random vertex
 ordering gives a maximum acyclic induced subgraph of size at least $(\text{\#clean})/(\Delta + 1)$
 and hence rate at most $1 - 1/(\Delta + 1)$ up to self-referential entries. This elementary bound has
-been in the series since \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (and is summarized in
+been in the series since \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (proved in text there, with
+the $1 - 1/(\Delta+1)$ and acyclic-subgraph forms recalled in
 \cite[Sections~4.1 and~6.7]{SeventeenthPaper2026}). We record its Lean~4 formalization in the
 notation of
 \Cref{def:bounded-arity-set-code}.
@@ -179,7 +180,7 @@ distinct barriers prevent a direct reduction:
   shared set decoders with unbounded window reach rate $1 - o(1)$ ($\abs{C} \ge \abs{\Sigma}^{d^2}/(2d)$),
   so any set-level bridge must enforce a bounded read window.
 \item \emph{Depth-$D$ cut cost exceeds the $1/(\Delta+1)$ deficit
-  (\cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}).}
+  (\cite[Propositions~4.13 and~4.14(c)]{FourthPaper2026}, proved in text).}
   Cutting all causal paths down to length $D$ over a run of length $T$ requires revealing a cut word
   of bit-cost $\eps L = \Omega(L/D)$, whereas $(M.k + 1)^{D+1} > 1/\eps$ and the entry-level cone arity
   $\Delta = b(M.k + 1)^D$ grows exponentially in $D$ (and includes the word-width factor

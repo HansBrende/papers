@@ -9,14 +9,14 @@ import Mathlib.Order.Bounds.Basic
 /-!
 # Extension Result 2: Exact Solution of `Problem 9.1(b)` in Characteristic `∉ {2, 3}`
 
-Formal statement specifications corresponding to **Result 2** (`Theorem 2`) in `extension.md`:
+Formal statement specifications for Section 6 of the manuscript (Lemma 6.1 and Theorem 6.2):
 
 * Over **every** field `F` with `char F ∉ {2, 3}` (`ringChar F ≠ 2 ∧ ringChar F ≠ 3`, equivalently
   `(2 : F) ≠ 0 ∧ (3 : F) ≠ 0`), every class-uniform code `𝒳` for the two-class partition
   `{0, 1, 3} | {2, 4, 5}` (`SwapRigidity.aperiodicCls`) on `ZMod 6` satisfies
   `dim_F (𝒳 ∩ σ⁻¹ 𝒳) ≤ 14`, hence `2 * dim_F 𝒳 ≤ 36 + 14 = 50` and `dim_F 𝒳 ≤ 25`.
 * Combined with the lower-bound construction of dimension `25` over every field with `3 ≠ 0`
-  (`Theorem A` / `ClassUniformMemo.exists_code_of_three_ne_zero`), the maximum dimension of a
+  (Theorem 3.2 / Theorem A, `ClassUniformMemo.exists_code_of_three_ne_zero`), the maximum dimension of a
   class-uniform code for `{0, 1, 3} | {2, 4, 5}` on `ZMod 6` is **exact and equal to `25`** over
   every field `F` with `char F ∉ {2, 3}` (`IsGreatest ... 25` and
   `linearClassUniformMaxDim F 1 SwapRigidity.aperiodicCls = 25`), including every partition

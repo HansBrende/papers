@@ -240,7 +240,7 @@ lemma cyclicChannelShift_pow_apply {R : Type*} [Semiring R] (d q : ℕ) (s : ZMo
 
 /-- Kernel dimension bound `finrank E (ker P(T)) ≤ q * P.natDegree` for any nonzero polynomial
 `P : Polynomial E` acting by `cyclicChannelShift E d q 1`. -/
-lemma cyclicChannelShift_aeval_ker_finrank_le
+theorem cyclicChannelShift_aeval_ker_finrank_le
     {d q : ℕ} [NeZero d] {E : Type*} [Field E] {P : Polynomial E} (hP : P ≠ 0) :
     finrank E (LinearMap.ker (Polynomial.aeval (cyclicChannelShift E d q 1) P)) ≤
       q * P.natDegree := by

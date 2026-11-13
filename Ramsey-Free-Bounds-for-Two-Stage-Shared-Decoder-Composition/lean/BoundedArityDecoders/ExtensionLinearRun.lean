@@ -10,8 +10,9 @@ import Mathlib.LinearAlgebra.Dimension.Finrank
 /-!
 # Extension Result 1: Linear-Decoder Run-Extension and Multi-Class Ceilings (`Problem 9.1(a)`)
 
-Formal statement specifications corresponding to **Result 1** (`Theorem 1A`, its sharpness on the
-alternating coloring, and `Theorem 1B` for `M = 2` and `M ≥ 3` classes) in `extension.md`:
+Formal statement specifications for Section 5 of the manuscript (`Theorem 1A` / Theorem 5.2,
+sharpness on the alternating coloring in Theorem 5.3, and `Theorem 1B` / Theorems 5.4–5.5 for
+`M = 2` and `M ≥ 3` classes):
 
 1. **Multi-Lane Linear Class-Uniform Model & Bridges**:
    * `laneRot`, `IsLinearClassUniformCode`, `linearClassUniformMaxDim`: `b`-lane linear
@@ -334,7 +335,7 @@ def Extension_Theorem1B_TwoClassSpec : Prop :=
    `1 / 2 + (1 / 2) * ∑ m, f (α m) ≤ multiClassLeadingCoeff M`, with equality at `α m = 1 / M`
    (and strict inequality whenever `∃ m, α m ≠ 1 / M`);
 2. **Prime-`d` multi-class ceiling**: There exists an absolute constant `C > 0` (in fact `C = 1`,
-   via `(7 / 4) b d ≤ b M d`) such that for every field `F`, prime `d` with `d ≠ ringChar F`,
+   via `(5 / 4) b d ≤ b M d`) such that for every field `F`, prime `d` with `d ≠ ringChar F`,
    `M ≥ 3`, `b ≥ 1`, `p : ZMod d → Fin M`, and linear class-uniform code `𝒳`,
    `dim_F 𝒳 ≤ multiClassLeadingCoeff M * b * d^2 + C * b * M * d` (and likewise for
    `linearClassUniformMaxDim F b p`);

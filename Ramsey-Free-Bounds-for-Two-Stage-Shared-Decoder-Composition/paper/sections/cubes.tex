@@ -181,12 +181,17 @@ $p_1 = p_2 = [0, 0, 1, 1]$ (\lean{halfIntervalPartition4}, $M_1 = M_2 = 2$).
   table valid whenever $(2 : F) = 0$, including $\F_2$ at $b = 1$), and for every lane width
   $b \ge 0$, there exist $F$-linear class-uniform maps $K_1, K_2$ on $\Mat_{4\times 4}(F^b)$ with
   $p_1 = p_2 = [0,0,1,1]$ satisfying $K_2 \circ K_1 = \tau$. (Whether such a factorization exists in
-  characteristic~$5$ is not decided here.)
+  characteristic~$5$ for $b \ge 1$ is not decided here.)
 \end{enumerate}
 \end{example}
 \begin{outline}
-In~(a), projecting onto lane~$0$ reduces bit-lane copy to scalar entry copy, where routing $4$
-entries through $2$-element interval classes forces a collision. In~(b), separate explicit linear
+In~(a), because stage~$2$ can route across distinct bit lanes, the proof argues on all $4b$ wires
+$\Z_4 \times \mathrm{Fin}\,b$ simultaneously: comparing columns $c = 0$ and $c = 1$
+($p_2(0) = p_2(1) = 0$) on two-symbol test inputs shows that for every wire $q = (i, \ell)$,
+stage~$2$'s shift $u_2(0, i, \ell)$ lies in $\{1, 3\}$ and stage~$1$'s source row on
+$\varphi_0(q) := (r_2(0, i, \ell), \ell_2(0, i, \ell))$ lies in $\{0, 1\}$, and moreover $\varphi_0$
+is injective and hence surjective on $\Z_4 \times \mathrm{Fin}\,b$; thus stage~$1$ can never output
+input row~$2$, contradicting column $c = 2$. In~(b), separate explicit linear
 tables verify $K_2 \circ K_1 = \tau$ lane-by-lane when $(20 : F) \ne 0$ and when $(2 : F) = 0$;
 every field with $(5 : F) \ne 0$ satisfies one of the two conditions.
 \end{outline}

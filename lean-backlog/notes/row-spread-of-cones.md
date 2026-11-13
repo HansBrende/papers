@@ -1,108 +1,256 @@
-# Cone systems have the whole-row shape
+# Whole-row shape after an additional cheap cut
 
-Status (13 November 2026, Hans Brende and Claude Fable 5.2): Lemma 1, Proposition 2 and Corollary 3
-have written proofs here, **not reviewed and not formalized**. They use the definitions of the
-fourteenth paper ([Bounded-Stack DAGs](../../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/), Definition of
-depth-TCP and the crux, Corollary O). Front D4 of [the roadmap](../wall.md): this is a candidate for the
-missing class property, and it would tie front D1 to the machines.
+Hans Brende, Claude Fable 5.2 and GPT-6 Astra, 13 November 2026.
 
-## The claim in one sentence
+**Fronts D4/D9 and D1.** Fable proposed the window argument in C20; Astra's
+audit corrected its conventions, sharpened the finite bound, and added the
+raw-boundary transfer below. The window/row-spread theorem and the machine/crux
+consequences have reviewed **written proofs**, not complete Lean proofs.
+[StatementsRowSpread.lean](../StatementsRowSpread.lean) states the geometric
+target as a proposition without asserting it; its elementary code and cut
+adapters are Lean-verified. The whole-row capacity bounds remain conjectural.
 
-For every machine with k work tapes and every ε, a genie of cost at most 2εL leaves a cone system in
-which, for all but εd output rows, the cones of **all** output bits of the row lie in at most w input
-rows, with w depending on k, β, C and ε only. So every fibre is a ρ-code of window w in the sense of
-paper 17, Problem 9.4(c), up to εd columns.
+This is an extraction, not a capacity bound. After a small additional genie,
+all bit cones in almost every output row use boundedly many input rows. The
+bound is uniform in dimension and entry width, with depth and the other
+parameters fixed first. It does not give the stronger global monotone
+row-word cover of Paper 5; Section 6 explains the countercontrol.
 
-## Setting
+## 1. Definitions and conventions
 
-A machine with k work tapes, value width at most β, an input of L = d²b bits read by a two-way head,
-an append-only output, and a run of T ≤ C(L + 1) steps. An *input row* is one of the d blocks of db
-consecutive input positions, an *output row* likewise. The dependency DAG has a state edge from every
-step to the previous one and, for each work tape, an edge from a step to the last earlier visit of the
-cell under that head. Γ is a set of revealed steps; the cone set of an output bit is the set of input
-positions under the input head at the steps of the Γ-free paths from its append step.
+Use the actual native dependency graph and `coneSystem` of
+[Paper 14](../../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/lean/BoundedStackDepth/Machines.lean).
+A trace has $k$ unit-speed work heads, a unit-speed two-way input head, and
+at most one append per step. The input/output length is $L=d^2b$, with
+$b\ge1$, and a physical row has $h=db$ bits. The horizon obeys
+$T\le C(L+1)$, $C\ge1$, and exactly $L$ bits are appended.
 
-Cut the time into N = ⌈T/(db)⌉ ≤ Cd + 1 *windows* of db consecutive steps.
+State edges go to the preceding step; work edges go to the last earlier visit
+to the same scanned cell. Pauses are already accounted for by the state edge;
+a first visit has no earlier work predecessor. Positions and reads are those
+before the transition. A $\Gamma$-free path excludes revealed vertices
+**strictly after its root**. Depth $D$ here means at most $D$ edges, hence at
+most $D+1$ vertices, matching the `SCone` convention.
 
-## Lemma 1 (a window reads the leavings of three windows per tape, on average)
+Partition the steps into $N=\lceil T/h\rceil$ windows of $h$ steps, the last
+possibly shorter. For real $C$ the safe bound is
 
-For one work tape and a window W_i, let m_i be the number of earlier windows W such that some cell
-visited during W_i was last visited, before W_i began, during W. Then Σ_i m_i ≤ 3N.
+$$N\le T/h+1\le Cd+C/h+1. \tag{1}$$
 
-*Proof.* At the beginning of W_i label every cell by the last window that visited it (or by "never").
-The labels cut the tape into maximal blocks of equal label; let Φ_i be their number, so Φ_0 = 1. During
-W_i the head visits a contiguous range of cells. The m_i labels in question belong to blocks that meet
-this range. Afterwards the range is one block, the blocks inside it are gone, and at most two of the
-blocks that met it survive as remainders, so Φ_{i+1} ≤ Φ_i − m_i + 3. Summing, Σ m_i ≤ 3N + Φ_0 − Φ_N ≤ 3N. ∎
+Neither correctness nor obliviousness is needed for the geometric result on
+one trace. The integer price $\beta\ge1$ per revealed step is a parameter; for
+machine-value applications take it at least the machine's value width.
 
-This is the block structure of Hopcroft, Paul and Valiant, without making the machine block-respecting.
-The only property of a tape that it uses is that a head visits a contiguous range in a window.
+## 2. Window accounting
 
-## Proposition 2 (row spread)
+**Lemma 1 (amortized predecessor windows).** For one work tape, let $m_i$ be
+the number of earlier windows containing the last pre-window visit to some
+cell scanned in window $i$. Then $\sum_i m_i\le3N$.
 
-Let ε > 0, let Γ be any set of steps of full depth at most D (for instance the genie of Corollary O(a)
-at ε), and put M = ⌈4k(k + 1)βC/ε⌉ and M′ = ⌈2C/ε⌉. For all large d there are a set Γ′ ⊇ Γ with
-β·#(Γ′ ∖ Γ) ≤ εL and a set of at most εd output rows such that, for every other output row r, the cone
-sets with respect to Γ′ of all output bits of row r lie in at most
+*Proof.* At each window boundary label every tape cell by the most recent
+window that scanned it, or by “never”. There are finitely many maximal
+constant-label intervals, even on the infinite tape; initially there is one.
+Let their number be $\Phi_i$. The next window scans an interval. If it
+intersects $q_i$ label intervals, replacing its labels by $i$ leaves at most
+three in their place: a left remainder, the new interval, and a right
+remainder. Thus $\Phi_{i+1}\le\Phi_i-q_i+3\le\Phi_i-m_i+3$.
+A repeated label can occupy multiple blocks, but $q_i\ge m_i$ still holds.
+Sum and use $\Phi_0=1\le\Phi_N$. ∎
 
-  w = 3 (M′ + 1)(M + 2)^D
+This is interval bookkeeping related to the block computation graphs in
+[Hopcroft, Paul and Valiant, *On Time Versus Space*, JACM 24(2), 332–337
+(1977), §2, p. 333](https://www.csd.uwo.ca/~mmorenom/CS433-CS9624/Resources/p332-hopcroft.pdf).
+Their construction first makes a simulation block-respecting; Lemma 1 works
+on the given walk. We found no statement of the following same-trace
+extension in Papers 5, 11 or 14 or their shared Lean dependencies. This is
+not an exhaustive novelty claim about the literature.
 
-input rows.
+**Proposition 2 (finite row spread).** Let $d\ge4$, $b\ge1$, $\beta\ge1$,
+$C\ge1$, $\varepsilon>0$, and let $\Gamma$ leave full depth at most $D$. Put
 
-*Proof.* Call a window *bad* if the numbers m_i of Lemma 1, summed over the k tapes, exceed M. By the
-lemma there are at most 3kN/M bad windows. For every bad window add to Γ the step before it and, for
-every step t of it and every tape, the last earlier visit of the cell under the head at t if that visit
-lies before the window. That is at most k(db + 1) + 1 steps per bad window, so the added cost is at most
-β · (3kN/M) · (k + 1)(db + 1) ≤ εL for large d. Adding steps does not increase the depth.
+$$M=\left\lceil\frac{4k(k+1)\beta C}{\varepsilon}\right\rceil,
+\quad M'=\left\lceil\frac{2C}{\varepsilon}\right\rceil,
+\quad w=2(M'+1)(M+2)^D. \tag{2}$$
 
-Every edge of the dependency DAG goes from a step to a step of the same window, of the window before
-it, or (a tape edge) of one of the windows counted in Lemma 1. A Γ′-free path cannot leave a bad window
-backwards. So from a step of a window W a Γ′-free path, which has at most D vertices, stays in the
-windows that are reached from W in at most D moves, each move going from a good window to the window
-before it or to one of its at most M predecessors: at most (M + 2)^D windows. During one window the input
-head covers at most db + 1 positions, hence meets at most 3 input rows.
+There exist $\Gamma'\supseteq\Gamma$, a set $E$ of output rows and helper-row
+sets $\rho(r)$ such that
 
-The append steps of an output row form an interval of steps, and these intervals are disjoint. Call a row
-bad if its interval meets more than M′ + 1 windows; there are at most N/M′ ≤ εd such rows for large d. The
-append steps of any other row lie in at most M′ + 1 windows. ∎
+$$\beta\,\#(\Gamma'\setminus\Gamma)\le\varepsilon L,
+\qquad \#E\le\varepsilon d,\qquad \#\rho(r)\le w,$$
 
-## Corollary 3 (what a bound for whole rows would give)
+and for $r\notin E$ every bit cone in output row $r$ lies in the input rows
+$\rho(r)$. The original depth bound is preserved.
 
-Suppose that for some δ > 0, some w and all large d, every set of d × d matrices over an alphabet Σ in
-which every column outside at most ηd columns is a function of at most w rows has at most
-|Σ|^{(1 − δ + η)d²} elements, for every alphabet (the entries here are b-bit strings, so |Σ| = d grows).
-Let ε be such that w ≥ w(k, β, C, ε) of Proposition 2 and δ > 4ε. Then no machine with k work tapes and
-value width β that is oblivious at length L with halting time at most C(L + 1) transposes all d × d
-matrices, for large d.
+*Proof.* For $k\ge1$, call a window bad if its predecessor-window counts
+summed over tapes exceed $M$. There are at most $3kN/M$ bad windows.
+Reveal the preceding state step of each bad window and every external work
+predecessor of every step in it. Window zero is never bad. At most
+$kh+1\le(k+1)h$ steps are charged per bad window. With (1),
 
-*Proof.* Take the genie of Corollary O(a) at ε and enlarge it by Proposition 2. Its values form an index
-code with at most 2εL bits for the cone system of Γ′ (the index-code lemma used in Corollary O(b) holds
-for every Γ). A largest fibre has at least 2^{L − 2εL} inputs, and on it every output bit is a function of
-the input bits in its cone set. The output bit in row r, column c demands the input entry (c, r), so on
-the fibre column r of the input matrix is a function of the at most w input rows of Proposition 2, for
-all but εd columns. The hypothesis bounds the fibre by 2^{(1 − δ + ε)L}. So δ ≤ 3ε. ∎
+$$\beta\,\#(\Gamma'\setminus\Gamma)
+\le\frac{3\varepsilon}{4C}Nh
+\le\frac{3\varepsilon}{4}(L+1+h/C)
+\le\frac{63}{64}\varepsilon L \quad(d\ge4). \tag{3}$$
 
-## What this is and is not
+The last inequality uses $1/L\le1/d^2$ and $h/(CL)\le1/d$. The initial cut
+may be arbitrarily expensive; only new steps are charged. If $k=0$, there
+are no bad windows and no added cuts; below $M=0$ and only state edges remain.
 
-- **It is a tie, not a bound.** With the only bound known for whole rows, w d(d + 1)/(w + 1), the
-  deficit is 1/(w + 1), far below ε: w is astronomically large in 1/ε. Nothing is excluded.
-- **It makes one statement sufficient.** If whole-row codes of window w have rate at most 1 − δ(w), then
-  oblivious linear-time transposers are excluded as soon as δ(w(k, β, C, ε)) > 4ε for one ε. With the
-  conjectured value one half for every window, ε = 1/9 does it.
-- **It is a necessary condition for a machine.** A linear-time oblivious transposer yields whole-row
-  codes of bounded window whose rates tend to 1 as the window grows. No such codes are known at any
-  rate above one half.
-- **It is not a property of the abstract high-rate families** unless they can be laid out on an array
-  with boundedly many helper rows per column. That is not known; natural layouts fail.
-- The row maps are compositions of at most D last-visit maps, and a last-visit map is monotone on
-  each side of the head. So the cover is by words of monotone partial row maps, the shape of the
-  fifth paper's row-word certificate (its Theorem 6.4), which that paper extracts for one executor.
-  The number of words here grows with 1/ε, so that theorem gives an underpaid deficit.
+A free path cannot leave a bad window backwards: every external target has
+been revealed, even when the path's root is revealed. A good window has at
+most $M$ work predecessor windows plus the preceding window. Including a
+stay choice, at most $(M+2)^D$ windows are reachable in at most $D$ edge
+transitions. The input head scans at most $h$ consecutive positions in one
+window, hence meets at most **two** physical input rows; out-of-input
+positions contribute no bits.
 
-## To be checked
+For each output row take the interval from its first to its last append,
+not just its possibly sparse append set. These intervals are disjoint and
+ordered. A row interval meeting more than $M'+1$ windows contains at least
+$M'$ complete windows between its endpoint windows. There are therefore at
+most
 
-1. Lemma 1 against the exact definition of the dependency DAG in the fourteenth paper's library (pauses,
-   first visits, the cell under the head before or after the move).
-2. That the index-code lemma applies to the enlarged Γ′ and that "full depth" is not increased.
-3. The treatment of the input head and of rows that straddle windows.
-4. The alphabet: the hypothesis of Corollary 3 is needed for entries that are b-bit strings.
+$$N/M'\le\frac{\varepsilon}{2}(d+1/h+1/C)\le\varepsilon d$$
+
+such rows. Every other row uses at most $M'+1$ starting windows. Union their
+reachable windows and the two input rows per window to obtain (2).
+Enlarging a cut cannot increase free-path depth. ∎
+
+## 3. The whole-row capacity statement actually needed
+
+A whole-row code is a set of matrices over a finite alphabet $\Sigma$ such
+that column $r$ is determined, on that code, by all entries of one set
+$\rho(r)$ of at most $w$ rows. Decoding may be nonlinear and may vary
+between columns. A capacity upper bound assumes no efficiency of decoding.
+
+The canonical alphabet is $\Sigma_d=\{0,1\}^{b(d)}$, of size $2^{b(d)}$,
+**not** exactly $d$ in general. The dimension threshold must work along these
+growing alphabets. Separate fixed-alphabet theorems with uncontrolled
+alphabet-dependent thresholds do not suffice. Nor does the scalar-linear
+D1 proposition in `StatementsWholeRow.lean` cover these nonlinear fibres.
+
+An adequate target is: for every fixed $w$ and every $\eta>0$, all large $d$
+and **all finite alphabets**, uniformly, have
+
+$$\#C\le(\#\Sigma)^{(1-\delta(w)+\eta)d^2}. \tag{4}$$
+
+Restricting (4) to $\Sigma_d$ is a weaker sufficient target for canonical
+width. For bit transposition alone a binary bound suffices; Paper 3 does not
+provide an unrestricted word-to-bit reduction.
+
+Exceptions need no new conjecture. Freeze $e$ exceptional columns. The at
+most $(\#\Sigma)^{de}$ resulting fibres have constant decoders on those
+columns, with empty helper sets. All good columns keep their helper rows.
+Thus an all-column cardinal bound $A$ implies $(\#\Sigma)^{de}A$ with
+exceptions. This finite lemma is Lean-verified as
+`exceptional_column_card_bound`.
+
+**Corollary 3 (direct machine consequence).** Suppose (4) holds at the width
+in (2), with $D$ supplied by Paper 14 Corollary 9.3(a) at price
+$\varepsilon L$. If $\delta(w)>3\varepsilon$, there is no correct oblivious
+linear-time transposer with those fixed resources at all sufficiently large
+dimensions. The original sufficient condition $\delta(w)>4\varepsilon$
+leaves additional asymptotic slack.
+
+*Proof.* The original genie and Proposition 2 cost at most $2\varepsilon L$
+bits together. Paper 14's `exists_indexCode` holds for **any** revealed set,
+so a largest actual value fibre has at least $2^{(1-2\varepsilon)L}$ inputs.
+Output row $r$ demands input column $r$. The new fibre is a whole-row code
+outside at most $\varepsilon d$ columns. Freezing these and applying (4)
+bounds its size by $2^{(1-\delta(w)+\eta+\varepsilon)L}$. Choose
+$0<\eta<\delta(w)-3\varepsilon$. ∎
+
+A half-rate bound for every fixed window, uniform along the canonical
+alphabets, would therefore exclude the machines; $\varepsilon=1/9$ works.
+The known gap $1/(w+1)$ is too small. A hypothetical machine instead supplies
+codes with rate arbitrarily near one at some fixed window for each requested
+rate, along growing entry alphabets. This does not assert a fixed-alphabet
+counterexample to D1 or a cheap implementation of arbitrary whole-row codes.
+
+## 4. Arbitrary code fibres: the raw-boundary strengthening
+
+Actual machine values suffice in Corollary 3, but need not preserve the
+side information of an arbitrary code on the original cones. A different
+charge resolves this at fixed original depth. For arbitrary cuts set
+
+$$U=\bigcup_{u\in\Gamma'\setminus\Gamma}I_\Gamma(u),
+\qquad B_D=\sum_{j=0}^D(k+1)^j,$$
+
+where $I_\Gamma(u)$ is the raw-input cone at step $u$. Then
+
+$$I_\Gamma(t)\subseteq I_{\Gamma'}(t)\cup U,\qquad
+\#U\le B_D\,\#(\Gamma'\setminus\Gamma) \tag{5}$$
+
+when original full depth is at most $D$. These assertions are Lean-verified
+(`depCone_change_cut`, `card_new_cut_raw_support_le`), reusing the native
+path and ball counts. The inclusion does not require nested cuts.
+
+*Proof.* An old free path either stays free or first hits a new cut vertex
+**strictly after its root**. This vertex lies in $\Gamma'\setminus\Gamma$;
+the remaining suffix witnesses membership in its old cone. Each old cone
+has at most $B_D$ positions. Take their union. ∎
+
+**Corollary 4 (conditional native-crux transfer).** If, for some fixed
+$\delta>0$, every fixed-window whole-row code has asymptotic rate at most
+$1-\delta$, uniformly along the canonical alphabets, then Paper 14's native
+`Crux` holds at rate $\delta$ for every fixed $k,\beta,C,D$. The all-finite-
+alphabet version gives the corresponding bound for every $b\ge1$.
+In particular, the uniform whole-row half-rate target implies native
+half rate. This is a written implication, not a proof of either conjecture.
+
+*Proof.* Start with any binary storage code on an original depth-$D$ native
+cone system.
+Apply Proposition 2 with step price $B_D$ and extra budget $\eta L$.
+By (5), freezing at most $\eta L$ raw bits transfers each resulting code
+fibre to the new cone relation. Freeze the at most $\eta d$ exceptional
+columns too, at cost at most $\eta L$. Apply the whole-row bound with slack
+$\eta$. The original code has rate at most $1-\delta+3\eta$. For an index
+code of $m$ bits its largest fibre has at least $2^{L-m}$ elements, so
+$m\ge(\delta-3\eta)L$. Let $\eta$ tend to zero in the crux quantifiers.
+Depth, cut price, window and slack are fixed before dimension grows.
+Neither correctness nor cheapness of the initial $\Gamma$ is used. ∎
+
+The direct machine route is quantitatively cheaper: it pays actual step
+values rather than the factor $B_D$. Do not read (5) as a bound uniform
+when $D$ grows with dimension.
+
+## 5. Formal status and reproduction
+
+`StatementsRowSpread.lean` reuses `MotionDepthCodes.IsStorageCode` and
+`BoundedStackDepth.coneSystem`. It defines the geometric formalization target
+and nonlinear capacity conjectures and proves elementary adapters including
+exceptional columns and (5). It does **not** assert the geometric theorem
+as a Lean theorem or prove any whole-row capacity conjecture. No new axioms
+or proof placeholders are used.
+
+Check from Paper 15's existing package, which supplies both dependencies:
+
+```sh
+cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
+lake env lean ../../lean-backlog/StatementsRowSpread.lean
+```
+
+[The audit controls](row-spread-controls.md) give the exact finite tests and
+reproduction command. Those tests check conventions and guards; the written
+proofs cover unbounded dimensions. No native-machine normal form is inferred
+from finite experiments.
+
+## 6. A stronger row-word inference fails
+
+The initial note also claimed a globally bounded cover by Paper 5's monotone
+partial row words. Proposition 2 does **not** imply it. The number of monotone
+pieces can grow; bounded helper-row count does not control their arrangement.
+
+The [block-reversal control](row-spread-controls.md#block-reversal-and-global-row-words)
+has $d=s^2$ and reads row $f(sa+t)=sa+s-1-t$ for output row $sa+t$ in
+$O(L)$ unit-speed trace time. Direct root incidences survive every genie.
+A fixed family of $K$ row words of length at most $\ell$ and band radius $a$
+has at most $H=K(2a+1)^{\ell+1}$ monotone branches. Each agrees with $f$ on
+at most $s$ rows. Allowing a coordinate exception set $Z$, a cover still needs
+
+$$\#Z\ge\frac{1-H/s}{2}\,L.$$
+
+Thus fixed $K,a,\ell$ and $o(L)$ exceptions cannot cover these unit-speed
+geometries. This refutes the stronger geometry-only inference, not row
+spread or an extraction claim restricted to correct transposers. The control
+does not transpose arbitrary inputs.

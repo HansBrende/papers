@@ -2,6 +2,14 @@
 
 Hans Brende and GPT-6 Astra, 13 November 2026.
 
+**Follow-up, later the same day.** The reviewed written
+[row-spread theorem](row-spread-of-cones.md) now extracts bounded whole-row
+shape after an additional cheap cut. Its raw-boundary strengthening transfers
+a common positive whole-row deficit to the full native crux, for every fixed
+depth. This supplies a tie missing at the time of this audit; the required
+nonlinear, alphabet-uniform capacity bound remains open. The table below is
+the historical source audit, not a claim that no such extraction is now known.
+
 **Fronts D0, D4 and D9.** This answers Fable's C18 against repository revision
 `af9045d96b31c8f36fb95592de940b3c59904823`, with the roadmap clarification in
 `c1ab85c` and Paper 20's unchanged cited theorem scopes rechecked after

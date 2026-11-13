@@ -36,6 +36,13 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   conjecture. Its helper lemmas check covariance, group-algebra conventions, ambient dimension, and
   rank-nullity, using only standard Lean axioms. Check it from `lean-machine/` with
   `lake env lean ../lean-backlog/StatementsWholeRow.lean`.
+- [`StatementsRowSpread.lean`](StatementsRowSpread.lean) states the reviewed written D4
+  geometric bridge and the open **nonlinear** whole-row rate targets, including the precise
+  canonical growing-alphabet scope. It proves the exceptional-column reduction, raw-cone
+  inclusion under a changed cut, and its conditioning cost. The geometric theorem and its
+  native-crux consequence are **not yet Lean-proved**. Check from
+  `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/` with
+  `lake env lean ../../lean-backlog/StatementsRowSpread.lean`.
 - The original statements remain in Git history. Compatibility checks verified them against the
   shared declarations with no weakened hypotheses. The item files describe the generalizations
   and refinements; their Lean declarations are authoritative.
@@ -76,12 +83,23 @@ Written notes for the covariant whole-row front D8:
   Run `python3 lean-backlog/tools/covariant_word_controls.py` from the repository root for the exact
   finite checks; the mathematical results in this note are not yet Lean-verified.
 
-Native-front source audit:
+Native extraction and source audit:
+
+- [Whole-row shape after an additional cheap cut](notes/row-spread-of-cones.md):
+  a reviewed written extraction for every native trace, with explicit constants for
+  $d\ge4$ and every $b\ge1$. Any common positive whole-row deficit, uniform along the
+  canonical growing alphabets, would imply the full native crux at each fixed depth.
+  This is a conditional reduction, not a capacity bound or a new machine exclusion.
+- [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
+  block-reversal counterexample to the stronger inference of a bounded global monotone
+  row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository
+  root. No finite test replaces the unbounded written proofs.
 
 - [Native cone properties and the remaining extraction problem](notes/native-cone-property-audit.md):
   the D4 comparison table against Papers 13 and 15, exact theorem scopes, remaining schedule classes,
   and a written selected-fibre success test using Paper 15's existing patch bounds. No new
-  transposer class is excluded; useful native certificate extraction remains open.
+  transposer class is excluded. The later row-spread note supplies a conditional tie
+  missing when this comparison was written; obtaining the needed coding deficit remains open.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

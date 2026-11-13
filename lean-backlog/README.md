@@ -49,6 +49,8 @@ Written research notes supporting item D, not yet Lean-verified:
 - [Finite-field lifting, joint-image surgery and expansion cores](notes/finite-field-expansion.md).
 - [Linear comparison kernels for fixed-seed identity lifts](notes/identity-lift-comparison.md),
   including a characteristic-two refinement and exact finite comparison certificates.
+- [Loop-adjusted controls for sheared helper relations](notes/shear-loop-controls.md),
+  with seven exact finite capacities and the corrected experimental baseline.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

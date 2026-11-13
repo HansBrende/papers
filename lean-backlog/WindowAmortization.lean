@@ -9,8 +9,8 @@ The potential is the actual number of constant blocks of a finite label list,
 computed by Mathlib's adjacent-duplicate removal.  The update lemma is proved
 for a literal interval overwrite, not assumed as a hypothesis.
 
-`WindowLabels.lean` proves the native interval and pointwise-label facts.
-Their finite-list packing and encountered-label count adapter is pending.
+`WindowLabels.lean` proves the native interval and pointwise-label facts;
+`WindowCounting.lean` proves their finite-list packing and count adapter.
 -/
 
 namespace LeanBacklog.WindowAmortization

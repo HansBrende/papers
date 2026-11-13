@@ -6,8 +6,8 @@ import Transpose.Tape.Locality
 # Native visits, intervals, and last-window labels
 
 These adapters use actual unit-speed head trajectories and the existing native
-last-visit/dependency definitions.  Packing the resulting integer-indexed
-labels into the finite list of `WindowAmortization.lean` is not yet done here.
+last-visit/dependency definitions. `WindowCounting.lean` packs the resulting
+integer-indexed labels into the finite list of `WindowAmortization.lean`.
 
 Check from `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/`:
 `lake env lean ../../lean-backlog/WindowLabels.lean`.

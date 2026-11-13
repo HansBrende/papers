@@ -4,11 +4,12 @@ Hans Brende, Claude Fable 5.2 and GPT-6 Astra, 13 November 2026.
 
 **Fronts D4/D9 and D1.** Fable proposed the window argument in C20; Astra's
 audit corrected its conventions, sharpened the finite bound, and added the
-raw-boundary transfer below. The window/row-spread theorem and the machine/crux
-consequences have reviewed **written proofs**, not complete Lean proofs.
-[StatementsRowSpread.lean](../StatementsRowSpread.lean) states the geometric
-target as a proposition without asserting it; its elementary code and cut
-adapters are Lean-verified. The whole-row capacity bounds remain conjectural.
+raw-boundary transfer below. The window/row-spread theorem is now completely
+**Lean-verified**, including the native geometry and all counting adapters.
+[WindowSpread.lean](../WindowSpread.lean) proves the exact target in
+[StatementsRowSpread.lean](../StatementsRowSpread.lean) as a corollary of a
+stronger prefix theorem. The machine/crux consequences below retain reviewed
+written proofs; the whole-row capacity bounds remain conjectural.
 
 This is an extraction, not a capacity bound. After a small additional genie,
 all bit cones in almost every output row use boundedly many input rows. The
@@ -62,9 +63,11 @@ telescoping are now Lean-verified in
 [WindowAmortization.lean](../WindowAmortization.lean). Overwrite labels need
 not be fresh, and any subset of the encountered old labels can be charged.
 [WindowLabels.lean](../WindowLabels.lean) proves the native visited
-interval and exact last-window-label overwrite. Enumerating its fixed
-integer span as a list and transporting the predecessor-label count
-into the finite-list formulation remain unformalized.
+interval and exact last-window-label overwrite. [WindowCounting.lean](../WindowCounting.lean)
+enumerates a fixed finite integer span, proves the literal list update,
+and transfers the predecessor-label count. Its theorem
+`sum_predecessorWindows_le_three_mul` proves Lemma 1 directly from
+`IsWalk`, including zero-width and empty clipped-window cases.
 
 This is interval bookkeeping related to the block computation graphs in
 [Hopcroft, Paul and Valiant, *On Time Versus Space*, JACM 24(2), 332–337
@@ -74,7 +77,7 @@ on the given walk. We found no statement of the following same-trace
 extension in Papers 5, 11 or 14 or their shared Lean dependencies. This is
 not an exhaustive novelty claim about the literature.
 
-**Proposition 2 (finite row spread).** Let $d\ge4$, $b\ge1$, $\beta\ge1$,
+**Proposition 2 (finite row spread; Lean-verified).** Let $d\ge4$, $b\ge1$, $\beta\ge1$,
 $C\ge1$, $\varepsilon>0$, and let $\Gamma$ leave full depth at most $D$. Put
 
 $$M=\left\lceil\frac{4k(k+1)\beta C}{\varepsilon}\right\rceil,
@@ -90,8 +93,23 @@ $$\beta\,\#(\Gamma'\setminus\Gamma)\le\varepsilon L,
 and for $r\notin E$ every bit cone in output row $r$ lies in the input rows
 $\rho(r)$. The original depth bound is preserved.
 
-*Proof.* For $k\ge1$, call a window bad if its predecessor-window counts
-summed over tapes exceed $M$. There are at most $3kN/M$ bad windows.
+The stronger theorem `WindowSpread.native_row_spread_prefix` only requires
+**at least** $L$ appends, allows any natural step price $\beta$ (including
+zero), and proves
+
+$$\Gamma'\setminus\Gamma\subseteq[0,T),\qquad
+\beta\,\#(\Gamma'\setminus\Gamma)\le\frac{63}{64}\varepsilon L,
+\qquad \#E\le\frac{21}{32}\varepsilon d. \tag{2a}$$
+
+The width is unchanged. `nativeRowSpreadQuantitative` derives the original
+statement directly, and `nativeRowSpreadExtension` gives its qualitative form.
+
+*Outline of the formal proof.* Call a window bad if the **union** of its
+work predecessor windows over all tapes has more than $M$ elements. Its
+size is at most the sum of the per-tape counts, so
+$(M+1)\#\mathrm{bad}\le3kN$. This union criterion can reveal fewer windows
+than the initial sum criterion. When $M>0$ it also gives the older bound
+$\#\mathrm{bad}\le3kN/M$.
 Reveal the preceding state step of each bad window and every external work
 predecessor of every step in it. Window zero is never bad. At most
 $kh+1\le(k+1)h$ steps are charged per bad window. With (1),
@@ -101,7 +119,8 @@ $$\beta\,\#(\Gamma'\setminus\Gamma)
 \le\frac{3\varepsilon}{4}(L+1+h/C)
 \le\frac{63}{64}\varepsilon L \quad(d\ge4). \tag{3}$$
 
-The last inequality uses $1/L\le1/d^2$ and $h/(CL)\le1/d$. The initial cut
+The price bound is automatic when $\beta=0$. The last inequality uses
+$1/L\le1/d^2$ and $h/(CL)\le1/d$. The initial cut
 may be arbitrarily expensive; only new steps are charged. If $k=0$, there
 are no bad windows and no added cuts; below $M=0$ and only state edges remain.
 
@@ -113,17 +132,21 @@ transitions. The input head scans at most $h$ consecutive positions in one
 window, hence meets at most **two** physical input rows; out-of-input
 positions contribute no bits.
 
-For each output row take the interval from its first to its last append,
+For each requested output row take the interval from its first to its last append,
 not just its possibly sparse append set. These intervals are disjoint and
 ordered. A row interval meeting more than $M'+1$ windows contains at least
 $M'$ complete windows between its endpoint windows. There are therefore at
 most
 
-$$N/M'\le\frac{\varepsilon}{2}(d+1/h+1/C)\le\varepsilon d$$
+$$\#E\le N/M'\le\frac{21}{32}\varepsilon d\le\varepsilon d$$
 
 such rows. Every other row uses at most $M'+1$ starting windows. Union their
 reachable windows and the two input rows per window to obtain (2).
-Enlarging a cut cannot increase free-path depth. ∎
+Enlarging a cut cannot increase free-path depth. The common estimate
+$16Nh\le21CL$ gives both constants in (2a), as proved in
+[WindowBudgets.lean](../WindowBudgets.lean). The proof modules use the
+actual `prevS`, `DepStep`, `readPos` and `appendTime` definitions; no native
+compatibility or counting premise is left undischarged. ∎
 
 ## 3. The whole-row capacity statement actually needed
 
@@ -156,18 +179,18 @@ exceptions. This finite lemma is Lean-verified as
 
 **Corollary 3 (direct machine consequence).** Suppose (4) holds at the width
 in (2), with $D$ supplied by Paper 14 Corollary 9.3(a) at price
-$\varepsilon L$. If $\delta(w)>3\varepsilon$, there is no correct oblivious
+$\varepsilon L$. If $\delta(w)>(169/64)\varepsilon$, there is no correct oblivious
 linear-time transposer with those fixed resources at all sufficiently large
-dimensions. The original sufficient condition $\delta(w)>4\varepsilon$
-leaves additional asymptotic slack.
+dimensions. The earlier conditions $\delta(w)>3\varepsilon$ and
+$\delta(w)>4\varepsilon$ remain sufficient.
 
-*Proof.* The original genie and Proposition 2 cost at most $2\varepsilon L$
+*Proof.* The original genie and Proposition 2 cost at most $(127/64)\varepsilon L$
 bits together. Paper 14's `exists_indexCode` holds for **any** revealed set,
-so a largest actual value fibre has at least $2^{(1-2\varepsilon)L}$ inputs.
+so a largest actual value fibre has at least $2^{(1-(127/64)\varepsilon)L}$ inputs.
 Output row $r$ demands input column $r$. The new fibre is a whole-row code
-outside at most $\varepsilon d$ columns. Freezing these and applying (4)
-bounds its size by $2^{(1-\delta(w)+\eta+\varepsilon)L}$. Choose
-$0<\eta<\delta(w)-3\varepsilon$. ∎
+outside at most $(21/32)\varepsilon d$ columns. Freezing these and applying (4)
+bounds its size by $2^{(1-\delta(w)+\eta+(21/32)\varepsilon)L}$. Choose
+$0<\eta<\delta(w)-(169/64)\varepsilon$. ∎
 
 A half-rate bound for every fixed window, uniform along the canonical
 alphabets, would therefore exclude the machines; $\varepsilon=1/9$ works.
@@ -210,12 +233,13 @@ half rate. This is a written implication, not a proof of either conjecture.
 *Proof.* Start with any binary storage code on an original depth-$D$ native
 cone system.
 Apply Proposition 2 with step price $B_D$ and extra budget $\eta L$.
-By (5), freezing at most $\eta L$ raw bits transfers each resulting code
-fibre to the new cone relation. Freeze the at most $\eta d$ exceptional
-columns too, at cost at most $\eta L$. Apply the whole-row bound with slack
-$\eta$. The original code has rate at most $1-\delta+3\eta$. For an index
+By (5) and (2a), freezing at most $(63/64)\eta L$ raw bits transfers each
+resulting code fibre to the new cone relation. Freeze the exceptional
+columns too, at cost at most $(21/32)\eta L$. Apply the whole-row bound
+with slack $\eta$. The original code has rate at most
+$1-\delta+(169/64)\eta$. For an index
 code of $m$ bits its largest fibre has at least $2^{L-m}$ elements, so
-$m\ge(\delta-3\eta)L$. Let $\eta$ tend to zero in the crux quantifiers.
+$m\ge(\delta-(169/64)\eta)L$. Let $\eta$ tend to zero in the crux quantifiers.
 Depth, cut price, window and slack are fixed before dimension grows.
 Neither correctness nor cheapness of the initial $\Gamma$ is used. ∎
 
@@ -226,19 +250,19 @@ when $D$ grows with dimension.
 ## 5. Formal status and reproduction
 
 `StatementsRowSpread.lean` reuses `MotionDepthCodes.IsStorageCode` and
-`BoundedStackDepth.coneSystem`. It defines the geometric formalization target
-and nonlinear capacity conjectures and proves elementary adapters including
-exceptional columns and (5). It does **not** assert the geometric theorem
-as a Lean theorem or prove any whole-row capacity conjecture. No new axioms
-or proof placeholders are used.
+`BoundedStackDepth.coneSystem`. It defines the geometric target and nonlinear
+capacity conjectures and proves elementary adapters including exceptional
+columns and (5). `WindowSpread.lean` proves the geometric target completely.
+No whole-row capacity conjecture is proved. Corollaries 3 and 4 are written
+consequences, not yet complete Lean theorems. All formalized endpoints use
+only `propext`, `Classical.choice` and `Quot.sound`; there are no new axioms
+or proof placeholders.
 
 Check from Paper 15's existing package, which supplies both dependencies:
 
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
-lake env lean ../../lean-backlog/StatementsRowSpread.lean
-lake env lean ../../lean-backlog/WindowAmortization.lean
-lake env lean ../../lean-backlog/WindowPages.lean
+lake env python3 ../../lean-backlog/check.py
 ```
 
 [The audit controls](row-spread-controls.md) give the exact finite tests and
@@ -347,7 +371,7 @@ pre-window visit is an actual `DepStep` predecessor at the first visit
 inside the window, including pauses. It also proves interval visitation
 and exact last-window-label overwrites. Packing these labels into the
 finite-list amortization and transporting the predecessor-label count
-remain pending; the complete extraction is not yet Lean-verified.
+are proved in `WindowCounting.lean`; `WindowSpread.lean` completes the extraction.
 
 The initial classification by strict left/right of the head at the window
 start omitted equality. For example, windows $0^h,1^h,0^h,1^h$ have

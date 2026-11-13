@@ -36,29 +36,40 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   conjecture. Its helper lemmas check covariance, group-algebra conventions, ambient dimension, and
   rank-nullity, using only standard Lean axioms. Check it from `lean-machine/` with
   `lake env lean ../lean-backlog/StatementsWholeRow.lean`.
-- [`StatementsRowSpread.lean`](StatementsRowSpread.lean) states the reviewed written D4
-  geometric bridge and the open **nonlinear** whole-row rate targets, including the precise
-  canonical growing-alphabet scope. It proves the exceptional-column reduction, raw-cone
-  inclusion under a changed cut, its conditioning cost, and the exact whole-row bound from
-  any incidence-free rectangle. The geometric theorem and its
-  native-crux consequence are **not yet Lean-proved**. Check from
-  `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/` with
-  `lake env lean ../../lean-backlog/StatementsRowSpread.lean`.
-- [`WindowAmortization.lean`](WindowAmortization.lean) proves the literal interval-overwrite
-  potential inequality and the bound of three encountered labels per update on average,
-  starting from a constant nonempty labeling.
-- [`WindowLabels.lean`](WindowLabels.lean) proves that native unit-speed visits form an
-  integer interval, last-window labels undergo the exact pointwise overwrite, and the
-  first visit in a window has the stated earlier visit as a genuine dependency predecessor.
-  Finite-list packing and predecessor-label count transport into `WindowAmortization`
-  remain pending, as does the full cut-and-row assembly. Check it from the Paper 15
-  package with `lake env lean ../../lean-backlog/WindowLabels.lean`.
-- [`WindowPages.lean`](WindowPages.lean) reuses the existing walk-stack theorem to prove
-  that chronological contraction preserves noncrossing pages, including the exact native
-  dependency quotient. It does not assert the endpoint uniqueness of `StackDag` after
-  contraction. Check both files from the same Paper 15 package with
-  `lake env lean ../../lean-backlog/WindowAmortization.lean` and
-  `lake env lean ../../lean-backlog/WindowPages.lean`.
+- [`StatementsRowSpread.lean`](StatementsRowSpread.lean) defines the geometric bridge
+  and open **nonlinear** whole-row rate targets, including the canonical growing alphabet.
+  It proves the exceptional-column, raw-boundary, and rectangle adapters.
+- [`WindowSpread.lean`](WindowSpread.lean) now proves the complete quantitative and
+  qualitative geometric row-spread targets. Its stronger theorem allows an output prefix
+  of at least `d*d*b` appends and proves new-cut cost at most `63εL/64`, at most `21εd/32`
+  exceptional rows, unchanged depth, and every new cut before the horizon. The original
+  theorem follows directly. All endpoints use only standard Lean axioms. The machine and
+  asymptotic native-crux consequences remain written implications; no capacity conjecture
+  or new transposer exclusion is proved.
+- The proof chain reuses actual native definitions:
+  [interval amortization](WindowAmortization.lean),
+  [native visits and labels](WindowLabels.lean),
+  [finite-list/count adapter](WindowCounting.lean),
+  [exact guards](WindowGuards.lean),
+  [coarse dependency paths](WindowConeWindows.lean),
+  [work-window counting](WindowWorkCounting.lean),
+  [input/output rows](WindowRows.lean),
+  [cone row covers](WindowRowCover.lean), and
+  [quantitative budgets](WindowBudgets.lean).
+  [WindowPages.lean](WindowPages.lean) independently proves the noncrossing page quotient;
+  it does not assert endpoint uniqueness after contraction.
+
+Check the entire row-spread chain using the existing pinned dependencies:
+
+```sh
+cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
+lake env python3 ../../lean-backlog/check.py
+```
+
+The helper script puts `.olean` files only in the package's ignored `.lake` directory.
+After this build, optional module names check selected modules against the built dependencies,
+for example `lake env python3 ../../lean-backlog/check.py WindowSpread`.
+
 - The original statements remain in Git history. Compatibility checks verified them against the
   shared declarations with no weakened hypotheses. The item files describe the generalizations
   and refinements; their Lean declarations are authoritative.
@@ -102,10 +113,11 @@ Written notes for the covariant whole-row front D8:
 Native extraction and source audit:
 
 - [Whole-row shape after an additional cheap cut](notes/row-spread-of-cones.md):
-  a reviewed written extraction for every native trace, with explicit constants for
+  a fully Lean-verified extraction for every native trace, with explicit constants for
   $d\ge4$ and every $b\ge1$. Any common positive whole-row deficit, uniform along the
   canonical growing alphabets, would imply the full native crux at each fixed depth.
-  This is a conditional reduction, not a capacity bound or a new machine exclusion.
+  This last implication retains a written proof. No capacity bound or new machine
+  exclusion is asserted.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

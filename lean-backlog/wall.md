@@ -45,7 +45,7 @@ motion, expanding relations, and codes that are neither gadgets of bounded size 
 bounded complex coefficients (paper 17, Section 4.5). For adaptive machines the same question sits on the machine's
 own runs ([Macroscopic Information Transfer](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)).
 
-**One-hop form** (paper 17, Sections 5 to 7; D1 now has a reviewed written native tie). A d × d matrix X; a decoder
+**One-hop form** (paper 17, Sections 5 to 7; D1 has a formal geometric extraction and a written coding transfer). A d × d matrix X; a decoder
 computes each entry of Xᵀ from a bounded window of X; the *code* is the set of X it transposes.
 Symmetric matrices give rate ½ (the *pairing value* d(d+1)/2).
 
@@ -56,7 +56,7 @@ Known in general: window ≤ 2 gives at most d(d+1)/2 + d − 1; window w gives 
 
 For fixed w≥1, write R_can(w) for the limsup as d grows of the maximal nonlinear whole-row
 code rate at window w and canonical alphabet {0,1}^{b(d)}. Then ½ ≤ R_can(w) ≤ w/(w+1).
-The reviewed written [row-spread bridge](notes/row-spread-of-cones.md) now shows that
+The [row-spread bridge](notes/row-spread-of-cones.md) now shows that
 sup_w R_can(w) < 1 would exclude oblivious linear-time transposers. Its raw-boundary
 strengthening gives the native crux at any common positive deficit for all fixed windows,
 at each fixed depth. **No construction gives R_can(w) > ½ for any fixed w, and no bound stays
@@ -101,7 +101,8 @@ remains a test case, while a common positive deficit for every fixed w is the su
   the new [row-spread theorem](notes/row-spread-of-cones.md) pays a further small cut to put
   almost every output row in the whole-row model. Conditioning on the old raw cones of the
   added cuts transfers arbitrary binary storage codes too, so a common whole-row deficit
-  gives the full native crux. These implications are written; the cut adapters are Lean-verified.
+  gives the full native crux. The geometric extraction and cut adapters are Lean-verified;
+  the final machine/crux coding implications retain written proofs.
   No capacity bound or new machine exclusion follows without the missing whole-row deficit.
   The earlier [native comparison table](notes/native-cone-property-audit.md) remains a useful
   audit of the source theorems, but its then-missing whole-row tie is now supplied.
@@ -146,10 +147,10 @@ has to deal with all of this at once:
 |---|---|---|---|---|
 | **D0** | *Standing front*: brainstorm a new front, re-evaluate the wall, or turn an indirect front into a direct one by proving its tie | Every other front came from here | Permanent. Last used 13 November 2026 (see Maintenance) | — |
 | **D9** | *The native crux*: every index code for the cone systems of k-tape oblivious linear-time schedules, at cone depth D, asymptotically needs at least (ρ(D)−o(1))·L bits. Exact useful test: ρ(Dε) > ε for one ε. A sufficient envelope is ρ(D) ≥ kβC (log D)^{−c/k²}, for the small c in Remark 9.4; this is not a necessary or sharp threshold. Conjectured: ρ = ½. | Proved: it excludes oblivious linear-time transposers ([Bounded-Stack DAGs](../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/), Corollary 9.3 O(b)). Advice and many hops are already included. The asymptotic rate envelopes of Remarks 9.4–9.5 are labelled proof sketches. | Open. `SCone` itself assumes neither correctness nor a cheap genie. Correctness-dependent crossing/curvature theorems cannot be imposed on every class member. Restricted native coding bounds are known; degree and paired separation alone are insufficient. | Exists: `Crux`, `crux_excludes` in that paper's library |
-| **D4** | *Native extraction*: obtain a usable coding certificate after explicitly paid losses, either for all cone systems or on a suitable correct-source fibre. | **Whole-row tie proved in writing:** an extra εL-price cut leaves all cones in all but εd output rows inside at most w input rows. This works on every trace, at every fixed full depth D. | Reviewed 13 November: d≥4, every b≥1; w = 2(M′+1)(M+2)^D, M = ⌈4k(k+1)βC/ε⌉, M′ = ⌈2C/ε⌉. A whole-row deficit δ(w)>3ε at the actual-machine width excludes those resources. For arbitrary original storage codes, price the added cuts by B_D = Σ_{j=0}^D(k+1)^j instead; a common positive deficit for all fixed w then proves D9. The known inverse-window gap is insufficient. Global monotone row-word extraction is refuted (X12). | [StatementsRowSpread.lean](StatementsRowSpread.lean): quantitative and qualitative geometric propositions, unproved in Lean; exceptional-column and raw-boundary adapters proved. [Written proof](notes/row-spread-of-cones.md). |
+| **D4** | *Native extraction*: obtain a usable coding certificate after explicitly paid losses, either for all cone systems or on a suitable correct-source fibre. | **Geometric extraction Lean-verified:** an extra εL-price cut leaves all cones in all but εd output rows inside at most w input rows. This works on every trace, at every fixed full depth D. | Reviewed 13 November: d≥4, every b≥1; w = 2(M′+1)(M+2)^D, M = ⌈4k(k+1)βC/ε⌉, M′ = ⌈2C/ε⌉. The stronger prefix theorem bounds new-cut cost by 63εL/64 and exceptional rows by 21εd/32. The written coding consequence needs δ(w)>(169/64)ε at the actual-machine width. For arbitrary original storage codes, price the added cuts by B_D = Σ_{j=0}^D(k+1)^j instead; a common positive deficit for all fixed w then proves D9. The known inverse-window gap is insufficient. Global monotone row-word extraction is refuted (X12). | [WindowSpread.lean](WindowSpread.lean) proves both original geometric targets directly from a stronger prefix theorem; all native connections are discharged. [Proof guide and written coding consequences](notes/row-spread-of-cones.md). |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
-| **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". Sharpened 13 November ([row spread §8](notes/row-spread-of-cones.md), written, not reviewed): a native fibre is a storage code of bounded degree on a relation with a *grid labelling* of bounded window. An abstract high-rate family gives a whole-row code above pairing exactly if its relations have such labellings; labellings by cosets fail unless every arc is twisted by an automorphism exchanging the two subgroups. Whether the relations of the thirteenth and fifteenth papers can be labelled is open. | — |
+| **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". The reviewed [grid test](notes/row-spread-of-cones.md#8-grid-labellings-and-their-scope) supplies a necessary native form after paid trims, not a native characterization. Affine-coset windows are governed by a subgroup index, not exact exchange. [Small-component and product bounds](notes/grid-labellings-and-amplified-codes.md) exclude slow-padded Paper 15 full-cube fibres under every balanced labelling; arbitrary grids for its original growing blocks remain open. | — |
 
 ### 2b. The one-hop form (paper 17's problems)
 
@@ -163,7 +164,7 @@ implementation before it becomes a machine construction.
 
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
-| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a possibly nonlinear function of ≤w rows. Sufficient target: a common positive deficit for every fixed w, uniformly along canonical growing alphabets; conjectured rate ½. | D4 and the raw-boundary transfer give D9 at that common deficit. No exceptional-column conjecture is needed: conditioning costs q^{d·|E|}. A construction still needs paid markings, passes and decoding; arbitrary row maps are not proved executable cheaply. A bound gives D2. | Open for w≥3. The bridge is reviewed in writing. Lean: every incidence-free rectangle has area ≤δd² for a rate≥1−δ code; the second setwise expansion condition is strengthened to all row indices. Also Lean: 2k noncrossing work-window pages after contraction. Their input attachments need not be monotone and cannot be omitted. Only the specified rectangle-credit/max-overlap aggregation is shown to lose O(1/w); no impossibility theorem for all cover methods is claimed. [Details](notes/row-spread-of-cones.md#7-expansion-and-the-corrected-page-structure). Growing windows (13 November, written, not reviewed; [row spread §9](notes/row-spread-of-cones.md)): simplex codes on points and hyperplanes of PG(m−1, n) have rate 1 − 1/m at window about d^{(m−2)/(m−1)}; pairing is the member m = 2. So the half bound can only hold in the limit of fixed window, which is all the machines need, and a proof must fail at windows that are powers of d. | `UniformWholeRowRateCanonicalBits`, `UniformWholeRowRate` and the half-rate variants in [StatementsRowSpread.lean](StatementsRowSpread.lean) are open propositions. The older `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) remains a restricted target, with a uniform-in-field variant. |
+| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a possibly nonlinear function of ≤w rows. Sufficient target: a common positive deficit for every fixed w, uniformly along canonical growing alphabets; conjectured rate ½. | D4 and the raw-boundary transfer give D9 at that common deficit. No exceptional-column conjecture is needed: conditioning costs q^{d·|E|}. A construction still needs paid markings, passes and decoding; arbitrary row maps are not proved executable cheaply. A bound gives D2. | Open for w≥3. The geometric extraction is Lean-verified; its final coding transfer remains written. Lean: every incidence-free rectangle has area ≤δd² for a rate≥1−δ code; the second setwise expansion condition is strengthened to all row indices. Also Lean: 2k noncrossing work-window pages after contraction. Their input attachments need not be monotone and cannot be omitted. Only the specified rectangle-credit/max-overlap aggregation is shown to lose O(1/w); no impossibility theorem for all cover methods is claimed. [Details](notes/row-spread-of-cones.md#7-expansion-and-the-corrected-page-structure). Growing windows (13 November, written, not reviewed; [row spread §9](notes/row-spread-of-cones.md)): simplex codes on points and hyperplanes of PG(m−1, n) have rate 1 − 1/m at window about d^{(m−2)/(m−1)}; pairing is the member m = 2. So the half bound can only hold in the limit of fixed window, which is all the machines need, and a proof must fail at windows that are powers of d. | `UniformWholeRowRateCanonicalBits`, `UniformWholeRowRate` and the half-rate variants in [StatementsRowSpread.lean](StatementsRowSpread.lean) are open propositions. The older `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) remains a restricted target, with a uniform-in-field variant. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Requires an actual bounded-class extraction. Revealed bits do not automatically give boundedly many column classes; Paper 20 Proposition 9.6 defeats two naive cut-label absorptions. | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
@@ -172,10 +173,11 @@ Current effort (13 November): the D4 audit, raw-boundary transfer and grid calib
 recorded. Fable's main target is a D1 deficit on expanding grid-labelled relations.
 Astra's audit rules out sublogarithmic product blocks and the standard contiguous
 placements of Paper 15's displayed decoder at canonical entry width; it leaves arbitrary grids of growing
-majority blocks open. Astra has formalized the finite interval-overwrite core, the exact
-dependency-page quotient, native interval visitation, pointwise last-window-label updates
-and the first-visit predecessor witness. Finite-list packing/count transport and the rest
-of the geometric cut-and-row assembly remain to be formalized.
+majority blocks open. Astra has completed the full geometric formalization in
+[WindowSpread.lean](WindowSpread.lean), including all native counting, guard, path and
+row adapters. The original quantitative and qualitative targets follow directly from
+a stronger prefix theorem. Machine/crux coding consequences remain written, and the
+missing whole-row capacity bound remains the main question.
 The general separator target is parked without an extraction mechanism, not refuted:
 that such an extraction would prove exclusion is not an impossibility-of-method argument.
 The input-attachment control includes some expanders, but does not prove that arbitrary
@@ -255,3 +257,12 @@ direct front.
   even after arbitrary balanced relabelling. The original growing blocks remain open.
   Native interval/label semantics are now Lean-verified; finite-list count transport
   and the full extraction remain pending. No new native-machine class is excluded.
+
+- C25 follow-up, 13 November: at Hans's request, the remaining geometric formalization
+  is complete. `WindowSpread.native_row_spread_prefix` permits at least L appends,
+  bounds new-cut cost by 63εL/64 and exceptional rows by 21εd/32, keeps new cuts before
+  T and preserves depth. Both original native row-spread targets are direct corollaries,
+  with standard axioms only. The construction thresholds the union of work predecessor
+  windows, improving on the initial per-tape sum criterion. The reviewed written
+  machine consequence improves its sufficient deficit test to δ(w)>(169/64)ε.
+  This completes a reduction, not the missing coding bound or a machine exclusion.

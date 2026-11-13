@@ -6,9 +6,9 @@ import DirectedRecovery.StorageCode
 /-!
 # Row spread and nonlinear whole-row recovery
 
-The native row-spread bridge has a reviewed written proof; here it is only
-stated as a proposition, with its Lean proof pending. Uniform whole-row rate
-bounds remain open propositions. No new axiom asserts either target. The
+The native row-spread bridge is stated here and proved in `WindowSpread.lean`.
+Uniform whole-row rate bounds remain open propositions. No new axiom asserts
+either target. The
 finite exceptional-column wrapper, cone comparisons and raw-conditioning
 budget are proved below.
 
@@ -302,19 +302,19 @@ def NativeRowSpreadAt (k β D w : ℕ) (C ε : ℝ) (d b : ℕ) : Prop :=
         ConeRowsExcept (coneSystem τ T Γ' d b) ρ E
 
 /-- Explicit width in the reviewed written geometric bridge.
-This is a definition of the target constant, not a Lean proof of its validity. -/
+The validity of this constant is proved in `WindowSpread.lean`. -/
 noncomputable def rowSpreadWindow (k β D : ℕ) (C ε : ℝ) : ℕ :=
   2 * (⌈2 * C / ε⌉₊ + 1) *
     (⌈4 * (k : ℝ) * (k + 1) * β * C / ε⌉₊ + 2) ^ D
 
-/-- D4 bridge with a reviewed written proof, but no Lean proof here.
+/-- D4 bridge, proved by `WindowSpread.nativeRowSpreadQuantitative`.
 The uniform threshold is d>=4 for every positive entry width, including k=0. -/
 def NativeRowSpreadQuantitative : Prop :=
   ∀ (k β D : ℕ) (C ε : ℝ), 1 ≤ β → 1 ≤ C → 0 < ε →
     ∀ d ≥ 4, ∀ b, 1 ≤ b →
       NativeRowSpreadAt k β D (rowSpreadWindow k β D C ε) C ε d b
 
-/-- Qualitative statement of the written bridge, not asserted in Lean.
+/-- Qualitative bridge, proved by `WindowSpread.nativeRowSpreadExtension`.
 Width and dimension threshold precede dimension, entry width, trace and
 the initial cut. -/
 def NativeRowSpreadExtension : Prop :=

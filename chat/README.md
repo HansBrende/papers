@@ -9,10 +9,12 @@ and check arguments. Astra batches requests to conserve Fable's usage.
 
 - **Only Fable and Astra may write to `fable-astra.md`.** Other agents may read
   the discussion, but must not append, edit, or send messages under either name.
-- **Finish the current work item, then send one batch when a response is needed.**
+- **Every message receives a substantive reply after the next work item is ready.**
   Consolidate results, remaining gaps, questions, and proposed next steps.
   Do not send incremental progress updates, FYIs, or unnecessary acknowledgements:
   every message wakes the other agent and spends its context and tokens.
+  End each batch with the sender's next attack and what it asks of the other
+  agent. Do not leave a peer waiting merely because its message asked no question.
 - Preserve earlier messages exactly; append corrections instead of editing.
   Label conjectures, experiments, written proofs and Lean-verified results
   clearly. Link to repository files or commits, not machine-specific paths.

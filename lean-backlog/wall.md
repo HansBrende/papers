@@ -108,6 +108,12 @@ remains a test case, while a common positive deficit for every fixed w is the su
   is a linear-time control whose persistent root reads require growingly many monotone pieces,
   even after o(L) coordinate exceptions ([countercontrol](notes/row-spread-controls.md)).
   It is not a transposer and does not refute a correctness-dependent extraction theorem.
+- *Work-window pages do not include the raw attachments.* The corrected 2k-page quotient
+  theorem is now Lean-verified. Its pages may share endpoints and are not necessarily
+  `StackDag` matchings. With one work walk the work graph is planar, but a supplied-list
+  geometric control has an expanding row helper graph through its input attachments.
+  A row-level separator would give a half-rate bound; it is not supplied by work planarity
+  alone ([calibration](notes/window-pages-and-input-attachments.md), X13).
 
 **The wall today.** A code above the pairing rate at bounded window, or a proof that none exists,
 has to deal with all of this at once:
@@ -145,16 +151,19 @@ implementation before it becomes a machine construction.
 
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
-| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a possibly nonlinear function of ≤w rows. Sufficient target: a common positive deficit for every fixed w, uniformly along canonical growing alphabets; conjectured rate ½. | D4 and the raw-boundary transfer give D9 at that common deficit. No exceptional-column conjecture is needed: conditioning costs q^{d·|E|}. A construction still needs paid markings, passes and decoding; arbitrary row maps are not proved executable cheaply. A bound gives D2. | Open for w≥3. The bridge is reviewed in writing; the capacity assertion is open even in important linear cases. Added 13 November (written, not reviewed; [row spread §7](notes/row-spread-of-cones.md)): a deficit δ forces the row relation to expand at linear scale on both sides; covering arguments stop at 1/(w+1) on expanding relations; and the relations that machines produce are narrower than all ρ: reachability within D steps in a window graph with 2k non-crossing pages and average in-degree at most 3k+1. | `UniformWholeRowRateCanonicalBits`, `UniformWholeRowRate` and the half-rate variants in [StatementsRowSpread.lean](StatementsRowSpread.lean) are open propositions. The older `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) remains a restricted target, with a uniform-in-field variant. |
+| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a possibly nonlinear function of ≤w rows. Sufficient target: a common positive deficit for every fixed w, uniformly along canonical growing alphabets; conjectured rate ½. | D4 and the raw-boundary transfer give D9 at that common deficit. No exceptional-column conjecture is needed: conditioning costs q^{d·|E|}. A construction still needs paid markings, passes and decoding; arbitrary row maps are not proved executable cheaply. A bound gives D2. | Open for w≥3. The bridge is reviewed in writing. Lean: every incidence-free rectangle has area ≤δd² for a rate≥1−δ code; the second setwise expansion condition is strengthened to all row indices. Also Lean: 2k noncrossing work-window pages after contraction. Their input attachments need not be monotone and cannot be omitted. Only the specified rectangle-credit/max-overlap aggregation is shown to lose O(1/w); no impossibility theorem for all cover methods is claimed. [Details](notes/row-spread-of-cones.md#7-expansion-and-the-corrected-page-structure). | `UniformWholeRowRateCanonicalBits`, `UniformWholeRowRate` and the half-rate variants in [StatementsRowSpread.lean](StatementsRowSpread.lean) are open propositions. The older `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) remains a restricted target, with a uniform-in-field variant. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Requires an actual bounded-class extraction. Revealed bits do not automatically give boundedly many column classes; Paper 20 Proposition 9.6 defeats two naive cut-label absorptions. | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
 
-Current effort (13 November): the D4 audit is complete, with strengthened constants and a
-raw-boundary transfer to D9. Fable's main target is D1 at arbitrary fixed windows, seeking a
-common positive deficit or rates tending to one. Astra's next bounded task is to formalize the
-window amortization behind the reviewed geometric proof; its finite controls and code/cut
-adapters are already checked. Do not assume bounded global monotone row words (X12).
+Current effort (13 November): the D4 audit, raw-boundary transfer and C22 calibration are
+recorded. Fable's main target is D1 at arbitrary fixed windows, seeking a common positive
+deficit or rates tending to one; any page-structured restriction must retain raw attachments
+and distinguish geometric schedules from fixed native programs. Astra has formalized the
+finite interval-overwrite core and the exact dependency-page quotient. The native walk/label
+adapter and the rest of the geometric cut-and-row assembly remain to be formalized.
+Do not assume bounded global monotone row words (X12), or transfer work planarity to the
+helper graph without paying for its attachments (X13).
 D8's next search must use one shared decoder and the full regular representation, but remains
 parked. I1 and I2 are parked. D5 and D6 have no one on them.
 
@@ -187,6 +196,7 @@ direct front.
 | **X10** | Paying for a full half and bounding the **unrestricted** unpaired remainder to prove half rate | On increasingly quasirandom groups, every maximal inverse-free half contains d/6 − o(d) disjoint product-one triples. This upper-bound expression has a (2/3 − o(1))dn floor ([proof](notes/covariant-word-baselines.md#1-distinct-site-cycles-and-a-stronger-packing-bound)). This is not an attained paired rate. | Retain compatibility with the discarded equations, charge less than the full projection dimension, or use a weaker bound if D4 permits it. A suitable ordered-support certificate is another possibility, with its boundary paid explicitly. |
 | **X11** | Amplifying a small gain to rate near 1 by the sum of two tensor codes, S₁ ⊗ M + M ⊗ S₂ (deficiencies multiply) | Its decoder is τ₁ ⊗ K₂ + K₁ ⊗ τ₂ − K₁ ⊗ K₂, which contains full partial transposes, so the window is not bounded | A product whose decoder is built from K₁ and K₂ alone |
 | **X12** | Inferring a bounded global monotone row-word cover from bounded whole-row spread or unit-speed native geometry | Block reversal at d=s² has an O(L) implementation. K words with length≤ℓ and bands of radius a have at most H=K(2a+1)^{ℓ+1} monotone branches; covering the persistent root reads requires at least (1−H/s)L/2 coordinate exceptions. [Written proof and controls](notes/row-spread-controls.md). | A correctness-dependent extraction, a different cover notion, or an explicit growing-complexity budget that still pays for itself. Row spread itself is not refuted. |
+| **X13** | Transferring work-window planarity alone to hyperfiniteness of the helper relation | A one-work-walk geometric schedule with supplied ordered matching lists has an expanding row helper graph despite planar work windows, robust under a small linear genie. No fixed one-work-tape compiler is claimed. Even a matching row graph has nonhyperfinite whole-row coordinate completion. [Written calibration](notes/window-pages-and-input-attachments.md). | Supply a separator of the augmented row graph using additional attachment/native/correct-source structure, or obtain a coding deficit that tolerates expansion. Existing one-work-tape machine exclusions remain valid. |
 
 ## Maintenance
 
@@ -213,3 +223,10 @@ direct front.
   with the precise nonlinear/growing-alphabet scope stated in Lean. The geometry and conditional
   crux transfer remain written proofs; no rate bound or new machine exclusion has been proved.
   The proposed stronger global row-word cover fails by X12.
+- C22 review, 13 November: the rectangle expansion bound is strengthened and Lean-verified
+  by reusing Paper 5's independent-coordinate theorem. The exact native window-page quotient
+  is Lean-verified, with starting-cell cases repaired and endpoint uniqueness expressly
+  excluded. Literal interval-overwrite amortization is also Lean-verified; the native
+  label adapter remains open. The one-work-tape calibration supplies a written row-separator
+  criterion and identifies the missing raw-attachment layer (X13). It does not reprove the
+  existing one-work-tape exclusion or yield a new capacity bound.

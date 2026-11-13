@@ -39,10 +39,21 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
 - [`StatementsRowSpread.lean`](StatementsRowSpread.lean) states the reviewed written D4
   geometric bridge and the open **nonlinear** whole-row rate targets, including the precise
   canonical growing-alphabet scope. It proves the exceptional-column reduction, raw-cone
-  inclusion under a changed cut, and its conditioning cost. The geometric theorem and its
+  inclusion under a changed cut, its conditioning cost, and the exact whole-row bound from
+  any incidence-free rectangle. The geometric theorem and its
   native-crux consequence are **not yet Lean-proved**. Check from
   `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/` with
   `lake env lean ../../lean-backlog/StatementsRowSpread.lean`.
+- [`WindowAmortization.lean`](WindowAmortization.lean) proves the literal interval-overwrite
+  potential inequality and the bound of three encountered labels per update on average,
+  starting from a constant nonempty labeling.
+  Its adapter from native unit-speed visits and last-visit labels remains pending.
+- [`WindowPages.lean`](WindowPages.lean) reuses the existing walk-stack theorem to prove
+  that chronological contraction preserves noncrossing pages, including the exact native
+  dependency quotient. It does not assert the endpoint uniqueness of `StackDag` after
+  contraction. Check both files from the same Paper 15 package with
+  `lake env lean ../../lean-backlog/WindowAmortization.lean` and
+  `lake env lean ../../lean-backlog/WindowPages.lean`.
 - The original statements remain in Git history. Compatibility checks verified them against the
   shared declarations with no weakened hypotheses. The item files describe the generalizations
   and refinements; their Lean declarations are authoritative.
@@ -94,6 +105,11 @@ Native extraction and source audit:
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository
   root. No finite test replaces the unbounded written proofs.
+- [Window pages and input attachments](notes/window-pages-and-input-attachments.md):
+  the one-work-tape separator calibration, a sufficient row-separator bound, and a
+  geometric control showing why work-window planarity alone is insufficient. The
+  control does not claim a fixed one-work-tape compiler. Exact page controls run with
+  `python3 lean-backlog/tools/window_page_controls.py`.
 
 - [Native cone properties and the remaining extraction problem](notes/native-cone-property-audit.md):
   the D4 comparison table against Papers 13 and 15, exact theorem scopes, remaining schedule classes,

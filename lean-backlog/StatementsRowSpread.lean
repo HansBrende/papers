@@ -1,6 +1,7 @@
 import BoundedStackDepth.Machines
 import MergeDepth.Trimming
 import MotionDepthCodes.StorageCode
+import DirectedRecovery.StorageCode
 
 /-!
 # Row spread and nonlinear whole-row recovery
@@ -70,6 +71,42 @@ theorem wholeRowCode_mono {d : ℕ} {α : Type u}
   intro x hx y hy r hr hxy i
   exact hC x hx y hy r (fun he => hr (hE he))
     (fun s hs j => hxy s (hρ r hs) j) i
+
+/-- A rectangle of rows R and columns J whose columns never read rows R
+is an independent coordinate set. Reuse the existing all-alphabet bound;
+no entropy, linearity, or positive code-size assumption is needed. -/
+theorem wholeRow_rectangle_card_bound {d : ℕ} {α : Type u} [Fintype α]
+    (ρ : Fin d → Finset (Fin d)) (C : Finset (Entry d → α))
+    (hC : IsWholeRowCodeExcept ρ ∅ C) (R J : Finset (Fin d))
+    (havoid : ∀ j ∈ J, Disjoint R (ρ j)) :
+    C.card ≤ Fintype.card α ^ (d * d - R.card * J.card) := by
+  have hI : DirectedRecovery.IsIndependent (wholeRowHelpers ρ ∅) (R.product J) := by
+    intro q hq p hp hpI
+    have hpρ : p.1 ∈ ρ q.2 := by simpa [wholeRowHelpers] using hp
+    exact (disjoint_left.mp (havoid q.2 (mem_product.mp hq).2))
+      (mem_product.mp hpI).1 hpρ
+  simpa [Entry] using
+    DirectedRecovery.storageCode_card_le_of_independent hI hC
+
+/-- Quantitative expansion forced by a lower bound on whole-row code size.
+This strengthens the two setwise bounds to any incidence-free rectangle. -/
+theorem wholeRow_rectangle_deficit {d : ℕ} {α : Type u} [Fintype α]
+    (ρ : Fin d → Finset (Fin d)) (C : Finset (Entry d → α))
+    (hC : IsWholeRowCodeExcept ρ ∅ C) (R J : Finset (Fin d))
+    (havoid : ∀ j ∈ J, Disjoint R (ρ j)) (δ : ℝ)
+    (hα : 1 < Fintype.card α)
+    (hlower : (Fintype.card α : ℝ) ^ ((1 - δ) * (d : ℝ) ^ 2) ≤ C.card) :
+    (R.card : ℝ) * J.card ≤ δ * (d : ℝ) ^ 2 := by
+  have hn : R.card * J.card ≤ d * d :=
+    Nat.mul_le_mul (by simpa using card_le_univ R) (by simpa using card_le_univ J)
+  have hcard := wholeRow_rectangle_card_bound ρ C hC R J havoid
+  have hpow : (Fintype.card α : ℝ) ^ ((1 - δ) * (d : ℝ) ^ 2) ≤
+      (Fintype.card α : ℝ) ^ ((d * d - R.card * J.card : ℕ) : ℝ) := by
+    exact hlower.trans (by exact_mod_cast hcard)
+  have he := (Real.rpow_le_rpow_left_iff (by exact_mod_cast hα)).mp hpow
+  rw [Nat.cast_sub hn] at he
+  simp only [Nat.cast_mul] at he
+  nlinarith
 
 /-- Fixing all entries of the exceptional columns makes those columns
 constant. Thus a complete-column bound automatically gives its exceptional-
@@ -294,6 +331,8 @@ theorem NativeRowSpreadQuantitative.qualitative
 
 #print axioms wholeRowCode_iff
 #print axioms wholeRowCode_mono
+#print axioms wholeRow_rectangle_card_bound
+#print axioms wholeRow_rectangle_deficit
 #print axioms exceptional_column_card_bound
 #print axioms coneRowsExcept_mono
 #print axioms coneSystem_antitone

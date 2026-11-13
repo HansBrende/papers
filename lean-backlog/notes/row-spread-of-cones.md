@@ -57,6 +57,13 @@ remainder. Thus $\Phi_{i+1}\le\Phi_i-q_i+3\le\Phi_i-m_i+3$.
 A repeated label can occupy multiple blocks, but $q_i\ge m_i$ still holds.
 Sum and use $\Phi_0=1\le\Phi_N$. ∎
 
+The finite interval-overwrite inequality and this endpoint-potential
+telescoping are now Lean-verified in
+[WindowAmortization.lean](../WindowAmortization.lean). Overwrite labels need
+not be fresh, and any subset of the encountered old labels can be charged.
+The adapter from native unit-speed visits and last-visit labels to this
+finite-list formulation remains unformalized.
+
 This is interval bookkeeping related to the block computation graphs in
 [Hopcroft, Paul and Valiant, *On Time Versus Space*, JACM 24(2), 332–337
 (1977), §2, p. 333](https://www.csd.uwo.ca/~mmorenom/CS433-CS9624/Resources/p332-hopcroft.pdf).
@@ -228,6 +235,8 @@ Check from Paper 15's existing package, which supplies both dependencies:
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
 lake env lean ../../lean-backlog/StatementsRowSpread.lean
+lake env lean ../../lean-backlog/WindowAmortization.lean
+lake env lean ../../lean-backlog/WindowPages.lean
 ```
 
 [The audit controls](row-spread-controls.md) give the exact finite tests and
@@ -255,53 +264,108 @@ geometries. This refutes the stronger geometry-only inference, not row
 spread or an extraction claim restricted to correct transposers. The control
 does not transpose arbitrary inputs.
 
-## 7. What the capacity statement is about (additions by Fable, 13 November 2026)
+## 7. Expansion and the corrected page structure
 
-Status: Propositions 7.1 and 7.2 have the short written proofs below, **not reviewed**. The remark between
-them is a reading, not a theorem.
+Fable proposed these two statements in C22. The rectangle version of
+Proposition 7.1 and the exact native dependency-page version of Proposition
+7.2 are now Lean-verified. The input-attachment and separator qualifications
+below are essential to their use.
 
-**Proposition 7.1 (a small deficit forces expansion at linear scale).** Let S be a set of d × d matrices
-over an alphabet of q symbols in which every column r is a function of the rows ρ(r), with q^{(1 − δ)d²}
-elements. Then for every set A of indices
+**Proposition 7.1 (incidence-free rectangles).** Let $C$ be a whole-row code
+on $d\times d$ matrices over an alphabet of $q$ symbols. If
+$R,J\subseteq[d]$ and $\rho(j)\cap R=\varnothing$ for every $j\in J$, then
 
-- (a) (d − |A|) · #{r : ρ(r) ⊆ A} ≤ δd²;
-- (b) (d − |A|) · #{i ∈ A : every column that reads row i lies in A} ≤ δd².
+$$\#C\le q^{d^2-|R||J|}.$$
 
-*Proof.* The deficit of a marginal (number of positions minus entropy in symbols, for the uniform law on
-S) is at most the deficit δd² of S. (a) The rows of A determine the n columns r with ρ(r) ⊆ A. The
-positions of these rows and columns number |A|d + (d − |A|)n and have entropy at most |A|d. (b) Let A° be
-the set of rows counted in (b) and B its complement. A column outside A reads only rows of B. So the
-block of the rows A° and the columns outside A is a function of the rows of B, and the positions of the
-rows of B together with this block have deficit at least |A°|(d − |A|). ∎
+If $q\ge2$ and $\#C\ge q^{(1-\delta)d^2}$, this implies
+$|R||J|\le\delta d^2$. These statements are
+`wholeRow_rectangle_card_bound` and `wholeRow_rectangle_deficit` in
+[StatementsRowSpread.lean](../StatementsRowSpread.lean).
 
-So for |A| = d/2: at most 2δd columns have all their helper rows in A, and at most 2δd rows of A are read
-only by columns of A. By row spread, the row relation of a linear-time transposer has both properties
-with δ of order ε.
+*Outline.* The coordinates outside $R\times J$ determine every coordinate
+inside it, since their helper rows avoid $R$. This is precisely the
+independent-coordinate bound already proved in
+[Paper 5's `StorageCode.lean`](../../Directed-Recovery-Structures-in-Tape-Computations/lean/DirectedRecovery/StorageCode.lean).
+The formalization reuses that result; it does not rebuild entropy machinery.
 
-**Remark (covers stop at 1/(w + 1)).** Take as patches the rows ρ(R) together with the columns R, for
-sets R of columns, and combine their deficits by Shearer's inequality or by the patch bound of the
-fifteenth paper. A patch has deficit at most |R|(d − |ρ(R)|) for free and |ρ(R)|d + |R|(d − |ρ(R)|) positions,
-so where |ρ(R)| is about w|R| the ratio is at most 1/(w + 1). On expanding relations no argument of this
-type gives a deficit that does not fall with w; the order bound is the best of them.
+The following two consequences hold for every $A\subseteq[d]$:
 
-**Proposition 7.2 (the window graph has 2k pages).** For one work tape, put the windows on a line in the
-order of time and join a window v to an earlier window u when v visits a cell whose last visit before v
-began was in u. The edges that come from cells to the left of the head's position at the beginning of v
-are pairwise non-crossing, and so are those from cells to the right.
+$$
+(d-|A|)\,\#\{j:\rho(j)\subseteq A\}\le\delta d^2,
+\qquad
+(d-|A|)\,\#E(A)\le\delta d^2,
+$$
 
-*Proof.* Let v → u and v′ → u′ be two left edges with u′ < u < v′ < v, from cells y and y′. If y′ < y: at the
-beginning of v′ the head is to the right of y′, and it is not to the right of y or on y, because it would
-visit y on its way to y′ and y would then carry a label at least v′ at the beginning of v. So it is to the
-left of y; at the beginning of v it is to the right of y; hence it visits y in between, and y carries a
-label greater than u at the beginning of v. If y′ > y: in u the head is on y, at the beginning of v′ it is
-to the right of y′, so it visits y′ after u′, and y′ does not carry the label u′ at the beginning of v′.
-If y′ = y the label of y at the beginning of v′ is at least u. Each case contradicts the choice of the
-edges. ∎
+where $E(A)=\{i:\forall j,\ i\in\rho(j)\Rightarrow j\in A\}$.
+For the first take $R=A^c$ and $J=\{j:\rho(j)\subseteq A\}$.
+For the second take $R=E(A)$ and $J=A^c$. The second conclusion strengthens
+the initial version: **the rows in $E(A)$ need not themselves belong to
+$A$**. At a half $|A|=d/2$, both counts are at most $2\delta d$.
+The large whole-row fibres extracted from a hypothetical transposer must
+satisfy these conditions with $\delta$ of order $\varepsilon$.
+This is a necessary expansion condition, not a new capacity bound.
 
-So the window graph of a machine with k work tapes is a path together with 2k non-crossing families of
-chords, and by Lemma 1 its average in-degree is at most 3k + 1, whatever ε and D are. The row relation of
-Proposition 2 is: an output row, its at most M′ + 1 windows, the windows within D steps of them in this
-graph, and the two input rows under the input head in each. The capacity statement that the machines
-need is therefore the whole-row statement for relations of this kind only, which is less than D1 for
-every relation. For one work tape the window graph is planar; whether the half bound for uniformly
-hyperfinite relations then applies to the row relation has not been checked.
+**Remark (the limit of one particular patch accounting).** Let
+$A=\rho(J)=\bigcup_{j\in J}\rho(j)$. Recovery guarantees a deficit credit
+$e=|J|(d-|A|)$ on the patch consisting of rows $A$ and columns $J$;
+its size is $p=|A|d+e$. This is a guaranteed **lower credit**, not an upper
+bound on the patch's actual deficit. If $|A|\ge\gamma w|J|$, with
+$\gamma>0$, then $e/p\le1/(1+\gamma w)$ whenever $p>0$.
+
+For any selected patches with credits $e_i\le c p_i$, nonnegative weights
+$\lambda_i$ and maximum weighted coordinate overlap $r>0$, the credited
+quantity satisfies $\sum_i\lambda_i e_i/r\le c d^2$, because
+$\sum_i\lambda_i p_i\le r d^2$. Thus this **sum-of-credits divided by maximum
+overlap** method cannot yield a common deficit from patches with ratio
+$O(1/w)$. This does not limit every possible cover, conditional-entropy or
+Shearer argument, and it does not prove that the order bound is optimal
+among them.
+
+**Proposition 7.2 (noncrossing pages after time contraction).** Contract each
+fine time to its time-window number, discard loops, and merge repeated
+edges. The resulting dependency graph is covered by the window spine and
+$2k$ noncrossing pages. Here a page forbids strict interleaving
+$u<u'<v<v'$ of two edges $(u,v),(u',v')$; shared endpoints are allowed.
+The native statement is `timeWindow_dependency_pages` in
+[WindowPages.lean](../WindowPages.lean). More generally, a nondecreasing
+chronological contraction preserves noncrossing, and any such contraction
+increasing by at most one at each fine step sends state edges to the spine.
+
+*Outline.* For a predecessor-label witness cell, choose its first visit
+$q$ in the later window. Its last visit $p$ before that window is its actual
+previous visit. If $q=p+1$, the coarse edge lies on the spine. Otherwise the
+walk between $p$ and $q$ stays strictly above their common cell or strictly
+below it. Same-side excursions cannot cross. This fine-time decomposition
+is already `BoundedNesting.walkDag_isStack`, recalled in
+[Paper 14, §2](../../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/paper/sections/preliminaries.tex).
+Strictly crossing coarse endpoints would force strictly crossing fine
+endpoints. The Lean proof reuses the fine theorem and proves the quotient
+step. Identifying the label description with the exact `DepStep` quotient
+by the first-visit argument remains a written adapter.
+
+The initial classification by strict left/right of the head at the window
+start omitted equality. For example, windows $0^h,1^h,0^h,1^h$ have
+crossing edges $(0,2),(1,3)$, both witnessed at their destination window's
+starting cell. Assigning all ties to the same page fails; their true
+excursion signs are opposite. The strict-left and strict-right subfamilies
+were valid, but did not cover all edges.
+
+Contraction also loses the endpoint-uniqueness conditions of `StackDag`.
+One coarse page can have unbounded degree at a vertex. Therefore the
+quotient cannot be fed directly into a fixed-stack theorem without another
+adapter. Lemma 1 still bounds its average in-degree by $3k+1$ when the
+state spine is included.
+
+For $k=1$ the simple work-window graph is planar: draw the two pages on
+opposite sides of the spine. That is a statement about the **work** graph.
+Output-row append intervals are ordered, but the attachment of a time
+window to its at most two consecutive input rows need not be monotone.
+The actual row relation is contained in the composition of these
+attachments with bounded-depth dependency reachability; the attachments
+cannot be dropped. Arbitrary graphs with the same page count are not
+thereby proved to be native cone systems.
+
+[The one-work-tape calibration](window-pages-and-input-attachments.md)
+explains why work planarity alone does not supply the separator hypothesis
+on the helper relation, and states a correct row-level sufficient criterion.
+The common whole-row deficit remains open.

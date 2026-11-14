@@ -195,3 +195,6 @@ import LeanMachine.SupportTraversal
 import LeanMachine.SparseRankBounds
 import LeanMachine.ThreeHelperRank
 import LeanMachine.SparseAffineCodes
+import LeanMachine.InvolutionCompletion
+import LeanMachine.MatchingSeed
+import LeanMachine.MatchingRecovery

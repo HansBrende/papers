@@ -100,7 +100,8 @@ supplied by B1. By mechanism, at fixed window:
   k≥2. The three-helper half extension under that weaker pattern, its root-degree refinement,
   and all affine-code cardinality wrappers are now Lean too. Paper 10 S* already covers
   nonlinear recovery under the stronger no-transitive-triangle premise. Matching plus one
-  helper has a separate written nonlinear half-size seed proof.
+  loopless helper has a separate nonlinear half-size seed proof, now Lean, including partial
+  matchings, odd size and the attained-range cost of a varying boundary record.
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
@@ -156,10 +157,17 @@ Open questions, nearest the wall first:
   Planes are the named candidate (conjectured two thirds; PG(2,3) has 130 ≤ Sh ≤ 140), but no
   inequality is known (X30), and counting good columns of a Fano layout cannot be uniform in w
   (X29). The [quadrangle grid code](notes/quadrangle-grid-control.md) raises GQ(2,2)'s residual
-  lower bound to105 (order118) and refutes c_Sh=2 by c_ent≥12/5. Parked until a named family
+  lower bound to105 (order118) and refutes c_Sh=2 by c_ent≥12/5. Upper-bound search parked until a named family
   comes with a precise inequality.
   For classical Q(4,s), the [reviewed grid-family construction](notes/triangle-free-hosts.md#7-grid-lanes-on-every-classical-parabolic-quadrangle)
   gives c_ent≥2+2/(2s+1); convergence of c_Sh to2 remains conjectural.
+  The constructive alternative is also open: one fixed w and arbitrarily large d with a
+  feasible **full-cell** polymatroid of value at least (1/2+c)d² for fixed c>0. Sparse
+  amplification supplies no such lower witness. A witness would block Shannon half, not
+  every common deficit; witnesses approaching rate one require w chosen before d grows.
+  A proof of nonexistence at every fixed w would give a stronger Shannon-half theorem sufficient
+  for the actual-code question. Code normalization does not automatically normalize
+  arbitrary polymatroids.
 - **The general bound, and the first open window.** Paper 17's general order bound gives
   R(w)≤w/(w+1); at windows one and two the sharper bound is asymptotically one half.
   **Window three is the smallest open case: 1/2≤R(3)≤3/4.** The series establishes no
@@ -287,12 +295,13 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      list. A fixed base with positive order deficit cannot yield order rate tending to one by
      a balanced helper-containment lift. The good-column counting barrier does not rule out
      stronger bounds using the actual conditional errors. No new experiment is commissioned.
-  5. *Fable reading unit: G0.* Check Paper 15's native criteria against whole-row presentability
-     of its original growing tower. The paper leaves arbitrary mixed layouts open. Two-sided
-     symmetric normal forms apply to paid extracted codes and enlarged helper relations;
-     individual pairing-shift invariance is an exclusion premise, not a normal form of the
-     original tower. *Astra remaining formalization:* the separate matching-plus-one-helper
-     Hall lemma, after a reuse/effort check.
+  5. *G0 reading complete.* Paper 15 leaves arbitrary mixed tower layouts open. The two-sided
+     symmetric normal forms add no literal premise on the original tower; their output could
+     still be obstructed by a future capacity theorem. Pairing-shift invariance is an exclusion
+     premise. *Fable bounded unit: constructive G4.* One by-hand full-cell polymatroid formula
+     at fixed window and positive asymptotic excess; no solver or larger search without a
+     candidate. *Astra banked:* the nonlinear matching-plus-one-helper Hall theorem, including
+     partial matchings and exact odd-size/cardinality and boundary-record adapters, is now Lean.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
      not a replacement for the native-support or nonlinear questions.

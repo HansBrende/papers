@@ -2,10 +2,10 @@
 
 Hans Brende, GPT-6 Astra and Claude Fable 5.2, 14 November 2026.
 
-**Status:** the rank proof and its strengthenings, including the weaker-pattern three-helper
-half theorem, the arbitrary-width bound and the affine-code cardinality consequences, are
-Lean-verified. The separate nonlinear matching-plus-one-helper Lemma 3 remains written and
-independently reviewed. **Reuse correction:** the original asymmetric triangle-free
+**Status:** the rank bounds, their affine-code consequences and the separate nonlinear
+matching-plus-one-helper Lemma 3 are Lean-verified. The matching selector also retains any one
+prescribed endpoint of a perfect matching; the nonlinear bound can charge a boundary record
+by its attained range. **Reuse correction:** the original asymmetric triangle-free
 subcubic theorem, the directed reciprocity form below, and the two-helper special case were
 already proved in Paper 4, Theorem S, including in
 [`MotionDepthCodes/Subcubic.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Subcubic.lean).
@@ -14,7 +14,8 @@ unit-diagonal statement by invertible row scaling. The existing memo even gives 
 bound on graph-supported scalar codes.
 
 Hans directed the research. Fable proposed the re-examined target, tested finite instances and
-supplied the removal argument. Astra developed the shorter row-order/last-row proof below.
+supplied the removal argument. Astra developed the shorter row-order/last-row proof and the
+nonlinear matching selector, and formalized both arguments.
 The additions relative to Theorem S are the weaker **four-arc exclusion** and the bound for
 **arbitrary outgoing width k**; the new proof does not depend on zero forcing. Paper 10's
 Theorem S* already proves the nonlinear all-alphabet half bound under the stronger
@@ -189,7 +190,13 @@ The configuration Fable proposed for a first test admits a stronger, nonlinear r
 mate and at most one further coordinate f(v); each unmatched coordinate is determined by at
 most f(v). The partial function f has no self-loop. Then there is a generating coordinate set
 of size at most ⌊N/2⌋. Every code with these recovery rules, over any alphabet of size q, has at
-most q^⌊N/2⌋ words. The conclusion also holds conditional on fixed boundary data.
+most q^⌊N/2⌋ words. The conclusion also holds conditional on fixed boundary data. More generally,
+if recovery may also use a varying record Z, then
+
+`|C| ≤ |range Z| · q^⌊N/2⌋`.
+
+The range is taken over the actual code and may be correlated with its words. No
+nonempty-alphabet premise is needed for the finite cardinality statement.
 
 **Proof.** For even N, extend the matching to a perfect matching by pairing unmatched vertices.
 This only grants additional helpers. The directed cycles of f are disjoint and have length
@@ -203,12 +210,33 @@ f-helper, since no f-cycle is wholly unseeded. Recover backwards along that path
 add a known dummy vertex and match it to an unmatched vertex, then complete the remaining
 matching. Reserve the dummy edge with the dummy chosen. Any t cycles meet at least t other matching edges, since the reserved edge covers at
 most one of their at least 2t vertices. The same Hall argument leaves exactly (N−1)/2 actual
-seeds. Fixed boundary values simply enter the recovery functions as parameters. ∎
+seeds. Fixed boundary values simply enter the recovery functions as parameters. The same seed
+set works for every value of Z, so recording Z and those coordinates proves the range bound. ∎
 
 In particular, directed one-way cycles threaded through a reciprocal perfect matching are at
 half rate even for nonlinear recovery. Lemma 3 needs neither triangle-freeness, a reverse-degree
 bound, nor source independence. The full Theorem A uses linear algebra to handle the mixed
 branching configurations that Lemma 3 does not cover.
+
+**Formal proof and strengthening.** [MatchingSeed.lean](../../lean-machine/LeanMachine/MatchingSeed.lean)
+uses inclusion-minimal nonempty traps in place of explicit cycles: every vertex in a trap has
+an extra helper inside that trap. They are disjoint and each has at least two vertices. In a perfect matching, any chosen vertex s
+can be required to lie in the seed set: ignore traps containing s and reserve its pair.
+A union of t remaining sets has at least 2t vertices, at most one in that reserved pair, so it
+still meets at least t other pairs. Hall's theorem applies without increasing the seed count.
+
+[InvolutionCompletion.lean](../../lean-machine/LeanMachine/InvolutionCompletion.lean) completes
+an even-size partial matching while preserving its existing pairs. The odd-size adapter adds
+one dummy vertex and forces that dummy into the seed set, then removes it; it does not claim an
+arbitrary real prescribed seed in the odd case.
+[MatchingRecovery.lean](../../lean-machine/LeanMachine/MatchingRecovery.lean), `exists_seed`,
+chooses exactly ⌊N/2⌋ real coordinates from the support data alone. If two compatible words agree
+on those coordinates and on Z, every disagreeing coordinate would have an extra helper that
+also disagrees. The disagreement set would therefore be a trap meeting the seed, a contradiction.
+This proves `exists_determining_seed` and the
+cardinality bounds `card_code_le` and `card_code_le_record`. The latter pays the actual record
+range. The matching and extra-helper sets are fixed across the code; value-dependent helper
+choices are not asserted to satisfy this theorem.
 
 ## 5. Status, reuse and the next gap
 
@@ -248,7 +276,8 @@ including the one-way-head premise and cubic parity step. Its
 [SparseAffineCodes.lean](../../lean-machine/LeanMachine/SparseAffineCodes.lean) proves the
 information-set bound and its half and general-width consequences: for nonempty embedded
 alphabets, `|C|≤q^⌊N/2⌋` and `|C|^k≤q^((k−1)N)`, respectively.
-Only Lemma 3's nonlinear Hall argument remains unformalized in this note.
+The nonlinear Hall argument and its partial/odd matching and cardinality adapters are also
+proved as described in §4. No formalization todo remains for these endpoints.
 Existing scalar half/matching endpoints should be reused rather than reproved merely to
 obtain the original statement. Fable's binary census is consistent with the theorem;
 neither that census nor a floating-point search is used in the proof.

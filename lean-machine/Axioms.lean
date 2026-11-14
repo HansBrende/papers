@@ -1748,3 +1748,23 @@ import LeanMachine
 #print axioms LeanMachine.SparseAffineCodes.card_pow_le_of_rank
 #print axioms LeanMachine.SparseAffineCodes.card_pow_le_of_outgoing
 #print axioms LeanMachine.SparseAffineCodes.card_le_pow_half_of_three_helpers
+
+-- InvolutionCompletion.
+#print axioms LeanMachine.InvolutionCompletion.exists_fixedPointFree_involution
+#print axioms LeanMachine.InvolutionCompletion.even_natCard_fixedPoints
+#print axioms LeanMachine.InvolutionCompletion.exists_fixedPointFree_extension
+
+-- MatchingSeed.
+#print axioms LeanMachine.MatchingSeed.IsTrap.card_two_le
+#print axioms LeanMachine.MatchingSeed.IsTrap.inter
+#print axioms LeanMachine.MatchingSeed.minimal_traps_disjoint
+#print axioms LeanMachine.MatchingSeed.exists_minimal_trap
+#print axioms LeanMachine.MatchingSeed.extend_seed
+#print axioms LeanMachine.MatchingSeed.exists_seed
+
+-- MatchingRecovery.
+#print axioms LeanMachine.MatchingRecovery.eq_of_seed
+#print axioms LeanMachine.MatchingRecovery.exists_seed
+#print axioms LeanMachine.MatchingRecovery.exists_determining_seed
+#print axioms LeanMachine.MatchingRecovery.card_code_le_record
+#print axioms LeanMachine.MatchingRecovery.card_code_le

@@ -38,7 +38,12 @@ cardinality consequences for arbitrary finite alphabets embedded coordinatewise 
 even for nonlinear subsets of the affine solution space. This still assumes affine equations;
 it does not cover arbitrary nonlinear recovery under the weakened pattern. Paper 10's Theorem S*
 already covers nonlinear recovery under the stronger no-transitive-triangle premise.
-The separate matching-plus-one-helper Hall proof remains written.
+The separate nonlinear matching-plus-one-helper theorem is now also
+[Lean-verified](../lean-machine/LeanMachine/MatchingRecovery.lean), with an exact ⌊N/2⌋
+generating set for partial matchings, all finite alphabets and an attained-record price when
+boundary data vary. The Hall selector uses minimal nonempty traps, in which every vertex has
+an extra helper inside the set, and can retain one prescribed endpoint of a perfect matching.
+No native extraction is implied.
 
 ## What is here
 

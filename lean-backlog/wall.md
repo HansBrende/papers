@@ -65,9 +65,9 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | | Date | What fell | Status |
 |---|---|---|---|
 | **B1** | 13 Nov 2026 | *Codes, machines and counting are tied.* An additional cheap cut puts all cones of almost every output row into boundedly many input rows. A common positive whole-row deficit along the canonical alphabets gives the literal native crux at every fixed depth and excludes oblivious linear-time transposers. The direct route needs a deficit only at one explicit window, exceeding 169ε/64. Before this the wall was three separate obstacles (paper 17, Section 4). | *Lean throughout:* geometry in [WindowSpread.lean](WindowSpread.lean), finite counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), `uniformWholeRowRateCanonicalBits_crux`, `uniformWholeRowRateCanonicalBits_excludes` and `wholeRow_window_bound_excludes` in [RowSpreadCrux.lean](RowSpreadCrux.lean), reusing Paper 14. Capacity remains a hypothesis. See [row spread](notes/row-spread-of-cones.md) §§2–5. |
-| **B2** | 14 Nov 2026 | *Full Shannon inequalities can beat every order bound on a whole-row host.* Fano has Sh=119/3 and exact acyclic/order value 41; arbitrary sources and nonlinear recovery are covered. The known three-lane code attains the bound. This disproves universal Shannon/order equality, not the possibility of asymptotic near-equality or high rates. | *Written/computer-assisted, independently replayed, not Lean:* [proof and 33-term certificate](notes/fano-shannon-certificate.md). One finite host; no new native-machine exclusion. |
-| **B3** | 14 Nov 2026 | *The Shannon/order gap can have positive density at fixed window, even with incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups and short-cycle deletion. Fano keeps both degrees ≤3600 and σ−Sh≥(15523/1470000)d²>0.01d²; its fine residual relation has no mutual triangles eventually. These hosts already have the order deficit 8/49. | *Written, independently reviewed, not Lean:* [amplification](notes/finite-shannon-gap-amplification.md); [paid recovery](notes/fano-soft-recovery.md). No capacity-attainment, universal-deficit or native-machine claim. |
-| **B4** | 14 Nov 2026 | *A Shannon/order gap needs no mutual triangles in the residual base either.* The 9×6 grid has 21≤Sh_res≤114/5<23 and 39≤Sh_full≤204/5<41. Complete cloning gives an 18×18 triangle-free residual base with 234≤Sh≤1224/5<246 and both degrees six; B3 then amplifies it. | *Written/exactly checked, independently reviewed, not Lean:* [18-term certificate and square adapter](notes/triangle-free-shannon-gap.md). The exact Shannon value and capacity remain open. |
+| **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Written, computer-assisted, replayed; not Lean:* [certificate](notes/fano-shannon-certificate.md) |
+| **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; nothing is claimed about their capacity. | *Written, reviewed; not Lean:* [amplification](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
+| **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 triangle-free base with degrees six, which B3 amplifies. Exact value and capacity open. | *Written, exactly checked, reviewed; not Lean:* [certificate and adapter](notes/triangle-free-shannon-gap.md) |
 
 **Classes with proved deficits** (half plus o(1) at fixed window unless stated otherwise).
 
@@ -84,15 +84,12 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Rank count | Decoder blocks invertible or zero (second rule) | linear | *Lean*: [C](C-second-rule.md) |
 | Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | varies; folded-cube gains binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
-**What the proofs share.** Most charge one member of a paired block to the other, in the cells
-or after a change of basis; spectral proofs bound eigenvalue counts; the source proofs count
-low-occurrence variables, force near cells, and eliminate paired coordinates. Exactly, for every code
-([row spread](notes/row-spread-of-cones.md) §18): 2H = ΣH(row) + ΣH(row | rest) + S, with S the
-signed net synergy of the rows (negative O-information). A fixed gain above one half needs
-S = Ω(N); in every known code S is O_w(db).
-The Fano certificate adds submodularity across intersections and recovery closures,
-with exact charges for added cells and imperfect recoveries. Coarse block aggregation
-and sparse incidence mixing preserve its improvement over order at positive density.
+**What the proofs share.** Most charge one member of a paired block to the other, in the cells or
+after a change of basis; spectral proofs bound eigenvalue counts; source proofs eliminate paired
+coordinates. For every code 2H = ΣH(row) + ΣH(row | rest) + S, with S the net synergy of the rows
+([row spread](notes/row-spread-of-cones.md) §18); a fixed gain above one half needs S = Ω(N), and
+in every known code S is O_w(db). The Shannon certificates (B2–B4) add submodularity across
+intersections of recovery closures, and survive block aggregation and sparse mixing.
 
 **What is left.** A fixed gain above one half at fixed window needs:
 1. a row relation that is not hyperfinite, with recovery not confined to components of size
@@ -101,27 +98,22 @@ and sparse incidence mixing preserve its improvement over order at positive dens
 2. for mutual recovery on group relations: components meeting unboundedly many diagonals;
 3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule.
 
-For the stronger target of **rates approaching one**, injective independent-source encoders
-with bounded essential support must survive the paid reduction to minimum-occurrence-three
-cores. Their mean support cannot stay below three by a fixed amount; two-source encoders are
-excluded even when all functions are nonlinear, over any common finite alphabet. This does
-not supply such an encoder for a correlated native fibre or exclude every gain above one half.
-Sparse recovery is a different property (X26).
+For **rates approaching one**, independent-source encoders of bounded support are limited: two
+sources per coordinate give rate at most 2/3, mean support μ < 3 gives (1+μ)/4, nonlinear encoders
+included. This says nothing about correlated native fibres or about sparse recovery (X26).
 
 Open questions, nearest the wall first:
-- **G0. Is sup_w R(w) = 1 already?** Paper 15's exhibited field-linear codes have rate at least
-  1 − e^{−λm} on abstract relations;
-  whether their growing coupled form is whole-row at a window depending only on m is open
+- **G0. Is sup_w R(w) = 1 already?** Paper 15's field-linear codes have rate at least 1 − e^{−λm}
+  on abstract relations; whether they are whole-row at a window depending only on m is open
   ([grid note](notes/grid-labellings-and-amplified-codes.md) §§6–8,
-  [row spread](notes/row-spread-of-cones.md) §§16–17). Cylinder layouts fail; pairwise column tests
-  cannot decide mixed layouts (X23); limiting fixed-radius statistics cannot decide any layout.
-  The cheap sparse-source test fails for the exhibited majority-fixed subspace: its growing
-  minimum distance forces growing mean support in **every** onto independent-source encoder,
-  linear or not ([support audit](notes/sparse-encoder-cores.md#5-the-defining-sources-of-the-majority-construction)).
-  This neither decides its layout nor describes the full majority kernel or binary syndrome fibres.
+  [row spread](notes/row-spread-of-cones.md) §§16–17). Cylinder layouts fail; column-pair tests
+  (X23), fixed-radius statistics and the sparse-source test
+  ([audit](notes/sparse-encoder-cores.md#5-the-defining-sources-of-the-majority-construction))
+  cannot decide it.
 - **G1. Nonlinear forms** of the basis and spectral pairings.
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
-  [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
+  [PaleyTournament.lean](PaleyTournament.lean)), none at positive density. D10 would remove
+  one-way structure between rows and columns.
 - **G4. Is the full Shannon value bounded away from d² as w grows?** Shannon beats order at
   positive density on fixed-window hosts of growing girth (B3), also from a triangle-free base (B4),
   with no code restriction. These families already have a constant order deficit. Missing: a
@@ -133,15 +125,11 @@ Open questions, nearest the wall first:
   named family comes with a precise inequality.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
-**Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar-linear
-39 over F₂ and F₃, full Shannon 119/3, attained on every cube-sized alphabet
-(order bound 41); basis host d = 8, w = 3: 46 for all alphabets.
-Cyclic w = 2 has capacity and Shannon/order value d(d+3)/2−1 for every d≥2 and every alphabet;
-this attains the universal window-two upper bound. The cyclic-five witness is graphic.
-The 3×3 grid host has 39≤capacity exponent≤Sh≤204/5 on 54 cells for every alphabet
-(pairing 36, order 41); its exact capacity and Shannon value remain open.
-None gives a code's fixed-window gain above half beyond O(d); B3 concerns
-a positive-density improvement of an upper bound, not a high-rate construction.
+**Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact values on full hosts: Fano
+119/3 (scalar-linear 39 over F₂ and F₃; order 41); basis host d = 8, w = 3: 46 for all alphabets;
+cyclic w = 2: d(d+3)/2 − 1 for every d and alphabet, the universal window-two bound. Grid:
+39 ≤ capacity ≤ Sh ≤ 204/5 on 54 cells (pairing 36, order 41). No code has a fixed-window gain
+above one half beyond O(d).
 
 **What a proof and a machine must each respect.**
 - A proof must cover nonlinear recovery and growing alphabets; fail at growing windows (simplex and

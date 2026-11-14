@@ -329,7 +329,7 @@ directly for finite-field searches.
 ## Sources and next step
 
 The basic seed, its identity lifts, and its padding are proved in
-[Paper 20](../../Ramsey-Free-Bounds-for-Two-Stage-Shared-Decoder-Composition/paper/sections/swapcodes.tex),
+[Paper 20](../../Ramsey-Free-Composition-and-One-Stage-Capacity-Bounds-for-Linear-Shared-Decoders/paper/sections/swapcodes.tex),
 with the lift dimensions and the stated $d=4,5,7$ padding cases
 Lean-verified there.
 The independent term alignment, compatible extension argument, and assembled

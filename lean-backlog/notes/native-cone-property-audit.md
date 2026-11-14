@@ -350,4 +350,4 @@ status to a paper's separate arithmetic or machine-realization adapters.
 [P17C]: ../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/construction.tex
 [P17O]: ../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/open.tex
 [P18]: ../../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/paper/main.pdf
-[P20]: ../../Ramsey-Free-Bounds-for-Two-Stage-Shared-Decoder-Composition/paper/sections/sweep.tex
+[P20]: ../../Ramsey-Free-Composition-and-One-Stage-Capacity-Bounds-for-Linear-Shared-Decoders/paper/sections/sweep.tex

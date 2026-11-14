@@ -88,9 +88,12 @@ of length $\le \lfloor d/Q\rfloor + 1$ and applying Cauchy--Schwarz to the bucke
 any $S \subseteq \{0,\dots,d-1\}$ with $\abs{S} > Q$, some step $s \in \{1, \dots, \lfloor d/Q\rfloor\}$
 satisfies $\abs{S}(\abs{S} - Q) \le 2d\,\abs{\{x \in S : x + s \in S \text{ in }\N\}}$. Iterating $k$
 times with $D_0 = M_{\mathrm{eff}}$ and $D_{t+1} = 2 D_t^2$ ($D_k = \frac{1}{2}(2 M_{\mathrm{eff}})^{2^k}$)
-maintains $\abs{S_t} \ge d/D_t - Q/2$ for $1 \le t < k$, so
-$d > \max(8 M_{\mathrm{eff}} k^2, (2M_{\mathrm{eff}})^{2^k})$ keeps $\abs{S_{k-1}} > Q$ and
-$\abs{S_k} \ge 1$. Because each step filters $x + s_t \in S_t$ in $\N$ inside
+maintains $\abs{S_t} \ge d/D_t - Q/2$ for $1 \le t < k$. At $k = 1$, $d > 8 M_{\mathrm{eff}}$ gives
+$\abs{S_0} \ge d/M_{\mathrm{eff}} > Q = 2$; for $k \ge 2$, $\abs{S_{k-1}} > Q$ follows from
+$d/D_{k-1} > 3Q/2$, i.e.\ $d > \frac{3}{2}k^2(2M_{\mathrm{eff}})^{2^{k-1}}$, which holds by
+$d > (2M_{\mathrm{eff}})^{2^k}$ whenever $(M_{\mathrm{eff}}, k) \ne (1, 2)$ and by
+$d > 8 M_{\mathrm{eff}} k^2 = 32 > 24$ at $(M_{\mathrm{eff}}, k) = (1, 2)$, giving $\abs{S_k} \ge 1$.
+Because each step filters $x + s_t \in S_t$ in $\N$ inside
 $S_0 \subseteq \{0,\dots,d-1\}$, every cube sum $x_0 + \sum_{t : \eps_t = 1} s_t$ ($x_0 \in S_k$) lies
 in $S_0$ with natural sum $< d$, preventing wraparound modulo $d$. Feeding the extracted cube into
 \Cref{lem:affine-cube} with $\dim_F\ker(T_{s_t} - \mathrm{id}) \le q s_t \le q\lfloor d/(2k^2)\rfloor$
@@ -195,7 +198,10 @@ $J_{13} = \{0, 1, 4, 5\} = \{0,1\} + \{0,4\} \subseteq \Z_{13}$.
 \end{example}
 \begin{outline}
 Residue inspection verifies that $J_{13}$ has no non-constant $3$-term progression modulo~$13$, and
-cyclic shift periodicity gives $\dim_F\ker(T_s - \mathrm{id}) = 2$ for every $s \ne 0$ in $\Z_{13}$.
+cyclic shift periodicity gives $\dim_F\ker(T_s - \mathrm{id}) = 2$ for every $s \ne 0$ in $\Z_{13}$,
+so \cite[Lemma~6.1]{SharedDecoders2026} (\leanname{SharedDecoders.commonMessage_finrank_le}) yields
+$2\dim_F W \le 28$ on $2$-term progressions and $4\dim_F W \le 26 + 3\cdot 2 = 32$ ($\dim_F W \le 8$)
+on non-constant $4$-term progressions.
 Over every field $F$ with $(13 : F) \ne 0$, explicit integer matrices $E \in \Z^{26\times 9}$ and
 $L_{13} \in \Z^{9\times 26}$ satisfy $L_{13}(T_c E) = 13 I_9$ for all $c \in J_{13}$, directly
 certifying both $\dim_F W = 9$ and shift-invariant injectivity of $L_{13}$.

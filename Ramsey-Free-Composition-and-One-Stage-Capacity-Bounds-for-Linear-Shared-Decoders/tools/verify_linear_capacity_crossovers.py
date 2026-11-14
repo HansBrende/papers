@@ -148,8 +148,7 @@ def verify_leading_coefficients() -> dict[int, Fraction]:
     #   - For ALL M >= 41, gamma*_M < c_M < 1 - 1/(2M) since gamma*_M < c_M (proved below for
     #     all M >= 41) and (1 - 1/(2M)) - c_M = (M - 1)(3M - 1)/(4M^3) > 0 for all M >= 2.
     #   - For ALL M >= 12, 2 ceil(sqrt(2M)) < 2(sqrt(2M) + 1) < M since M - 2 > 2 sqrt(2M)
-    #     <=> (M - 2)^2 > 8M <=> M^2 - 12M + 4 > 0, which holds for all M >= 12.
-    assert 12 * 12 - 12 * 12 + 4 > 0
+    #     <=> (M - 2)^2 > 8M <=> M^2 - 12M + 4 > 0 (whose larger root is 6 + 4 sqrt(2) < 12).
     for m in range(2, 41):
         gamma_m, uv = thm35_leading_coeff(m)
         flag_m = Fraction(1, 1) - Fraction(1, 2 * m)

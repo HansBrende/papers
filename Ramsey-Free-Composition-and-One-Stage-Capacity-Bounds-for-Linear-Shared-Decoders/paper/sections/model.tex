@@ -72,9 +72,10 @@ Let $F$ be a field and let $d \ge 1$ and $b \in \N$.
   \leanname{SharedDecoders.IsSharedCode} (\cite[Definition~2.1]{SharedDecoders2026}) and intertwines
   \lean{laneRot} $s$ with \leanname{SharedDecoders.rot} $s$; moreover,
   $\mathcal{X} \cap \rot_s^{-1}(\mathcal{X}) \le H_{\{0, s\}}$ for every $s \in \Z_d$.
-\item For every $n \ge 1$, \lean{CoprimeToChar}$(F, n)$ holds if and only if $(n : F) \ne 0$, in
-  which case every algebraically closed extension of $F$---and in particular $\overline{F}$
-  (\leanname{AlgebraicClosure F})---contains a primitive $n$-th root of unity.
+\item For every $n \ge 1$, \lean{CoprimeToChar}$(F, n)$ holds if and only if $(n : F) \ne 0$; every
+  algebraically closed field $K$ with $(n : K) \ne 0$---and in particular $\overline{F}$
+  (\leanname{AlgebraicClosure F}) whenever \lean{CoprimeToChar}$(F, n)$---contains a primitive $n$-th
+  root of unity.
 \item For every field homomorphism $\varphi : F \to K$, coordinatewise application of $\varphi$
   preserves linear independence of finite vector families in $F^\iota$ for any index type $\iota$,
   satisfies $\dim_F U \le \dim_K W$ for any finite $\iota$ whenever $U \le F^\iota$ and
@@ -90,10 +91,10 @@ In~(a), \lean{laneOneMatrixEquiv} drops the unique coordinate $0 \in \mathrm{Fin
 $\Z_d \to \Z_d \to \mathrm{Fin}\,b \to F$; if $X \in \mathcal{X}$ and $\rot_s(X) \in \mathcal{X}$ with
 $p(c) = p(c + s) = m$, then
 $X_{c+s, j} = \mathcal{A}_m(\rot_{c+s}(X))_j = \mathcal{A}_m(\rot_c(\rot_s(X)))_j =
-\rot_s(X)_{c, j} = X_{c, j+s}$. In~(b), $(n : F) = 0$ iff $\operatorname{char}(F) \mid n$, and for
-any field extension $K/F$ the injectivity of $\mathrm{algebraMap}\,F\,K$ gives
-$(n : K) \ne 0 \iff (n : F) \ne 0$; when $(n : K) \ne 0$ in an algebraically closed extension $K$
-(in particular $K = \overline{F}$), $Z^n - 1$ has $n$ distinct roots in $K$ ($n Z^{n-1} \ne 0$ at
+\rot_s(X)_{c, j} = X_{c, j+s}$. In~(b), $(n : F) = 0$ iff $\operatorname{char}(F) \mid n$; when
+$(n : K) \ne 0$ in an algebraically closed field $K$ (including $K = \overline{F}$ when
+$(n : F) \ne 0$, via injectivity of $\mathrm{algebraMap}\,F\,\overline{F}$), $Z^n - 1$ has $n$
+distinct roots in $K$ ($n Z^{n-1} \ne 0$ at
 every root), and partitioning those roots by exact multiplicative order across divisors $m \mid n$
 with at most $\varphi(m)$ elements per divisor forces $\varphi(n) \ge 1$ primitive $n$-th roots via
 $\sum_{m \mid n} \varphi(m) = n$. In~(c), preservation of linear independence is proved by induction on

@@ -1,14 +1,17 @@
-Section~6 of \cite{SharedDecoders2026} studied two-stage compositions $K_2 \circ K_1$ of linear
-class-uniform shared decoders on $\Mat_{d\times d}(F^b)$ with $M_1$ and $M_2$ column classes, using
-van der Waerden and Hales--Jewett arithmetic progressions to bound $d$ when $K_2 \circ K_1 = \tau$
-and to show that $\rank_F(\tau - K_2 \circ K_1)/(bd) \to \infty$ as $d \to \infty$ at fixed
-$M_1, M_2$ when $\operatorname{char}(F) \nmid d$ ($(d : F) \ne 0$). No multitape Turing machine is
-known to induce such a two-stage linear class-uniform
-factorization; working within the same algebraic model, this paper replaces arithmetic progressions
-by Ramsey-free additive structures (avoiding van der Waerden and Hales--Jewett numbers) and proves two
-main composition bounds in Lean~4.
+We study two-stage compositions $K_2 \circ K_1$ and one-stage capacities of $F$-linear class-uniform
+shared decoders on $\Mat_{d\times d}(F^b)$, following Section~6 of \cite{SharedDecoders2026} (which
+used van der Waerden and Hales--Jewett arithmetic progressions to bound $d$ when $K_2 \circ K_1 = \tau$
+with $M_1$ and $M_2$ column classes and to show that
+$\rank_F(\tau - K_2 \circ K_1)/(bd) \to \infty$ as $d \to \infty$ at fixed $M_1, M_2$ when
+$\operatorname{char}(F) \nmid d$, i.e.\ $(d : F) \ne 0$) and Problem~9.1(a)--(b) of
+\cite{SeventeenthPaper2026} (one-stage linear shared-decoder capacity), together with three-term and
+two-sided interval-mask swap codes (\cite[Remark~5.6 and Problem~9.3]{SeventeenthPaper2026}). No
+multitape Turing machine is known to induce a one- or two-stage linear class-uniform decomposition;
+working within these algebraic models, all numbered results are verified in Lean~4.
 
-First (\Cref{thm:2a}), over any field $F$ and for $b, M_1, M_2 \ge 1$, replacing progressions by
+For two-stage linear composition, replacing arithmetic progressions by Ramsey-free additive structures
+(avoiding van der Waerden and Hales--Jewett numbers) yields two bounds. First (\Cref{thm:2a}), over any
+field $F$ and for $b, M_1, M_2 \ge 1$, replacing progressions by
 affine Hilbert cubes extracted via iterated Cauchy--Schwarz proves that $K_2 \circ K_1 = \tau$ forces
 \[
   d \;\le\; \max\bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\bigr).
@@ -34,9 +37,8 @@ $M_1 \ge 2$ and large $d$ (at $M_1 = 1$, \cite[Theorem~6.6]{SharedDecoders2026} 
 $\Omega(bd^2/M_2)$ for $d \ge 4M_2 + 1$, while here $D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$).
 Finite-dimensional controls at $d = 13$, $d = 4$, and $d = 12$ test the hypotheses of both bounds.
 
-Three further sections prove one-stage linear shared-decoder and two-sided swap-code bounds on open
-problems of \cite{SeventeenthPaper2026}, alongside two shorter companion sections. On
-\cite[Problem~9.1(a)]{SeventeenthPaper2026}, exploiting decoder linearity on maximal monochromatic
+For one-stage linear shared decoders on \cite[Problem~9.1(a)]{SeventeenthPaper2026}, exploiting
+decoder linearity on maximal monochromatic
 cyclic runs proves an explicit single-shift intersection bound $B_{\mathrm{run}}(b,p,s)$ when
 $\operatorname{char}(F) \nmid (d/\gcd(d,s))$ (\Cref{thm:1a-single-shift}, whose value
 $\frac{1}{4}d^2 + \frac{3}{2}d$ on the alternating two-coloring for even $d = 2m \ge 2$ at

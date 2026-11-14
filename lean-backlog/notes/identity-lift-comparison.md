@@ -121,7 +121,7 @@ kernel, even after independent changes of bases.
 
 Take $s=3$, $K_0=\tau_3-\Pi_3$, where $\Pi_3(X)=\operatorname{tr}(X)I_3$.
 The seed is the three-term example in [Paper 17](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/order.tex),
-and its lift is studied in [Paper 20](../../Ramsey-Free-Bounds-for-Two-Stage-Shared-Decoder-Composition/paper/sections/swapcodes.tex).
+and its lift is studied in [Paper 20](../../Ramsey-Free-Composition-and-One-Stage-Capacity-Bounds-for-Linear-Shared-Decoders/paper/sections/swapcodes.tex).
 For the explicit witness $G=I_3\otimes J_n(1)$, (2) sharpens to
 
 $$

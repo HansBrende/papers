@@ -684,9 +684,10 @@ private theorem d13ShiftKer_finrank_eq_two {F : Type*} [Field F] {s : ZMod 13} (
 
 /-- **Strengthened `d = 13` General-Field Control & Progression Bridge.**
 Establishes: (a) exact shift kernel dimension `2` over every field `F`; (b) Paper 19
-`commonMessage_finrank_le` bound `D ≤ 14` and an explicit `D = 14` witness on every 2-point
-progression over **every** field `F`; and (c) the `D = 9` affine 2-cube witness on `J = {0,1,4,5}`
-over **every** field `F` with `(13 : F) ≠ 0`. -/
+`commonMessage_finrank_le` bounds `D ≤ 14` (with an explicit `D = 14` witness) on every 2-point
+progression and `4 * D ≤ 26 + 3 * 2` (`D ≤ 8`) on every non-constant 4-term progression over
+**every** field `F`; and (c) the `D = 9` affine 2-cube witness on `J = {0,1,4,5}` over **every**
+field `F` with `(13 : F) ≠ 0`. -/
 theorem control_D13_GeneralFieldAndProgressionBridge :
     let J13 : Finset (ZMod 13) := {0, 1, 4, 5}
     (∀ (F : Type*) [Field F],
@@ -698,6 +699,13 @@ theorem control_D13_GeneralFieldAndProgressionBridge :
         (∀ y ∈ W, L y = 0 → y = 0) →
         (∀ j < 2, ∀ y ∈ W, L ((cyclicChannelShift F 13 2 s ^ j) y) = L y) →
         2 * finrank F W ≤ 26 + 2 ∧ finrank F W ≤ 14) ∧
+      (∀ (c₀ : ZMod 13) (Z : Type*) [AddCommGroup Z] [Module F Z]
+        (W : Submodule F (ZMod 13 → Fin 2 → F)) (L : (ZMod 13 → Fin 2 → F) →ₗ[F] Z),
+        (∀ y ∈ W, L (cyclicChannelShift F 13 2 c₀ y) = 0 → y = 0) →
+        (∀ (j : ℕ), j < 4 → ∀ y ∈ W,
+          L (cyclicChannelShift F 13 2 (c₀ + (j : ZMod 13) * s) y) =
+            L (cyclicChannelShift F 13 2 c₀ y)) →
+        4 * finrank F W ≤ 26 + 3 * 2 ∧ finrank F W ≤ 8) ∧
       (∃ (W₁₄ : Submodule F (ZMod 13 → Fin 2 → F))
           (L₁₄ : (ZMod 13 → Fin 2 → F) →ₗ[F] (Fin 7 × Fin 2 → F)),
         finrank F W₁₄ = 14 ∧
@@ -711,9 +719,37 @@ theorem control_D13_GeneralFieldAndProgressionBridge :
         (∀ x ∈ W₉, ∀ c ∈ J13, L₉ (cyclicChannelShift F 13 2 c x) = L₉ x)) := by
   refine ⟨fun F _ => ⟨d13ShiftKer_finrank_eq_two (by decide), d13ShiftKer_finrank_eq_two (by decide)⟩, ?_, ?_⟩
   · intro F _ s hs
-    refine ⟨?_, ?_⟩
+    refine ⟨?_, ?_, ?_⟩
     · intro Z _ _ W L hinj hmsg
       have hcm := SharedDecoders.commonMessage_finrank_le (cyclicChannelShift F 13 2 s) W L 2 (by omega) hinj hmsg
+      have hdimA : finrank F (ZMod 13 → Fin 2 → F) = 26 := by simp [Module.finrank_pi_fintype, ZMod.card]
+      rw [hdimA, d13ShiftKer_finrank_eq_two hs] at hcm
+      exact ⟨by omega, by omega⟩
+    · intro c₀ Z _ _ W L hinj0 hmsg4
+      have hpow : ∀ (j : ℕ) (y : ZMod 13 → Fin 2 → F),
+          (cyclicChannelShift F 13 2 s ^ j) y = cyclicChannelShift F 13 2 ((j : ZMod 13) * s) y := by
+        intro j
+        induction j with
+        | zero => intro y; funext u ch; simp [cyclicChannelShift]
+        | succ j ih =>
+          intro y; rw [pow_succ', Module.End.mul_apply, ih]
+          funext u ch
+          simp only [cyclicChannelShift, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.proj_apply]
+          have hidx : u + s + (j : ZMod 13) * s = u + ((j + 1 : ℕ) : ZMod 13) * s := by
+            push_cast; ring
+          rw [hidx]
+      let L' : (ZMod 13 → Fin 2 → F) →ₗ[F] Z := L.comp (cyclicChannelShift F 13 2 c₀)
+      have hmsg' : ∀ j < 4, ∀ y ∈ W, L' ((cyclicChannelShift F 13 2 s ^ j) y) = L' y := by
+        intro j hj y hy
+        change L (cyclicChannelShift F 13 2 c₀ ((cyclicChannelShift F 13 2 s ^ j) y)) =
+          L (cyclicChannelShift F 13 2 c₀ y)
+        rw [hpow]
+        have hcomp : cyclicChannelShift F 13 2 c₀ (cyclicChannelShift F 13 2 ((j : ZMod 13) * s) y) =
+            cyclicChannelShift F 13 2 (c₀ + (j : ZMod 13) * s) y := by
+          funext u ch; simp [cyclicChannelShift, add_assoc, add_comm, add_left_comm]
+        rw [hcomp]
+        exact hmsg4 j hj y hy
+      have hcm := SharedDecoders.commonMessage_finrank_le (cyclicChannelShift F 13 2 s) W L' 4 (by omega) hinj0 hmsg'
       have hdimA : finrank F (ZMod 13 → Fin 2 → F) = 26 := by simp [Module.finrank_pi_fintype, ZMod.card]
       rw [hdimA, d13ShiftKer_finrank_eq_two hs] at hcm
       exact ⟨by omega, by omega⟩

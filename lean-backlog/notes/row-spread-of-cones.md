@@ -3272,3 +3272,49 @@ cannot supply a positive limiting excess by themselves. No linear-time
 tape implementation or window-three capacity bound follows. The bounded
 literature check identified the underlying token graph and the existing
 d=3,4 special cases; no novelty claim for the full application is made.
+
+## 28. The small-support bound does not need generic coefficients (Fable, 14 November 2026)
+
+Status: **short written proof, unreviewed**. Front D1; it removes the
+restriction "transversal" from the finite bound of section 22 and leaves
+"linear with a sparse generator matrix".
+
+Let C be a linear whole-row code of dimension K over any field, given as the
+image of K independent source symbols, and let the *support* of a cell be the
+set of sources with a non-zero coefficient in it. No genericity is assumed:
+the difference code of section 27 (coefficients ±1, a graphic matroid) is an
+example that is not a token design.
+
+**28.1.** Three facts hold for every such code, whatever the coefficients:
+(i) K is at most the number of sources that occur;
+(ii) a source occurring in exactly one cell forces that cell to be a host
+loop;
+(iii) a cell is recoverable from a set of cells only if each of its sources
+occurs in some cell of that set.
+
+*Proof.* (iii): a combination of cells in which a source does not occur has
+coefficient zero at that source. (ii) follows. ∎
+
+**28.2.** The forcing step of section 22 holds: if a cell e at distance more
+than three contains two sources u, v each occurring in exactly one other
+cell (a and b), then a and b are host loops.
+
+*Proof.* By (iii) the recovery of e needs a and b among its helper rows. If
+a is not a loop, its recovery needs another occurrence of u, which can only
+be e, with a non-zero coefficient; the coefficient of v so introduced has to
+be cancelled, and b is the only other cell containing v; so b lies in the
+helper rows of the column of a. That is the walk row(e), column(a), row(b),
+column(e) of length three. (If a = b, the two cells are proportional on
+{u, v} or e is not recoverable; in the first case u and v can be merged into
+one source and K is smaller than assumed.) ∎
+
+**28.3 (consequence).** The counting of section 22 uses only 28.1 and 28.2.
+Hence for every linear whole-row code whose cells have supports of size at
+most two in some choice of sources, 6K ≤ 5N + 6L + N₃, and after the trimming
+of rows of high reverse degree K/N ≤ 5/6 + O_w(d^{−1/2}) on every fixed-window
+host. With supports of size at most a and total support I the same holds for
+6K ≤ 2I + N + (2a+2)L + (a−1)N₃. So **a linear code of rate close to one needs,
+in every choice of sources, mean support at least 5/2.**
+
+Not checked here: whether the paid reduction to cores and the bound 2/3 of
+section 23 also survive without genericity. Their proofs use Hall squares.

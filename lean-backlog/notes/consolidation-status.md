@@ -12,7 +12,9 @@ is still open.
 | No-empty-rectangle barrier | `RectangleBarrierTarget` in the same file is an exact, typechecked **proposition target**. It includes arbitrary bijective layouts and the square correction term. | Its proof is written only. The proposition definition asserts no theorem. |
 | Soft order bound | [EntropyConsolidation.lean](../EntropyConsolidation.lean): `acyclic_conditional_le`, `soft_order`, `soft_order_of_acyclic`, `soft_order_entropy`. The polymatroid statement assumes no exact recovery or singleton caps; loops outside the acyclic set are allowed. | No missing step in these declarations. The conditional-entropy interpretation uses the same polymatroid inequality. |
 | Entropy-to-exact-subcode selection | `SubcodeSelectionTarget` and `ConditionalSubcodeSelectionTarget` in the same file typecheck with actual finite probability laws, positive-support containment, nonempty subcodes and arbitrary correlated records. | Both are **unproved proposition targets**. They are not statements about arbitrary polymatroids and do not preserve linearity or decoder symmetry. |
-| Fano inequality | [FanoCertificate.lean](../FanoCertificate.lean): `paid_fano` proves `3h(V)≤2Σh({v})+Σ[h(N_v∪{v})−h(N_v)]` for every polymatroid on the actual 28-cell residual graph. `rateBound_fano` and `residual_le` give the weighted two-thirds bound and the unit-cap upper bound 56/3. | The matching triangle construction, full 49-cell contraction adapter, order value 41, and separate joint-column-error coefficient 41/84 remain written/exactly checked outside Lean. |
+| Fano paid inequalities and code bound | [FanoCertificate.lean](../FanoCertificate.lean): `paid_fano` proves `3h(V)≤2Σh({v})+Σ[h(N_v∪{v})−h(N_v)]` on the actual 28-cell residual graph. [FanoFull.lean](../FanoFull.lean): `paid_full` retains the joint incident-cell price and conditional singleton prices; `full_upper_of_cap` proves `3h(V)≤119a` under singleton caps a. `wholeRow_card_cube` proves `|C|³≤|A|¹¹⁹` for every finite nonempty alphabet and arbitrary nonlinear code on the full host. | The separate joint-column-error coefficient 41/84 remains written/exactly checked outside Lean. |
+| Fano Shannon attainment | [FanoAttainment.lean](../FanoAttainment.lean): `residual_shannon_exact` and `full_shannon_exact` prove the exact unit-cap polymatroid optima 56/3 and 119/3 by explicit feasible witnesses. | Realization by the three-lane code over every finite base alphabet remains a written proof. A feasible polymatroid alone does not assert an entropic realization. |
+| Fano order value | [FanoOrder.lean](../FanoOrder.lean): `exact_order_value`, `orderCost_eq_sum_lastHelperPosition` and `exact_last_helper_value` prove the exact minimum 41, including the standard last-helper-position formulation. | The general whole-row theorem identifying this value with 49 minus the maximum induced acyclic-set size remains a separate written result of Paper 17. |
 
 The proved declarations use only Lean's standard axioms. No open target is
 introduced as an axiom or used to prove another result. Entropy in the Lean
@@ -25,6 +27,9 @@ point-line incidences, the finite automorphisms used, and all 33 semantic
 certificate inequalities before adding their integer weights. No solver
 output is trusted as a premise. The generated file permits 2,000,000
 heartbeats for routine finite checking; this changes no logical axiom.
+The companion files reuse contraction, entropy and image-rank lemmas. They
+permit 1,000,000 heartbeats where used for finite checks. The order proof
+checks the 128 point subsets and one attaining order, not all permutations.
 
 Reproduce the generated source with the standard-library checker (Python
 3.10 or later), from the repository root:
@@ -38,7 +43,8 @@ Build from the existing pinned environment:
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
 lake env python3 ../../lean-backlog/check.py \
-  ClosureBarriers EntropyConsolidation FanoCertificate
+  ClosureBarriers EntropyConsolidation FanoCertificate \
+  FanoFull FanoOrder FanoAttainment
 ```
 
 ## Scope corrections retained in the index

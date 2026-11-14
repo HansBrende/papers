@@ -6,10 +6,13 @@ host. The existing three-lane code attains the bound over every finite
 base alphabet. The upper proof applies to arbitrary sources and recovery
 functions. Its paid 28-cell upper inequality and residual 56/3 corollary
 are now **Lean-verified** in [FanoCertificate.lean](../../FanoCertificate.lean).
-The triangle-code attainment, 49-cell contraction adapter, order value 41
-and separate joint-column-error coefficient 41/84 remain written proofs
-with exact checks. The [consolidation index](../../notes/consolidation-status.md)
-gives the precise scope and Lean build command.
+The full 49-cell adapter, exact residual and full Shannon attainment by
+explicit polymatroids, and order value 41 are also Lean-verified in the
+companion modules. Code realization over cube alphabets, the general
+order/acyclic-set identification and the separate joint-column-error
+coefficient 41/84 remain written proofs with exact checks. The
+[consolidation index](../../notes/consolidation-status.md) gives the precise
+scope and Lean build command.
 
 All reproduction scripts below require **Python 3.10 or later**. Check that
 the generated semantic Lean proof still matches the saved certificate with:

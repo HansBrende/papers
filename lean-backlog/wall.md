@@ -69,7 +69,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | | Date | What fell | Status |
 |---|---|---|---|
 | **B1** | 13 Nov 2026 | *Codes, machines and counting are tied.* An additional cheap cut puts all cones of almost every output row into boundedly many input rows. A common positive whole-row deficit along the canonical alphabets gives the literal native crux at every fixed depth and excludes oblivious linear-time transposers. The direct route needs a deficit only at one explicit window, exceeding 169ε/64. Before this the wall was three separate obstacles (paper 17, Section 4). | *Lean throughout:* geometry in [WindowSpread.lean](WindowSpread.lean), finite counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), `uniformWholeRowRateCanonicalBits_crux`, `uniformWholeRowRateCanonicalBits_excludes` and `wholeRow_window_bound_excludes` in [RowSpreadCrux.lean](RowSpreadCrux.lean), reusing Paper 14. Capacity remains a hypothesis. See [row spread](notes/row-spread-of-cones.md) §§2–5. |
-| **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Paid residual upper inequality and 56/3 corollary Lean:* [FanoCertificate.lean](FanoCertificate.lean). Full 49-cell adapter, attainment and order comparison remain written/exactly checked: [certificate](notes/fano-shannon-certificate.md). |
+| **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Lean:* paid residual/full inequalities, exact Shannon optima with polymatroid witnesses, order41, and the all-alphabet code upper bound ([status](notes/consolidation-status.md)). Actual lane-code realization and the general order/acyclic-set adapter remain written. |
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Written, reviewed; not Lean:* [amplification](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Written, exactly checked, reviewed; not Lean:* [certificate and adapter](notes/triangle-free-shannon-gap.md) |
 
@@ -132,9 +132,10 @@ Open questions, nearest the wall first:
   bounded residual c_Sh in Σ_v I(X_v; helpers) ≤ c_Sh·TC where order gives nothing (Fano 3; grid
   between 12/5 and 30/11); an exact-recovery upper bound alone does not give this paid inequality.
   Planes are the named candidate (conjectured two thirds; PG(2,3) has 130 ≤ Sh ≤ 140), but no
-  inequality is known (X30), counting good columns of a Fano layout cannot be uniform in w (X29),
-  and the quadrangle census exceeded the size cap (range 90 to 118 unchanged). Parked until a
-  named family comes with a precise inequality.
+  inequality is known (X30), and counting good columns of a Fano layout cannot be uniform in w
+  (X29). The [quadrangle grid code](notes/quadrangle-grid-control.md) raises GQ(2,2)'s residual
+  lower bound to105 (order118) and refutes c_Sh=2 by c_ent≥12/5. Parked until a named family
+  comes with a precise inequality.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact values on full hosts: Fano
@@ -142,6 +143,8 @@ Shannon119/3 (attained on cube-sized alphabets; scalar-linear39 over F₂ and F�
 basis d=8,w=3:46 for all alphabets. One-sided cyclic w=2: d(d+3)/2−1 for d≥2; two-sided:
 d(d+1)/2+1. Grid:39≤capacity exponent≤Sh≤204/5 on54 cells (pairing36, order41).
 No known code family has a fixed-window gain above one half beyond O(d).
+GQ(2,2): residual105≤capacity≤Sh≤118, full150≤capacity≤Sh≤163;
+the lower bounds use two lanes. These are finite bounds, not exact values.
 
 **What a proof and a machine must each respect.**
 - A proof must cover nonlinear recovery and growing alphabets; fail at growing windows (simplex and
@@ -228,9 +231,11 @@ No known code family has a fixed-window gain above one half beyond O(d).
   the two-sided transfer, the assigned-rule theorem, the soft order bound and the paid Fano
   inequality (all Lean); the symmetric normal form, amplification, the grid gap and the rectangle
   barrier (written). Closed today: X29–X31. No premise with an inequality exists for a high-order
-  family: refinements of a fixed base inherit its order deficit, dense random hosts have unbounded
-  cliques, and for planes and generalised quadrangles only conjectures (c = 3, c = 2). Astra:
-  the remaining Lean statements of the status index, at its own pace. Fable: the report. A front
+  family: balanced helper-containment refinements inherit the fixed base's order deficit;
+  Bernoulli incidence at fixed positive density has unbounded mutual cliques and hence no
+  uniform soft constant (this alone is not a capacity-to-one proof). Planes still have the
+  conjectural residual constant3; the quadrangle constant2 is false already at order(2,2).
+  Astra: the remaining Lean statements of the status index, at its own pace. Fable: the report. A front
   reopens only with a premise of kinds (i)–(iii) of "What cannot work, and what can", or a
   correctness-forced source restriction with a named consumer, and an inequality attached.
 - Last re-evaluation (D0): 14 November 2026.

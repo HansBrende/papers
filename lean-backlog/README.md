@@ -165,9 +165,11 @@ Native extraction and source audit:
   the upper bound for arbitrary sources and nonlinear recovery; the known
   three-lane construction attains it over every finite base alphabet.
   This is a finite improvement beyond order, not an asymptotic native
-  exclusion. The paid residual upper inequality and 56/3 corollary are now
-  Lean-verified in [FanoCertificate.lean](FanoCertificate.lean); attainment,
-  the 49-cell adapter and order calculation remain written/exactly checked.
+  exclusion. The paid residual inequality, full 49-cell adapter, exact
+  Shannon attainment by polymatroids and order calculation are now
+  Lean-verified; the [status index](notes/consolidation-status.md) names
+  the declarations. Actual three-lane code realization and the general
+  order/acyclic-set identification remain written proofs.
 - [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
   any strict finite Shannon/order gap persists at positive density on
   growing fixed-window hosts, also with incidence girth Ω(log d) at the
@@ -206,6 +208,13 @@ Native extraction and source audit:
   why optimizing that count cannot give a deficit uniform in the window
   on random high-order hosts. Written and exactly checked where finite,
   independently reviewed, not Lean-verified; no new native exclusion.
+- [Quadrangle grid code](notes/quadrangle-grid-control.md): ten copies of
+  the existing grid code cover every residual cell of GQ(2,2) twice.
+  The two-lane construction gives 105 residual information symbols in
+  180 entries, and 150 in the full 225-entry array, for every square
+  alphabet cardinality. In particular its residual soft constant is at
+  least 12/5, refuting the proposed value 2. Written and exactly checked,
+  not Lean; no claim about the asymptotic fixed-window question.
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the

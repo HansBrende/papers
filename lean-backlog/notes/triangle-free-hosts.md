@@ -71,7 +71,7 @@ support check, these verify the construction over every abelian group.
 | Fano | 28 | 8 | 20 | 56/3, attained with three lanes |
 | PG(2,3) | 117 | 29 | 88 | 78, attained by triangle codes |
 | 3×3 point grid | 36 | 13 | 23 | 21, by Section 1 |
-| Generalized quadrangle of order (2,2) | 180 | 62 | 118 | 90, by fractional pairing with lanes |
+| Generalized quadrangle of order (2,2) | 180 | 62 | 118 | 105, by the [ten-grid two-lane code](quadrangle-grid-control.md) |
 
 The tools compute the acyclic/order values by integer subset recurrences; the
 plane values also have the proofs in the

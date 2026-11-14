@@ -3,11 +3,15 @@
 14 November 2026. Fable proposed testing row-closure intersections; Astra
 constructed the bounded relaxation and extracted the certificate. Two
 independent reviews reconstructed its inequalities from the incidence
-relation. **Status:** the paid 28-cell upper inequality and its residual
-56/3 corollary are now Lean-verified in
-[FanoCertificate.lean](../FanoCertificate.lean). The matching construction,
-49-cell contraction adapter and order-value calculation remain written proofs
-with exact finite checks. No literature novelty claim is made.
+relation. **Status:** the paid residual inequality, full 49-cell contraction,
+exact Shannon values 56/3 and 119/3, and order value 41 are Lean-verified in
+[FanoCertificate.lean](../FanoCertificate.lean),
+[FanoFull.lean](../FanoFull.lean),
+[FanoAttainment.lean](../FanoAttainment.lean) and
+[FanoOrder.lean](../FanoOrder.lean). The attaining polymatroids are formalized;
+their three-lane code realizations remain written proofs with exact checks.
+The general order/acyclic-set identification also remains a written theorem
+of Paper 17. No literature novelty claim is made.
 
 ## 1. Exact statement
 
@@ -116,8 +120,9 @@ independently reconstructs the plane, its 168 automorphisms, every recovery
 closure, all 33 inequalities and the exact coefficient identity. It uses
 integer and rational arithmetic and imports neither the LP generator nor
 a solver. In particular the proof does not rest on a floating-point bound.
-The machine-checked identity is currently checked by ordinary Python,
-not by Lean's kernel.
+The generated Lean proof independently derives every semantic inequality
+and checks the same integer combination in the kernel. Python is used for
+reproduction, not as a trusted proof premise.
 
 ## 4. The matching lower bound
 

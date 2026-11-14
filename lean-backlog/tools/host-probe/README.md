@@ -17,11 +17,17 @@ Incidence hosts: rows = points, columns = lines, helpers of a column = the point
   directly, and D is recovered from entry differences. Over Z/qZ it has exactly q^21
   codewords for every q ≥ 2 ([note](../../notes/triangle-free-hosts.md)). This is an
   executable symbolic certificate; it is not Lean-verified.
+- `gq_grid_control.py`: verifies the ten full-line grids inside GQ(2,2),
+  their exact two-fold cover of its 180 residual cells, and the resulting
+  two-lane code with residual exponent 105 and full exponent 150. It reuses
+  the integer grid-code identities above. This is a written construction
+  with an exact checker, not Lean-verified ([note](../../notes/quadrangle-grid-control.md)).
 
 The symbolic certificate needs only the Python standard library:
 
 ```sh
 python3 grid_code_check.py
+python3 gq_grid_control.py
 ```
 
 The host probes need NumPy. For example, to compute the grid summary without an optimizer:

@@ -29,8 +29,9 @@ as an unexplained premise. The final integer combination is kernel-checked.
 The ground set is the 28 nonincident point-line pairs. Points and line normals
 are the nonzero binary triples in lexicographic order, indexed by Fin 7.
 The paid theorem needs no exact recovery, singleton caps or symmetry assumption.
-The residual exact-recovery bound is its corollary. This file does not formalize
-the matching triangle-code construction or the 49-cell contraction adapter.
+The residual exact-recovery bound is its corollary. Companion modules prove
+the full 49-cell contraction, Shannon attainment by explicit polymatroids,
+and order value 41. The actual triangle-code realization remains written.
 -/
 
 namespace LeanBacklog.FanoCertificate

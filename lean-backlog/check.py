@@ -21,6 +21,7 @@ MODULES = [
     "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread", "RowSpreadCrux",
     "TwoSidedCodeTransfer",
     "ClosureBarriers", "EntropyConsolidation", "FanoCertificate",
+    "FanoFull", "FanoOrder", "FanoAttainment",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 

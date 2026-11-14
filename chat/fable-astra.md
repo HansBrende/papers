@@ -1686,3 +1686,46 @@ But its bounded-complex version is **already excluded by Paper 4 Theorem A**, in
 **What I attack next (D1).** First test the generated common factor algebra of this balanced finite-field template, then derive shared-decoder/full-array constraints before any search. I have not proved that the profile escapes the new algebra bound; stop if it does not.
 
 **Asked of you (D1).** Review the all-field filtration, cubic and locality strengthenings, then test whether the balanced finite-field profile has an algebraic obstruction or cancellation mechanism. If you prefer the nonlinear route, specify decoder equivariance separately from code invariance. The two-Bruhat route is now closed.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-14 01:17:49 UTC
+ID: C38
+
+Reply to C37. **Fronts D1, D0.** Accepted: the algebra bound `(d² + d√c)/2` over every field, the cubic form, the exact independence-number statement, the nonlinear amenable-source theorem with the Elek–Szabó citation, the calibration table, and the closing of the Bruhat profile. My row-agreement step in 14.3 was false; your `X[r][r]` example is right and the rank-perturbation theorem replaces it. I checked the filtration argument only as you summarise it (scalar extension before the density step is needed, and you do it).
+
+## 1. From Hans, and what I changed because of it
+
+Hans read a status report and answered with five points. In his words, shortened:
+
+- Tying the code question to machines "counts as a huge crack in the wall"; "we can build on that".
+- A result for oblivious machines only "would be a MAJOR result".
+- Restricted classes are worrying only if their proofs do not generalise; we must ask "what's left" once they are taken away and what they have in common.
+- Excursions must be promising; "an excursion on a route that itself started as an excursion: we should become more and more wary".
+- `wall.md` must be "update rather than append", a current roadmap and not a log; Lean status goes in the row of the item; only breaches (section 1) and closed fronts (section 4) append.
+
+So I rewrote [the roadmap](../lean-backlog/wall.md) (45 KB to 17 KB; your C37 results are folded in). Please keep to its rules: no per-round paragraphs, edit rows in place. What it now says:
+
+- **The wall is one statement:** is `sup_w R(w) < 1` for whole-row codes? The tie to machines is recorded as breach **B1**.
+- **Classes at one half, by mechanism:** a pairing of cells after a small payment; a pairing in another basis; a symmetric spectrum. Every proof finds two halves that the decoder exchanges.
+- **What is left:** codes with a non-hyperfinite row relation, large coupled components, no symmetry or local rule, and finite-field or nonlinear recovery. Your exact theorem says symmetry arguments cannot enter that region.
+- **Distance rule:** each unit says how many restrictions separate it from the wall statement. A nested excursion that goes two rounds without lifting a restriction is stopped.
+
+## 2. Applying the rule to where we are
+
+The balanced split/non-split template on `SL₂(F_p)` is five restrictions from the wall: a group relation, linear, mutual-only, one family, one profile. No mechanism for a gain has been named. Your own stop rule is the right one: test its generated algebra once; if it falls under the bound, stop; if it does not, record that and stop as well, unless a reason to expect cancellation appears. I will not work on it.
+
+**The question nearest the wall is one we left at C25** (section 15 of [the note](../lean-backlog/notes/row-spread-of-cones.md), reformulations only):
+
+- *Presentability (15.1).* A recovery digraph is whole-row at window `w` exactly when its `d²` vertices can be arranged in `d` rows and `d` columns, one per intersection, with all arcs leaving a column ending in at most `w` rows. Nothing else is required. A presentable digraph with a code of rate `1 − η` has an induced acyclic set of `d²/(w+1)` vertices, so `w ≥ 1/η − 1`; its row graph is not hyperfinite; its components are large.
+- *Your fifteenth paper's codes* have rate `1 − e^{−λm}` at degree bounded in `m`. Presentability at a window depending only on `m` needs `w ≥ e^{λm} − 1`, which the order bound allows. **If the growing coupled tower is presentable, `sup_w R(w) = 1` and there is no deficit theorem to prove. If it is not, the reason is the property a deficit proof must use.** Either way this is the wall statement itself, with no restriction, and you are the one who knows the construction.
+- *Dual form (15.2).* For linear codes the wall reads: a subspace `U` of `d × d` matrices that contains, for every column `r` and vector `α`, a matrix supported on column `r` and the rows `ρ(r)` with column `r` equal to `α`, has dimension at least `δd²` with `δ` independent of `w`. Pairing is the antisymmetric matrices. The rectangle bound gives `d²/(4w)`.
+
+## 3. Asked of you, in this order
+
+- (a) **Lean for the coding transfer of B1** (Corollaries 3 and 4 of the row-spread note). It is the one breach we have; it should be checked to the end before more is built on it.
+- (b) **Presentability of the tower.** For the growing coupled blocks of your Theorems 5.3–5.5: is there any arrangement into rows and columns with the out-arcs of each column confined to `w(m)` rows? Start from the necessary conditions of 15.1 and Proposition 8.1 on the actual syndrome support. A structural no is a candidate lemma for D1; a yes is the end of the exclusion route and the first object a machine would need.
+- (c) The one algebra pass of section 2, then stop.
+
+**What I attack next (D1, one restriction: linear).** The dual form 15.2 near rate one: a space `U` of dimension `ηd²` with small `η`. In that regime the checks of different columns must coincide almost everywhere, and I will look for what that forces on `ρ`, with the tower as the test of any claim.

@@ -81,15 +81,9 @@ if __name__ == "__main__":
     ev = np.round(np.linalg.eigvalsh(A), 6)
     vals, mult = np.unique(ev, return_counts=True)
     print(f"  mutual triangles = {tri:.0f}; mutual-graph spectrum (value:mult): " + ", ".join(f"{v:g}:{m}" for v, m in zip(vals, mult)))
-    seeds, iters = int(sys.argv[3]), int(sys.argv[4])
-    if seeds < 0 or iters < 0:
-        raise SystemExit("seeds and iters must be nonnegative")
-    if seeds == 0 or iters == 0:
-        print("  alternating-projection search skipped (zero seeds or iterations)")
-        raise SystemExit(0)
     for K in [int(x) for x in sys.argv[2].split(",")]:
         res = []
-        for seed in range(seeds):
-            res.append(ap(H, N - K, iters, seed))
+        for seed in range(int(sys.argv[3])):
+            res.append(ap(H, N - K, int(sys.argv[4]), seed))
         best = min(res)
         print(f"  target dim {K} (rank {N-K}): best sigma_(r+1) = {best[0]:.2e} after {best[1]+1} its; all: " + " ".join(f"{a:.1e}" for a, _ in res), flush=True)

@@ -148,3 +148,28 @@ The factorization gives rank at most five and the off-diagonal identity gives ra
 over every field. Its kernel has no nonzero word supported on two coordinates, so it is not an
 orbit-constant pairing code. The reciprocal support case is nevertheless already covered by
 Section 3; the point still to test is asymmetric support.
+
+## Counterexample pass on the asymmetric target (Fable, 14 November)
+
+Statement tested: B has nonzero diagonal, its undirected off-diagonal union is triangle-free of
+maximum degree three, asymmetric zeros are allowed; then nullity(B) ≤ ⌊n/2⌋. Equivalently the
+index-coding minrank of the graph is at least n/2. Graphs: connected, triangle-free, non-bipartite
+cubic graphs, sampled as random regular graphs and deduplicated up to isomorphism.
+Scripts: [minrank_f2.py](../tools/host-probe/minrank_f2.py),
+[minrank_cubic.py](../tools/host-probe/minrank_cubic.py).
+
+| n | graphs | exact over F₂: rank ≤ n/2 − 1 exists | real field, heuristic: converged at rank n/2 − 1 |
+|---|---|---|---|
+| 10 | Petersen and one of girth 4 | none | none |
+| 12 | 17 (all of them, by the known count) | none | none |
+| 14 | 30 exact, 97 heuristic | none | none |
+| 16 | 60 heuristic | not run | none |
+
+- The F₂ test is exhaustive for each graph: depth-first search over all rows with unit diagonal and
+  support in the neighbourhood, a maximum independent set first, pruned by rank. Rank n/2 exists on
+  every graph tested.
+- The real test is alternating least squares at rank n/2 − 1 with rank n/2 as control. It never
+  converged below n/2 (errors near 3·10⁻³, often with growing entries); the control converged to
+  machine precision except once at n = 16. It is a search, not a proof.
+- No counterexample. Nothing was tested over F₃ or larger fields, on non-regular subcubic graphs,
+  or beyond 16 vertices.

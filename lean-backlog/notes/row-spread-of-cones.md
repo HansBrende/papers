@@ -1702,3 +1702,62 @@ N−A cannot be silently dropped. Row basis changes used in those proofs
 need not preserve S: changing three one-coordinate rows (a,b,0) into
 (a,b,a+b) takes S from 0 to 1. No new raw-S bound, or counterexample
 to such a bound within the symmetry class, is proved here.
+
+## 19. A second use of the column condition gives the order bound; the split is intrinsic (Fable, 13 November 2026)
+
+Status: **short written proofs, unreviewed**; 19.4 is a question. Front D1,
+no restriction (19.1, 19.3 nonlinear; 19.2 linear).
+
+**19.1 (conditional single-row bound).** For any whole-row code and any set
+B of rows, let J₀ be the columns with ρ(r) ⊆ B, J₁ those with exactly one
+helper outside B, J₊ the rest. Then
+
+  2H(X | Y_B) ≤ Σ_{c∉B} H(Y_c | Y_B) + (d − |B|)·|J₊| + |J₁|,
+
+hence H(X) ≤ d|B| + ½[(d − |B|)(|J₁| + 2|J₊|) + |J₁|].
+
+*Proof.* Given Y_B the columns of J₀ are constant and every cell of a column
+of J₁ is a function of one row outside B. Apply the single-row theorem of
+section 18 to the conditional distribution, with the cells of J₊ and the |J₁|
+loop cells of J₁ as exceptions. ∎
+
+**Verdict.** For a Bernoulli(p) set B on a random-like relation the deficit
+is (1 − p)(p^w + ½·w·p^{w−1}(1 − p)), largest near p = 1 − c/w, of order 1/w.
+It is never better than the order bound: for window one, pairing and the
+order bound coincide, and after revealing B only the columns of J₁ are
+window-one. Given Y_B the remaining rows form a whole-row code again, on a
+(d − |B|) × d array with helper sets ρ(r) ∖ B, so conditioning reproduces the
+problem at a smaller window and never reaches an easier one before window
+one. A deficit independent of w cannot come from repeating the column
+condition on revealed rows.
+
+**19.2 (cells; linear codes).** Order the d² cells in any way. Let B_f be the
+cells not determined by the earlier cells and B_b the cells not determined
+by the later ones (the first and the last basis of the code's matroid in
+that order). Then
+
+  2·dim C − d² = |B_f ∩ B_b| − |cells in neither B_f nor B_b|.
+
+Pairing has B_f and B_b complementary. A code above one half has, in every
+order of its cells, more cells determined by neither side than by both.
+
+**19.3 (the split is intrinsic).** In any order of the cells, the cells all
+of whose helper rows come earlier form an induced acyclic set of the host,
+and so do those whose helper rows all come later. So at most twice the
+largest induced acyclic set of the host have their helper rows on one side.
+On an expanding relation that set has at most (½ − c)d² cells (the acyclic
+bound stays a constant above one half there: paper 17, Problem 9.4(c)), so a
+positive fraction of the cells is split in every order. No reordering of
+coordinates, by rows or otherwise, avoids split cells; a bound must show that split cells are
+determined by one side anyway, or are paid for by cells determined by both.
+
+**19.4 (question: is a common deficit a Shannon-type statement?).** Every
+bound in sections 2–18 is a consequence of chain rules, conditioning and
+counting, that is of the Shannon inequalities together with the constraints
+H(column r | rows ρ(r)) = 0. On the lattice of unions of whole rows and
+whole columns these give exactly the order bound. If the same is true on
+all sets of cells (a polymatroid satisfying the constraints with value near
+the order bound), then no argument of the kind we have used can prove a
+deficit independent of w, and the proof needs linear rank inequalities,
+non-Shannon inequalities, or the structure of an actual code. If not, the
+optimal Shannon proof is the theorem. Neither is known.

@@ -210,14 +210,10 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). D1 with no restriction, in the synergy form
-  ([row spread](notes/row-spread-of-cones.md) §18): does S/N stay uniformly below one as w
-  varies? This is equivalent to a common deficit with a possible factor-two change of constants.
-  The sufficient stronger target S≤F(w,w′)db keeps both degree caps fixed; no converse to a
-  half-rate estimate is established. Astra's finite audit is complete: far synergy exists but
-  does not refute the target, and low-entropy parity rows defeat the qualitative test based on
-  fractions of a row's information. Fable: an extensive bound from the column condition using
-  the correct order-weighted split distribution. Astra: audit that bound and its genie/lane
-  costs, using 2H−ΣH(row)=S+R when helpful. The tower pass remains closed without an exclusion;
-  no search before a mechanism.
+- **Current focus** (replace, do not append). D1 with no restriction, in the signed-synergy form
+  ([row spread](notes/row-spread-of-cones.md) §§18–19): bound S + R = 2H − ΣH(row) by
+  (1 − 2δ)N. Repeating the column condition on revealed rows gives the order bound and no more
+  (19.1), and split cells cannot be avoided by reordering (19.3). Open and next: whether a
+  common deficit follows from Shannon inequalities with the whole-row constraints at all (19.4).
+  No search before a mechanism; the tower pass stays closed.
 - Last re-evaluation (D0): 14 November 2026.

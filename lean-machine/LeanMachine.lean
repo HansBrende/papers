@@ -199,3 +199,4 @@ import LeanMachine.InvolutionCompletion
 import LeanMachine.MatchingSeed
 import LeanMachine.MatchingRecovery
 import LeanMachine.CosetRecords
+import LeanMachine.DisjointSumsExtension

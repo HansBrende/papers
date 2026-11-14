@@ -48,7 +48,10 @@ No native extraction is implied.
 The [pairing/parity-template note](notes/pairing-coset-bound.md) now reuses
 [CosetRecords.lean](../lean-machine/LeanMachine/CosetRecords.lean) for its abstract
 exact count by attained records on subgroup-invariant sets. Its recovery
-geometry and rate bounds remain written proofs.
+geometry and rate bounds remain written proofs. The local
+[disjoint-sum extension criterion](../lean-machine/LeanMachine/DisjointSumsExtension.lean)
+is also verified for arbitrary target sums and additive-automorphism weights,
+without finite alphabet or finite coordinate assumptions.
 
 ## What is here
 

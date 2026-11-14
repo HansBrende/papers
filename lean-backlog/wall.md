@@ -91,7 +91,8 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
-  written and reviewed; abstract coset-record counting now Lean, geometry adapters still written.
+  written and reviewed; abstract coset counting and disjoint-parity extension now Lean,
+  recovery geometry and rate adapters still written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -302,9 +303,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      premise. *Constructive G4 pass closed without a witness:* the
      [ordered-information refinement](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
      is written and reviewed, but gives no new capacity bound. *Astra banked:* the nonlinear
-     matching-plus-one-helper theorem and the abstract coset-record count are now Lean;
-     pairing/parity geometry remains written.
+     matching-plus-one-helper theorem, coset-record count and disjoint-parity extension
+     are now Lean; pairing/parity recovery geometry remains written.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
-     estimate. The quadrangle reserve starts with a compressed-family size estimate: the previous
-     pair-intersection census exceeded 100,000 masks before any LP. No larger search is commissioned.
+     estimate. The quadrangle estimate was dropped: a further finite bound has no named
+     consumer beyond the existing triangle-free gap. No larger search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

@@ -1989,6 +1989,20 @@ P_q are empty and the existing half-plus-incident bound is recovered.
 For lanes the same proof uses all scalar coordinates and their actual
 entropies; no independence or linearity assumption is needed.
 
+With reverse degree at most R, each cell lies in at most R+1 of the
+sets E_q∪R_{P_q}. The sharper, already available way to bound the
+information sum is 20.4: writing
+TC_cell(V)=Σ_v h({v})−H, that theorem gives
+
+  Σ_q I(E_q;R_{P_q}) ≤ Σ_{v∉Inc} h({v}) ≤ (R+1)TC_cell(V).
+
+The first inequality uses the disjoint nonincident sets E_q. No additional
+incident-cell term is needed. This is **cell** total correlation, not row
+total correlation. The cover count alone does not justify charging mutual
+information to total correlation on each union: E_q∩R_{P_q} can contain
+nonincident cells. Combining the displayed bound with (19i) gives only
+H≤((R+2)N+|Inc|)/(R+3), weaker than the existing (20c).
+
 **19.6 (a conditional-Shearer identity).** Written proof, independently
 reviewed; not a new entropy principle and not Lean-verified here. For
 arbitrary bundles Y_1,…,Y_w with w≥1, let Y be their union and Y_{−j}

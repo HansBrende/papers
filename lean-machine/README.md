@@ -37,6 +37,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/MatchingSeed.lean`](LeanMachine/MatchingSeed.lean) | Hall selection of one endpoint per pair meeting every loopless one-helper trap, with any one prescribed endpoint retained | this repository |
 | [`LeanMachine/MatchingRecovery.lean`](LeanMachine/MatchingRecovery.lean) | Exact floor(N/2) generating set for a partial matching plus one loopless extra helper; arbitrary nonlinear codes and attained boundary-record cost | this repository |
 | [`LeanMachine/CosetRecords.lean`](LeanMachine/CosetRecords.lean) | Exact attained-record count for a subgroup-invariant set, requiring coset separation only on that set; reuses Mathlib's saturation count | this repository |
+| [`LeanMachine/DisjointSumsExtension.lean`](LeanMachine/DisjointSumsExtension.lean) | Exact partial-assignment extension criterion for arbitrary disjoint target sums; kernel shifts and coordinatewise additive-automorphism weights, with no finite alphabet or coordinate-type premise | this repository |
 | [`LeanMachine/RankCertificate.lean`](LeanMachine/RankCertificate.lean) | Arbitrary-field finite-dimensional rank identity from an intertwining defect | this repository |
 | [`LeanMachine/ColorOrder.lean`](LeanMachine/ColorOrder.lean) | Ordered recovery and a nonlinear half-size record from port colors | this repository |
 | [`LeanMachine/IncidenceTrimming.lean`](LeanMachine/IncidenceTrimming.lean) | Double counting and paid degree reduction for finite directed incidence | this repository |

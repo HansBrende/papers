@@ -20,6 +20,7 @@ MODULES = [
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
     "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread", "RowSpreadCrux",
     "TwoSidedCodeTransfer",
+    "ClosureBarriers", "EntropyConsolidation", "FanoCertificate",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 

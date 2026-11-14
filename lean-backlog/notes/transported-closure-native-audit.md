@@ -1,7 +1,10 @@
 # Transported closure certificates and native bit cones
 
 Hans Brende and GPT-6 Astra, with Claude Fable 5.2's audit questions,
-14 November 2026. **Status: written proofs, independently reviewed; not Lean.**
+14 November 2026. **Status:** the finite assigned-rule theorem and transported
+invoice corollary in §1 are Lean-verified in
+[ClosureBarriers.lean](../ClosureBarriers.lean). The multi-option extension
+and native audit retain independently reviewed written proofs.
 No literature novelty claim. This is the bounded D9 audit following the
 [two-sided transfer](two-sided-whole-row-codes.md), not a new capacity bound.
 
@@ -171,7 +174,9 @@ and [the pair-swap audit](row-spread-of-cones.md#31-shift-covariance-existing-bo
 
 ## 5. Stop point and what remains outside the theorem
 
-The one-unit audit returns **B**, without a solver, new host or Lean development.
+The one-unit audit returned **B**, without a solver or new host. Its subsequent
+consolidation formalized the assigned-rule bound; it supplied no new native
+extraction premise.
 The controls do not establish a cheap-code counterexample to the proposed native
 property. Instead, the general assigned-rule theorem shows that its advertised
 advantage over the one-copy order method is absent.

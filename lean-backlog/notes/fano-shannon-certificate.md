@@ -3,8 +3,11 @@
 14 November 2026. Fable proposed testing row-closure intersections; Astra
 constructed the bounded relaxation and extracted the certificate. Two
 independent reviews reconstructed its inequalities from the incidence
-relation. **Status: written proof with an exact computer-assisted finite
-identity, not Lean-verified.** No literature novelty claim is made.
+relation. **Status:** the paid 28-cell upper inequality and its residual
+56/3 corollary are now Lean-verified in
+[FanoCertificate.lean](../FanoCertificate.lean). The matching construction,
+49-cell contraction adapter and order-value calculation remain written proofs
+with exact finite checks. No literature novelty claim is made.
 
 ## 1. Exact statement
 

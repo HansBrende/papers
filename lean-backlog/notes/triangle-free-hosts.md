@@ -114,6 +114,11 @@ preceding variables. Summing and applying the chain rule gives
 
 The omitted difference is TC(X_{V∖A}|Z), which is nonnegative. ∎
 
+**Formal status:** the polymatroid inequality and its finite-entropy instance
+are now proved as `soft_order_of_acyclic` and `soft_order_entropy` in
+[EntropyConsolidation.lean](../EntropyConsolidation.lean). They require no
+exact recovery or singleton-capacity assumption.
+
 This proof also holds for normalized monotone submodular functions, with
 conditional entropies interpreted as rank increments. Exact recovery makes
 I(X_v;X_Hv|Z)=H(X_v|Z), recovering the usual acyclic-set bound.

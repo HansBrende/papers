@@ -69,11 +69,15 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | | Date | What fell | Status |
 |---|---|---|---|
 | **B1** | 13 Nov 2026 | *Codes, machines and counting are tied.* An additional cheap cut puts all cones of almost every output row into boundedly many input rows. A common positive whole-row deficit along the canonical alphabets gives the literal native crux at every fixed depth and excludes oblivious linear-time transposers. The direct route needs a deficit only at one explicit window, exceeding 169ε/64. Before this the wall was three separate obstacles (paper 17, Section 4). | *Lean throughout:* geometry in [WindowSpread.lean](WindowSpread.lean), finite counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), `uniformWholeRowRateCanonicalBits_crux`, `uniformWholeRowRateCanonicalBits_excludes` and `wholeRow_window_bound_excludes` in [RowSpreadCrux.lean](RowSpreadCrux.lean), reusing Paper 14. Capacity remains a hypothesis. See [row spread](notes/row-spread-of-cones.md) §§2–5. |
-| **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Written, computer-assisted, replayed; not Lean:* [certificate](notes/fano-shannon-certificate.md) |
+| **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Paid residual upper inequality and 56/3 corollary Lean:* [FanoCertificate.lean](FanoCertificate.lean). Full 49-cell adapter, attainment and order comparison remain written/exactly checked: [certificate](notes/fano-shannon-certificate.md). |
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Written, reviewed; not Lean:* [amplification](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Written, exactly checked, reviewed; not Lean:* [certificate and adapter](notes/triangle-free-shannon-gap.md) |
 
-**Classes with proved deficits** (half plus o(1) at fixed window unless stated otherwise).
+**Classes with proved deficits and conditional bound tools.** Half means
+half plus o(1) at fixed window. The [machine-exclusion table](notes/conditional-machine-exclusions.md)
+states the additional native extraction, alphabet and payment hypotheses;
+B1 does not supply them. Rank formulas and construction calibrations below
+are distinguished from uniform deficit theorems.
 
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
@@ -83,10 +87,10 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
 | Pairing in another basis | Group relations: coefficients invariant under any growing twisted-symmetry subgroup, or with a common factor algebra of dimension o(d²); anonymous local rules on any growing group family; sparse Bruhat profiles on SL₂(F_p) | linear, every field, one-way helpers | *written, reviewed*: [symmetry and locality](notes/symmetry-and-locality.md); first form in [row spread](notes/row-spread-of-cones.md) §14 |
-| | Commuting blocks; two shared blocks (every field); three shared blocks of special shape; one repeated seed | linear | *written*: [twisted swap](notes/twisted-swap.md) §7, [two-term](notes/two-term-equality.md), [assemblies](notes/three-term-seed-assemblies.md), [identity lifts](notes/identity-lift-comparison.md) |
+| | Commuting blocks; two shared blocks (every field); three shared blocks of special shape; one repeated seed | scalar linear; the finite-alphabet decoder qualification is in the exclusion table | Paper 17's triangularizable-side theorem; [row spread §31](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap), [two-term](notes/two-term-equality.md), [assemblies](notes/three-term-seed-assemblies.md), [identity lifts](notes/identity-lift-comparison.md) |
 | Symmetric spectrum | Bounded weight Σ‖A‖‖B‖ over ℂ; contracting recovery; a sign symmetry (every field of characteristic ≠ 2); small coefficients; helper maps with a parity | linear | *Lean*: [A](A-bounded-weight.md), [B](B-recovery-matrix.md); *written*: [pass calculus](notes/pass-calculus.md) §5 |
-| Rank count | Decoder blocks invertible or zero (second rule) | linear | *Lean*: [C](C-second-rule.md) |
-| Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | varies; folded-cube gains binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
+| Rank count | Frontier-rank and local-invertibility sums (second rule); a deficit requires a separate bound on the resulting sum, not invertibility alone | linear; **not a general half-rate class** | *Lean*: [C](C-second-rule.md) |
+| Host bound / calibrations | Basis-hypercube hosts have upper bound d²/2+2^(w−2)d. Loops, polygons, witness pairs, cliques and the displayed diagonal codes are construction calibrations, not further universal exclusions | host upper bound: all alphabets; folded-cube lower codes: binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
 after a change of basis; spectral proofs bound eigenvalue counts; source proofs eliminate paired
@@ -106,12 +110,14 @@ For **rates approaching one**, independent-source encoders of bounded support ar
 sources per coordinate give rate at most 2/3, mean support μ < 3 gives (1+μ)/4, nonlinear encoders
 included. This says nothing about correlated native fibres or about sparse recovery (X26).
 
-**What cannot work, and what can.** Every argument that buys cells and deduces the rest, including
-intersections with transported copies of the code, is bounded by the acyclic (order) bound of the
-original helper graph, and gives no common deficit on mixing hosts (X31). What can beat order:
+**What cannot work, and what can.** Combining displayed recovery rules with unit coordinate
+prices and additive message bills, including transported copies, cannot improve the original
+acyclic bound and gives no common deficit on mixing hosts (X31). What remains outside this barrier:
 (i) entropy identities beyond closure, as in B2–B4, on a family where order fails; (ii) an acyclic
 certificate supplied by native geometry at the level of bit cones; (iii) a joint message for
-several runs that is shorter than the sum of the separate ones.
+several runs that is shorter than the sum of the separate ones; (iv) a correctness-dependent
+extraction of a source or decoder class with an algebraic/source-counting bound from the table.
+This is a list of logical openings, not proved premises or newly opened fronts.
 
 Open questions, nearest the wall first:
 - **G0. Is sup_w R(w) = 1 already?** Paper 15's field-linear codes have rate at least 1 − e^{−λm}
@@ -214,7 +220,7 @@ No known code family has a fixed-window gain above one half beyond O(d).
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
 | **X30** | A constant plane deficit using only row-closure equalities from pencils at o(n) centres | Make all radial cells at k centres constant and the rest independent: these equalities admit entropy ≥N−kn²(n+1). Separately every row closure adds <nd cells. This does not prove a necessary growing proof depth or exclude arbitrary Shannon certificates ([note §5a](notes/triangle-free-hosts.md)) | Additional recovery/budget identities or information from Ω(n) centres; the general plane conjecture stays open |
-| **X31** | Transported closure with additive message bills as a stronger coding bound | For m helper graphs, assign each recovered coordinate to its firing rule: N−seed≤Σα_j, where α_j is maximum induced acyclic size. For transported copies the intersection invoice is ≥N−α, exactly the original acyclic bound. This applies to native bit cones too; it does not prevent transports helping discover such a set. The earlier no-empty-rectangle theorem retains its m-dependent refinement. Paid localisation still lacks an unrestricted mutual-capacity consumer ([native audit](notes/transported-closure-native-audit.md), [§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Extra Shannon or functional identities, a genuinely smaller joint-message bill, or a new native large-acyclic-set extraction; not another closure-only copy |
+| **X31** | Transported closure with additive message bills as a stronger coding bound | For m helper graphs, N−seed≤Σα_j. The transported-copy invoice is at least N−α, the original acyclic bound, and can be worse. **Assigned-rule and invoice bounds Lean:** [ClosureBarriers.lean](ClosureBarriers.lean). This includes native bit cones without preventing transports helping discover an acyclic set. The written rectangle theorem retains its m-dependent refinement; paid localisation still lacks an unrestricted mutual-capacity consumer ([audit](notes/transported-closure-native-audit.md), [§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Extra entropy/functional identities, a smaller joint-message bill, a native large-acyclic-set extraction, or a correctness-dependent source/decoder restriction; not another closure-only copy |
 
 ## Maintenance
 
@@ -228,9 +234,11 @@ No known code family has a fixed-window gain above one half beyond O(d).
   two-sided adapter (Lean) and the closure barriers (X31) are banked. The D9 audit named no
   correctness-supplied property (outcome B). Fable's reserve premise is withdrawn: on a
   transpose-invariant code the second decoder is the transpose-conjugate of the first, so it adds
-  no rank condition beyond rank(τ − 𝓡) ≤ deficit, which is the linear wall itself. Astra: put the
-  day's short theorems into the Lean backlog as typechecked statements, and state each half-rate
-  class as a machine exclusion through B1. Fable: the roadmap and the report. The next premise
-  must be of type (i), (ii) or (iii) of "What cannot work, and what can", and must come with an
-  inequality; no experiment before that.
+  no rank condition beyond rank(τ − 𝓡) ≤ deficit, which is the linear wall itself. The assigned-rule
+  theorem and soft order bound are now Lean-proved; rectangle and subcode targets are typechecked
+  propositions, not proofs. See the [consolidation index](notes/consolidation-status.md) for the
+  finite-certificate status and the [conditional exclusion table](notes/conditional-machine-exclusions.md)
+  for what each code class would require of native fibres. Fable: the roadmap and the report.
+  A next premise must name its consumer and inequality; no experiment before that. The four
+  logical openings above are not an exhaustive classification of possible methods.
 - Last re-evaluation (D0): 14 November 2026.

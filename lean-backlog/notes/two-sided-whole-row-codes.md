@@ -3,8 +3,10 @@
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** the finite upper-bound adapter, common-deficit equivalence and native
 consequences are Lean-verified in [TwoSidedCodeTransfer](../TwoSidedCodeTransfer.lean).
-The symmetry normalization, exact examples and Section 7 are reviewed written
-proofs; their formalization is not claimed. No literature novelty claim.
+The symmetry normalization, exact examples and Section 7's rectangle/subcode
+arguments retain reviewed written proofs. Their precise Lean targets and the
+separately proved assigned-rule bound are listed in the
+[consolidation index](consolidation-status.md). No literature novelty claim.
 Front D10 of the [roadmap](../wall.md).
 
 Fix a helper map ρ on [d] and a finite alphabet Q of size q≥2. A set C of

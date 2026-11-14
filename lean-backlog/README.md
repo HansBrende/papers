@@ -6,6 +6,13 @@ Items A, B and C are verified in `lean-machine`. Item D (added 12 November 2026,
 **Roadmap:** [`wall.md`](wall.md) states where the wall stands today and lists the direct, indirect
 and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.
 
+**Consolidation:** the [proof-status index](notes/consolidation-status.md) separates
+the new Lean proofs from typechecked but unproved targets. The
+[conditional machine-exclusion table](notes/conditional-machine-exclusions.md)
+lists the exact extra fibre, relation and decoder hypotheses needed to apply
+the proved code classes through the native transfer. It asserts no new native
+extraction or unconditional transposition lower bound.
+
 ## What is here
 
 | Item | File | Declaration names | Field | Status |
@@ -158,7 +165,9 @@ Native extraction and source audit:
   the upper bound for arbitrary sources and nonlinear recovery; the known
   three-lane construction attains it over every finite base alphabet.
   This is a finite improvement beyond order, not an asymptotic native
-  exclusion. Computer-assisted, not Lean-verified.
+  exclusion. The paid residual upper inequality and 56/3 corollary are now
+  Lean-verified in [FanoCertificate.lean](FanoCertificate.lean); attainment,
+  the 49-cell adapter and order calculation remain written/exactly checked.
 - [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
   any strict finite Shannon/order gap persists at positive density on
   growing fixed-window hosts, also with incidence girth Ω(log d) at the
@@ -167,8 +176,10 @@ Native extraction and source audit:
   these hosts already have an order-based deficit. The
   [paid Fano inequality](notes/fano-soft-recovery.md) charges arbitrary
   recovery errors, and the [orbit dictionary](tools/fano-shannon/orbit-dictionary.md)
-  makes its certificate geometric. Written and independently reviewed,
-  not Lean-verified. The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
+  makes its certificate geometric. The per-coordinate paid Fano inequality
+  is Lean-verified; amplification and the joint-column-error coefficient
+  retain independently reviewed written proofs.
+  The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
   gives order 140 and triangle lower bound 130, without a new Shannon upper.
 - [Two-sided whole-row codes](notes/two-sided-whole-row-codes.md): a
   translated-intersection argument makes common-deficit existence
@@ -284,7 +295,9 @@ Native extraction and source audit:
   Thus transported closure with additive message costs cannot improve the optimal
   one-copy acyclic bound, even on actual bit cones. The bounded native audit also
   distinguishes time occurrences from raw bits and corrects the isometry premise.
-  Written, independently reviewed; no new native capacity theorem or Lean claim.
+  Its finite assigned-rule and invoice bounds are now proved in
+  [ClosureBarriers.lean](ClosureBarriers.lean). The native audit and multi-option
+  extension remain written; no new native capacity theorem is asserted.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

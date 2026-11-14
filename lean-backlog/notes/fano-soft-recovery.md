@@ -1,7 +1,10 @@
 # The Fano inequality with paid recovery errors
 
 Hans Brende and GPT-6 Astra, 14 November 2026.
-**Status: written proof with exact finite accounting, not Lean-verified.**
+**Status:** the polymatroid form of the per-coordinate inequality (2) is
+Lean-verified as `paid_fano` in [FanoCertificate.lean](../FanoCertificate.lean).
+The separate joint-column-error coefficient 41/84 in (1), and the finer
+contextual accounting below, retain written proofs with exact checks.
 This extracts a conditional form of the
 [33-term Fano certificate](fano-shannon-certificate.md). It specifies what
 must be paid when some helpers are outside a proposed application. It

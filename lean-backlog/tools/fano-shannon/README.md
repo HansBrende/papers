@@ -4,7 +4,23 @@ The [proof note](../../notes/fano-shannon-certificate.md) proves full Shannon
 value **119/3**, strictly below order value **41**, for the Fano whole-row
 host. The existing three-lane code attains the bound over every finite
 base alphabet. The upper proof applies to arbitrary sources and recovery
-functions; it is computer-assisted and **not Lean-verified**.
+functions. Its paid 28-cell upper inequality and residual 56/3 corollary
+are now **Lean-verified** in [FanoCertificate.lean](../../FanoCertificate.lean).
+The triangle-code attainment, 49-cell contraction adapter, order value 41
+and separate joint-column-error coefficient 41/84 remain written proofs
+with exact checks. The [consolidation index](../../notes/consolidation-status.md)
+gives the precise scope and Lean build command.
+
+All reproduction scripts below require **Python 3.10 or later**. Check that
+the generated semantic Lean proof still matches the saved certificate with:
+
+```sh
+python3 lean-backlog/tools/fano-shannon/generate_lean.py --check
+```
+
+Omit `--check` to regenerate it. The generator is not part of the trusted
+proof: Lean checks the graph incidences, automorphisms, semantic inequalities
+and their exact integer combination. No LP solver is needed for this step.
 
 Run from the repository root, without disabling assertions:
 
@@ -46,8 +62,8 @@ recurrences and the saved receipt with:
 python3 lean-backlog/tools/fano-shannon/pg3_order.py
 ```
 
-These are written proofs with ordinary exact Python checks, not Lean
-formalizations. The separate
+The Python receipts also cover statements outside the Lean scope listed
+above; a successful Python run is not itself a Lean proof. The separate
 [finite-gap amplification theorem](../../notes/finite-shannon-gap-amplification.md)
 has a written probabilistic proof and needs no new search or numerical
 certificate. It gives a growing fixed-window gap, not a new native

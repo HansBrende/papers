@@ -75,7 +75,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 **Classes with proved deficits.** The full list, with hypotheses, status and what each class
 would exclude on the machine side, is the
-[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (20 rows); Lean
+[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (21 rows); Lean
 boundaries are in the [status index](notes/consolidation-status.md). None of the hypotheses is
 supplied by B1. By mechanism, at fixed window:
 - *Opposite row orders and paid pairing* (nonlinear, half): hyperfinite row relations, near-abelian
@@ -86,10 +86,14 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. Written, reviewed; [bound](notes/pairing-coset-bound.md).
-- *Sparse recovery rank* (every field): half for triangle-free actual undirected subcubic supports,
-  or two outgoing helpers with unrestricted incoming degree; three outgoing helpers give two-thirds
-  without the additional half-rate reciprocity premise. A weaker four-arc exclusion suffices.
-  A matching plus one helper is at half even nonlinearly. Written, reviewed; [proof](notes/subcubic-half-rank.md).
+- *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
+  triangle-free undirected support of degree at most three, including directed helper subsets;
+  its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
+- *Sparse recovery rank* (every field): Paper 4 already covers the original scalar and directed
+  reciprocity forms. The new [short proof](notes/subcubic-half-rank.md) weakens the forbidden
+  pattern to a reciprocal pair of outgoing neighbours and proves rank≥⌈N/k⌉ at outgoing width
+  k≥2. Its last-row lemma is Lean; remaining new adapters are written. Matching plus one helper
+  has a separate written nonlinear half-size seed proof.
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
@@ -258,18 +262,19 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
      repaired incident exceptions; one-symbol price per omitted pair/block; pairing rate
      ≤1/2+b/d²+O_w(d^(-1/2)) without reverse-degree assumptions. Triangle lanes have the analogous
      relative-template bound. Written, not Lean; no arbitrary-code or native extraction claim.
-  2. *Done (Fable survey, Astra scope audit).* [Literature](notes/storage-codes-large-girth-literature.md):
-     exact reciprocal triangle-free subcubic linear patterns already satisfy half via zero forcing.
-     The other entries remain leads where tagged; no claim that the survey proves openness.
-  3. *Done (Astra, independently reviewed).* [Target A and strengthenings](notes/subcubic-half-rank.md):
-     the full asymmetric subcubic half-rank theorem, all fields; two outgoing helpers without an
-     incoming cap; rank≥⌈N/k⌉ at outgoing width k≥2 under the weaker four-arc exclusion. The
-     matching-plus-one-helper case is nonlinear. Written, not Lean. No native extraction is proved.
-  4. *Astra next.* Formalize this finite rank argument in three bounded units: prefix row spans and
-     the last-row obstruction; closed-set induction and row order; coding corollaries. Reuse
-     Mathlib's row-span rank, span-insert and finite dimension APIs. No SCC library or geometric
-     machinery is needed. *Fable in parallel:* nonlinear Target B, starting at the precise step
-     that used row-space dependence; the pure cycle-plus-matching case is already settled.
+  2. *Reuse audit complete.* [Literature/correction](notes/storage-codes-large-girth-literature.md):
+     original A is Paper 4 Theorem S; full weighted nonlinear B is Paper 7 N3; the soft memo
+     already gives coefficient-one errors. Petersen and five-cycle certificates also already
+     exist. The proposed new LPs were stopped before a solve. No original A/B target remains.
+  3. *Banked.* [LastRowSupport](../lean-machine/LeanMachine/LastRowSupport.lean) proves the new
+     local four-arc lemma over semirings without zero divisors. [SubcubicReuse](SubcubicReuse.lean)
+     exposes the existing nonlinear/soft theorem for asymmetric helper subsets. Neither claims
+     new movement in the whole-row frontier.
+  4. *Astra next bounded formalization:* the counting/order adapters for the genuinely weaker
+     four-arc and arbitrary-width rank extensions, reusing original scalar endpoints where
+     applicable. *Fable next:* re-evaluate any proposed nonlinear/shortest-cycle extension
+     against Paper 7's actual private-parent decomposition before another experiment. A new
+     premise must go beyond N3/U3/T and name its native or whole-row consumer.
   5. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
      not a replacement for the native-support or nonlinear questions.

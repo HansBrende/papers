@@ -22,7 +22,7 @@ MODULES = [
     "TwoSidedCodeTransfer", "NormalizedCodeTransfer", "NormalizedRateTransfer",
     "ClosureBarriers", "RectangleBarrier", "EntropyConsolidation",
     "DecoderSelection", "DecoderEntropy", "SubcodeSelection", "ConditionalSubcode",
-    "ShannonCertificate", "FanoCertificate",
+    "ShannonCertificate", "SubcubicReuse", "FanoCertificate",
     "FanoFull", "FanoOrder", "FanoAttainment",
     "GridCertificate", "GridFull", "GridOrder",
     "WindowPages", "FarClebsch", "PaleyTournament",

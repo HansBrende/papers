@@ -17,10 +17,15 @@ lists the exact extra fibre, relation and decoder hypotheses needed to apply
 the proved code classes through the native transfer. It asserts no new native
 extraction or unconditional transposition lower bound.
 
-**New written theorem:** [half-rank bounds for sparse recovery](notes/subcubic-half-rank.md)
-settle the asymmetric triangle-free subcubic target over every field. The stronger directed
-form covers two outgoing helpers without an incoming-degree cap; the note states its affine-code
-consequence and remaining native premises. This proof is reviewed but not yet formalized.
+**Sparse-recovery update:** [half-rank bounds for sparse recovery](notes/subcubic-half-rank.md)
+give a shorter proof, a weaker forbidden-pattern condition, and an arbitrary-outgoing-width
+bound. The original asymmetric subcubic and directed two-helper results were already in Paper 4's
+Lean-verified Theorem S; the note corrects the initial overlap claim. The local last-row lemma is now
+[Lean-verified](../lean-machine/LeanMachine/LastRowSupport.lean), even over semirings without
+zero divisors. [SubcubicReuse.lean](SubcubicReuse.lean) composes Paper 7's existing N3 and
+soft-recovery results: the entire original nonlinear Target B and its coefficient-one error
+bound were already proved, also for directed helper subsets. No new certificate search is needed.
+Remaining formalization concerns the actual four-arc/arbitrary-width rank extensions.
 
 ## What is here
 

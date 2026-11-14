@@ -187,3 +187,5 @@ import LeanMachine.ShuffleShear.Model
 import LeanMachine.ShuffleShear.StoneShuffle
 import LeanMachine.ShuffleShear.StoneUnshuffle
 import LeanMachine.ShuffleShear.RowShear
+
+import LeanMachine.LastRowSupport

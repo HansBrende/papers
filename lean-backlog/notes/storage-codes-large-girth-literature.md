@@ -6,10 +6,17 @@ check of Gentner–Rautenbach's Theorem 4 are in Sections 2–3. Tags: [H] read 
 [S] search snippet only, [I] my inference. Statements tagged [S] or [I] must be checked against the
 papers before any use. Section 3 is a written, independently reviewed audit; not Lean-verified.
 
-**Update:** Target A is now proved over every field by the self-contained
-[sparse-recovery rank theorem](subcubic-half-rank.md), with directed strengthenings. The finite
-searches below are historical calibration and are not used in that proof. Target B remains open
-in this project; its literature status is not asserted by this survey.
+**Reuse audit (14 November): both original targets were already proved in this repository.**
+Paper 4's Theorem S proves A over every field, including asymmetric support. Paper 7's
+Theorem N3 proves B for **every** finite triangle-free subcubic graph, as the weighted
+polymatroid inequality `2h(V)≤Σh({v})`; its soft-recovery memo also proves the coefficient-one
+error version. See [SubcubicReuse.lean](../SubcubicReuse.lean) for the short composition and
+asymmetric-helper adapter. The conjectural wording and proposed finite searches in C91–C95
+missed these results. No new experiment is needed to establish either target.
+
+The [new rank proof](subcubic-half-rank.md) still contributes a shorter argument and the weaker
+four-arc/arbitrary-outgoing-width extensions. Its local span lemma is now Lean-verified; its
+new rank-counting/traversal adapters remain written.
 
 A *storage code* on a graph is a set of words in which every coordinate is a function of its
 neighbours' coordinates (guessing games, index coding with symmetric side information). Pairing on a
@@ -54,11 +61,14 @@ n/2 + o(n)".**
 - *Product structure.* Nothing on the swapped tensor square (p,c) ~ (q,m) iff q ~ c and m ~ p.
   Nearest: Cameron–Dang–Riis's blow-up lemma gn(G(t), s) = t·gn(G, s^t) [H].
 
-## 2. What this says about our open case
+## 2. Scope after the repository audit
 
-- This survey did not settle the abstract degree-three capacity problem. That is not a proof of
-  literature novelty or openness. The explicit examples above one half cited here have degree
-  at least five; the exact reciprocal linear subcubic slice is already bounded by one half.
+- The external survey did not identify the degree-three theorem, but Paper 7 already settles
+  the entire triangle-free subcubic capacity problem, including nonlinear codes. The finite
+  counterexample/certificate passes were therefore redundant for those original targets.
+- This is a coordinate-graph theorem. It does not settle the whole-row host at window three:
+  those cells may have many coordinate helpers, and even the mutual cell graph on a cubic
+  incidence host can have degree nine.
 - Any purported half-rate bound covering all those abstract degree-five or degree-seven graphs
   is false. A more restricted proof may use degree three, large girth, or the array structure.
 - A perfect matching supplies n/2 symbols; without one this lower bound needs another argument.
@@ -91,17 +101,20 @@ The matrix B=I−P, where P exchanges the endpoints of each vertical rung, has n
 every field and is supported inside that prism. Its actual graph is just a matching. Also, for
 asymmetric support, a force along an edge of the undirected union may use a zero coefficient.
 
-**Target A (abstract, linear; proved, written and independently reviewed).** Let B be n×n with B_ii≠0 over any field. Suppose
+**Target A (abstract, linear; already Lean-verified in Paper 4, Theorem S).** Let B be n×n with B_ii≠0 over any field. Suppose
 the undirected graph with edge {i,j}, for i≠j, exactly when B_ij≠0 or B_ji≠0 is triangle-free and has
 maximum degree at most three. Then nullity(B)≤⌊n/2⌋, allowing asymmetric zeros.
-The [proof](subcubic-half-rank.md) uses the last independent row of a support-respecting row order;
-it does not assert a small all-pivot generating seed. It also gives half for two outgoing helpers
-with no incoming-degree cap, and two-thirds for three outgoing helpers, under the stated weaker
-four-arc exclusion. These are coordinate degrees, not whole-row windows. Not yet Lean-verified.
+The [new proof](subcubic-half-rank.md) uses the last independent row of a support-respecting
+row order. The initial audit missed Paper 4's existing proof of the original and directed
+reciprocity forms, including two outgoing helpers. Its genuinely weaker four-arc hypothesis
+and arbitrary-outgoing-width bound are new relative to those declarations and remain partly
+formalized. These are coordinate degrees, not whole-row windows.
 
-**Target B (abstract, nonlinear; conjectural).** Does every loopless triangle-free graph of maximum
-degree at most three have storage capacity at most n/2? The small-graph and cycle results above
-are leads; no exhaustive literature claim is made here.
+**Target B (abstract, nonlinear; already Lean-verified in Paper 7, Theorem N3).** Every finite
+triangle-free graph G of maximum degree at most three satisfies the weighted Shannon bound
+`2h(V)≤Σ_v h({v})` for every polymatroid valid on its neighbourhoods. In particular,
+`|C|²≤q^n` for every q-ary code, linear or nonlinear. Helpers may be any directed subsets of
+those neighbourhoods. The theorem is exact, not merely asymptotic or experimental.
 
 **Target C (arrays/native application; conditional).** Apply A after obtaining scalar affine
 equations, valid on the counted fibre, with nonzero diagonal and the stated triangle-free
@@ -188,36 +201,44 @@ The sampling routine deduplicates its sample, but the separately prepended Peter
 duplicate a sampled graph. Preserve graph identifiers, commands and versions for a future census;
 no rerun is needed to establish A now that the all-field proof is available.
 
-## Target B, first evidence: the Shannon bound is exactly n/2 on every small case (Fable, 14 November)
+## 5. The nonlinear and soft targets: reuse, not a new certificate search
 
-Status: floating-point LP values (HiGHS), one hand proof, no general proof. Scripts:
-[shannon_graph.py](../tools/host-probe/shannon_graph.py) (all 2^n subsets, all elemental
-inequalities, so the optimum is the full Shannon bound),
-[petersen_certificate.py](../tools/host-probe/petersen_certificate.py).
+The C95 floating-point LP pass reported value 5 for two ten-vertex inputs and 6 for seventeen
+twelve-vertex inputs. Its graph manifest was not saved, so the census/completeness claim is not
+independently reproduced. More importantly, the following existing proofs already decide all
+these instances and the full class:
 
-| graphs | n − α (order bound) | Shannon bound | n/2 |
-|---|---:|---:|---:|
-| Petersen, and one cubic graph of girth 4 on 10 vertices | 6 | 5.000000 | 5 |
-| all 17 connected triangle-free non-bipartite cubic graphs on 12 vertices | 7 | 6.000000 each | 6 |
+- Paper 4, [`Petersen.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Petersen.lean),
+  `rateBound_petersen`: an exact weighted Shannon certificate, with 58 elemental terms.
+- Paper 4, [`Pentagon.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Pentagon.lean): the five-cycle weighted half bound.
+- Paper 7, [`N3.lean`](../../Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/lean/HalfRate/N3.lean),
+  `n3_decomp`, `rateBound_n3`, `card_sq_le_n3`: the general triangle-free subcubic theorem.
+- Its [`SoftRecovery/Decomposition.lean`](../../Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/memo-soft-recovery/lean/SoftRecovery/Decomposition.lean),
+  `soft_half`: for any polymatroid, with no exact recovery premise,
 
-So on every triangle-free cubic graph with at most 12 vertices the Shannon inequalities alone give
-rate one half for arbitrary nonlinear codes, strictly below the order bound. In the soft language:
-the statement "2H(X) ≤ Σ_v H(X_v) for every storage code" is c_Sh = 2, and it holds on all these
-graphs. (For n ≤ 10 this agrees with the floating-point search of Baber et al.)
+  `2h(V) ≤ Σ_v h({v}) + Σ_v [h(N_v ∪ {v}) − h(N_v)]`.
 
-**The five-cycle by hand.** Vertices 1..5 in cyclic order, each a function of its two neighbours.
-The closures of {1,3} and {2,4} are {1,2,3} and {2,3,4}; their union generates everything and they
-meet in the edge {2,3}. So h(1,3) + h(2,4) ≥ H + h(2,3). And {2,3,5} generates, so
-h(2,3) + h(5) ≥ H. Adding: **2H ≤ h(1,3) + h(2,4) + h(5) ≤ 5.** The seeds {1,3}, {2,4}, {5}
-partition the vertices; the gain over order comes from an edge appearing as the intersection of two
-closures.
+The last statement follows on subcubic hosts by using `n3_decomp`; for smaller, possibly
+asymmetric helper sets, diminishing returns only enlarges the error term. The
+[reuse adapter](../SubcubicReuse.lean) exposes this composition. This is the soft upper bound
+`c_Sh≤2`. For the symmetric neighbourhood relation of a graph with an edge, a paired-edge
+code attains 2; arbitrary directed subsets retain only the upper bound. No source symmetry, linearity,
+or unit singleton cap is assumed.
 
-**Petersen.** Reduced by its 120 automorphisms the LP has 34 subset orbits and 148 distinct
-inequalities; dual simplex returns value 5 with 19 nonzero multipliers (printed by the script).
-It is a certificate in floating point, not yet an exact or readable proof.
+**The existing general mechanism.** Remove a shortest cycle of the remaining graph. It is
+chordless. If an outside vertex meets two cycle vertices, shortestness forces a four-cycle
+with those two vertices opposite. Degree three leaves at most one outside neighbour per cycle
+vertex. Three records and a supplying-colour rule make the outside parents private, with
+opposite four-cycle vertices co-supplied. The acyclic remainder uses two records. The nested
+elimination theorem combines the pieces; its soft version charges each recovery error once.
+This is already the general seed/uncrossing pattern sought in C95.
 
-**Conjecture (Target B, Shannon form).** For every triangle-free graph of maximum degree three,
-every polymatroid with the recovery equalities satisfies 2h(V) ≤ Σ_v h({v}). With the linear
-theorem (rank at least ⌈N/2⌉ over every field) this would make degree three the first case where
-one half is proved for all codes on a family on which the order bound fails: for cubic graphs of
-large girth the order bound is about 0.555n.
+The new finite LPs were stopped before a solve. Unit-cap half alone would not imply the
+weighted statement on a nontransitive graph; the weighted exact-recovery statement alone would
+not justify a coefficient-one soft inequality. Here both stronger statements are justified by
+the cited existing Lean proofs, not by those numerical values. Large girth alone also does not
+fix an order bound near 0.555n: bipartite cubic graphs of arbitrarily large girth have order n/2.
+
+The genuine remaining work is the weaker directed four-arc rank extension and, on the machine
+side, an extraction of hypotheses that these existing coding bounds consume. Neither the
+coordinate degree nor the private-parent condition is supplied by a whole-row window bound.

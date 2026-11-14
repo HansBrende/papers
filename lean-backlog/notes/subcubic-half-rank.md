@@ -2,11 +2,20 @@
 
 Hans Brende, GPT-6 Astra and Claude Fable 5.2, 14 November 2026.
 
-**Status:** written proofs, independently reviewed; not Lean-verified. Hans directed the
-research. Fable proposed the asymmetric target, tested finite instances and supplied the removal
-argument. Astra developed the row traversal, final-basis-row argument and directed strengthening below. The reciprocal
-case was already known from zero forcing; the proof here is self-contained. No literature novelty
-claim is made for the asymmetric case.
+**Status:** the new proof and strengthenings are written and independently reviewed;
+the [last-row lemma](../../lean-machine/LeanMachine/LastRowSupport.lean) is now Lean-verified. **Reuse correction:** the original asymmetric triangle-free
+subcubic theorem, the directed reciprocity form below, and the two-helper special case were
+already proved in Paper 4, Theorem S, including in
+[`MotionDepthCodes/Subcubic.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Subcubic.lean).
+The initial version of this note overlooked that coverage. Nonzero diagonal reduces to its
+unit-diagonal statement by invertible row scaling. The existing memo even gives a matching-number
+bound on graph-supported scalar codes.
+
+Hans directed the research. Fable proposed the re-examined target, tested finite instances and
+supplied the removal argument. Astra developed the shorter row-order/last-row proof below.
+The additions relative to Theorem S are the weaker **four-arc exclusion** and the bound for
+**arbitrary outgoing width k**; the new proof does not depend on zero forcing. No external
+literature novelty claim is made.
 
 ## 1. The theorem and its coding consequence
 
@@ -44,9 +53,9 @@ space is injective on C. The empty-code case is immediate. In particular this bo
 with scalar affine recovery equations whose resulting matrix has the stated support and
 nonzero-diagonal properties.
 
-This settles Target A of the [literature note](storage-codes-large-girth-literature.md), in every
-field and at every size. It does not settle nonlinear storage capacity on these graphs, or the
-whole-row question at window three. Three helper **rows** can contain many helper coordinates;
+This reproves the already formalized Target A of the
+[literature note](storage-codes-large-girth-literature.md), in every field and at every size. Nonlinear storage capacity on the triangle-free subcubic graphs was already bounded by
+Paper 7's Theorem N3. The whole-row question at window three remains separate. Three helper **rows** can contain many helper coordinates;
 three outgoing coordinate helpers need not give undirected degree three. A self-helper can also
 make the diagonal of a recovery equation vanish. None of these additional native premises is
 obtained merely from a cone-size bound.
@@ -169,20 +178,29 @@ branching configurations that Lemma 3 does not cover.
 
 ## 5. Status, reuse and the next gap
 
-The earlier exact reciprocal-support half bound follows from
-[Gentner–Rautenbach, Theorem 4](https://arxiv.org/pdf/1608.00747) and elementary exceptional cases.
-Theorem A covers arbitrary partial and asymmetric subcubic supports, as well as Corollary A2, and uses none of that
-theorem as a dependency. Fable's binary census is consistent with it; neither the census nor a
-floating-point search is used in the proof.
+Paper 4's `finrank_subCode_le_half` uses `RecTriangleFree` and `Star`. The latter is exactly
+the directed reciprocity premise of Theorem A. The former forbids **either** direction between
+two outgoing neighbours of a vertex; our proof only forbids a **reciprocal** pair there.
+Its graph specialization `rank_ge_half_of_degree_le_three` already covers partial and asymmetric
+supports over every field. The shorter proof here is an alternative proof of those endpoints,
+not their first verification. The arbitrary-width Corollary A3 is outside their degree hypotheses.
 
-The proof is a formalization target: finite row spaces, rank increments, support traversal and
-elementary graph reductions. Existing removal/rank and finite graph APIs should be reused;
-no arithmetic geometry or analytic machinery is needed. Until that work is complete, this
-remains a written theorem, not a Lean theorem.
+The [last-row support argument](../../lean-machine/LeanMachine/LastRowSupport.lean) is now
+Lean-verified as `subsingleton_of_rows_mem_span_insert`, `card_le_one_of_rows_mem_span_insert`
+and `new_columns_subsingleton`. It works over any semiring without zero divisors, with arbitrary
+ambient index type and only the displayed columns' diagonal/span hypotheses. The proportional
+restriction lemma needs only a semiring. The full rank statements remain field statements;
+their new counting/order adapters are not yet formalized.
+Existing scalar half/matching endpoints should be reused rather than reproved merely to
+obtain the original statement. Fable's binary census is consistent with the theorem;
+neither that census nor a floating-point search is used in the proof.
 
 For the main tape question, the missing step is still a native property with a consumer.
 Corollary A1 consumes scalar affine recovery on a triangle-free support of **undirected** degree
 at most three; Corollary A2 removes the reverse-degree issue for two outgoing helpers. Neither
 turns arbitrary cones into the required non-tautological affine equations or supplies the forbidden-pattern condition. Separately,
-removing linearity from the full subcubic statement remains a concrete question; Lemma 3
-settles one subcase without suggesting that arbitrary nonlinear rules have a row-space basis.
+Paper 7's `rateBound_n3` already removes linearity on triangle-free subcubic graph supports;
+`soft_half` in its soft-recovery memo also charges each center's recovery error once. The
+[reuse adapter](../SubcubicReuse.lean) makes the directed-subset consequence explicit. Those
+results do not assume the newly weakened four-arc condition alone. Lemma 3 remains a separate
+ordinary seed proof for a matching plus one helper, with no triangle-free premise.

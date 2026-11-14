@@ -1679,3 +1679,9 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.restrict_mem_constraint_ker
 #print axioms LeanMachine.WholeRow.finrank_rowSpace_add_rank_le
 #print axioms LeanMachine.WholeRow.finrank_rowCode_le_rank
+
+-- One adjoined row on columns annihilating the old span.
+#print axioms LeanMachine.LastRowSupport.exists_mul_on_of_mem_span_insert
+#print axioms LeanMachine.LastRowSupport.subsingleton_of_rows_mem_span_insert
+#print axioms LeanMachine.LastRowSupport.card_le_one_of_rows_mem_span_insert
+#print axioms LeanMachine.LastRowSupport.new_columns_subsingleton

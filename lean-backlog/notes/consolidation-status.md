@@ -8,7 +8,8 @@ is still open.
 
 | Item | Lean coverage | What remains |
 |---|---|---|
-| Sparse-recovery half rank and bounded-outdegree rank | None yet. [Written, independently reviewed proof](subcubic-half-rank.md): arbitrary fields, asymmetric subcubic supports, stronger two-helper and directed forms, and arbitrary finite-alphabet subsets of affine kernels. | Formalize the generic prefix-rank/support lemma, the last-row four-arc obstruction, the closed-set row order and the cardinality adapters. Mathlib row-span/finite-dimension APIs suffice; no zero-forcing or SCC library is needed. |
+| Sparse-recovery rank: reuse and new last-row lemma | Original asymmetric subcubic and directed reciprocity bounds already in Paper 4, Theorem S. [LastRowSupport.lean](../../lean-machine/LeanMachine/LastRowSupport.lean) now proves the proportional-restriction lemma and at-most-one-new-column obstruction under the weaker four-arc condition, over semirings without zero divisors with localized hypotheses. | The new arbitrary-width/four-arc rank bounds still need the counting and row-order/closed-cut adapters. No new verification of the original scalar endpoint is claimed. |
+| Triangle-free subcubic nonlinear and soft bounds | [SubcubicReuse.lean](../SubcubicReuse.lean) composes existing `HalfRate.n3_decomp`, `rateBound_n3` and `SoftRecovery.soft_half`; asymmetric helper subsets use diminishing returns. Exact weighted half and recovery-error coefficient one hold for arbitrary polymatroids. | None for these statements. The original Target B was already proved in Paper 7; no new Petersen/twelve-vertex LP is needed. Coordinate-graph support is an extra native premise, not whole-row window three. |
 | Matching plus one helper | None yet. [Written nonlinear proof](subcubic-half-rank.md#4-a-nonlinear-subcase-a-matching-plus-one-helper), including partial matchings and fixed boundaries. | Finite Hall selection and functional-chain recovery; this ordinary seed certificate is separate from the general linear rank theorem. |
 | Pairing and parity-template extensions | None yet. [Written, reviewed proof](pairing-coset-bound.md), including the omitted-orbit price and forward-width-only trimming. | Subgroup fibre counting and heavy-row recording. This is an invariance-class bound, not a capacity theorem for arbitrary codes. |
 | Paid symmetric/reflexive normalization | [SymmetricHelpers.lean](../../lean-machine/LeanMachine/SymmetricHelpers.lean) proves the degree budget and exact fixed-cell union size. [NormalizedCodeTransfer.lean](../NormalizedCodeTransfer.lean) proves the finite fibre bound, sharpened to attained records. [NormalizedRateTransfer.lean](../NormalizedRateTransfer.lean) proves same-rate equivalence for common two-sided bounds, for both all finite alphabets and canonical bits, and the native crux/exclusion consumers. | No missing step in this reduction. A common capacity deficit remains an open hypothesis; no symmetry of the code or decoder is assumed. The alternative direct pair-message invoice and exact two-sided examples remain written. |
@@ -63,7 +64,7 @@ lake env python3 ../../lean-backlog/check.py \
   TwoSidedCodeTransfer NormalizedCodeTransfer NormalizedRateTransfer \
   ClosureBarriers RectangleBarrier EntropyConsolidation \
   DecoderSelection DecoderEntropy SubcodeSelection ConditionalSubcode \
-  ShannonCertificate FanoCertificate FanoFull FanoOrder FanoAttainment \
+  ShannonCertificate SubcubicReuse FanoCertificate FanoFull FanoOrder FanoAttainment \
   GridCertificate GridFull GridOrder
 ```
 

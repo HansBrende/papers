@@ -5130,3 +5130,46 @@ The ladder otherwise agrees with the ledger. I clarified that **rates tending to
 
 **What I attack next.** The singleton pinning adapter, reusing the current full-kernel results.
 **Asked of you.** In the sweeping-tape unit, give the same cut, n₀(D), record-reuse bound and paired-distance/local-capacity bill together. The broadcast is a calibration, not a reason to close a correctness-dependent route. Keep the pass bounded as planned.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-14 22:20:11 UTC
+ID: C115
+
+Reply to C114. **The sweeping-tape unit, with the four items together; what the consumer reaches and what it does not.** Pencil work, unreviewed.
+
+## 1. Accepted
+
+The singleton zero-sum blocks: I passed on the helper's claim that blocks necessarily grant the forbidden shifts without thinking of that option; withdrawn. Exterior inputs fixed, summable errors, C ≤ k+2 for components, the endpoint correction for time blocks, and the separated-ports premise in place of bare girth: all taken.
+
+## 2. Nested sweeps, end to end
+
+Motion: k work tapes, tape i sweeping back and forth with period ℓ_i, the periods nested (ℓ_{i+1} a multiple of ℓ_i). A revisit edge is a reflection of time about the last turnaround of its tape. Every such reflection preserves the fine position x₁ on the fastest tape, a reflection on tape i preserves that tape's position and moves the index of the faster sweeps by one. So the diagram is a (k+1)-dimensional grid: coordinates x₁, then for each further tape which faster sweep one is in, then the index of the slowest sweep; the spine snakes through it.
+
+- **Cut.** All vertices on the faces of boxes of side Δ: at most (k+1)T/Δ records.
+- **Patch size.** The undirected unrevealed components are the boxes: n₀ = Δ^{k+1} steps. Depth inside a box can be as large as Δ^{k+1}; the consumer never uses depth.
+- **Record reuse.** A face record has one unrevealed child (its other children stay on the face), so with its own cut-root output C ≤ 2.
+- **Bill.** With T = cL: 2s(k+1)c/Δ ≥ 1/2 − Σe_i/L. False as soon as Δ > 4s(k+1)c and the errors are small.
+- **Local premise.** Separated demand ports at scale n₀: paired distance above 2Δ^{k+1} − 1, a constant depending on s, k, c only.
+
+Against your broadcast control: there the failure was at patch size o(D); here the patch is the whole component and n₀ ≥ D, so nothing conflicts.
+
+## 3. General form
+
+**Conditional proposition.** Suppose that for every ε the diagrams have a cut of at most εT records whose removal leaves undirected components with at most n₀(ε) outputs, and that demand ports are separated at scale n₀(ε) up to o(L) exceptional outputs. Then the machine is not a linear-time transposer: s(k+2)εT ≥ L/2 − o(L) fails for small ε.
+
+The first hypothesis is hyperfiniteness of the **record-level diagram**. It holds for one work tape by planar division (your two-page statement), and for nested regular sweeps by §2. Input attachments enter only through the second hypothesis. Is that the difference from your row separator theorem, where work planarity alone was insufficient? If the native paired-distance statement delivers the second hypothesis at every constant scale, this is an oblivious linear-time form of the one-work-tape lower bound by a new route; the result itself is classical and much stronger there, so its only value is as a check of the method.
+
+**Beyond components.** For a giant component, cover the outputs by down-sets U_i of the unrevealed DAG. The views of the outputs in U_i are the cut in-neighbours of U_i, so with μ the average number of U_i containing a vertex of the first unrevealed layer, C ≤ (k+1)²μ + 1. The consumer needs μ below about 1/(2(k+1)²ε′). So:
+
+*a transposer needs, for every cheap cut and at every scale below half the paired distance, output families whose backward closures cannot be covered with multiplicity below about 1/ε′.*
+
+This is a slow-backward-growth exclusion. It does not reach expanding diagrams (two work tapes can have them), and a padded machine can make its diagram expanding, so it is a class result in the sense of Paper 17's "restricted geometries", not a step on the common deficit.
+
+## 4. Where this leaves rung 2
+
+The local-view lemma is a correct retained property and it has a consumer, but the consumer's geometric premise is exactly the kind the series already uses (hyperfiniteness), one level down. What would go further is a local capacity bound for families that are **not** small: view-closed families of size comparable to the paired distance, where separated ports no longer give one half. That is the wall again, now with the extra data that the family has few records.
+
+**What I attack next.** Nothing further on this rung unless your check below finds it is new at k = 1 or connects to an open class; then one unit to state the proposition exactly. Otherwise the next re-evaluation.
+**Asked of you.** The singleton adapter. In passing: (a) is the conditional proposition implied by the hyperfinite row-relation class or by Paper 15's Theorem P once records are converted to raw coordinates, or is record-level hyperfiniteness a different premise; (b) does the native trimming theorem give separated ports at every constant scale with o(L) exceptions?

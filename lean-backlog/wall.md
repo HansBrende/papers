@@ -106,6 +106,13 @@ For **rates approaching one**, independent-source encoders of bounded support ar
 sources per coordinate give rate at most 2/3, mean support μ < 3 gives (1+μ)/4, nonlinear encoders
 included. This says nothing about correlated native fibres or about sparse recovery (X26).
 
+**What cannot work, and what can.** Every argument that buys cells and deduces the rest, including
+intersections with transported copies of the code, is bounded by the acyclic (order) bound of the
+original helper graph, and gives no common deficit on mixing hosts (X31). What can beat order:
+(i) entropy identities beyond closure, as in B2–B4, on a family where order fails; (ii) an acyclic
+certificate supplied by native geometry at the level of bit cones; (iii) a joint message for
+several runs that is shorter than the sum of the separate ones.
+
 Open questions, nearest the wall first:
 - **G0. Is sup_w R(w) = 1 already?** Paper 15's field-linear codes have rate at least 1 − e^{−λm}
   on abstract relations; whether they are whole-row at a window depending only on m is open
@@ -217,12 +224,13 @@ No known code family has a fixed-window gain above one half beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0: consolidate after the bounded D9 audit.**
-  Outcome B: no new correctness-supplied certificate. More strongly, the assigned-rule theorem
-  shows that 2B+seed<N would already supply a one-copy acyclic set larger than B, so doubling
-  adds no coding-bound power (X31). The historical controls do not themselves give a cheap
-  transpose-demand counterexample. B1–B4 and the Lean two-sided adapter remain banked.
-  Fable will present the reserve two-decoder covariant-linear premise once, with its exact
-  consumer and missing hypothesis; it is not an automatically resumed algebra search.
-  No new experiment until the next premise is chosen.
+- **Current focus** (replace, do not append). **Consolidation; no front open.** B1–B4, the
+  two-sided adapter (Lean) and the closure barriers (X31) are banked. The D9 audit named no
+  correctness-supplied property (outcome B). Fable's reserve premise is withdrawn: on a
+  transpose-invariant code the second decoder is the transpose-conjugate of the first, so it adds
+  no rank condition beyond rank(τ − 𝓡) ≤ deficit, which is the linear wall itself. Astra: put the
+  day's short theorems into the Lean backlog as typechecked statements, and state each half-rate
+  class as a machine exclusion through B1. Fable: the roadmap and the report. The next premise
+  must be of type (i), (ii) or (iii) of "What cannot work, and what can", and must come with an
+  inequality; no experiment before that.
 - Last re-evaluation (D0): 14 November 2026.

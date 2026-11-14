@@ -2136,74 +2136,297 @@ The basis controls and 20.5 are tight and do not decide either question.
 Writing an arbitrary cap-one h as its own budget extension (g=h) is
 tautological, not a classification of the remaining candidates.
 
-## 21. Token designs: block sizes, saturated designs, and a two-thirds target (Fable, 13 November 2026)
+## 21. Token blocks: accounting and bounds for fundamental presentations
 
-Status: 21.1–21.4 have **short written proofs, unreviewed**; 21.5 is a
-**conjecture**. Front D1, two restrictions (linear, transversal). Notation of
-section 20: a token design gives each cell x a token set τ(x); the rank is
-the largest matching of cells to tokens; each column r has a square block
-H_r in its helper rows (as many cells as tokens, perfectly matchable), and
-every non-helper cell of column r has its tokens in τ(H_r). Reverse degrees
-are at most w′; L is the number of loop cells. After deleting unmatched
-tokens we may assume every token ω is matched to a cell x_ω; the other cells
-are *slack*. Write κ(ω) for the number of blocks whose tokens include ω,
-and m(h) for the number of blocks containing the cell h.
+Fable's proposal, audited and strengthened by Astra, 14 November 2026.
+Status: **written proofs, not Lean-verified**. The general two-thirds
+claim in 21.5 is open. Sections 21.6–21.8 prove it, and in one regime a
+half bound, under an additional fundamental-presentation or paid-token
+hypothesis. These are capacity restrictions, not a native machine exclusion.
 
-**21.1 (covers are closed).** Every non-loop cell covering ω has another cell
-covering ω in the helper rows of its column. So a token covered by no loop
-cell is covered along a directed cycle of cells, each in the helper rows of
-the previous one's column.
+Use N scalar coordinates, partitioned into row groups and column groups.
+For a column group r let U_r be the union of its helper row groups. The
+usual grid has N=d²b, with b coordinates per entry. A token presentation
+assigns a finite neighborhood τ(x) to each coordinate. Its rank K is its
+maximum matching size. Choose, for each r, a square block P_r⊆U_r with
+token set Ω_r=τ(P_r), |P_r|=|Ω_r|, and a perfect matching, such that
+τ(x)⊆Ω_r for every target x in column group r outside U_r (20.3).
+Host-loop coordinates belong to their own helper union; let L count them.
 
-**21.2 (block sizes).** rank ≤ ½ Σ_r |H_r| + d·w·w′ + L.
+Fix a global maximum matching. After pruning unused tokens as below,
+every token ω has a matched coordinate x_ω. Other coordinates are *slack*.
+Put B_x={r:x∈P_r}, K_ω={r:ω∈Ω_r}, m(x)=|B_x| and κ(ω)=|K_ω|.
 
-*Proof.* Let ω be matched to a non-loop cell of column r. In the perfect
-matching of H_r the token ω is matched to a cell h = (i, y) with i ∈ ρ(r).
-If h is not a loop cell then ω ∈ τ(H_y) and y ≠ r, so κ(ω) ≥ 2. Loop cells in
-helper rows give at most d·w·w′ pairs (r, h). Finally Σ_ω κ(ω) = Σ_r |H_r|. ∎
+**21.1 (pruning and support cycles).** Deleting tokens unmatched by the
+chosen global maximum matching preserves the rank of every coordinate
+subset. Indeed, compare it with a matching on any subset. An alternating
+path from a token unused globally but used by the subset matching must
+end at a globally used token unused by the subset matching; otherwise it
+augments the global maximum. Flipping these paths preserves the subset's
+matched coordinates and uses only retained tokens.
 
-So a design above one half needs blocks that resolve more than d tokens per
-column on average: more than the column has cells.
+Every square-block token is already used by every global maximum: if one
+were unused, replacing the fewer than |Ω_r| matching edges into Ω_r with
+its perfect block matching would increase the global size. No coordinate
+of P_r can have been matched outside Ω_r. Thus the block certificates
+survive pruning. Every nonloop coordinate covering ω has another coordinate
+covering ω in its helper block. If no loop coordinate covers ω, following
+these choices produces a directed support cycle. This is only a necessary
+condition, not a capacity estimate.
 
-**21.3 (saturated designs are at one half).** Call a design *saturated* if
-each block is all of its helper rows: the helper rows of every column
-determine every token they touch. On a biregular relation (w = w′) a
-saturated design has rank ≤ d²/2 + N₃ + L, with N₃ ≤ d·w(w−1)(w′−1) the
-number of cells at distance three.
+**21.2 (block-size bound without reverse degree).** If L_0 counts loop
+coordinates belonging to no block, then
 
-*Proof.* For a token ω let Rows(ω) be the rows with a cell covering it. By
-saturation ω is in the block of every column having a helper in Rows(ω), so
-Σ_ω |σ(Rows(ω))| ≤ Σ_r |ρ(r)|·d = w·d². If ω is matched to a cell (c, r) at
-distance at least five, Rows(ω) contains c and a helper row i of r, and c
-and i share no column, so |σ(Rows(ω))| ≥ 2w′. ∎
+  2K ≤ Σ_r|P_r| + L + L_0 ≤ Σ_r|P_r| + 2L.              (21a)
 
-So above one half the helper rows of a typical column touch tokens they
-cannot resolve, while a sub-block of them resolves more than d.
+*Proof.* Tokens in no block are globally matched to loop coordinates in
+no block. For a token in exactly one block, its mate in that block's
+perfect matching must be a loop: otherwise its own column would give a
+second block, or it would itself be a loop in the first column. These
+mates are distinct even across blocks. If one coordinate served tokens
+with different unique blocks, its whole neighborhood would lie in both
+blocks, contradicting uniqueness. The mates also avoid the L_0 coordinates.
+Writing n_j for the number of tokens with κ=j gives
+2K−Σκ≤2n_0+n_1≤L+L_0. Finally Σκ=Σ|P_r|. ∎
 
-**21.4 (slack identity and what an extra block membership costs).**
-Σ_{slack y} m(y) = Σ_ω [κ(ω) − m(x_ω)]. For a token matched to a non-helper
-cell this bracket is 1 + e(ω), with e(ω) the number of blocks that contain ω
-but neither its matched cell nor its column. If every slack cell were in at
-most one block, the rank would be at most (d² + L)/2. Suppose no two columns
-share two helper rows. Let a slack cell y lie in m blocks and cover a token ω
-matched to a cell in another row. Then e(ω) ≥ m − 2.
+For bounded forward window, L≤wdb. Thus a fixed positive gain above half
+requires average block size above db, asymptotically. The earlier dww′
+error term is unnecessary.
 
-*Proof.* The identity: Σ_r |H_r| counts tokens with multiplicity κ and cells
-with multiplicity m. For the last claim, ω is in all m blocks; its matched
-cell is in one column, and lies in at most one of the m blocks, because two
-of their columns share only the row of y. ∎
+**21.3 (weighted saturation, including nonlinear sources).** Call a
+presentation *saturated* when each helper union resolves all tokens it
+touches: its matching rank is |τ(U_r)|. A square subset suffices; the
+whole helper union need not be square. Suppose nonnegative column weights
+α_r satisfy
 
-**Two families that stay at O(d).** (i) Pairs with a group sum,
-x + x̄ = z_g: each member needs a second complete pair of its group in its
-helper rows, and the helper rows of a column contain boundedly many mutual
-pairs. (ii) A record replicated along a cycle of cells: the pairs that can
-use it have both columns among boundedly many, hence are near cells.
+  Σ_{r:i∈ρ(r)} α_r = 1 for every row group i.             (21b)
 
-**21.5 (two-thirds target, conjecture).** On a relation in which no two
-columns share two helper rows, every token design has
-rank ≤ (2/3)d² + O_w(d). By 21.4 this follows if the tokens that pay for
-extra block memberships can be chosen distinct for distinct slack cells;
-when many slack cells share their tokens, the shared tokens form a common
-record and the bound of section 20 applies. Triangles attain 2/3 on near
-cells, and cliques of four need two columns sharing two rows, so the form is
-the right one. It would be the first deficit independent of the window for a
-class with unbounded coupling and no symmetry.
+Let E be the number of globally matched coordinates at incidence distance
+one or three between their row and column groups. Then
+
+  2K ≤ N+E ≤ N+L+N_3,                                  (21c)
+
+where N_3 counts coordinates at distance exactly three. Disconnected pairs
+are far. No regularity, codegree or symmetry is assumed beyond (21b).
+
+*Proof.* Charge each token to every column block whose helper rows touch
+it, weighted by α_r. Its matched row gives charge at least one. If its
+matched coordinate (c,r) is far, target recovery supplies another covering
+coordinate in a helper row i∈ρ(r). Rows c and i have disjoint column
+neighborhoods; a common neighbor would give a length-three walk from c
+to r. Such a token has charge at least two. On the other hand, saturation
+gives |τ(U_r)|≤|U_r|, so total charge is at most
+Σ_r α_r|U_r|=N. Thus 2K−E≤N. ∎
+
+Exact positive reverse-regularity supplies α_r=1/degree; forward
+regularity is unnecessary. For arbitrary positive weighted row loads
+D_i=Σ_{r:i∈ρ(r)}α_r≥a>0, the same proof gives
+2aK≤Σ_i |R_i|D_i+aE. This states the imbalance cost explicitly.
+In a d-by-d grid, forward degree at most w and reverse degree at most w′
+give N_3≤bdw(w−1)(w′−1), hence half rate at fixed degrees. A forward
+bound alone is insufficient for this error estimate: ρ(0)={0},
+ρ(r)={0,r} for r>0 has w=2, no pair of columns sharing two helper rows,
+and (d−1)² entries at distance three. Its capacity is nevertheless exactly
+q^{d(d+1)/2}, by symmetric arrays and the row order starting with row zero.
+
+There is also a **nonlinear version with explicit source assumptions**.
+Let A be finite with |A|≥2, let F:A^K→A^V be injective, and let τ(v)
+be the essential source coordinates on which F_v depends. Assume whole-column recovery and that
+each helper union recovers every source it touches. For any source subset,
+fix all other sources. Injectivity forces at least as many incident output
+coordinates as sources, so Hall gives a global source-to-coordinate
+matching. Column recovery forces source-support inclusion, and exact
+recovery gives |τ(U_r)|≤|U_r|. The same charge proves (21c). This removes
+linearity from this saturated-encoder statement; it does not assert that
+an arbitrary code has such a source representation.
+
+**21.4 (exact slack accounting).** Let c_ω be the column group of x_ω and set
+
+  e_ω = |K_ω∖(B_{x_ω}∪{c_ω})|,
+  χ_ω = 1 if c_ω∈K_ω∖B_{x_ω}, and 0 otherwise.
+
+Then κ(ω)−m(x_ω)=e_ω+χ_ω. If ℓ tokens are matched to host loops,
+χ_ω=1 for all other tokens. Put E_tot=Σ_ωe_ω and X_loop=Σ_{loop-matched ω}χ_ω.
+Double-counting block cells and block tokens gives
+
+  Σ_{slack y}m(y) = K−ℓ+E_tot+X_loop,
+  2K−N = ℓ+Σ_{slack y}(m(y)−1)−E_tot−X_loop.            (21d)
+
+In particular, slack multiplicities at most one give 2K≤N+L.
+If λ≥0 is an integer, any two distinct row groups share at most λ helper column groups,
+and y covers a token whose matched row differs from y's row, then
+
+  e_ω ≥ max(0,m(y)−λ−1).                                (21e)
+
+Among y's blocks at most λ can contain x_ω; at most one further block
+is c_ω. This proves the estimate. For λ=1 the hypothesis is equivalent
+to no two columns sharing two helper rows. For λ>1 the two oriented
+codegree bounds are not interchangeable.
+
+**21.5 (what remains conjectural).** For arbitrary token presentations
+on a scalar grid with no such four-cycle, the proposed bound is
+K≤(2/3)d²+O_w(d). It has three restrictions relative to the unrestricted
+wall: linear/transversal recovery and this host condition. The proof below
+adds a fundamental-presentation hypothesis; it does not settle 21.5.
+
+The proposed distinct-payment/common-record dichotomy is not yet a proof.
+A high-multiplicity slack coordinate may have no covered token matched in
+another row. Even when such tokens exist, failure of a Hall assignment does
+not show that their union has O_w(db) entropy, or that conditioning on them
+leaves single-row recovery. Multiple group records must be charged jointly;
+one cheap-record argument does not automatically cover all of them.
+A single finite code above two-thirds cannot refute an unspecified O_w(d)
+error. A counterexample needs a fixed-window family with unbounded
+excess/d; a fixed positive rate gain would be stronger.
+
+**21.6 (a proved constant deficit for fundamental presentations).** Suppose
+there is a distinct basis coordinate x_ω for every token, with
+τ(x_ω)={ω}. This is the classical *fundamental transversal* condition;
+see [Bonin–Kung–de Mier, §2](https://arxiv.org/html/1009.3435v1#S2).
+If λ≥0 is an integer and distinct row groups share at most λ helper column groups, then
+
+  (λ+2)K ≤ (λ+1)N+ℓ ≤ (λ+1)N+L.                        (21f)
+
+In particular, λ=1 gives 3K≤2N+L. There is no reverse-degree bound,
+no bound on component size, and no symmetry requirement. On a grid,
+L≤wdb, so this gives a window-independent two-thirds asymptotic cap at
+each fixed w, uniformly in the number of lanes and the field.
+
+*Proof.* Normalize every square block to include all basis coordinates
+in its helper union. If a basis token is absent, add its singleton
+coordinate and token; if the token is already present, replace its local
+matching mate by its basis coordinate. These operations preserve square
+matchability and target coverage. Match all these basis coordinates to
+their own tokens. Thus x_ω belongs to a block exactly when its row is a
+helper of that block, and loop-matched tokens have χ_ω=0.
+
+Within each block, match basis coordinates to their tokens first. The
+remaining local matching pairs every slack coordinate of the block with
+a token whose basis row lies outside that helper union. Over all blocks,
+a slack coordinate y has m(y) local edges, while token ω has exactly
+e_ω+χ_ω≤e_ω+1. Every used edge joins different rows. Set
+ a_y=max(0,m(y)−λ−1).
+By (21e), each token at the end of an edge from y has e_ω≥a_y.
+Give that edge weight e_ω/(e_ω+1). A token receives total weight at most
+e_ω, while y sends at least m(y)a_y/(a_y+1)≥a_y. Consequently
+E_tot≥Σ_y a_y. Substitute in (21d), with X_loop=0:
+
+  K−ℓ ≤ Σ_y[m(y)−a_y] ≤ (λ+1)(N−K).
+
+This is (21f). Repeated paying tokens are allowed; the fractional weights
+control their total use. ∎
+
+The proof bounds any linear code whose coordinate matroid is fundamental
+transversal; the presentation need not be the decoder originally displayed.
+The class name and its characterization are classical, not claimed as new.
+Putting an arbitrary linear generator into systematic form does not establish
+this hypothesis: its remaining coefficients can have cancellations that a
+generic transversal presentation does not preserve.
+The finite d=3 host ρ(r)=[3]∖{r}, with six free loop entries and one
+sum-zero triple on the diagonal, has K=8 and equality 3K=2N+L. This is
+finite sharpness, not an asymptotically sharp fixed-window family.
+
+Even a forward-window bound is unnecessary for an asymptotic consequence
+at fixed raw λ: if I=Σ_r|ρ(r)|, counting row pairs and using Cauchy gives
+I²/d−I≤λd(d−1), hence I≤d(1+√(1+4λ(d−1)))/2. Since L=bI,
+(21f) gives rate at most (λ+1)/(λ+2)+O_λ(d^{-1/2}).
+
+**21.7 (half rate on the far part, under codegree one).** Under 21.6
+with λ=1, let T_3 count tokens whose matched coordinate is at incidence
+distance exactly three. Then the stronger finite estimate is
+
+  2K ≤ N+ℓ+T_3 ≤ N+L+N_3.                              (21g)
+
+*Proof.* In the normalized blocks, each nonloop token has exactly e_ω+1
+local matching edges. It therefore contributes exactly one to the sum
+of 1/(e_ω+1) over its edges. Consider an edge from slack y to a token
+matched at a far coordinate (c,r), and put J=B_y. If r∈J, y's row is a
+helper of r, so its column neighborhood is disjoint from that of c;
+at most r is excluded from J when counting e_ω. If r∉J, codegree one
+excludes at most one column containing c. Either way e_ω≥m(y)−1.
+Each such edge has weight at most 1/m(y). Thus all far tokens together
+number at most N−K, one unit per slack coordinate. The other tokens
+number ℓ+T_3. Rearranging gives (21g). ∎
+
+At fixed forward and reverse degrees, this is K≤d²b/2+O_{w,w′}(db).
+Unlike 21.3, it needs neither saturation nor balancing weights. It proves
+a near-cell bound for this fundamental/codegree-one subclass, including
+expanding hosts and globally coupled recovery. If reverse degrees are
+unbounded and N_3 is large, the separate two-thirds bound (21f) remains
+available.
+
+**21.8 (paying to expose a basis; nonlinear scope).** Delete a token set
+Q of size t. The restricted global matching shows that the new rank is
+K−t. Restrict each helper block's matching to Ω_r∖Q; the remaining matched
+coordinates form a square block covering every remaining target token.
+Thus recovery in the token presentation is preserved. Coordinates whose
+whole neighborhood was in Q are now constant; let c_Q count them.
+
+If every remaining token has a singleton coordinate after this deletion,
+apply (21f) on the N−c_Q remaining coordinates:
+
+  (λ+2)(K−t) ≤ (λ+1)(N−c_Q)+ℓ_Q.                       (21h)
+
+At λ=1, (21g) similarly gives
+2(K−t)≤N−c_Q+ℓ_Q+T_{3,Q}. The loop and distance-three masses refer to the
+original row/column incidence and the surviving matched coordinates.
+These are actual deletion certificates, not assertions that t is small.
+Deletion is an operation on the token presentation; it need not be a
+source record in every linear realization of the same matroid. With a
+specified token-source encoding it can also be interpreted by fixing
+those sources. No tape implementation or cheap genie is supplied.
+For fixed λ, when t=o(N) and loop mass is o(N), (21h) retains the constant deficit;
+when t=O_{w,w′}(db), (21g) retains half plus O_{w,w′}(db).
+
+The four-pair K_{2,4} control of 20.5 becomes fundamental after deleting
+z. Its eight-coordinate residual matroid is not fundamental in any
+presentation: each union of two pairs is a rank-three cyclic flat. A fundamental basis of
+size five would have at least three coordinates in every such union.
+Summing the six requirements gives 15≥18, a contradiction. Adjoining the
+eight free loop coordinates does not repair this: every basis includes
+those eight coloops. Thus a basis change is not a valid way to erase the
+added hypothesis. The cyclic-flat characterization is the standard one
+in the cited §2.
+
+The same bounds also apply to a restricted nonlinear source model.
+Let A be finite with |A|≥2 and F:A^K→A^V injective, with systematic
+coordinates F_{x_ω}=z_ω.
+For each column assume some helper-coordinate tuple depends only on a
+source set Ω_r and recovers that whole source set; Ω_r must also contain
+all essential sources of the nonloop targets. Fixing the other independent sources
+proves Hall's condition on this tuple's essential-support graph; choose a
+square matching subset. The support graph is then a fundamental token
+design of rank K, so (21f) and (21g) apply. The support-level normalization
+need not leave the actual helper tuple bijective; the proof does not
+require that. These source-block assumptions do not follow merely from
+systematic encoding or from whole-row recovery.
+
+**21.9 (twins and the remaining target).** All of 21.6–21.8 use only the
+two partitions of the scalar coordinate set, not equal row sizes or one
+coordinate per intersection. Merge exact twin row and column classes,
+retaining all scalar coordinates in each intersection. Identical helper
+unions admit one common square block covering all the targets in their
+column class, by 20.3. Hence the results apply directly when the **quotient**
+incidence graph has codegree one, with N and L counted with their actual
+scalar masses. This is a twin-invariant normalization for the proved class.
+
+A uniform k-by-k twin blowup supports k² independent copies of any base
+code, preserving that construction's rate. Arbitrary blowup codes instead
+correspond to coupled k²-lane codes on the base; optimal scalar rate is
+not automatically unchanged. The theorem already permits this coupling.
+A small fixed quotient can have positive loop or near-cell mass. The
+two-thirds asymptotic conclusion requires L=o(N); half rate requires
+L+N_3=o(N), not merely bounded degrees of an unweighted quotient.
+
+The [exact finite controls](../tools/diagonal-calibration/README.md#fundamental-token-blocks)
+check the matching identities and fractional payments on specified
+examples only. No new host search is used in these proofs.
+
+The bounded pass stops here. The next missing implication is whether
+putative high-rate token designs on these hosts can expose a fundamental
+basis at small total cost, or whether a distributed nonfundamental structure
+evades both payments. A positive rate excess above the proved cap forces
+every such deletion certificate to have linear cost; large cost alone does
+not imply high rate. General 21.5 and the unrestricted whole-row wall remain
+open. Further work should remove this hypothesis or test that implication,
+not optimize the constants inside the proved subclass.

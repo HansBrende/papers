@@ -67,6 +67,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
 | Opposite row orders | Outside a fixed coordinate set Z, every scalar coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row)+H(Z). If this holds after a common record Q is given, 2H(X) ≤ d²b+2H(Q)+H(Z\|Q), so subquadratic payment still gives half | nonlinear; full helper rows, not just copying one entry; fixed helper choices on each fibre | *written*: [§18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets) and [§20.6](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test); no new Lean |
+| Fractional payment of local matchings | Fundamental transversal coordinate matroids on codegree-one hosts: 2K ≤ N+L+N₃. Bounded raw grid degrees give half plus O(db); arbitrary masses require L+N₃=o(N). Deleting O(db) tokens in a presentation can expose the required basis with the stated rank payment | linear over every field; arbitrary coupled lanes and components; specified nonlinear source-block encoders also covered; no symmetry required | *written, reviewed*: [§21.6–21.8](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations); not Lean |
+| Resolved independent sources | Each helper union recovers every independent source it touches; helper unions have a fractional weighting covering every row with weight one. Then 2K ≤ N+L+N₃ | nonlinear injective full-product encoders; half when loop/near mass is o(N); strong source-resolution premise remains | *written, reviewed*: [§21.3](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations); not Lean |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
@@ -127,7 +129,11 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   ([audit](notes/symmetry-and-locality.md) §6). No gain was found or proved. This profile adds
   five restrictions (group, linear, mutual, one family, one profile); it is parked (X22).
 - **The general bound.** Any improvement of the deficit 1/(w+1) for all whole-row codes is progress
-  on the wall itself.
+  on the wall itself. A new restricted bound is 3K≤2N+L for fundamental transversal designs
+  on codegree-one hosts, without a reverse-degree bound. It extends to arbitrary masses after
+  exact twin grouping and to designs exposed by deleting tokens in a presentation. General transversal
+  designs, and arbitrary whole-row codes, remain open; ordinary systematic linear form does
+  not satisfy the additional generic-support hypothesis automatically.
 
 **Linear-host calibration.** The [host audit](notes/whole-row-host-audit.md) gives the unrestricted
 scalar/vector formulation. The 29/30 exact shear tests concern prescribed sparse graphs;
@@ -214,9 +220,16 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **Chosen after the D0 comparison (both lists agree):
   token designs**, the generic linear codes on the host, as a problem about matchings (D1, two
-  restrictions: linear, transversal; [row spread](notes/row-spread-of-cones.md) §§20–21). Proved so
-  far: rank ≤ ½Σ_r|H_r| + O(d); saturated designs are at one half. Target: the two-thirds bound
-  on relations where no two columns share two helper rows (21.5), a deficit independent of the
-  window; a proof or a counter-design decides the next step. In reserve, not active: full
-  Shannon versus order (no restriction); native paid recovery (D9/D7); amplification.
+  restrictions: linear, transversal; [row spread](notes/row-spread-of-cones.md) §§20–21).
+  The two-thirds target adds a third restriction, host codegree one. It is proved for
+  **fundamental** presentations (a fourth restriction), and after a small token payment;
+  on ordinary grids with both raw degrees bounded the same proof gives half plus O(db).
+  Exact twin quotients retain arbitrary scalar masses; half rate there needs L+N₃=o(N), and
+  two-thirds needs L=o(N). Saturated-source bounds now allow nonlinear encoders
+  but retain their source-resolution and balancing premises. No unrestricted token bound yet.
+  **Next unit must address the fundamental restriction**: extend the payment to general
+  overlapping blocks or identify a high-rate mechanism with unavoidable extensive exposure
+  cost. Do not optimize this subclass's constants or infer a cheap common record from Hall
+  failure alone. A single finite gain cannot disprove an unspecified asymptotic error term.
+  In reserve, not active: full Shannon versus order; native paid recovery (D9/D7); amplification.
 - Last re-evaluation (D0): 14 November 2026.

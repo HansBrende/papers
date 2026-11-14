@@ -106,3 +106,24 @@ the generator writes `cyclic4-shannon-receipt.json`. The saved receipt was
 generated with SciPy 1.13.1; another solver version may choose a different
 optimal certificate. The tools test only this host. These are written
 proofs and exact finite checks, not Lean verification.
+
+## Fundamental token blocks
+
+The written proofs in [row spread §21](../../notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations)
+give a two-thirds bound for fundamental transversal designs on codegree-one
+hosts, and a half-plus-near-cell bound on the same class. They also cover
+paid token deletion and row/column groups with arbitrary scalar masses.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/token_blocks.py
+```
+
+This standard-library command checks the canonical blocks, exact slack
+identity, rational edge payments and far-token accounting on five explicit
+controls: window-one pairing (rank 10 of 16), a triangle with free loops
+(8 of 9, attaining the two-thirds bound including its loop term), the
+cyclic-four control after revealing z (12 of 16), grouped twin coordinates
+(12 of 16), and a one-symbol example with nonzero edge payment 3/4.
+It performs no host search, writes no files and uses no optimizer. These
+checks supplement the general written proofs; they are not Lean proofs or
+evidence for the unrestricted token conjecture.

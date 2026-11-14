@@ -19,6 +19,40 @@ matching triangle entropy and the exact order cost. No solver is needed.
 The proof uses only 34 set orbits; the 2,668-variable search is unnecessary
 for proof replay.
 
+The [geometric dictionary](orbit-dictionary.md) describes all 34 orbits
+as labelled row closures, intersections or a closed union, and displays
+all 33 weighted inequalities using those orbit names. Regenerate and
+check every expression with:
+
+```sh
+python3 lean-backlog/tools/fano-shannon/describe_certificate.py
+```
+
+The [paid-recovery note](../../notes/fano-soft-recovery.md) removes the
+exact-recovery premise and charges conditional recovery errors. Its
+fixed closure paths and the uniform charges 2/3, 1/3 and 41/84 are
+checked, without any solver, by:
+
+```sh
+python3 lean-backlog/tools/fano-shannon/closure_charge.py
+```
+
+The [thirteen-row calibration](../../notes/projective-plane-order-calibration.md)
+has exact order 140 and a known triangle-code lower bound 130; its
+Shannon value is not determined here. Recompute the two integer subset
+recurrences and the saved receipt with:
+
+```sh
+python3 lean-backlog/tools/fano-shannon/pg3_order.py
+```
+
+These are written proofs with ordinary exact Python checks, not Lean
+formalizations. The separate
+[finite-gap amplification theorem](../../notes/finite-shannon-gap-amplification.md)
+has a written probabilistic proof and needs no new search or numerical
+certificate. It gives a growing fixed-window gap, not a new native
+transposition lower bound.
+
 For a full replay of the saved discovery relaxation, still without SciPy:
 
 ```sh

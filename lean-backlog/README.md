@@ -152,6 +152,16 @@ Native extraction and source audit:
   three-lane construction attains it over every finite base alphabet.
   This is a finite improvement beyond order, not an asymptotic native
   exclusion. Computer-assisted, not Lean-verified.
+- [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
+  any strict finite Shannon/order gap persists at positive density on
+  growing fixed-window hosts. Fano gives both degrees at most 3600 and
+  a gap exceeding one percent of all cells. This separates proof methods;
+  these hosts already have an order-based deficit. The
+  [paid Fano inequality](notes/fano-soft-recovery.md) charges arbitrary
+  recovery errors, and the [orbit dictionary](tools/fano-shannon/orbit-dictionary.md)
+  makes its certificate geometric. Written and independently reviewed,
+  not Lean-verified. The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
+  gives order 140 and triangle lower bound 130, without a new Shannon upper.
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the

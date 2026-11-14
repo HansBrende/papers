@@ -83,7 +83,9 @@ general row-order-budget computation.
 
 The explicit masks and nonnegative integer weights are in
 [certificate.json](../tools/fano-shannon/certificate.json), with a
-[readable orbit table](../tools/fano-shannon/dual-orbits.md).
+[numeric orbit table](../tools/fano-shannon/dual-orbits.md) and a
+[geometric dictionary of all 34 orbits](../tools/fano-shannon/orbit-dictionary.md).
+The latter also displays all 33 inequalities in named orbit variables.
 Points and line normals are the nonzero binary triples in lexicographic
 order; residual cells are the nonincident (point,line) pairs in lexicographic
 order. A mask has bit i precisely when the i-th residual cell is selected.
@@ -176,8 +178,42 @@ an actual code**. The independently replayed 33-term certificate is all
 that the upper proof needs; the larger discovery LP is retained only for
 reproduction.
 
-The next question is structural: which parts of this intersection-and-
-recovery identity can be applied repeatedly on larger hosts, with every
-use of a shared coordinate charged? The present result gives a finite
-case to study, not such a repeated application. It disproves universal
-Shannon/order equality while leaving the uniform whole-row deficit open.
+The [paid-recovery form](fano-soft-recovery.md) now states the exact cost
+of imperfect applications. A separate
+[amplification theorem](finite-shannon-gap-amplification.md) turns this
+finite Shannon/order gap into a positive-density gap on growing hosts
+of fixed window. Those hosts already have an order deficit; a uniform
+whole-row deficit and a new native-machine exclusion remain open.
+
+## 7. Reading the geometry and its limits
+
+The [dictionary](../tools/fano-shannon/orbit-dictionary.md) specifies each
+orbit by a labelled row-closure expression, its number of cells, and its
+attained entropy in the triangle code. Its expressions are checked up to
+one simultaneous collineation, not independent changes of their operands.
+Thirty-one orbits are row closures or two-fold intersections; two more
+are intersections of such sets and one is a closed union. No three-cell
+triangle orbit itself occurs in the positive dual. The triangles supply
+the matching code, not a separate triangle inequality in the upper proof.
+
+For two lines meeting at a point o, their residual closures intersect
+in the four cells of row o and four cross cells. That eight-cell set
+has triangle-code entropy 20/3. Their union has entropy 52/3 in the code,
+while its five rows have row-order purchase cost 18. These are values
+of the attaining code, not unconditional lower bounds on intersections;
+the constant code shows why any such lower bound must involve other
+entropy terms. The certificate supplies the coupled inequalities.
+
+The corresponding incidence descriptions hold in every projective
+plane: three nonconcurrent line closures meet in a mutual triangle,
+and two line closures meet in a union of triangles. They do not make
+all 33 Fano inequalities portable. For example, the three diagonal
+points of a complete quadrangle are collinear in characteristic two;
+the representatives [1:1:0], [1:0:1], [0:1:1] have determinant −2, so
+that identity fails over F₃. The exact seven-point orbit equalities
+cannot simply be assumed in the thirteen-point plane.
+
+The [PG(2,3) calibration](projective-plane-order-calibration.md) proves
+order value 140 with a short geometric argument, checked by two integer
+subset recurrences. The known triangle code gives 130. No new Shannon
+upper below 140 for that plane is asserted, and no second LP was run.

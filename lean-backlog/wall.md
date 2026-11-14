@@ -212,26 +212,11 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0 choice pending Fable's comparison.** No new
-  asymptotic deficit or positive-rate gain. The one designated full Shannon test is complete
-  (cyclic d=4: 13); do not expand the search without a candidate inequality or feasible function.
-  Astra's proposed order of attack, with proofs and scopes in [§20](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test):
-  1. **Distributed token closures (D1, two restrictions: linear, transversal).** The non-clique
-     starting example is supplied. Next require overlapping square blocks that cannot all be
-     reduced to single-row recovery by one O_w(db)-entropy record, or prove such a reduction.
-     Success would give a class-wide mechanism or a genuinely different construction; a finite
-     gain or failure of one presentation alone decides neither the half nor common-deficit question.
-  2. **Full Shannon versus order (D1, no code-class restriction; a proof-method question).**
-     Order's fixed-window envelope tends to one. Full feasible near-order polymatroids on the
-     high-order families would rule out a common Shannon deficit; a strict gap supplies a new
-     technique, not an asymptotic theorem. Row budgets have rank at most dw; line envelopes
-     need both gluing and recovery proofs. No further blind LP.
-  3. **Native recovery with paid shared records (D9/D7, stronger hypotheses than whole rows).**
-     Retain actual tape provenance and a common paid transcript; seek a charge on a selected
-     cheap-cut fibre that exceeds the payment. Bounded degree or constant-depth Boolean
-     evaluation alone is already compatible with the abstract high-rate controls. No new
-     native estimate is asserted, and geometry-only counts are not a substitute for one.
-  Amplification remains parked without a row-preserving operation and an asymptotic seed;
-  a finite rate above half is not such a seed. The limits proved in §§17/19 concern unmarked
-  fixed-radius statistics and the count-only conditional estimate, not all local or conditioning methods.
+- **Current focus** (replace, do not append). **Chosen after the D0 comparison (both lists agree):
+  token designs**, the generic linear codes on the host, as a problem about matchings (D1, two
+  restrictions: linear, transversal; [row spread](notes/row-spread-of-cones.md) §§20–21). Proved so
+  far: rank ≤ ½Σ_r|H_r| + O(d); saturated designs are at one half. Target: the two-thirds bound
+  on relations where no two columns share two helper rows (21.5), a deficit independent of the
+  window; a proof or a counter-design decides the next step. In reserve, not active: full
+  Shannon versus order (no restriction); native paid recovery (D9/D7); amplification.
 - Last re-evaluation (D0): 14 November 2026.

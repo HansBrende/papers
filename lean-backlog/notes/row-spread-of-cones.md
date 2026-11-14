@@ -2135,3 +2135,75 @@ order, without by itself proving any uniform asymptotic deficit.
 The basis controls and 20.5 are tight and do not decide either question.
 Writing an arbitrary cap-one h as its own budget extension (g=h) is
 tautological, not a classification of the remaining candidates.
+
+## 21. Token designs: block sizes, saturated designs, and a two-thirds target (Fable, 13 November 2026)
+
+Status: 21.1–21.4 have **short written proofs, unreviewed**; 21.5 is a
+**conjecture**. Front D1, two restrictions (linear, transversal). Notation of
+section 20: a token design gives each cell x a token set τ(x); the rank is
+the largest matching of cells to tokens; each column r has a square block
+H_r in its helper rows (as many cells as tokens, perfectly matchable), and
+every non-helper cell of column r has its tokens in τ(H_r). Reverse degrees
+are at most w′; L is the number of loop cells. After deleting unmatched
+tokens we may assume every token ω is matched to a cell x_ω; the other cells
+are *slack*. Write κ(ω) for the number of blocks whose tokens include ω,
+and m(h) for the number of blocks containing the cell h.
+
+**21.1 (covers are closed).** Every non-loop cell covering ω has another cell
+covering ω in the helper rows of its column. So a token covered by no loop
+cell is covered along a directed cycle of cells, each in the helper rows of
+the previous one's column.
+
+**21.2 (block sizes).** rank ≤ ½ Σ_r |H_r| + d·w·w′ + L.
+
+*Proof.* Let ω be matched to a non-loop cell of column r. In the perfect
+matching of H_r the token ω is matched to a cell h = (i, y) with i ∈ ρ(r).
+If h is not a loop cell then ω ∈ τ(H_y) and y ≠ r, so κ(ω) ≥ 2. Loop cells in
+helper rows give at most d·w·w′ pairs (r, h). Finally Σ_ω κ(ω) = Σ_r |H_r|. ∎
+
+So a design above one half needs blocks that resolve more than d tokens per
+column on average: more than the column has cells.
+
+**21.3 (saturated designs are at one half).** Call a design *saturated* if
+each block is all of its helper rows: the helper rows of every column
+determine every token they touch. On a biregular relation (w = w′) a
+saturated design has rank ≤ d²/2 + N₃ + L, with N₃ ≤ d·w(w−1)(w′−1) the
+number of cells at distance three.
+
+*Proof.* For a token ω let Rows(ω) be the rows with a cell covering it. By
+saturation ω is in the block of every column having a helper in Rows(ω), so
+Σ_ω |σ(Rows(ω))| ≤ Σ_r |ρ(r)|·d = w·d². If ω is matched to a cell (c, r) at
+distance at least five, Rows(ω) contains c and a helper row i of r, and c
+and i share no column, so |σ(Rows(ω))| ≥ 2w′. ∎
+
+So above one half the helper rows of a typical column touch tokens they
+cannot resolve, while a sub-block of them resolves more than d.
+
+**21.4 (slack identity and what an extra block membership costs).**
+Σ_{slack y} m(y) = Σ_ω [κ(ω) − m(x_ω)]. For a token matched to a non-helper
+cell this bracket is 1 + e(ω), with e(ω) the number of blocks that contain ω
+but neither its matched cell nor its column. If every slack cell were in at
+most one block, the rank would be at most (d² + L)/2. Suppose no two columns
+share two helper rows. Let a slack cell y lie in m blocks and cover a token ω
+matched to a cell in another row. Then e(ω) ≥ m − 2.
+
+*Proof.* The identity: Σ_r |H_r| counts tokens with multiplicity κ and cells
+with multiplicity m. For the last claim, ω is in all m blocks; its matched
+cell is in one column, and lies in at most one of the m blocks, because two
+of their columns share only the row of y. ∎
+
+**Two families that stay at O(d).** (i) Pairs with a group sum,
+x + x̄ = z_g: each member needs a second complete pair of its group in its
+helper rows, and the helper rows of a column contain boundedly many mutual
+pairs. (ii) A record replicated along a cycle of cells: the pairs that can
+use it have both columns among boundedly many, hence are near cells.
+
+**21.5 (two-thirds target, conjecture).** On a relation in which no two
+columns share two helper rows, every token design has
+rank ≤ (2/3)d² + O_w(d). By 21.4 this follows if the tokens that pay for
+extra block memberships can be chosen distinct for distinct slack cells;
+when many slack cells share their tokens, the shared tokens form a common
+record and the bound of section 20 applies. Triangles attain 2/3 on near
+cells, and cliques of four need two columns sharing two rows, so the form is
+the right one. It would be the first deficit independent of the window for a
+class with unbounded coupling and no symmetry.

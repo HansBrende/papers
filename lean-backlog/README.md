@@ -43,9 +43,17 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   qualitative geometric row-spread targets. Its stronger theorem allows an output prefix
   of at least `d*d*b` appends and proves new-cut cost at most `63εL/64`, at most `21εd/32`
   exceptional rows, unchanged depth, and every new cut before the horizon. The original
-  theorem follows directly. All endpoints use only standard Lean axioms. The machine and
-  asymptotic native-crux consequences remain written implications; no capacity conjecture
-  or new transposer exclusion is proved.
+  theorem follows directly. All endpoints use only standard Lean axioms.
+- [`ConeCodeTransfer.lean`](ConeCodeTransfer.lean) counts arbitrary encoder/raw-bit fibres,
+  reusing the entry-address and exceptional-column lemmas. Its finite bound needs no
+  positivity assumption on the dimensions or exponent.
+- [`RowSpreadCrux.lean`](RowSpreadCrux.lean) completes the conditional coding transfer:
+  a common positive whole-row deficit along the canonical alphabets implies Paper 14's
+  literal native `Crux` and excludes oblivious linear-time transposers. The general proof
+  is uniform over any prescribed family of positive bit widths. A separate theorem needs
+  only one explicit window and retains the sharper `169ε/64` threshold. The native
+  finite theorem allows arbitrary traces and initial cuts, with `d≥4`, `b≥1`, and the
+  stated time/depth bounds. No capacity conjecture or unconditional exclusion is proved.
 - The proof chain reuses actual native definitions:
   [interval amortization](WindowAmortization.lean),
   [native visits and labels](WindowLabels.lean),
@@ -116,8 +124,8 @@ Native extraction and source audit:
   a fully Lean-verified extraction for every native trace, with explicit constants for
   $d\ge4$ and every $b\ge1$. Any common positive whole-row deficit, uniform along the
   canonical growing alphabets, would imply the full native crux at each fixed depth.
-  This last implication retains a written proof. No capacity bound or new machine
-  exclusion is asserted.
+  The implication and its conditional machine-exclusion corollary are now Lean-verified.
+  No capacity bound or unconditional machine exclusion is asserted.
 - [Simplex-code calibration](notes/simplex-code-calibration.md): a reviewed written
   construction of rate $2/3-o(1)$ at window $(1+o(1))d^{1/3}\log d$, improving
   the projective-plane window exponent. Exact finite controls include the Fano
@@ -171,7 +179,9 @@ Native extraction and source audit:
   every field. The amenable-source result includes nonlinear codes and all alphabets.
   Exact SL₂ exceptional sets and ordinary-character thresholds accompany
   the proofs, together with field qualifications and the sparse-Bruhat
-  exclusion. No new Lean or native exclusion is claimed. Reproduce with
+  exclusion. The balanced SL₂ indicator family has exact common factor algebra
+  of dimension `d²/2` and a `3/4` cap over every field; that restricted search is
+  parked without a construction. No new Lean or native exclusion is claimed. Reproduce with
   the commands in the note.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
@@ -187,8 +197,12 @@ Native extraction and source audit:
   components of size `o(log d)`, extended to every recovery rule of a product code with
   blocks of that size. It excludes slowly padded high-rate fibres from Paper 15 under
   every balanced grid labelling. A separate argument excludes the standard contiguous
-  layouts of its original displayed decoder at canonical entry width. The original growing-block construction
-  remains open under arbitrary labellings. The row-spread note's §8 records the paid
+  layouts of its original displayed decoder at canonical entry width. In the growing
+  majority tower, its displayed support cannot have column labels that omit any tensor
+  factor at canonical width. A shortened-code bound separately rules out tensor-cylinder
+  columns for every decoder of the full field kernel, with arbitrary row labels.
+  Fully mixed partitions and alternative binary-fibre decoders remain open.
+  The row-spread note's §8 records the paid
   reverse-degree normalization and exact coset-index criterion; their incidence controls
   run with `python3 lean-backlog/tools/grid_labelling_controls.py`. These grid results
   are not yet Lean-verified and give no new native-machine exclusion.

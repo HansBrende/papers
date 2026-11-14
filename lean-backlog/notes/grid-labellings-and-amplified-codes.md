@@ -19,6 +19,10 @@ The conclusions have different scopes:
   applies to **every** recovery rule and balanced grid labelling. A slowly
   padded version of Paper 15 therefore fails all fixed windows, despite
   retaining its abstract high-rate and separation properties.
+- For the growing majority tower, a column label that ignores a tensor
+  factor cannot present the displayed support at canonical width. For the
+  full field-linear kernel, a separate shortened-code bound excludes the
+  natural tensor-cylinder columns for every decoder, even nonlinear ones.
 
 The original growing majority blocks and the original maximal-square-root
 padding are not excluded under arbitrary grid labellings.
@@ -231,7 +235,143 @@ ensure whole-row compatibility. It is a deliberately slower assembly of
 Paper 15's blocks. It does not exclude the original maximal-square-root
 assembly or the unpadded majority tower.
 
-## 6. What remains worth testing
+## 6. The growing tower: support and intrinsic gates
+
+Fix an odd $m=2a+1$ before the seed size $N$ grows. Over the fixed finite
+field $F$ of odd characteristic, let $U\le F^V$, $|V|=N$, have dimension
+$h\ge\rho N$ for fixed $\rho>1/2$. Paper 15 supplies a zero-diagonal
+matrix $A$ with $A|_U=I$, supported on its seed graph. It does not specify
+one numerical matrix family, nor require every graph edge to have a
+nonzero coefficient. In particular, $\operatorname{rank}A\ge h$.
+
+The majority operator and its full field-linear code are
+
+$$B=2^{-m}\sum_{\sigma\in\{-1,1\}^m}
+ \operatorname{Maj}(\sigma)\bigotimes_{i=1}^m(I+\sigma_iA),
+ \qquad C=\ker(I-B).$$
+
+Paper 15 proves $\dim C\ge(1-e^{-\lambda m})N^m$. The binary
+syndrome fibres are intersections of affine translates of $C$ with the
+binary cube; their guaranteed bit rate is
+$1-(\log_2|F|)e^{-\lambda m}$. They need not retain the subspaces used
+in the intrinsic argument below.
+
+### Exact support
+
+For $S\subseteq[m]$ put
+$\gamma_S=2^{-m}\sum_\sigma\operatorname{Maj}(\sigma)
+\prod_{i\in S}\sigma_i$. This depends only on $|S|$; call it
+$\gamma_{|S|}$. For $u,v\in V^m$ set $S(u,v)=\{i:u_i\ne v_i\}$.
+Then
+
+$$B[u,v]=\gamma_{|S(u,v)|}
+             \prod_{i\in S(u,v)}A[u_i,v_i]. \tag{4}$$
+
+*Proof.* An equal coordinate contributes only the identity entry because
+$A$ has zero diagonal; an unequal coordinate contributes only
+$\sigma_i A[u_i,v_i]$. This gives (4). Sign reversal makes every
+even $\gamma_k$ zero. At least one odd coefficient survives, since the
+majority polynomial at the all-one input equals one. Different changed
+coordinate sets therefore cannot cancel at a fixed matrix entry. Some
+odd coefficients can vanish in the field; no argument below assumes
+$\gamma_1\ne0$. ∎
+
+### A displayed-support labelling must mix every factor
+
+**Proposition.** Suppose $N^m=d^2b$ and a balanced grid of the displayed
+support has forward window $w$. If its column map factors through a set
+$J\subsetneq[m]$ of $j$ tensor coordinates, then
+
+$$wb\ge h^{m-j}. \tag{5}$$
+
+The row labelling is arbitrary; the column map may be any function of the
+coordinates in $J$.
+
+*Proof.* Choose a surviving $\gamma_{|S|}$. In each factor of $J$ fix a
+valid pair $(u_i,v_i)$: a nonzero entry of $A$ when $i\in S$, and an
+equal pair otherwise. This fixes one target column and one helper column.
+For $i\notin J\cup S$, vary $v_i=u_i$ freely. For $i\in S\setminus J$,
+vary $v_i$ over nonzero columns of $A$ and choose a matching $u_i$.
+There are at least $h$ such columns, since $\operatorname{rank}A\ge h$.
+Equation (4) therefore gives at least
+$N^{m-j-|S\setminus J|}h^{|S\setminus J|}\ge h^{m-j}$ distinct
+helpers in one helper column, used by the one target column. Its at
+most $w$ helper rows meet that helper column in at most $wb$ coordinates.
+This proves (5). ∎
+
+At canonical width $b=O(\log d)=O(\log N)$, fixed $m$ and fixed $w$,
+this is impossible as $N$ grows. It rules out column labels that omit
+even one tensor factor, not arbitrary labels depending on every factor.
+It applies to the displayed support for both field kernels and binary
+fibres, but does not exclude alternative recovery rules for those codes.
+
+### A decoder-independent gate for column partitions
+
+For a linear code $C\le F^V$ and a column $P$, define its shortened code
+$C[P]=\{x\in C:\operatorname{supp}x\subseteq P\}$.
+
+**Proposition.** Every whole-row presentation of $C$ on a balanced
+$d\times d$ grid with $b$ coordinates per cell satisfies
+
+$$\dim C[P]\le wb\quad\hbox{for every column }P. \tag{6}$$
+
+The recovery functions need not be linear.
+
+*Proof.* Let $S$ be the helper rows for $P$. Projection of $C[P]$ onto
+$S\cap P$ is injective: two words agreeing there agree outside $P$
+(both vanish), hence on all of $S$, hence on the demanded column $P$.
+The projection is linear and $|S\cap P|\le wb$. ∎
+
+**Corollary (tensor cylinders).** For the full majority kernel above,
+choose columns $P_z=\{v:v|_J=z\}$ with $|J|=k\le a$. Thus
+$d=N^k$ and $b=N^{m-2k}$. Under every balanced row labelling, every
+whole-row decoder for this code must satisfy
+
+$$w\ge(h/N)^{a+1}d\ge\rho^{a+1}d. \tag{7}$$
+
+*Proof.* Choose $a+1$ factors outside $J$ and put $U$ in those factors,
+the one-dimensional span of $e_{z_i}$ in factors of $J$, and $F^V$ in
+the remaining factors. The resulting tensor subspace has dimension
+$h^{a+1}N^{m-k-a-1}$ and is supported in $P_z$. Every spanning pure
+tensor has a strict majority of its factors in $U$, so Paper 15's
+majority-fixed-tensor argument puts this subspace inside $C[P_z]$.
+Substitute this dimension and $b=N^{m-2k}$ in (6). ∎
+
+The same argument covers affine field translates by translating the
+recovery rules. It does not cover arbitrary high-rate subcodes or binary
+restrictions, which may lose these shortened subspaces. These natural
+grids also have large lanes ($b\ge N$); they are not canonical-width
+grids. Equations (5) and (7) exclude different classes, with these
+different hypotheses.
+
+### What a positive tower result would need
+
+The lengths $N^m$ need not be squares. One precise sufficient target is
+to append fixed-zero coordinates to reach $d^2$, where
+$d=\lceil\sqrt{N^m}\rceil$, and present the padded full field kernel
+on a scalar grid at a window $w(m)$ independent of $N$. Padding costs
+$o(1)$ in rate. If this presentation exists, recovery on the linear
+kernel is linearizable: a recovered coordinate factors linearly through
+the helper projection and that functional extends to all helper values.
+The resulting checks belong to the kernel's dual, so every affine
+syndrome fibre of $H'=\operatorname{diag}(I-B,I_{d^2-N^m})$ has the
+same helper relation, with syndrome-dependent
+constants. Restrict the inputs to the binary cube and choose a largest
+fibre. Its bit rate is at least
+$1-(\log_2|F|)e^{-\lambda m}-o(1)$.
+Taking $b(d)$ independent copies supplies the canonical bit-vector
+entries at the same window and rate. Thus such presentations for
+arbitrarily large fixed odd $m$ would refute a common positive whole-row
+deficit. They would not by themselves give a tape algorithm.
+
+The current negative results leave arbitrary fully mixed partitions
+open. For a proposed field-kernel partition, (6) is an intrinsic early
+test; passing it is not sufficient. For a proposed displayed-support
+partition, (4) and the helper intersections give a separate test.
+Neither proves that all partitions fail, nor rules out alternative
+decoders for the binary fibres.
+
+## 7. What remains worth testing
 
 The open construction question is whether a growing amplified seed, or
 an assembly with sufficiently large coupled blocks, admits a balanced

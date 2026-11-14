@@ -8,8 +8,10 @@ raw-boundary transfer below. The window/row-spread theorem is now completely
 **Lean-verified**, including the native geometry and all counting adapters.
 [WindowSpread.lean](../WindowSpread.lean) proves the exact target in
 [StatementsRowSpread.lean](../StatementsRowSpread.lean) as a corollary of a
-stronger prefix theorem. The machine/crux consequences below retain reviewed
-written proofs; the whole-row capacity bounds remain conjectural.
+stronger prefix theorem. [ConeCodeTransfer.lean](../ConeCodeTransfer.lean) and
+[RowSpreadCrux.lean](../RowSpreadCrux.lean) now complete the conditional
+coding transfer and machine exclusion. The whole-row capacity bounds remain
+conjectural.
 
 This is an extraction, not a capacity bound. After a small additional genie,
 all bit cones in almost every output row use boundedly many input rows. The
@@ -184,7 +186,11 @@ linear-time transposer with those fixed resources at all sufficiently large
 dimensions. The earlier conditions $\delta(w)>3\varepsilon$ and
 $\delta(w)>4\varepsilon$ remain sufficient.
 
-*Proof.* The original genie and Proposition 2 cost at most $(127/64)\varepsilon L$
+**Lean-verified:** `wholeRow_window_bound_excludes` in
+[RowSpreadCrux.lean](../RowSpreadCrux.lean). It needs (4) only along the
+canonical alphabets, at this single explicit window.
+
+*Outline of the formal proof.* The original genie and Proposition 2 cost at most $(127/64)\varepsilon L$
 bits together. Paper 14's `exists_indexCode` holds for **any** revealed set,
 so a largest actual value fibre has at least $2^{(1-(127/64)\varepsilon)L}$ inputs.
 Output row $r$ demands input column $r$. The new fibre is a whole-row code
@@ -228,9 +234,16 @@ $1-\delta$, uniformly along the canonical alphabets, then Paper 14's native
 `Crux` holds at rate $\delta$ for every fixed $k,\beta,C,D$. The all-finite-
 alphabet version gives the corresponding bound for every $b\ge1$.
 In particular, the uniform whole-row half-rate target implies native
-half rate. This is a written implication, not a proof of either conjecture.
+half rate. This proves an implication, not either capacity conjecture.
 
-*Proof.* Start with any binary storage code on an original depth-$D$ native
+**Lean-verified:** `uniformWholeRowRateCanonicalBits_crux` and
+`uniformWholeRowRate_cruxOn` in [RowSpreadCrux.lean](../RowSpreadCrux.lean).
+The former gives the literal `BoundedStackDepth.Crux`; the latter gives
+`CruxOn` uniformly over all positive bit widths. The shared proof also
+allows any prescribed family of positive widths, and does not need
+$\delta>0$ until the exclusion corollary.
+
+*Counting argument and outline of the formal proof.* Start with any binary storage code on an original depth-$D$ native
 cone system.
 Apply Proposition 2 with step price $B_D$ and extra budget $\eta L$.
 By (5) and (2a), freezing at most $(63/64)\eta L$ raw bits transfers each
@@ -243,6 +256,19 @@ $m\ge(\delta-(169/64)\eta)L$. Let $\eta$ tend to zero in the crux quantifiers.
 Depth, cut price, window and slack are fixed before dimension grows.
 Neither correctness nor cheapness of the initial $\Gamma$ is used. ∎
 
+The exported finite theorem is stated directly for an index code with
+$m$ message bits. For $d\ge4$, $b\ge1$ and any trace satisfying the stated
+time and depth bounds with at least $L$ appends, it proves
+
+$$L\le m+\frac{105}{64}\varepsilon L+ba,$$
+
+assuming a whole-row cardinal bound $|C|\le(2^b)^a$ at the explicit
+window priced by $B_D$. It sums over common message/raw-bit fibres,
+rather than selecting a largest one. The generic fibre adapter needs no
+positivity assumption on $d,b$ or $a$. The preceding all-storage-code
+calculation is the written explanation of the same counting argument;
+the exported native endpoints are index-code bounds and `Crux` statements.
+
 The direct machine route is quantitatively cheaper: it pays actual step
 values rather than the factor $B_D$. Do not read (5) as a bound uniform
 when $D$ grows with dimension.
@@ -253,8 +279,11 @@ when $D$ grows with dimension.
 `BoundedStackDepth.coneSystem`. It defines the geometric target and nonlinear
 capacity conjectures and proves elementary adapters including exceptional
 columns and (5). `WindowSpread.lean` proves the geometric target completely.
-No whole-row capacity conjecture is proved. Corollaries 3 and 4 are written
-consequences, not yet complete Lean theorems. All formalized endpoints use
+`ConeCodeTransfer.lean` reuses Paper 15's entry addressing and the existing
+exceptional-column lemma to count arbitrary encoder/raw-bit fibres.
+`RowSpreadCrux.lean` proves Corollaries 3 and 4 and combines the latter
+with Paper 14's `crux_excludes`. No whole-row capacity conjecture or
+unconditional machine exclusion is proved. All formalized endpoints use
 only `propext`, `Classical.choice` and `Quot.sound`; there are no new axioms
 or proof placeholders.
 
@@ -1109,31 +1138,66 @@ w rows. Arcs are otherwise free: the helper's column is unconstrained. So the
 universal host is the line digraph of the complete digraph with loops,
 fattened by ρ; for ρ the identity it is that line digraph itself.
 
-Necessary conditions on a presentable H carrying a code of rate 1 − η, all
-proved earlier: an induced acyclic set of at least d²/(w+1) vertices (order
-bound), hence **w ≥ 1/η − 1**; a row graph that is not hyperfinite when
-η < ½; a positive fraction of vertices in components of at least logarithmic
-size; the counts of Proposition 8.1.
+For a presentable H carrying a code of rate 1 − η, the finite order bound is
+
+$$|A|\ge\sum_r\frac{d-|\rho(r)|}{|\rho(r)|+1}
+ \ge\frac{d(d-w)}{w+1},\qquad
+ w\ge\frac{1-\eta}{\eta+1/d}. \tag{15.1}$$
+
+Indeed, choose a random row order and take cells $(c,r)$ for which
+$c\notin\rho(r)$ precedes every row of $\rho(r)$. Every helper arc inside
+this set strictly increases the row order, so the set is acyclic. Its
+expected size is the displayed sum. Projection to its complement is
+injective on any storage code, yielding (15.1). The earlier finite claim
+$|A|\ge d^2/(w+1)$ omitted loops: at $w=1$, $\rho=\mathrm{id}$, the
+symmetric code has dimension $d(d+1)/2$. Only asymptotically does the
+necessary condition become **$w\ge1/\eta-1$**.
+
+For fixed window and a fixed positive asymptotic excess above half, the
+row-graph family cannot be hyperfinite. The small-component obstruction
+and the counts of Proposition 8.1 also apply, with their stated scopes.
+For $d^2b$ coordinates, replace the bijection by balanced cells of size
+$b$; (15.1) is unchanged after normalization by the total size.
 
 **15.2 (the dual form, linear codes).** A linear whole-row code of dimension
 (1 − η)d² exists for ρ exactly when there is a subspace U ⊆ M_d(F) of
 dimension ηd² that contains, for every column r and every vector α, a matrix
 supported on column r and the rows ρ(r) whose column r agrees with α outside
 ρ(r). (U is the dual code; the matrix is the check of the cells of column r
-with weights α.) Pairing is U = the antisymmetric matrices. The same holds
-with ρ replaced by its reverse relation and rows exchanged with columns, so
-linear capacity is the same for ρ and ρ⁻¹.
+with weights α.) Pairing uses $U=\operatorname{span}\{E_{ij}-E_{ji}:i<j\}$,
+with zero diagonal also in characteristic two. The reverse relation has the
+same maximal linear dimension: if $K$ fits $\rho$, then $\tau K^T\tau$
+fits $\rho^{-1}$ and $\operatorname{rank}(I-\tau K^T\tau)=
+\operatorname{rank}(I-K)$. Here $\tau$ exchanges
+the two cell indices. This is not an assertion about nonlinear capacity.
 
 *The wall for linear codes, in one line:* a lower bound dim U ≥ δd² with δ
 independent of w. The rectangle bound gives max_J |J|(d − |ρ(J)|), about
 d²/(4w) on expanding relations.
 
-**15.3 (the question this isolates).** The fifteenth paper's amplified codes
-have rate 1 − e^{−λm} at degree bounded in m on abstract relations. By 15.1
-they are whole-row presentable at a window depending only on m only if
-w ≥ e^{λm} − 1, which the order bound permits. If they are, then
-sup_w R(w) = 1 and no deficit theorem exists; if they are not, the reason is a
-property of presentable digraphs that a deficit proof can use. Bounded or
-slowly growing blocks are excluded
-([grid note](grid-labellings-and-amplified-codes.md), sections 2 and 5); the
-growing coupled tower is open (its section 6).
+**15.3 (the question this isolates).** For each fixed odd $m$, the fifteenth
+paper's full field-linear majority kernels have rate at least
+$1-e^{-\lambda m}$ on a growing tower, at degree bounded in $m$.
+Its binary syndrome fibres have guaranteed rate at least
+$1-(\log_2 q)e^{-\lambda m}$, where $q$ is the fixed seed field size.
+The necessary asymptotic window is therefore at least $e^{\lambda m}-1$
+for a field code at the first rate, or $e^{\lambda m}/\log_2q-1$ for
+a binary code at the second. Neither order bound precludes a window
+depending only on $m$.
+
+The target must also specify the grid dimensions and lanes. One sufficient
+positive result would present each full field kernel, padded by fixed zero
+coordinates to the next square, on a scalar grid at a window $w(m)$
+independent of tower level. The [grid note, §6](grid-labellings-and-amplified-codes.md#6-the-growing-tower-support-and-intrinsic-gates)
+gives the binary-fibre and canonical-lane adapter. This would prove
+$\sup_w R(w)=1$ and refute a **common positive deficit**. It would not
+exclude every window-dependent deficit or decide native tape realization.
+A negative answer for this tower alone would not settle all whole-row
+codes; its value would depend on how far the obstruction generalizes.
+
+Bounded or slowly growing product blocks are excluded (grid note, §§2,5).
+For the growing tower, its displayed support cannot use a column label
+that ignores any tensor factor at canonical width. Every decoder of the
+full field kernel also fails the natural tensor-cylinder columns (§6).
+Arbitrary fully mixed partitions, and alternative binary-fibre decoders,
+remain open.

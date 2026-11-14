@@ -496,12 +496,78 @@ same exclusion applies to coefficients bounded in a diagonal gauge outside
 $o(d^2)$ rows (and to the stated tight-coefficient extension). Merely
 writing visibly growing coefficients is not evidence of escape.
 
-Thus (14) is a bounded next target over finite fields, or under an explicit
-failure of the complex tightness/gauge hypotheses. It is **not** a code
-above half, a parameter-count existence claim, or a request to search an
-already excluded bounded-complex class. Any proposed gain must be counted
-on the full $d^2$ array using one decoder and compared with the appropriate
-finite baselines. Nonlinear rules remain another open direction.
+### The balanced profile: exact common algebra and stopping decision
+
+Take the literal $0/1$ split-regular or nonsplit-regular indicator $f$,
+with either fixed assignment on zero discriminant. It is nonconstant,
+conjugation-invariant, and satisfies $f(-g)=f(g)=f(g^{-1})$.
+These values remain distinct in characteristic two; reducing a signed
+quadratic character modulo two would be a different profile.
+
+**Proposition.** For the entire 18-parameter family (14), the least unital
+common factor algebra satisfying $\tau K\in\mathcal A\otimes\mathcal A$
+for every coefficient choice is
+
+$$\mathcal A=\operatorname{End}_Z(F[G]),\qquad
+ Z=\{I,-I\},\qquad \dim\mathcal A=d^2/2. \tag{15}$$
+
+This holds over every coefficient field $F$, independently of the prime
+$p\ge5$ defining the group. Each decoder in the family satisfies
+
+$$\dim\operatorname{Fix}K\le3d^2/4. \tag{16}$$
+
+*Proof of (15).* Put $(R_sv)(u)=v(us)$ and let $D_f$ multiply tensor
+coordinates by $f(c^{-1}r)$. Inversion invariance gives
+
+$$\tau K=\sum_{t,y}(a_{t,y}I+b_{t,y}D_f)(R_t\otimes R_y).$$
+
+The unmasked basis terms force $R_A,R_B$ into every common algebra,
+by contracting one tensor factor. They generate all right translations.
+The masked term $t=y=e$ forces $D_f$; contracting its second factor
+against a diagonal entry forces every diagonal mask
+$M_r(c,c)=f(c^{-1}r)$.
+
+The period subgroup $P=\{h:f(hx)=f(x)\text{ for every }x\}$ is normal,
+since $f$ is central, contains $Z$, and is proper since $f$ is
+nonconstant. Simplicity of $G/Z=\mathrm{PSL}_2(\mathbb F_p)$ gives
+$P=Z$; see [Conrad, *Simplicity of PSL_n(F)*, Theorem 3.5](https://kconrad.math.uconn.edu/blurbs/grouptheory/PSLnsimple.pdf).
+Consequently the masks $M_r$ distinguish exactly the $Z$-cosets of $c$.
+For a chosen coset, multiply all $M_r$ or $I-M_r$ according to that
+coset's binary value pattern. The product is its diagonal projector.
+This uses no averaging or division.
+
+Every mask and right translation commutes with left translation by
+$-I$, giving containment in $\operatorname{End}_Z(F[G])$. Conversely,
+for $c,b\in G$, the product $P_{cZ}R_{c^{-1}b}P_{bZ}$ has exactly
+the two entries $(c,b)$ and $(-c,-b)$ equal to one. These orbit matrices
+form a basis of the centralizer over every field, of dimension $d^2/2$.
+Finally, $D_f$ is a linear combination of tensor products of the coset
+projectors, so this algebra suffices for the whole family. ∎
+
+*Proof of (16).* Write $J=L_{-I}$, a permutation with $d/2$ disjoint
+transpositions. In characteristic different from two, its two
+eigenspaces are invariant under every factor and each has dimension
+$d/2$. Apply (1). In characteristic two, put $W=\ker(J-I)$, also of
+dimension $d/2$. Every factor preserves $0\subset W\subset F[G]$.
+On the tensor filtration
+
+$$W\otimes W\ \subset\ W\otimes F[G]+F[G]\otimes W
+ \ \subset\ F[G]\otimes F[G],$$
+
+the first and last quotients each contribute at most $(d/2)^2$ fixed
+dimensions; the two middle blocks are exchanged and contribute at most
+$(d/2)^2$ together. Fixed dimensions are bounded by their associated
+graded sum, as in (5a), giving (16). ∎
+
+Equation (15) concerns one algebra for the **whole parameter family**.
+An individual coefficient tuple may have a smaller algebra. The
+$o(d^2)$ common-algebra criterion therefore does not exclude the family,
+but no gain or attainment of (16) is supplied. This completes the one
+algebra pass: the profile is parked unless a concrete cancellation
+mechanism appears. It adds five restrictions to the wall question
+(group relation, linearity, mutual recovery, this group family, this
+profile). Enlarging its search without such a mechanism is not the
+current direction.
 
 ## 7. Exact reproduction and proof status
 

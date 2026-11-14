@@ -16,9 +16,9 @@ SOURCE = Path(__file__).resolve().parent
 PACKAGE = SOURCE.parent / "High-Rate-Separated-Storage-Codes-and-Tape-Transposition" / "lean"
 CACHE = PACKAGE / ".lake" / "build" / "lean-backlog"
 MODULES = [
-    "StatementsRowSpread", "WindowAmortization", "WindowLabels",
+    "StatementsRowSpread", "ConeCodeTransfer", "WindowAmortization", "WindowLabels",
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
-    "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread",
+    "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread", "RowSpreadCrux",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 

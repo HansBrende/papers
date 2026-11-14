@@ -7,9 +7,10 @@ import ClosureBarriers
 
 The soft order inequality below is proved for polymatroids, so it also
 applies to entropies and conditional entropies. The two subcode-selection
-declarations at the end are **proposition targets, not proved theorems**.
-They use actual finite probability laws: a polymatroid alone cannot supply
-the words of the asserted subcode. Entropies use natural logarithms.
+statements at the end are retained as proposition definitions. Their proofs
+are in `SubcodeSelection` and `ConditionalSubcode`; the latter also strengthens
+the record bound to conditional entropy. They use actual finite probability
+laws: a polymatroid alone cannot supply the words of the asserted subcode. Entropies use natural logarithms.
 -/
 
 namespace LeanBacklog.EntropyConsolidation
@@ -108,7 +109,8 @@ theorem soft_order_of_acyclic {h : Finset V → ℝ} (hh : IsPolymatroid h)
   obtain ⟨rank, hr⟩ := hA
   exact soft_order hh H A rank hr
 
-/-- Formalization target only: an exact storage subcode inside the positive
+/-- Original statement, proved by `SubcodeSelection.subcodeSelectionTarget`:
+an exact storage subcode inside the positive
 support, with the paid recovery-error entropy bound. No independent-source or
 linearity assumption. Nonemptiness is explicit because `Real.log 0 = 0` in Lean. -/
 def SubcodeSelectionTarget : Prop :=
@@ -120,7 +122,8 @@ def SubcodeSelectionTarget : Prop :=
       codeEntropy p X univ - (∑ v, recoveryError (codeEntropy p X) H v) ≤
         Real.log D.card
 
-/-- Formalization target only: the selected code lies in one record fibre.
+/-- Original statement, proved by `ConditionalSubcode.conditionalSubcodeSelectionTarget`:
+the selected code lies in one record fibre.
 The record can be correlated with the input, rather than a function of it. -/
 def ConditionalSubcodeSelectionTarget : Prop :=
   ∀ (Ω α β : Type) [Fintype Ω] [Fintype α] [Fintype β] [DecidableEq α]

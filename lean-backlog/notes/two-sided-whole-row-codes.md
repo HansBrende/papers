@@ -4,9 +4,10 @@ Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** the finite upper-bound adapter, common-deficit equivalence and native
 consequences are Lean-verified in [TwoSidedCodeTransfer](../TwoSidedCodeTransfer.lean).
 The finite rectangle barrier and its invoice are Lean-verified in
-[RectangleBarrier](../RectangleBarrier.lean). Symmetry normalization, exact
-examples, the random-host existence argument and subcode selection retain
-reviewed written proofs. Their status and the assigned-rule bound are listed in the
+[RectangleBarrier](../RectangleBarrier.lean). Exact subcode selection, including
+the stronger record-fibre bound, is Lean-verified in [SubcodeSelection](../SubcodeSelection.lean)
+and [ConditionalSubcode](../ConditionalSubcode.lean). Symmetry normalization, exact
+examples and the random-host existence argument retain reviewed written proofs. Their status and the assigned-rule bound are listed in the
 [consolidation index](consolidation-status.md). No literature novelty claim.
 Front D10 of the [roadmap](../wall.md).
 
@@ -435,25 +436,41 @@ The proposed localisation premise is
 where H_v is the desired helper set (for example the mutual block), Δ=N−H(X),
 and all entropies use base q. Here is its precise consumer.
 
-**Subcode selection lemma.** For any finite random array X and helper sets H_v,
-there is an exact storage code D contained in supp(X) such that
+**Subcode selection lemma (Lean-verified).** For any finite random array X and helper sets H_v,
+there is a nonempty exact storage code D contained in the positive support of X such that
 
 log_q|D| ≥ H(X)−Σ_v H(X_v | X_{H_v}).
 
 For each v and each helper pattern h, independently choose a decoder value
-with distribution P(X_v | X_{H_v}=h). A source word x satisfies all chosen decoders
+with distribution P(X_v | X_{H_v}=h), using any probability law on zero-mass
+helper patterns. A source word x satisfies all chosen decoders
 with probability a_x=∏_v P(X_v=x_v | X_{H_v}=x_{H_v}). Therefore the expected
 number of accepted words is Σ_x a_x. With p_x=P(X=x), the log-sum inequality gives
 
 log_q Σ_x a_x ≥ Σ_x p_x log_q(a_x/p_x)
              = H(X)−Σ_v H(X_v | X_{H_v}).
 
-Some decoder choice has at least this many accepted words, which form D. ∎
+Some decoder choice has at least the expected number of accepted words, which form D.
+The expectation is positive because every positive-probability word has positive acceptance
+probability. The formal proof reuses the existing Gibbs inequality instead of a separate
+log-sum theorem. ∎
 
-With a finite record Z, choose a fibre maximizing the difference of these
-conditional quantities. The same proof gives a subcode of one fibre with
+The reusable Lean theorem `exists_observed_dependency_subset` allows any finite collection
+of functional dependencies, with a different finite value and helper alphabet for each.
+It applies to the law of the observed word, so multiple samples producing the same word
+are counted only once. It assumes neither linearity nor independent source coordinates.
 
-log_q|D| ≥ H(X)−H(Z)−Σ_v H(X_v | X_{H_v},Z).
+With a finite record Z, apply that theorem to (X,Z). Add the constraint that Z is a function
+of a constant, and give each coordinate decoder its original helpers together with Z.
+The selected joint states then all have one record value z; projection onto X is injective.
+This proves the stronger bound
+
+log_q|D| ≥ H(X | Z)−Σ_v H(X_v | X_{H_v},Z)
+        ≥ H(X)−H(Z)−Σ_v H(X_v | X_{H_v},Z).
+
+The record may be correlated with X without being a deterministic function of X. The code
+lies in the positive support of the chosen fibre. `subcodeSelectionTarget` and
+`conditionalSubcodeSelectionTarget` derive both original statements without extra hypotheses.
 
 This is an existential large subcode, not an advice scheme recovering every
 original source word. If near coordinates are deleted, freeze them first and

@@ -231,7 +231,7 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **Consolidated; no front open.** Banked: B1–B4.
   Lean: the two-sided transfer, assigned-rule theorem, soft order bound, full Fano result and
-  finite rectangle barrier. Written: symmetric normal form, amplification, grid gap and the
+  finite rectangle barrier and both entropy-to-exact-subcode forms (record bound H(X∣Z)). Written: symmetric normal form, amplification, grid gap and the
   classical quadrangle code family. Closed today: X29–X31. No premise with an inequality exists for a high-order
   family: balanced helper-containment refinements inherit the fixed base's order deficit;
   Bernoulli incidence at fixed positive density has unbounded mutual cliques and hence no

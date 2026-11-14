@@ -7,7 +7,9 @@ Items A, B and C are verified in `lean-machine`. Item D (added 12 November 2026,
 and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.
 
 **Consolidation:** the [proof-status index](notes/consolidation-status.md) separates
-the new Lean proofs from typechecked but unproved targets. The
+the Lean proofs from the remaining written results and open targets.
+Both entropy-to-exact-subcode statements are proved, with a sharper conditional-entropy
+bound for a code selected inside one record fibre. The
 [conditional machine-exclusion table](notes/conditional-machine-exclusions.md)
 lists the exact extra fibre, relation and decoder hypotheses needed to apply
 the proved code classes through the native transfer. It asserts no new native

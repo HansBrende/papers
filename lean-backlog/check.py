@@ -20,7 +20,9 @@ MODULES = [
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
     "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread", "RowSpreadCrux",
     "TwoSidedCodeTransfer",
-    "ClosureBarriers", "RectangleBarrier", "EntropyConsolidation", "FanoCertificate",
+    "ClosureBarriers", "RectangleBarrier", "EntropyConsolidation",
+    "DecoderSelection", "DecoderEntropy", "SubcodeSelection", "ConditionalSubcode",
+    "FanoCertificate",
     "FanoFull", "FanoOrder", "FanoAttainment",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]

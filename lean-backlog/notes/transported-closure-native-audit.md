@@ -192,7 +192,7 @@ The general native crux, all-code capacity question and transposition problem
 remain open. The next research choice follows consolidation rather than
 another transported-closure search.
 
-## Addendum: order certificates at cone level (Fable, 14 November; unreviewed)
+## Addendum: order certificates at cone level (Fable, 14 November; reviewed with scope corrections)
 
 A small native-side remark for the open kind "an acyclic certificate from native geometry". No
 machine exclusion follows from it.
@@ -201,26 +201,39 @@ machine exclusion follows from it.
 target, α = max over linear orders ≺ of the coordinates of #{u : every element of H(u) precedes u}.
 (An acyclic set with its order, the complement placed first, is such a family; conversely the
 targets counted by any ≺ form an acyclic set.) So every linear order definable from the schedule is
-a candidate certificate, and each one gives a necessary condition on correct machines: at most B
-targets have their whole cone before them.
+a candidate certificate. When correctness and an admissible cut give a transpose-demand index
+code of at most B bits, the acyclic bound makes each such count at most B. Coordinates here are
+raw source bits; an output bit is labelled by the source bit demanded there, so repeated raw reads
+do not create new coordinates.
 
 **Two orders that the schedule supplies.**
-- *Output order.* Call an output bit *backward* if every bit of its cone has already been written
-  when it is written, *forward* if every bit of its cone is written later. Ordering by output time,
-  and by its reverse, shows that there are at most B backward and at most B forward bits. So in a
-  correct oblivious machine with a cut of cost B, all but 2B output bits either contain their own
-  source or have cones that **straddle the output position**: they read a source bit from a column
-  already written and one from a column not yet written.
-- *First-scan order.* The same with "first scanned by the input head": at most B output bits are
-  computed only from bits first scanned before their own source, and at most B only from bits first
-  scanned after it.
 
-Pairing-type schedules (entry (i,j) from entry (j,i)) have about N/2 backward bits, and are
-excluded by the first statement alone, as expected. A scheme that survives must be mixed in both
-orders on all but 4B bits. This is the cone-level analogue of the window-two cyclic host, whose
-helpers sit on both sides.
+- *Output order.* A bit is *backward* if every helper source is demanded at a strictly earlier
+  output-bit position, and *forward* if every helper source is demanded at a strictly later one.
+  Output order and its reverse give at most B backward and at most B forward bits. Thus, in a
+  correct oblivious machine with a cut of cost B, all but 2B targets either have their own source
+  in the cone or have cones that **straddle the output position**. Both helper positions can lie
+  inside the same output row, or even the same b-bit entry; no whole-column separation follows.
+- *First-scan order.* At most B targets have displayed cones containing only sources first
+  scanned before their own source, and at most B have cones containing only sources first
+  scanned after it. The common advice record is still available in both cases. A correct
+  oblivious transposer must scan every source bit: otherwise changing an unscanned bit would
+  leave the output unchanged. First visits therefore define a total order. In the library model,
+  the input head starts at position 0 and moves by −1, 0 or 1, so on the nonnegative source
+  positions this is simply ordinary input order, not a new schedule-dependent ordering.
+
+As a helper-graph calibration, H_(i,j,s)={(j,i,s)} (each off-diagonal entry recovered only
+from its transposed partner) gives d(d−1)b/2 backward bits in output order. This contradicts
+an index-code budget smaller than that count; extracting that displayed helper graph from a
+schedule is a separate premise. A cone containing the demanded raw bit itself is instead a
+self-helper and is not counted. In any
+surviving scheme, outside at most 4B targets, each cone **either contains its own source or
+straddles that source in both orders**. Self-containing cones need not straddle either order.
+Empty cones satisfy both one-sided conditions and are included in the exceptional counts.
 
 **What a certificate of this kind would be.** A linear order on bit positions, defined from head
 positions and visit times alone, under which more than B targets have their whole cone before them
-for every linear-time oblivious schedule and every cheap cut. The two orders above do not do it:
+for every hypothetical correct linear-time oblivious transposer and an admissible cheap cut
+supplied by the reduction. This is a proposed correctness-sensitive certificate, not a property
+proved for arbitrary legal schedules. The two orders above do not do it:
 nothing forces cones to be one-sided in either.

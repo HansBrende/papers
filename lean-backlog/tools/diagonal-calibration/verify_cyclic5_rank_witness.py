@@ -5,7 +5,8 @@ From the repository root:
 
 All 32768 subset values are reconstructed from 15 cyclic-flat orbit
 representatives. Every elemental Shannon inequality and recovery equality
-is checked directly. No matroid representability or code capacity is claimed.
+is checked directly. The later graphic/code realization is checked separately
+by cyclic_difference_code.py.
 """
 from collections import Counter
 from itertools import combinations, permutations
@@ -97,7 +98,7 @@ def main():
                                   (F.bit_count(), rank) for F, rank in flats.items()).items())},
                           exact_residual_shannon=h[-1], exact_full_shannon=19,
                           full_order_upper=19, rank_values_sha256=checksum,
-                          code_realization='not claimed'), indent=2))
+                          code_realization='verified separately by cyclic_difference_code.py'), indent=2))
 
 
 if __name__ == '__main__':

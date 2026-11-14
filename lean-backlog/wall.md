@@ -106,16 +106,18 @@ Open questions, nearest the wall first:
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
   [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
 - **G4. Is the full Shannon value bounded away from d² as w grows?** It equals the order
-  value on the computed basis hosts d = 4, 8, 16 and cyclic d = 4, 5. No verified full-host
+  value on the computed basis hosts d = 4, 8, 16 and every cyclic window-two host. No verified full-host
   strict gap is known here. Token-matching and field-specific rank bounds have additional
   premises; they are not Shannon-only consequences of whole-row recovery. Fano's scalar
   value 39 does not settle its Shannon value, which lies between 119/3 and 41
-  ([host audit](notes/whole-row-host-audit.md), [row spread](notes/row-spread-of-cones.md) §§19–20, 25).
+  ([host audit](notes/whole-row-host-audit.md), [row spread](notes/row-spread-of-cones.md) §§19–20, 25–27).
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar
-39 over F₂ and F₃ (order bound 41); basis host d = 8, w = 3: 46 for all alphabets; cyclic d = 4, w = 2: 13.
-Cyclic d = 5, w = 2 has Shannon value 19, with no matching code claimed. None gives a fixed-window gain beyond O(d).
+39 over F₂ and F₃ (order bound 41); basis host d = 8, w = 3: 46 for all alphabets.
+Cyclic w = 2 has capacity and Shannon/order value d(d+3)/2−1 for every d≥2 and every alphabet;
+this attains the universal window-two upper bound. The cyclic-five witness is graphic.
+None gives a fixed-window gain beyond O(d).
 
 **What a proof and a machine must each respect.**
 - A proof must cover nonlinear recovery and growing alphabets; fail at growing windows (simplex and
@@ -191,10 +193,12 @@ Cyclic d = 5, w = 2 has Shannon value 19, with no matching code claimed. None gi
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **Full Shannon value against the order value (G4)**,
-  chosen at D0 after the token pass stopped (X24). Calibration: equal on the basis hosts and on the
-  cyclic hosts d = 4, 5. Candidate extension rule ([row spread](notes/row-spread-of-cones.md) §26):
-  budgets on row closures give the order value and column recovery but are not submodular; the
-  repair puts inclusion–exclusion budgets on their intersections. Next: check that repair on the
-  cyclic-five witness; stop if it is neither a rule nor an obstruction. Reserve: the native side
-  (D9/D7), amplification. The general token class stays open.
+  chosen at D0 after the token pass stopped (X24). Raw inclusion–exclusion budgets fail even on
+  entropic, order-tight hosts; their failure does not prove a Shannon gap. Minimizing over
+  intersection presentations and clipping reproduces the entire cyclic-five witness
+  ([row spread](notes/row-spread-of-cones.md) §26.4), now realized by the all-d difference code (§27).
+  Next bounded pass: a proof or explicit failure of this modified rule at window at least three,
+  before any new LP. Stop if it supplies neither a valid completion nor a separate Shannon
+  inequality; do not enlarge the window-two calibration. Reserve: the native side (D9/D7),
+  amplification. The general token class stays open.
 - Last re-evaluation (D0): 14 November 2026.

@@ -2955,7 +2955,9 @@ Then its full-cell Shannon value, defined in (19e), is
 
   Sh(ρ)=19=σ(ρ),                                       (25a)
 
-where σ is the exact order bound. No code of size q¹⁹ is asserted.
+where σ is the exact order bound. Section 27 now gives a code of size
+q¹⁹ over every finite alphabet and identifies its full rank function
+with this witness.
 
 *Proof of the upper bound.* If p₀,…,p₄ are the positions 1,…,5 in a
 row order, then
@@ -3010,9 +3012,9 @@ subset family. It reproduces the certificate in under a second on the
 development machine; runtime is not part of the proof.
 
 **Scope and next use.** Shannon/order equality on this host is not
-equality for every whole-row host, and the witness has no demonstrated
-linear or entropic realization. Together with 19.4 it gives
-Sh_b(ρ)=19b for scalar lanes, not an achievability theorem. Fano's
+equality for every whole-row host. Section 27 supplies the formerly
+missing graphic and entropic realization; independent copies also attain
+Sh_b(ρ)=19b for scalar lanes, as bounded in 19.4. Fano's
 scalar-linear value 39 over F₂ and F₃ is a different kind of result:
 its known three-bit construction implies Sh(Fano)≥119/3, while order
 gives at most 41. Token-matching counts cannot be imposed on arbitrary
@@ -3022,57 +3024,251 @@ The next useful step would be a full-cell extension rule that produces
 feasible polymatroids on growing hosts, or an inequality showing why such
 a rule fails. For a Shannon barrier to a common deficit, windows must
 remain fixed before dimension grows and the attainable rates must tend
-to one as the window grows. The finite witness supplies neither. This
-calibration ends the one-host experiment; no larger LP search is justified
-by equality at one more instance.
+to one as the window grows. The cyclic construction still has asymptotic
+rate one half. This calibration ends the one-host LP experiment; no larger
+LP search is justified by equality at one more instance.
 
-## 26. A candidate full-cell extension rule: budgets on row closures and their intersections (Fable, 14 November 2026)
+## 26. Row-closure budgets: audit and a finite completion
 
-Status: 26.1–26.3 have **short written proofs, unreviewed**; 26.4 is a
-**candidate rule, not proved**, to be checked against the cyclic-five
-witness of section 25. Front D1, gap G4 (full Shannon value against the
-order value); no restriction on the code.
+Fable's proposal, audited and extended by Astra, 14 November 2026.
+Status: **reviewed written arguments and exact finite checks, not
+Lean-verified**. Front G4. The original inclusion–exclusion prescription
+fails. A modified envelope reproduces the entire cyclic-five witness;
+its validity on general hosts remains open.
 
-For a set A of rows let J(A) be the columns r with ρ(r) ⊆ A, let
-F_A = R_A ∪ C_{J(A)} be the closure of the rows A, and let g(A) be the order
-value of the rows A: the least number of cells whose closure contains R_A,
-equivalently the minimum over orders i₁, i₂, … of A of Σ_l (d − |J(i₁,…,i_{l−1})|).
+**26.1 (the row-order envelope).** For row sets A let
+J(A)={r:ρ(r)⊆A} and F_A=R_A∪C_{J(A)}. Define g(∅)=0 and
 
-**26.1 (the rule).** Put h(X) = min_A [g(A) + |X ∖ F_A|]. Then h(∅) = 0, h is
-monotone, h(x) ≤ 1, h(all cells) is the order value of the host, and every
-column equality holds: h(R_{ρ(r)} ∪ C_r) = h(R_{ρ(r)}).
+  g(A)=min_{orders i₁,…,i_a of A}
+          Σ_{ℓ=1}^a [d−|J({i₁,…,i_{ℓ−1}})|].
 
-*Proof.* For the last claim let A minimise for R_{ρ(r)} and put A′ = A ∪ ρ(r).
-Completing the rows ρ(r) cell by cell gives g(A′) ≤ g(A) + |R_{ρ(r)} ∖ F_A|, and
-F_{A′} contains C_r. For the value: generators of R_A together with the cells
-outside F_A generate everything, and A = all rows attains the order value. ∎
+This is the cost of the specified row-order procedure, not necessarily
+of the smallest arbitrary generating set. For example, at d=3 with
+ρ(r)={0} for every column, g({1,2})=6, but the three cells of row zero
+already generate those rows. Global order optimality also need not force
+h(F_A)=g(A): keep row zero free and all other rows constant on this host.
+This attains total entropy three while h(F_{ {1,2} })=0.
 
-Buying columns as well changes nothing: a column outside J(A) costs exactly
-its cells outside the rows A.
+Put h₀(X)=min_A[g(A)+|X∖F_A|]. It is normalized, monotone, has singleton
+caps one, satisfies all column recoveries, and has h₀(V)=σ(ρ).
 
-**26.2 (it is not submodular).** Window one, d = 2, ρ the identity:
-g(1) = g(2) = 2, g(12) = 3, F₁ = {(1,1), (1,2), (2,1)}, F₂ = {(2,2), (2,1), (1,2)}.
-Then h(F₁) = h(F₂) = 2, h(F₁ ∪ F₂) = 3 and h(F₁ ∩ F₂) = 2, so
-h(F₁) + h(F₂) < h(F₁ ∪ F₂) + h(F₁ ∩ F₂). In the true optimum the two cells of
-F₁ ∩ F₂ are parallel and have rank one.
+*Proof.* Append the rows of B∖A to an optimal order of A. Since J only
+increases along an order,
 
-**26.3 (what is missing, exactly).** With budgets on the sets F_A only, the
-only loss in the submodular inequality is at the cells of F_A ∩ F_{A′}
-outside F_{A∩A′}, so h is submodular provided that loss is paid:
+  g(A∪B)≤g(A)+|B∖A|(d−|J(A)|)
+         =g(A)+|R_B∖F_A|.                              (26a)
 
-  g(A) + g(A′) ≥ g(A ∪ A′) + g(A ∩ A′) + |A∖A′|·|J(A′)∖J(A)| + |A′∖A|·|J(A)∖J(A′)|
+Apply this with B=ρ(r) and A minimizing h₀(R_B). The set F_{A∪B}
+contains both R_B and C_r, so h₀(R_B∪C_r)≤h₀(R_B); monotonicity gives
+equality. With B all rows, (26a) shows σ=g([d])≤g(A)+|V∖F_A|, while
+A=[d] gives equality. Nonnegativity, A=∅, and the individual terms prove
+the remaining claims. ∎
 
-This fails at window one, where the left side exceeds the first
-two terms by |A∖A′|·|A′∖A| and the cross term is twice that. So the
-intersections of row closures must themselves carry budgets below their size.
+Adding purchases of extra columns at their raw uncovered-cell cost
+cannot lower this envelope: their cost is at least the number of newly
+covered cells of X. This does not assert that columns cannot be bought
+more cheaply through a different coding argument.
 
-**26.4 (candidate).** Let 𝓛 be the family of all intersections of row
-closures, and give F_{A₁} ∩ … ∩ F_{A_k} the budget
-Σ_{∅≠T} (−1)^{|T|+1} g(∪_{j∈T} A_j) when that is below its number of cells.
-Put h(X) = min_{F∈𝓛} [budget(F) + |X ∖ F|]. At window one this is the rank
-function of the symmetric matrices. Three things are to be checked, in this
-order: that the budget of a set does not depend on how it is written as an
-intersection; that h is submodular; that h equals the witness of section 25
-on the cyclic host with five rows. If the first fails on some host, the
-inclusion–exclusion values there are inconsistent, and that host is a
-candidate for a Shannon value strictly below the order value.
+**26.2 (the submodularity obstruction).** At d=2 with ρ(r)={r}, the
+sets F_{ {0} },F_{ {1} } have h₀-values two, their union has value three,
+and their two-cell intersection has value two. Submodularity fails.
+For general A,B, one sufficient uncrossing condition is
+
+  g(A)+g(B) ≥ g(A∪B)+g(A∩B)
+       +|A∖B|·|J(B)∖J(A)|+|B∖A|·|J(A)∖J(B)|.          (26b)
+
+Indeed J(A∩B)=J(A)∩J(B). The last two terms count precisely
+(F_A∩F_B)∖F_{A∩B}, while F_{A∪B} contains F_A∪F_B. Apply those two
+sets to minimizers of h₀(X),h₀(Y), and charge at most that many extra
+intersection cells. This proves submodularity if (26b) holds for all
+A,B. It is a sufficient condition for this proof, not a necessary
+characterization of submodularity of the minimum envelope.
+
+**26.3 (inclusion–exclusion is not intersection rank).** For a nonempty
+family 𝒜 of row sets write
+
+  F(𝒜)=⋂_{A∈𝒜} F_A,
+  b(𝒜)=Σ_{∅≠𝒯⊆𝒜}(−1)^{|𝒯|+1}g(⋃_{A∈𝒯}A).          (26c)
+
+On cyclic five, g(A) depends only on |A|, with values
+(0,5,10,14,17,19). Three distinct singleton row closures are disjoint,
+yet their empty intersection gets budget 15−30+14=−1. Two singleton
+closures give the same empty set budget zero. The inconsistency persists
+away from negative budgets:
+
+  F_{ {1,2} } ∩ F_{ {0,1,3} }
+    = F_{ {0,1,3} } ∩ F_{ {1,2,3} } ∩ F_{ {1,2,4} }
+
+is an eight-cell set with respective budgets seven and eight. Clipping
+to the interval [0,|F|] does not make those two assignments equal.
+The actual witness gives this set rank seven.
+
+This failure is not evidence of a Shannon/order gap. Already at cyclic
+d=3, g has values (0,3,6,8), so three singleton closures give −1 to
+the empty intersection. Six free loop cells and one sum-zero relation
+on the other three cells attain q⁸ over every finite alphabet; their
+row-union entropies equal every g(A). Thus even exact, entropic input
+budgets do not satisfy the proposed intersection formula. Pairwise
+submodularity gives only an upper bound on an intersection rank; higher
+inclusion–exclusion is not a universal bound of that kind.
+
+More generally suppose every helper set has size at least k≥2, and
+some has size k<d. Choose S consisting of that helper set and one more
+row. Every proper A⊂S has g(A)=d|A|, whereas
+
+  g(S)=d(k+1)−M,
+  M=max_{B⊂S, |B|=k} #{r:ρ(r)⊆B}≥1.
+
+Only the final row can save any cells in this order. The singleton
+closures indexed by S have empty intersection, but (26c) gives it
+(−1)^{k+1}M. The raw valuation is inconsistent for every k; for even k
+it is negative. For odd k this particular positive empty-set value is
+removed by the cardinality cap, so it alone does not refute the capped
+rule.
+
+The identity window-one case is different: g(A) counts the independent
+unordered-pair symbols touched by A in a symmetric matrix. Inclusion–
+exclusion then really counts the symbols in an intersection. Its
+minimum envelope is the symmetric-array rank: unions of selected
+complete off-diagonal pairs are intersections of row closures, and
+remaining singleton cells cost one. This argument concerns ρ(r)={r}
+up to bijective relabelling, not arbitrary window-one maps.
+
+**26.4 (a well-defined repair, exactly checked on cyclic five).** Instead
+set
+
+  b_*(F)=max(0, min(|F|, min_{𝒜:F(𝒜)=F} b(𝒜))),
+  h_*(X)=min_F [b_*(F)+|X∖F|].                          (26d)
+
+The original presentation-independent formula is false; (26d) is a
+different rule. On cyclic five, it equals the full rank witness of
+section 25 on **every subset of the 25-cell grid**.
+
+*Finite certificate.* Removing a repeated row set, or a set containing
+another set of 𝒜, preserves both F(𝒜) and b(𝒜). For the latter, pair
+the inclusion–exclusion terms containing the larger set according to
+whether the smaller one is present. Hence the 7,580 nonempty antichains
+of subsets of [5] cover every presentation. The
+[exact checker](../tools/diagonal-calibration/row_closure_completion.py)
+evaluates them all, giving 919 intersection sets. All 68 cyclic flats
+of the witness, embedded with no loop coordinates, occur among them;
+all 32 original row-closure ranks equal g(A).
+
+Let h be that full witness, with its ten independent loop coordinates.
+For each of the 919 sets the checker verifies b_*(F)≥h(F), and it checks
+h_*(F)=h(F) on all 68 defining cyclic flats. These tests prove equality
+on every subset, without enumerating 2²⁵ sets. First,
+h(X)≤h(F)+|X∖F|≤b_*(F)+|X∖F|, giving h≤h_*. Second the envelope itself
+satisfies h_*(X)≤h_*(F)+|X∖F|. Minimize this over the defining flats in
+(25b), now with loop cells paid at unit cost, to obtain h_*≤h. ∎
+
+No general submodularity or recovery theorem for (26d) follows. Section
+27 identifies the cyclic witness as a graph-difference code, providing a
+constructive explanation of this positive calibration.
+
+**Why nonnegative coverage profiles cannot be the general repair.** If an
+actual feasible polymatroid has row entropies
+h(R_A)=Σ_{T:T∩A≠∅}a_T with a_T≥0, then
+
+  2h(V)≤Σ_i h(R_i)+Σ_i h(R_i | R_{[d]∖{i}})≤N+L.
+
+The first inequality holds termwise: a symbol counted in m rows
+contributes m, and contributes one more exactly when m=1. The second
+uses singleton caps and recovery: given the other rows, only host-loop
+coordinates in row i can remain undetermined. This is the coverage
+case of the signed-synergy argument in section 18, not a new frontier
+bound. It needs only the stated entropy profile, not an independent-
+source realization. A completion aimed at rates approaching one must
+allow the joint dependencies that inclusion–exclusion does not treat
+as independent set atoms.
+
+## 27. Exact capacity at window two
+
+Astra, 14 November 2026. Status: **reviewed written proof with exact
+finite controls, not Lean-verified**. This supplies all-d attainment of
+Paper 17's whole-row window-two bound and realizes the cyclic-five
+witness. It does not improve the asymptotic half-rate bound.
+
+**27.1 (cyclic difference code).** Let d≥2 and let the alphabet have
+q≥2 symbols. For ρ(r)={r,r+1 mod d}, the maximum whole-row code size is
+
+  q^{d(d+3)/2−1}.                                      (27a)
+
+Since Paper 17's Proposition `order`(b) bounds every whole-row host of
+window at most two by this same number, (27a) is also the exact maximum
+over **all** such hosts and codes, with arbitrary nonlinear recovery.
+
+*Construction and recovery.* Identify the alphabet with any abelian
+group Q of order q, for example ℤ/qℤ. Take source values z_{ij}=z_{ji}
+for unordered distinct i,j, and two private values a_i,b_i for each row.
+All indices below are cyclic. Define
+
+  X[c,r]   = z_{c,r}−z_{c,r+1}  if c∉{r,r+1},
+  X[c,c]   = a_c−z_{c,c+1},
+  X[c,c−1] = b_c−z_{c,c+1}.                             (27b)
+
+Row c gives the consecutive differences along the path
+z_{c,c+1},z_{c,c+2},…,z_{c,c−1}, and the differences from a_c,b_c to
+its first vertex. Hence it determines every difference among these
+d+1 source values. For a nonloop target X[c,r], row r determines
+z_{r,c}−z_{r,r+1} and row r+1 determines
+z_{r+1,c}−z_{r+1,r}. Their difference is exactly X[c,r]. The two loop
+targets of column r are already in its helper rows. This proves recovery.
+For d=2 the path has one vertex and no edges, and all targets are loops;
+the same construction and count apply.
+
+*Size.* Regard each source value as a vertex and each cell as its
+oriented difference edge. The row edges form a tree on that row's d+1
+source vertices. The trees for distinct rows i,j meet at z_{ij}, so the
+global graph is connected. It has binom(d,2)+2d vertices. Two source
+assignments give the same array exactly when their difference is one
+common additive constant on this connected graph. Every fiber therefore
+has q elements, proving the size q^{binom(d,2)+2d−1}. The private edges
+are leaves, so their 2d loop coordinates are independently free.
+
+*Upper bound.* For the cyclic relation the order expression is
+
+  Σ_r max(p_r,p_{r+1})
+    =d(d+1)/2+½Σ_r |p_r−p_{r+1}|.
+
+The two paths between positions 1 and d force total variation at least
+2(d−1), attained by the natural cyclic order. Thus σ=d(d+3)/2−1;
+the Shannon/order argument proves the upper bound. The universal
+window-two upper bound is already proved in
+[Paper 17](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/symmetry.tex),
+Proposition `order`(b) and the following whole-row paragraph. ∎
+
+**27.2 (the entropy witness is graphic).** After deleting the private
+leaves, the auxiliary graph has vertices {i,j} and edges
+{c,r}—{c,r+1} for c∉{r,r+1}. For d≥3 this is the classical two-token
+graph F₂(C_d), as defined by
+[Fabila-Monroy et al., *Token Graphs*](https://arxiv.org/abs/0910.4774).
+That reference concerns the graph, not the capacity application here.
+Take the source values independently and uniformly in Q, which induces
+the uniform distribution on the code. For any subset S of cell edges,
+use the full auxiliary graph, including private leaves; for residual
+subsets one may equivalently delete those leaves. Its normalized entropy is
+
+  h(S)=|V_graph|−components(V_graph,S),                  (27c)
+
+where isolated vertices are counted. Indeed each component permits
+one independent constant shift of the source values. This is the graphic
+matroid rank, over every field and also as an entropy profile over any
+finite abelian alphabet.
+
+At d=5, the [exact checker](../tools/diagonal-calibration/cyclic_difference_code.py)
+compares (27c) with all 32,768 residual subset values in section 25;
+they agree exactly. Thus the earlier certificate has an explicit
+all-alphabet realization, not merely an achievable total value.
+At d=3 this is the sum-zero triangle with free loops; at d=4 its
+nonprivate graph is K₂,₄, recovering section 20.5.
+
+**Scope.** These are functions of two **whole rows**. A recovered entry
+may use a path of growing length inside each row; this does not settle
+the sparse one-class problem with only two scalar helpers per entry.
+The gain over ordinary transpose pairing is exactly d−1, so the rate
+still tends to one half. Pair-source variables and O(d) private variables
+cannot supply a positive limiting excess by themselves. No linear-time
+tape implementation or window-three capacity bound follows. The bounded
+literature check identified the underlying token graph and the existing
+d=3,4 special cases; no novelty claim for the full application is made.

@@ -3,8 +3,8 @@
 Hans Brende and GPT-6 Astra, 14 November 2026. Front D1.
 
 This audit distinguishes the unrestricted linear host from prescribed
-sparse supports. The new block arguments below are **written proofs,
-not Lean-verified**; the finite results are earlier certificates, with
+sparse supports. The block arguments and cyclic-family construction
+are **written proofs, not Lean-verified**; the finite results retain
 their original scopes. No new optimizer was run, and no new asymptotic
 capacity bound is claimed. The host is one restriction from the wall
 (linearity); scalar entries impose an additional restriction when the
@@ -92,6 +92,7 @@ per host edge is not decided here.
 | Fano incidence, $d=7,w=3$ | Scalar-linear dimension exactly 39 over $\mathbb F_2$ and $\mathbb F_3$ | Unrestricted dense blocks; computer-assisted proofs, not Lean |
 | Same Fano host, three binary lanes | 119 free bits out of 147; normalized exponent $119/3$ | Vector construction; general alphabet-eight upper bound 41 |
 | Basis hosts on $\mathbb F_2^s$, $s=2,3,4$, $w=s$ | Exponents exactly 12, 46, 176 | Full hosts, every finite alphabet, nonlinear recovery allowed |
+| Cyclic $\rho(r)=\{r,r+1\}$, every $d\ge2$ | Exponent exactly $d(d+3)/2-1$ | Every finite alphabet; attains the universal whole-row window-two upper bound |
 | Clebsch host, $d=16,w=5$ | Binary exponent at least 210; all-alphabet upper 211 | General cross-diagonal gain remains open |
 | Projective-plane host, $d=13,w=4$ | Exponent at least 130 | Exact optimum for disjoint clique gadgets only |
 
@@ -131,6 +132,17 @@ Individual irreducible-sector gains and the earlier generic twisted-block
 numerics also do not certify a full-array host code without one shared
 decoder realizing all sectors.
 
+**Cyclic window two.** The [difference construction][cyclic] attains
+Paper 17's universal whole-row upper bound over every finite alphabet.
+Its rows are trees of differences between shared pair variables; two
+helper rows recover a target by subtracting two path sums. At $d=5$
+its graphic rank agrees with every subset value of the previous
+Shannon witness, so the full capacity is 19. These decoders can use
+growing scalar support inside their two helper rows. They do not settle
+the sparse one-class problem with two scalar helpers per entry, or show
+that sparse and dense optimal capacities differ. Their gain over
+ordinary pairing is $d-1$.
+
 ## 4. What remains undecided
 
 No result in this audit supplies, at fixed window three, a family whose
@@ -162,4 +174,5 @@ optimization search is justified by the reformulations alone.
 [shear]: shear-loop-controls.md
 [simplex]: ../tools/simplex-calibration/README.md
 [diagonal]: diagonal-code-calibration.md#4-the-finite-diagonal-coupling-test
+[cyclic]: row-spread-of-cones.md#27-exact-capacity-at-window-two
 [Hall]: https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Mathlib/Combinatorics/Hall/Finite.lean

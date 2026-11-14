@@ -122,10 +122,42 @@ representatives generating 68 ranked sets. The verifier reconstructs
 all 32,768 subset values by the stated minimum formula, then directly
 checks all 1,105,935 elementary Shannon inequalities, normalization and
 all column recoveries. It also checks the six-cell DAG and the exact
-order bound. The resulting integer function is a matroid rank; its
-representability and code realization are not asserted. This is a full
+order bound. The resulting integer function is a matroid rank. Its later
+graphic realization is verified separately below. This is a full
 polymatroid certificate, not a relaxation on selected subsets. No optimizer,
 floating-point arithmetic, external package, or file write is needed.
+
+## Row-closure completion and the cyclic difference code
+
+[Row spread §§26–27](../../notes/row-spread-of-cones.md#26-row-closure-budgets-audit-and-a-finite-completion)
+audits the intersection-budget proposal and proves exact capacity
+$q^{d(d+3)/2-1}$ on the cyclic host $\rho(r)=\{r,r+1\}$ for every
+$d\ge2$ and every alphabet size $q\ge2$. Combined with Paper 17's
+upper bound, this is the exact maximum over all whole-row hosts of
+window at most two. The excess over transpose pairing is only $d-1$.
+These are written proofs, not Lean formalizations.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/row_closure_completion.py
+python3 lean-backlog/tools/diagonal-calibration/cyclic_difference_code.py
+```
+
+The first command checks all 7,580 nonempty antichain presentations on
+cyclic five, giving 919 intersections. Raw inclusion–exclusion budgets
+are inconsistent, even on a nonempty set after clipping. Taking the
+minimum over presentations and clipping to $[0,|F|]$ instead reproduces
+the full witness: rank domination on all intersections and agreement on
+its 68 defining cyclic flats certify equality on all $2^{25}$ subsets.
+No general-host validity theorem for this modified rule is claimed.
+
+The second command checks the connected difference graph and every
+recovery identity over the integers at $d=2,3,4,5,8$. At $d=5$ it
+compares all 32,768 residual graphic ranks with the saved witness;
+there are no mismatches. The general construction works over every
+finite abelian group, and over every field. Recovery uses two whole
+rows, potentially many scalar entries in each, so it does not settle
+the sparse two-scalar-helper problem. Both commands use only the
+standard library, run no optimizer or host search, and write no files.
 
 ## Fundamental token blocks
 

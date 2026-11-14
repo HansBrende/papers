@@ -30,8 +30,15 @@ The full arbitrary-width theorem is now proved in
 `N ≤ k rank B` over every field, assuming nonzero diagonal, outgoing degree
 at most `k ≥ 2`, and the four-arc exclusion, with no incoming-degree bound. A root-reachable
 matrix of rank at least two satisfies the sharper `N + k ≤ k rank B + 2`.
-The three-outgoing-helper half theorem under the weakened four-arc condition,
-its affine-code wrappers, and the matching-plus-one-helper proof remain written.
+[ThreeHelperRank.lean](../lean-machine/LeanMachine/ThreeHelperRank.lean) now proves the
+three-outgoing-helper half theorem under the weakened four-arc condition when one-way arcs
+enter rows with at most two outgoing helpers. Its rooted form retains the root's exact degree.
+[SparseAffineCodes.lean](../lean-machine/LeanMachine/SparseAffineCodes.lean) proves the code
+cardinality consequences for arbitrary finite alphabets embedded coordinatewise in any field,
+even for nonlinear subsets of the affine solution space. This still assumes affine equations;
+it does not cover arbitrary nonlinear recovery under the weakened pattern. Paper 10's Theorem S*
+already covers nonlinear recovery under the stronger no-transitive-triangle premise.
+The separate matching-plus-one-helper Hall proof remains written.
 
 ## What is here
 

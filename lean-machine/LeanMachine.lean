@@ -193,3 +193,5 @@ import LeanMachine.OrderedRowRank
 import LeanMachine.ClosedCutRank
 import LeanMachine.SupportTraversal
 import LeanMachine.SparseRankBounds
+import LeanMachine.ThreeHelperRank
+import LeanMachine.SparseAffineCodes

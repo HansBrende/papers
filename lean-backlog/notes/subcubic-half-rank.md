@@ -2,10 +2,10 @@
 
 Hans Brende, GPT-6 Astra and Claude Fable 5.2, 14 November 2026.
 
-**Status:** the new proof and strengthenings are written and independently reviewed;
-the [last-row lemma](../../lean-machine/LeanMachine/LastRowSupport.lean), the exact ordered
-count, the closed-cut and traversal adapters, and the full arbitrary-width Corollary A3
-are now Lean-verified. **Reuse correction:** the original asymmetric triangle-free
+**Status:** the rank proof and its strengthenings, including the weaker-pattern three-helper
+half theorem, the arbitrary-width bound and the affine-code cardinality consequences, are
+Lean-verified. The separate nonlinear matching-plus-one-helper Lemma 3 remains written and
+independently reviewed. **Reuse correction:** the original asymmetric triangle-free
 subcubic theorem, the directed reciprocity form below, and the two-helper special case were
 already proved in Paper 4, Theorem S, including in
 [`MotionDepthCodes/Subcubic.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Subcubic.lean).
@@ -16,8 +16,11 @@ bound on graph-supported scalar codes.
 Hans directed the research. Fable proposed the re-examined target, tested finite instances and
 supplied the removal argument. Astra developed the shorter row-order/last-row proof below.
 The additions relative to Theorem S are the weaker **four-arc exclusion** and the bound for
-**arbitrary outgoing width k**; the new proof does not depend on zero forcing. No external
-literature novelty claim is made.
+**arbitrary outgoing width k**; the new proof does not depend on zero forcing. Paper 10's
+Theorem S* already proves the nonlinear all-alphabet half bound under the stronger
+no-transitive-triangle hypothesis and the same degree-three reciprocity condition. Our
+weaker-pattern extension assumes scalar affine equations. No external literature novelty
+claim is made.
 
 ## 1. The theorem and its coding consequence
 
@@ -54,6 +57,15 @@ if nonempty it lies in a translate of ker B, and an information-set projection o
 space is injective on C. The empty-code case is immediate. In particular this bounds all codes
 with scalar affine recovery equations whose resulting matrix has the stated support and
 nonzero-diagonal properties.
+
+The Lean information-set theorem is more general: for any matrix B with N columns, even
+with an infinite set of equations, any finite alphabet A with coordinate-dependent embeddings
+`e_v : A ↪ F`, and any C⊆A^V satisfying `B(e_v(x_v))=a`,
+
+`|C| ≤ |A|^(N−rank B)`.
+
+Neither the field nor the complete affine fibre need be finite, and C need not be a subspace.
+The embedding is a hypothesis: a fixed finite field need not contain every alphabet size.
 
 This reproves the already formalized Target A of the
 [literature note](storage-codes-large-girth-literature.md), in every field and at every size. Nonlinear storage capacity on the triangle-free subcubic graphs was already bounded by
@@ -150,6 +162,13 @@ closed-cut induction is unnecessary. For rank at least two the same count gives
 proper cut containing the chosen vertex have an outgoing arc. It does not ask that the
 whole relation be strongly connected. At k≥2 this saves k−2 compared with A3.
 
+**Sharper three-helper form (Lean-verified).** Under the half theorem's degree and one-way-head
+premises, the same rooted traversal retains the actual outgoing degree of its root s:
+`N + 2 ≤ 2 rank B + outdeg(s)`, provided rank B≥2. A root of degree at most two gives half
+directly; a root of degree one saves an additional unit. When every degree is three, all arcs
+are reciprocal and the handshaking lemma makes N even, removing the possible extra unit.
+The general closed-cut induction then gives the half theorem without any reachability premise.
+
 **Degree-four comparison.** Paper 7's thirteen-vertex degree-four example is triangle-free,
 so its scalar F₄ recovery matrix satisfies the four-arc exclusion. A3 gives rank at least
 ⌈13/4⌉=4, hence dimension at most 9; its seven-dimensional code is consistent with this
@@ -199,6 +218,12 @@ two outgoing neighbours of a vertex; our proof only forbids a **reciprocal** pai
 Its graph specialization `rank_ge_half_of_degree_le_three` already covers partial and asymmetric
 supports over every field. The shorter proof here is an alternative proof of those endpoints,
 not their first verification. The arbitrary-width Corollary A3 is outside their degree hypotheses.
+Paper 10's [`IsClassS`](../../Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes/lean/DirectedReciprocity/ClassS.lean)
+uses the same reciprocity premise with no transitive triangle and already has a full nonlinear
+half-rate decomposition (Theorem 3.6, §3.3). The existing
+[`classS_soft`](../../Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/memo-soft-recovery/lean/SoftRecovery/ClassS.lean)
+also gives its soft-recovery form. The weaker four-arc exclusion allows a one-way transitive triangle,
+so its affine-code extension is not an instance of that theorem.
 
 The [last-row support argument](../../lean-machine/LeanMachine/LastRowSupport.lean) is now
 Lean-verified as `subsingleton_of_rows_mem_span_insert`, `card_le_one_of_rows_mem_span_insert`
@@ -210,13 +235,20 @@ ordered bound `N≤a+h(rank−2)+1`, including the count of selected rows and th
 columns. [SupportTraversal.lean](../../lean-machine/LeanMachine/SupportTraversal.lean) supplies
 an ordering from the root-containing cut condition.
 [ClosedCutRank.lean](../../lean-machine/LeanMachine/ClosedCutRank.lean) proves the principal-cut
-rank inequality and the rank-at-most-one boundary.
+rank inequality, the rank-at-most-one boundary and a reusable induction principle for hereditary
+matrix classes. Both global rank bounds use this induction instead of separate copies.
 [SparseRankBounds.lean](../../lean-machine/LeanMachine/SparseRankBounds.lean),
 `card_le_mul_rank`, combines them by induction to prove A3 in full; its
 `card_add_width_le_mul_rank_add_two_of_cut` proves the sharper reachable form.
-The k=2 instance gives half under the weaker four-arc exclusion. Still to formalize are the
-three-outgoing-helper half theorem with its one-way-head premise under that weaker exclusion,
-the explicit affine-code cardinality wrappers, and Lemma 3's nonlinear Hall argument.
+The k=2 instance gives half under the weaker four-arc exclusion.
+[ThreeHelperRank.lean](../../lean-machine/LeanMachine/ThreeHelperRank.lean),
+`card_le_two_mul_rank`, proves the three-helper half theorem under the same weaker exclusion,
+including the one-way-head premise and cubic parity step. Its
+`card_add_two_le_two_mul_rank_add_root_degree_of_cut` proves the root-degree refinement.
+[SparseAffineCodes.lean](../../lean-machine/LeanMachine/SparseAffineCodes.lean) proves the
+information-set bound and its half and general-width consequences: for nonempty embedded
+alphabets, `|C|≤q^⌊N/2⌋` and `|C|^k≤q^((k−1)N)`, respectively.
+Only Lemma 3's nonlinear Hall argument remains unformalized in this note.
 Existing scalar half/matching endpoints should be reused rather than reproved merely to
 obtain the original statement. Fable's binary census is consistent with the theorem;
 neither that census nor a floating-point search is used in the proof.

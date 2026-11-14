@@ -97,9 +97,10 @@ supplied by B1. By mechanism, at fixed window:
 - *Sparse recovery rank* (every field): Paper 4 already covers the original scalar and directed
   reciprocity forms. The new [short proof](notes/subcubic-half-rank.md) weakens the forbidden
   pattern to a reciprocal pair of outgoing neighbours and proves rank≥⌈N/k⌉ at outgoing width
-  k≥2; this full rank bound and its counting/order/cut adapters are now Lean. The three-helper
-  half extension under the weaker pattern is still written. Matching plus one helper
-  has a separate written nonlinear half-size seed proof.
+  k≥2. The three-helper half extension under that weaker pattern, its root-degree refinement,
+  and all affine-code cardinality wrappers are now Lean too. Paper 10 S* already covers
+  nonlinear recovery under the stronger no-transitive-triangle premise. Matching plus one
+  helper has a separate written nonlinear half-size seed proof.
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
@@ -275,17 +276,24 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      exist. The proposed new LPs were stopped before a solve. No original A/B target remains.
   3. *Banked.* [SparseRankBounds](../lean-machine/LeanMachine/SparseRankBounds.lean) proves the
      full four-arc/outgoing-width rank bound, reusing the exact ordered count, rooted traversal,
-     closed-cut inequality and last-row lemma. [SubcubicReuse](SubcubicReuse.lean) exposes the
-     existing nonlinear/soft theorem for asymmetric helper subsets. No native extraction follows.
-  4. *Astra next bounded formalization:* the three-helper half extension under the weakened
-     four-arc condition and its remaining code wrappers. *Fable comparison (in progress):*
-     the literal Paper 7 half-rate decomposition is impossible on Fano and the grid, since their
-     residual codes exceed half; [FanoAttainment](FanoAttainment.lean) proves the Fano obstruction in
-     Lean. A generalized paid/rate piece theorem is a separate, unspecified extension. Its
-     coefficients and structural piece premise must be stated before claiming a whole-row
-     consumer. Both finite certificates already use Shannon inequalities; this is not evidence
-     that they require non-Shannon inequalities. No new experiment is commissioned.
-  5. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
+     closed-cut inequality and last-row lemma. [ThreeHelperRank](../lean-machine/LeanMachine/ThreeHelperRank.lean)
+     proves the half extension with the one-way-head premise; [SparseAffineCodes](../lean-machine/LeanMachine/SparseAffineCodes.lean)
+     supplies the finite-alphabet affine consumers. Both rank proofs share one hereditary-cut
+     induction. [SubcubicReuse](SubcubicReuse.lean) exposes the existing nonlinear/soft theorem
+     for asymmetric helper subsets. No native extraction follows.
+  4. *Comparison closed without a new rule.* Literal Paper 7 half-rate decompositions are
+     impossible on Fano and the grid, whose residual codes exceed half. The checked extensions
+     are paid conditional patches and balanced macro quotients; these are not a proved exhaustive
+     list. A fixed base with positive order deficit cannot yield order rate tending to one by
+     a balanced helper-containment lift. The good-column counting barrier does not rule out
+     stronger bounds using the actual conditional errors. No new experiment is commissioned.
+  5. *Fable reading unit: G0.* Check Paper 15's native criteria against whole-row presentability
+     of its original growing tower. The paper leaves arbitrary mixed layouts open. Two-sided
+     symmetric normal forms apply to paid extracted codes and enlarged helper relations;
+     individual pairing-shift invariance is an exclusion premise, not a normal form of the
+     original tower. *Astra remaining formalization:* the separate matching-plus-one-helper
+     Hall lemma, after a reuse/effort check.
+  6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
      not a replacement for the native-support or nonlinear questions.
 - Last re-evaluation (D0): 14 November 2026.

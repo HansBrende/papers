@@ -1712,6 +1712,8 @@ import LeanMachine
 
 -- ClosedCutRank.
 #print axioms LeanMachine.ClosedCutRank.rank_principal_add_compl_le
+#print axioms LeanMachine.ClosedCutRank.card_le_mul_rank_of_closed_cuts
+#print axioms LeanMachine.ClosedCutRank.one_le_rank_of_entry_ne_zero
 #print axioms LeanMachine.ClosedCutRank.card_le_two_of_rank_le_one
 
 -- SupportTraversal.
@@ -1728,3 +1730,21 @@ import LeanMachine
 #print axioms LeanMachine.SparseRankBounds.card_add_width_le_mul_rank_add_two_of_cut
 #print axioms LeanMachine.SparseRankBounds.card_le_mul_rank_of_cut
 #print axioms LeanMachine.SparseRankBounds.card_le_mul_rank
+
+-- ThreeHelperRank.
+#print axioms LeanMachine.ThreeHelperRank.oneWayHeadsLow_submatrix
+#print axioms LeanMachine.ThreeHelperRank.newColumns_card_le_two
+#print axioms LeanMachine.ThreeHelperRank.card_add_two_le_two_mul_rank_add_root_degree_of_cut
+#print axioms LeanMachine.ThreeHelperRank.even_card_of_outgoing_eq_three
+#print axioms LeanMachine.ThreeHelperRank.card_le_two_mul_rank_of_cuts
+#print axioms LeanMachine.ThreeHelperRank.card_le_two_mul_rank
+
+-- SparseAffineCodes.
+#print axioms LeanMachine.SparseAffineCodes.exists_column_basis
+#print axioms LeanMachine.SparseAffineCodes.eq_of_mulVec_eq_of_agree_compl
+#print axioms LeanMachine.SparseAffineCodes.card_affine_le
+#print axioms LeanMachine.SparseAffineCodes.card_affine_le_of_embedding
+#print axioms LeanMachine.SparseAffineCodes.card_le_pow_half_of_rank
+#print axioms LeanMachine.SparseAffineCodes.card_pow_le_of_rank
+#print axioms LeanMachine.SparseAffineCodes.card_pow_le_of_outgoing
+#print axioms LeanMachine.SparseAffineCodes.card_le_pow_half_of_three_helpers

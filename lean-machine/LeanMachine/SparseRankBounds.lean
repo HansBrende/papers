@@ -124,66 +124,27 @@ theorem card_le_mul_rank (B : Matrix V V F) (k : ℕ) (hk : 2 ≤ k)
     (hdegree : ∀ i, (outgoing B i).card ≤ k) :
     Fintype.card V ≤ k * B.rank := by
   classical
-  have aux : ∀ n (W : Type u) [Fintype W] [DecidableEq W],
-      Fintype.card W = n → ∀ A : Matrix W W F,
-      (∀ i, A i i ≠ 0) → LastRowSupport.NoFourArcPattern A →
-      (∀ i, (outgoing A i).card ≤ k) → Fintype.card W ≤ k * A.rank := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-      intro W _ _ hn A hdiagA hpatternA hdegreeA
-      cases isEmpty_or_nonempty W with
-      | inl h => simp
-      | inr h =>
-        let s : W := Classical.choice h
-        by_cases hrank : 2 ≤ A.rank
-        · by_cases hclosed : ∃ P : Finset W, P.Nonempty ∧ P ≠ univ ∧
-              ∀ p ∈ P, ∀ q ∉ P, A p q = 0
-          · obtain ⟨P, hp, hproper, hzero⟩ := hclosed
-            have hp_lt : Fintype.card P < n := by
-              have hlt := Finset.card_lt_card (Finset.ssubset_univ_iff.mpr hproper)
-              simpa [hn] using hlt
-            have hc_lt : Fintype.card ↥Pᶜ < n := by
-              have hpos := Finset.card_pos.mpr hp
-              rw [Fintype.card_coe, Finset.card_compl, hn]
-              omega
-            have hP := ih (Fintype.card P) hp_lt P rfl
-              (A.submatrix (fun p : P => p.val) (fun p : P => p.val))
-              (fun p => hdiagA p)
-              (noFourArcPattern_submatrix A _ Subtype.val_injective hpatternA)
-              (fun p => (outgoing_submatrix_card_le A _ Subtype.val_injective p).trans
-                (hdegreeA p))
-            have hC := ih (Fintype.card ↥Pᶜ) hc_lt ↥Pᶜ rfl
-              (A.submatrix (fun p : ↥Pᶜ => p.val) (fun p : ↥Pᶜ => p.val))
-              (fun p => hdiagA p)
-              (noFourArcPattern_submatrix A _ Subtype.val_injective hpatternA)
-              (fun p => (outgoing_submatrix_card_le A _ Subtype.val_injective p).trans
-                (hdegreeA p))
-            have hsum := ClosedCutRank.rank_principal_add_compl_le A P hzero
-            have hcard : Fintype.card P + Fintype.card ↥Pᶜ = Fintype.card W := by
-              simpa only [Fintype.card_coe] using P.card_add_card_compl
-            nlinarith
-          · apply card_le_mul_rank_of_cut A k hk hdiagA hpatternA hdegreeA hrank s
-            intro P hs hproper
-            by_contra hno
-            apply hclosed
-            refine ⟨P, ⟨s, hs⟩, hproper, ?_⟩
-            intro p hp q hq
-            by_contra hpq
-            exact hno ⟨p, hp, q, hq, hpq⟩
-        · have hr1 : A.rank ≤ 1 := by omega
-          have hcard := ClosedCutRank.card_le_two_of_rank_le_one A hdiagA hpatternA hr1
-          have hpos : 1 ≤ A.rank := by
-            by_contra hnot
-            have hz : A.rank = 0 := by omega
-            rw [Matrix.rank_eq_finrank_span_row] at hz
-            have hrow : A.row s ∈ Submodule.span F (Set.range A.row) :=
-              Submodule.subset_span ⟨s, rfl⟩
-            rw [Submodule.finrank_eq_zero.mp hz] at hrow
-            have hrow0 : A.row s = 0 := hrow
-            exact hdiagA s (congrFun hrow0 s)
-          nlinarith
-  exact aux (Fintype.card V) V rfl B hdiag hpattern hdegree
+  let Q : ∀ (W : Type u) [Fintype W] [DecidableEq W], Matrix W W F → Prop :=
+    fun W _ _ A => (∀ i, A i i ≠ 0) ∧ LastRowSupport.NoFourArcPattern A ∧
+      (∀ i, (outgoing A i).card ≤ k)
+  refine ClosedCutRank.card_le_mul_rank_of_closed_cuts Q k ?_ ?_ B
+    ⟨hdiag, hpattern, hdegree⟩
+  · intro W U _ _ _ _ A f hf hA
+    exact ⟨fun i => hA.1 (f i), noFourArcPattern_submatrix A f hf hA.2.1,
+      fun i => (outgoing_submatrix_card_le A f hf i).trans (hA.2.2 (f i))⟩
+  · intro W _ _ A hA hcut
+    obtain ⟨hdiagA, hpatternA, hdegreeA⟩ := hA
+    cases isEmpty_or_nonempty W with
+    | inl h => simp
+    | inr h =>
+      let s : W := Classical.choice h
+      by_cases hrank : 2 ≤ A.rank
+      · exact card_le_mul_rank_of_cut A k hk hdiagA hpatternA hdegreeA hrank s
+          (fun P hs hproper => hcut P ⟨s, hs⟩ hproper)
+      · have hr1 : A.rank ≤ 1 := by omega
+        have hcard := ClosedCutRank.card_le_two_of_rank_le_one A hdiagA hpatternA hr1
+        have hpos := ClosedCutRank.one_le_rank_of_entry_ne_zero A s s (hdiagA s)
+        nlinarith
 
 end LeanMachine.SparseRankBounds
 

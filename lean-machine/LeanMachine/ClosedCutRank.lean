@@ -16,7 +16,8 @@ open Module Submodule
 
 set_option autoImplicit false
 
-variable {F V : Type*} [Field F] [Fintype V] [DecidableEq V]
+universe u v
+variable {F : Type v} [Field F] {V : Type u} [Fintype V] [DecidableEq V]
 
 private def restrict (P : Finset V) : (V → F) →ₗ[F] (P → F) where
   toFun x p := x p
@@ -80,6 +81,70 @@ theorem rank_principal_add_compl_le (B : Matrix V V F) (P : Finset V)
   exact (Nat.add_le_add (Submodule.finrank_map_le _ _) (Submodule.finrank_mono hD)).trans
     (finrank_add_map_le S U (restrict Pᶜ) hUS hUk)
 
+/-- Prove a proportional rank bound for a hereditary matrix class by
+checking matrices with an outgoing nonzero across every nonempty proper
+cut. The consumer includes the empty and low-rank cases. -/
+theorem card_le_mul_rank_of_closed_cuts
+    (Q : ∀ (W : Type u) [Fintype W] [DecidableEq W], Matrix W W F → Prop)
+    (k : ℕ)
+    (hrestrict : ∀ (W U : Type u) [Fintype W] [DecidableEq W]
+      [Fintype U] [DecidableEq U] (A : Matrix W W F) (f : U → W),
+      Function.Injective f → Q W A → Q U (A.submatrix f f))
+    (hirred : ∀ (W : Type u) [Fintype W] [DecidableEq W] (A : Matrix W W F),
+      Q W A → (∀ P : Finset W, P.Nonempty → P ≠ Finset.univ →
+        ∃ u ∈ P, ∃ v ∉ P, A u v ≠ 0) → Fintype.card W ≤ k * A.rank)
+    (B : Matrix V V F) (hB : Q V B) : Fintype.card V ≤ k * B.rank := by
+  classical
+  have aux : ∀ n (W : Type u) [Fintype W] [DecidableEq W],
+      Fintype.card W = n → ∀ A : Matrix W W F, Q W A →
+        Fintype.card W ≤ k * A.rank := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+      intro W _ _ hn A hA
+      by_cases hclosed : ∃ P : Finset W, P.Nonempty ∧ P ≠ Finset.univ ∧
+          ∀ p ∈ P, ∀ q ∉ P, A p q = 0
+      · obtain ⟨P, hp, hproper, hzero⟩ := hclosed
+        have hp_lt : Fintype.card P < n := by
+          have hlt := Finset.card_lt_card (Finset.ssubset_univ_iff.mpr hproper)
+          simpa [hn] using hlt
+        have hc_lt : Fintype.card ↥Pᶜ < n := by
+          have hpos := Finset.card_pos.mpr hp
+          rw [Fintype.card_coe, Finset.card_compl, hn]
+          omega
+        have hP := ih (Fintype.card P) hp_lt P rfl
+          (A.submatrix (fun p : P => p.val) (fun p : P => p.val))
+          (hrestrict W P A _ Subtype.val_injective hA)
+        have hC := ih (Fintype.card ↥Pᶜ) hc_lt ↥Pᶜ rfl
+          (A.submatrix (fun p : ↥Pᶜ => p.val) (fun p : ↥Pᶜ => p.val))
+          (hrestrict W ↥Pᶜ A _ Subtype.val_injective hA)
+        have hsum := rank_principal_add_compl_le A P hzero
+        have hcard : Fintype.card P + Fintype.card ↥Pᶜ = Fintype.card W := by
+          simpa only [Fintype.card_coe] using P.card_add_card_compl
+        nlinarith
+      · apply hirred W A hA
+        intro P hp hproper
+        by_contra hno
+        apply hclosed
+        refine ⟨P, hp, hproper, ?_⟩
+        intro p hp q hq
+        by_contra hpq
+        exact hno ⟨p, hp, q, hq, hpq⟩
+  exact aux (Fintype.card V) V rfl B hB
+
+omit [DecidableEq V] in
+/-- Any nonzero entry witnesses positive rank; no diagonal premise is needed. -/
+theorem one_le_rank_of_entry_ne_zero (B : Matrix V V F) (i j : V)
+    (hij : B i j ≠ 0) : 1 ≤ B.rank := by
+  by_contra hnot
+  have hz : B.rank = 0 := by omega
+  rw [Matrix.rank_eq_finrank_span_row] at hz
+  have hrow : B.row i ∈ Submodule.span F (Set.range B.row) :=
+    Submodule.subset_span ⟨i, rfl⟩
+  rw [Submodule.finrank_eq_zero.mp hz] at hrow
+  have hrow0 : B.row i = 0 := hrow
+  exact hij (congrFun hrow0 j)
+
 /-- Rank at most one, a nonzero diagonal and the four-arc exclusion leave
 at most two indices. This includes the empty matrix. -/
 theorem card_le_two_of_rank_le_one (B : Matrix V V F)
@@ -116,4 +181,6 @@ theorem card_le_two_of_rank_le_one (B : Matrix V V F)
 end LeanMachine.ClosedCutRank
 
 #print axioms LeanMachine.ClosedCutRank.rank_principal_add_compl_le
+#print axioms LeanMachine.ClosedCutRank.card_le_mul_rank_of_closed_cuts
+#print axioms LeanMachine.ClosedCutRank.one_le_rank_of_entry_ne_zero
 #print axioms LeanMachine.ClosedCutRank.card_le_two_of_rank_le_one

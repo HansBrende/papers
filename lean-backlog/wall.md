@@ -178,7 +178,7 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
 
 | | Front | Why closed | Reopen if |
 |---|---|---|---|
-| **X1** | Order arguments (row orders, flags, acyclic sets) for the half bound | On expanding relations the acyclic bound stays a constant above ½ (paper 17, Problem 9.4(c)) | A stronger certificate than one flag |
+| **X1** | Order arguments for the half bound | Paper 17’s Proposition `expanding` gives explicit matching-plus-neighbour-expansion families whose order bound exceeds ½. The count-only conditional single-row bound is also order-dominated ([§19.1](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)); this is not a barrier to all conditioning or Shannon proofs | A certificate beyond the order bound |
 | **X2** | Traces and moments past bounded coefficients | Need a norm over ℂ; over finite fields traces do not count eigenvalues | A characteristic-free substitute for "few odd closed walks ⟹ symmetric spectrum" |
 | **X3** | Bounded repertoire of blocks as the bridge to machines | A row shear has repertoire d ([pass calculus](notes/pass-calculus.md)) | A count that charges shears |
 | **X4** | A stage quantity vanishing on row-controlled and on uniform stages | The swap is five such stages | — |
@@ -210,10 +210,11 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). D1 with no restriction, in the signed-synergy form
-  ([row spread](notes/row-spread-of-cones.md) §§18–19): bound S + R = 2H − ΣH(row) by
-  (1 − 2δ)N. Repeating the column condition on revealed rows gives the order bound and no more
-  (19.1), and split cells cannot be avoided by reordering (19.3). Open and next: whether a
-  common deficit follows from Shannon inequalities with the whole-row constraints at all (19.4).
-  No search before a mechanism; the tower pass stays closed.
+- **Current focus** (replace, do not append). D1, no restriction: does the full cell-polymatroid
+  relaxation have a common deficit? [§19.4](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+  states the quantified question; lane scaling is exact. The requested d=8 calibration is already
+  Shannon-exact at 46. Coarse row/column variables can lose the grid intersections even at window
+  one, so a proposed high-rate witness must extend to all cell subsets. Retaining actual exception
+  entropies is still open; only their count relaxation is order-dominated. No new finite LP or
+  gadget search without a separating mechanism; the tower pass stays closed.
 - Last re-evaluation (D0): 14 November 2026.

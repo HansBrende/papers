@@ -1703,61 +1703,236 @@ need not preserve S: changing three one-coordinate rows (a,b,0) into
 (a,b,a+b) takes S from 0 to 1. No new raw-S bound, or counterexample
 to such a bound within the symmetry class, is proved here.
 
-## 19. A second use of the column condition gives the order bound; the split is intrinsic (Fable, 13 November 2026)
+## 19. Conditional row recovery and the full Shannon question
 
-Status: **short written proofs, unreviewed**; 19.4 is a question. Front D1,
-no restriction (19.1, 19.3 nonlinear; 19.2 linear).
+Fable and GPT-6 Astra, 14 November 2026. The finite inequalities and
+certificates below have written proofs; no new Lean formalization is claimed.
+The uniform Shannon-deficit question in 19.4 remains open.
 
-**19.1 (conditional single-row bound).** For any whole-row code and any set
-B of rows, let J₀ be the columns with ρ(r) ⊆ B, J₁ those with exactly one
-helper outside B, J₊ the rest. Then
+**19.1 (conditional single-row bound, strengthened).** Use base-q entropy
+and b scalar lanes per entry. Fix a set B of rows, put n=d−|B|, and let
+J₀, J₁, J₊ be the columns with zero, one, or at least two helpers outside
+B. For r∈J₁ write s(r) for its unique unrevealed helper row. Let Z_B
+contain the unrevealed-row coordinates of the J₊ columns and the b lanes
+at (s(r),r) for each r∈J₁. Then
 
-  2H(X | Y_B) ≤ Σ_{c∉B} H(Y_c | Y_B) + (d − |B|)·|J₊| + |J₁|,
+  2H(X | Y_B) ≤ Σ_{c∉B} H(Y_c | Y_B) + H(Z_B | Y_B)
+             ≤ Σ_{c∉B} H(Y_c | Y_B) + b[n|J₊|+|J₁|].       (19a)
 
-hence H(X) ≤ d|B| + ½[(d − |B|)(|J₁| + 2|J₊|) + |J₁|].
+Consequently
 
-*Proof.* Given Y_B the columns of J₀ are constant and every cell of a column
-of J₁ is a function of one row outside B. Apply the single-row theorem of
-section 18 to the conditional distribution, with the cells of J₊ and the |J₁|
-loop cells of J₁ as exceptions. ∎
+  H(X) ≤ bd|B| + (b/2)[n(|J₁|+2|J₊|)+|J₁|].             (19b)
 
-**Verdict.** For a Bernoulli(p) set B on a random-like relation the deficit
-is (1 − p)(p^w + ½·w·p^{w−1}(1 − p)), largest near p = 1 − c/w, of order 1/w.
-It is never better than the order bound: for window one, pairing and the
-order bound coincide, and after revealing B only the columns of J₁ are
-window-one. Given Y_B the remaining rows form a whole-row code again, on a
-(d − |B|) × d array with helper sets ρ(r) ∖ B, so conditioning reproduces the
-problem at a smaller window and never reaches an easier one before window
-one. A deficit independent of w cannot come from repeating the column
-condition on revealed rows.
+*Proof.* On each Y_B-fibre, the J₀ columns are fixed. Outside Z_B every
+remaining coordinate is recovered from one other unrevealed row. Apply
+18.3, and average its joint-coordinate-entropy bound over Y_B. For (19b),
+bound the unrevealed row entropies by bn(|J₁|+|J₊|) in total and pay
+H(Y_B)≤bd|B|. This is valid for nonlinear recovery and coupled lanes. ∎
 
-**19.2 (cells; linear codes).** Order the d² cells in any way. Let B_f be the
-cells not determined by the earlier cells and B_b the cells not determined
-by the later ones (the first and the last basis of the code's matroid in
-that order). Then
+**Precisely which relaxation is order-dominated.** The deficit from d²b
+certified by (19b) is bG_B, where
 
-  2·dim C − d² = |B_f ∩ B_b| − |cells in neither B_f nor B_b|.
+  G_B = n|J₀| + (n−1)|J₁|/2.
 
-Pairing has B_f and B_b complementary. A code above one half has, in every
-order of its cells, more cells determined by neither side than by both.
+Put B first in a row order, then order the other n rows uniformly.
+Each J₀ column contributes n cells to the row-order DAG; each J₁ column
+contributes (n−1)/2 in expectation, the expected number of rows after
+s(r). All other contributions are nonnegative. Some full row order
+therefore certifies at least G_B cells. This proves domination of (19b),
+not of (19a) with actual marginal and exception entropies retained.
 
-**19.3 (the split is intrinsic).** In any order of the cells, the cells all
-of whose helper rows come earlier form an induced acyclic set of the host,
-and so do those whose helper rows all come later. So at most twice the
-largest induced acyclic set of the host have their helper rows on one side.
-On an expanding relation that set has at most (½ − c)d² cells (the acyclic
-bound stays a constant above one half there: paper 17, Problem 9.4(c)), so a
-positive fraction of the cells is split in every order. No reordering of
-coordinates, by rows or otherwise, avoids split cells; a bound must show that split cells are
-determined by one side anyway, or are paid for by cells determined by both.
+There is no random-like-relation hypothesis in the Bernoulli calculation.
+If every column has exactly w≥1 helpers and B selects rows independently
+with probability p, then exactly
 
-**19.4 (question: is a common deficit a Shannon-type statement?).** Every
-bound in sections 2–18 is a consequence of chain rules, conditioning and
-counting, that is of the Shannon inequalities together with the constraints
-H(column r | rows ρ(r)) = 0. On the lattice of unions of whole rows and
-whole columns these give exactly the order bound. If the same is true on
-all sets of cells (a polymatroid satisfying the constraints with value near
-the order bound), then no argument of the kind we have used can prove a
-deficit independent of w, and the proof needs linear rank inequalities,
-non-Shannon inequalities, or the structure of an actual code. If not, the
-optimal Shannon proof is the theorem. Neither is known.
+  E[G_B]/d² = (1−w/d)(1−p)[p^w+(w/2)(1−p)p^{w−1}].       (19c)
+
+For a column of degree s≥1 its unnormalized contribution is
+(d−s)(1−p)[p^s+(s/2)(1−p)p^{s−1}]. To check this, in the J₀ case all s
+helpers are revealed and d−s other rows may survive; in the J₁ case the
+one surviving helper cancels the −1 in n−1. A degree-zero column
+contributes d(1−p). Linearity of expectation handles overlapping helper
+sets. For d→∞ first and then w growing, the best deficit in (19c) is of
+order 1/w; the two terms have maxima of that order. ∎
+
+This does **not** rule out every repeated-conditioning or Shannon argument.
+After conditioning the array is rectangular, n by d, and a helper set
+missing B retains its original size. A general proof-system barrier needs
+its own definition and proof; the one-shot count bound supplies neither.
+
+**19.2 (cells, linear codes).** For an order of the scalar coordinates,
+let B_f and B_b be the coordinates not determined by their predecessors
+and successors, respectively. On a linear code these are the forward and
+backward greedy bases of the coordinate matroid. Both have size dim C, so
+
+  2 dim C − N = |B_f∩B_b| − |V∖(B_f∪B_b)|,  N=d²b.
+
+This is inclusion-exclusion. Above half rate, every order has more
+coordinates determined by neither side than by both. For the full symmetric
+matrix code the off-diagonal pairs give complementary choices, but its db
+free diagonal coordinates belong to **both** bases. The identity concerns
+scalar coordinates, not indivisible vector entries. It is not a necessity
+statement about the form of every possible nonlinear proof.
+
+**19.3 (what reordering cannot do).** For b=1 and any cell order, let
+E₋ and E₊ consist of cells whose entire declared helper rows precede or
+follow them, respectively. Both induced helper digraphs are acyclic.
+Writing α for the host's largest induced acyclic-set size gives
+
+  |E₋∪E₊| ≤ 2α,  |V∖(E₋∪E₊)| ≥ d²−2α.                 (19d)
+
+Empty helper sets can belong to both; loops belong to neither. The
+statement concerns declared helpers, not all recovery functions available
+on a particular code.
+
+A constant quadratic lower bound in (19d) needs an actual upper bound on
+α. Paper 17's [Proposition `expanding`(a)](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/symmetry.tex)
+supplies one under **both** a perfect matching π(r)∈ρ(r) and
+|⋃_{r∈J}ρ(r)|≥(1+ε)|J| for every |J|≤d/2. Together with Proposition
+`rows`(b), it gives α≤d(d−1)/2−E_d, where
+
+  E_d = Σ_{j=0}^{⌊d/2⌋} [j−⌊j/(1+ε)⌋].
+
+Thus at least d+2E_d cells have helpers on neither side in every order.
+These are cited existing written results, not a consequence of the open
+Problem 9.4(c) or of unspecified expansion.
+
+For clarity, ordinary bounded-degree vertex expansion is insufficient for
+that conclusion about α. Take a balanced k+k bipartite expander core and
+attach one private leaf to each vertex. The resulting balanced row graph
+has d=2k and bounded degree. Order core raw rows first and raw leaves
+last. Leaf columns contribute Σ_{i=1}^k(2k−i) DAG cells and core columns
+contribute Σ_{i=1}^k(k−i), totaling d(d−1)/2. The leaf-core matching
+allows row-relabelled symmetric matrices, so this host has exactly
+q^{d(d+1)/2} codewords at capacity and α=d(d−1)/2.
+Vertex expansion survives: for a set U of at most half the new vertices,
+let A be its core vertices and B the labels of its included leaves. If
+|A△B|≥|U|/2, the leaf edges supply that many external neighbours.
+Otherwise min(|A|,2k−|A|)>|U|/4; core vertex expansion η and maximum
+degree Δ give at least η|U|/(4Δ) external core neighbours. Hence the
+new expansion is at least min(1/2,η/(4Δ)). This control does not assert
+that an order eliminates every split cell; it distinguishes two expansion
+hypotheses.
+
+**19.4 (the full Shannon question, and its finite calibration).** For
+V=[d]×[d], let R_i and C_r be the coordinate sets of row i and column r,
+and R_{ρ(r)} their prescribed helper union. Define Sh(ρ) as the maximum
+of h(V) over normalized, monotone, submodular functions on **all** subsets
+of V such that
+
+  h({v})≤1,  h(C_r∪R_{ρ(r)})=h(R_{ρ(r)}) for every r.     (19e)
+
+This is a finite LP. The column equality is equivalent to the individual
+cell recovery equalities by monotonicity and submodularity. For scalar
+q-symbol entries, base-q entropy of a uniform codeword is feasible; a
+feasible polymatroid need not be entropic.
+The series already uses this distinction: Paper 4's
+[polymatroid definitions](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/paper/sections/preliminaries.tex)
+and Paper 7's elimination certificates explicitly quantify over all valid
+polymatroids. Algebraic and spectral bounds with extra decoder hypotheses
+are not simply consequences of (19e).
+
+Lanes do not add a separate Shannon-LP obstruction: with b scalar lanes
+and unit capacity on each, Sh_b(ρ)=b Sh(ρ). For the upper bound aggregate
+the b lanes of each entry and divide h by b. For the lower bound take
+h_b(S)=Σ_{ℓ=1}^b h(S_ℓ), where S_ℓ is the entry set selected in lane ℓ.
+Both operations preserve the polymatroid and recovery axioms. This says
+nothing about realizability of a non-entropic scalar witness.
+
+The asymptotic question is whether
+
+  sup_w limsup_{d→∞} sup_{|ρ(r)|≤w} Sh(ρ)/d² < 1.          (19f)
+
+A Yes gives a common capacity deficit. A No rules out that uniform bound
+from only (19e), not a bound using inequalities valid for actual codes.
+One finite gap, or a fixed-window family whose Shannon rate exceeds half,
+does not by itself decide (19f). Near-order witnesses must be full feasible
+polymatroids, with windows fixed before dimension grows. Neither all-cell
+Shannon optimality nor a barrier to it has been established in general.
+
+**The requested d=8 instance is already solved.** On F₂³ with
+ρ(r)=r+{1,2,4}, the saved order (0,3,5,6,1,2,4,7) has the 18-cell DAG
+
+  A = {1,2,4,7}×{1,2,4,7} ∪ {(6,1),(7,0)}.
+
+Its complement B has 46 cells. In the displayed row order, every cell v_j
+of A has helpers H_j inside B∪{v_1,…,v_{j−1}}. Shannon submodularity
+therefore gives h(v_j | B,v_{<j})≤h(v_j | H_j)=0. Chain rules and
+singleton bounds give h(V)=h(B)≤46. This is an explicit integral dual
+certificate: sum the singleton budgets on B, its chain subadditivity
+inequalities, and these 18 conditional-entropy decreases; subtract the
+zero recovery equalities. Every inequality coefficient is one.
+
+The known product of 24 free loop cells, 16 pairs and two K₄ sum-zero
+codes attains q^{46} over every finite alphabet. Thus **Sh(ρ)=46**, with
+no LP needed. The same saved certificates give exact Shannon optima 12
+and 176 at basis hosts d=4 and d=16. The
+[reproduction tool](../tools/diagonal-calibration/README.md#shannon-certificates)
+checks the symbolic dual and the existing constructions; it performs no
+search. These are existing capacities with an explicit Shannon audit.
+
+**Do not replace the full cell cone by unspecified row/column variables.**
+The family F={U(A,B): U(A,B)=R_A∪C_B} is not closed under intersection:
+a row meets a column in one cell. Closing under both intersection and
+union generates every cell subset. The natural weaker relaxation on F
+that keeps only monotonicity, h(U)≤|U| and submodularity pairs whose
+intersection is in F is different even at window one. For ρ(r)={r},
+put
+
+  h(U(A,B))=f(|A∪B|),  f(k)=dk−⌊k²/4⌋.                 (19g)
+
+It is well-defined: proper line unions have unique A,B, and every
+representation of V has A∪B=[d]. The increasing concave sequence f
+makes its index-set function submodular; the index set of a retained
+intersection is contained in the intersection of the two index sets.
+Also |U(A,B)|≥d|A∪B|−⌊|A∪B|²/4⌋: among line unions using k indices,
+the smallest has disjoint A,B as balanced as possible. Thus all the
+specified partial axioms and h(R_i∪C_i)=h(R_i) hold. At d=3 this gives
+7, although the full Shannon/order optimum is 6. The alleged earlier
+row/column-only equality with the order bound therefore needs its precise
+constraints and a certificate; it is false for this natural relaxation.
+
+**Stronger: the coarse data have a linear entropic realization for every d.**
+Over a finite field of size q≥d, choose distinct evaluation points a_i.
+For each odd r<d independently choose a uniform polynomial P_r of degree
+less than r. Give formal row i and formal column i the same tuple Y_i:
+⌈d/2⌉ independent private field symbols, followed by P_r(a_i) for every
+such r. The tuple has exactly d symbols. For a set of k indices,
+Vandermonde rank gives
+
+  H(Y_A) = ⌈d/2⌉k + Σ_{odd r<d} min(k,r)
+         = dk−⌊k²/4⌋.
+
+For the last equality, both sides start at zero and have successive
+increments d−⌊k/2⌋. Independence of the private coordinates and polynomial
+blocks makes their entropies add. Thus the same coarse values satisfy
+all entropy and linear-rank inequalities on these formal variables.
+Canonical q=2^{⌈log₂d⌉} works for d≥2. At d=3 the construction is simply
+Y_i=(G,P_i,Q_i), one common symbol and two private ones.
+For d≥3 the total exceeds the full grid bound d(d+1)/2, so these data
+cannot extend to unit-capacity cells with the prescribed intersections.
+This is a constant-density obstruction to the specified coarse relaxation,
+not a non-Shannon gap or a high-rate code for the full host. Universal
+entropy or linear-rank inequalities on the formal variables cannot exclude
+these data. A projected grid constraint could: the additional restriction
+must encode the missing cell compatibility.
+
+**Literature boundary.** Generic guessing graphs do have genuine Shannon
+gaps: [Baber et al., Theorem 6.2, arXiv:1410.8349v2](https://arxiv.org/pdf/1410.8349v2)
+give Sh(R⁻)=114/17 and the smaller Zhang–Yeung bound 1212/181.
+[Sun and Jafar, Theorems 1–2, arXiv:1303.7000v1](https://arxiv.org/pdf/1303.7000v1)
+give a multiple-unicast index-coding example with Shannon symmetric-rate
+bound 2/5, Zhang–Yeung bound 11/28 and vector-linear symmetric capacity
+5/13. The latter is an
+index-code rate, not the storage rate in (19f); linear-rank inequalities
+alone constrain only linear codes.
+
+Placing an n-vertex guessing graph on the diagonal realizes its problem
+as a **shortened** n×n whole-row host, with all off-diagonal coordinates
+fixed. This also embeds its polymatroid by assigning zero entropy off the
+diagonal. It does not transfer a Shannon/capacity gap to the unrestricted
+host: both full optima may increase, and only n out of n² cells were
+active. No verified unrestricted whole-row-host Shannon gap follows from
+these references or this placement. The next test must keep the full
+cell constraints and the asymptotic density, rather than enlarge a solved
+finite calibration or discard the grid intersections.

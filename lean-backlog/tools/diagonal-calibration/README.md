@@ -47,3 +47,27 @@ matrices using a separate highest-pivot rank implementation.
 This finite enumeration excludes only two-sector, covariant, scalar binary
 improvements. It does not settle the remaining 210–211 gap, general
 covariant decoders, larger coupled sector sets, or vector/nonlinear codes.
+
+## Shannon certificates
+
+The [conditional-recovery audit](../../notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+spells out why the saved basis-host optima are also exact full Shannon
+bounds. To check the integral dual identities and their attaining codes:
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/shannon_certificates.py
+```
+
+This standard-library-only command reads the existing `receipt.json`,
+checks every helper inclusion, symbolically telescopes the Shannon dual,
+and checks the disjoint loop/pair/K₄ constructions over any finite alphabet.
+Expected basis values are 12, 46 and 176 at d=4, 8 and 16. It does not
+rerun the subset dynamic program or solve an entropy LP.
+
+The same command checks the separate **coarse** row/column-union control:
+at d=3 and d=4 it has values 7 and 12, whereas the corresponding window-one
+full-host bounds are 6 and 10. Only 50 and 226 retained subsets, respectively,
+are checked. This is an incomplete-relaxation example, not a non-Shannon gap
+on the full cell polymatroid cone. The written proof covers every d and
+realizes the coarse data linearly over finite fields of size at least d;
+these finite certificate checks are not Lean formalizations.

@@ -246,12 +246,14 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
      weakened hypothesis (invariance under a pairing code on all but ηN pairs) and the triangle-lane
      analogue. Outcome wanted: "a positive-density gain must destroy pairing on a positive fraction
      of cells", or a counterexample.
-  2. *Fable.* Literature on storage codes, guessing numbers and minrank of bounded-degree graphs of
-     large girth, and on forcing bounds for index codes: import an inequality or a construction
-     for the first open window.
-  3. *Astra.* Linear decoders of bounded support (the shape of native bit cones): the forcing
-     bound (an equation with one unknown determines it) against the acyclic bound; is the nullity
-     at most N/2 + o(N) on window-three hosts of large girth for supports two and three?
+  2. *Done (Fable).* [Literature](notes/storage-codes-large-girth-literature.md): the abstract
+     twin (storage codes on bounded-degree graphs of large girth) is open in both directions;
+     examples above one half need degree at least five; no inequality to import, one method (forcing).
+  3. *Astra, then both.* Targets A, B, C of that note. A: a matrix with nonzero diagonal whose
+     support graph is triangle-free of maximum degree three has nullity at most n/2 (forcing: an
+     equation with one unknown determines it; not covered by the closure barriers). B: the same
+     for nonlinear storage codes. C: cells in place of vertices, decoder supports of size at most
+     three. A proof of A, or a counterexample, is the next deliverable.
   4. *Astra, background.* Lean for B3 and for the quadrangle family.
   5. *Either, only after 1–3.* One orbit-reduced Shannon solve on the 15-point quadrangle.
 - Last re-evaluation (D0): 14 November 2026.

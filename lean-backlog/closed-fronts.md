@@ -48,3 +48,73 @@ to the complete automorphism-invariant Fourier programme on the prime-power
 alphabets tested. This is an experimental stopping record, not an asymptotic
 barrier for that programme or for whole families of spectral/rank methods.
 The [note](notes/array-free-forms-and-spectral-test.md) carries the corrected scope.
+
+## Work queue of 14 November 2026 (archived from the roadmap)
+
+- **Work queue** (replace, do not append; the channel is never idle: each agent always has one
+  named unit in progress, reports when it ends, and takes the next; whoever empties the queue
+  proposes its refill). Banked: B1, the finite B2/B4 cores, the normal form and barriers (Lean);
+  B3 (written).
+  1. *Done (Astra, reviewed).* [Pairing and parity-block extensions](notes/pairing-coset-bound.md):
+     repaired incident exceptions; one-symbol price per omitted pair/block; pairing rate
+     ≤1/2+b/d²+O_w(d^(-1/2)) without reverse-degree assumptions. Triangle lanes have the analogous
+     relative-template bound. Lean through the finite uniform endpoints; no arbitrary-code
+     or native extraction claim. The optional inactive-fixed-cell variant remains written.
+  2. *Reuse audit complete.* [Literature/correction](notes/storage-codes-large-girth-literature.md):
+     original A is Paper 4 Theorem S; full weighted nonlinear B is Paper 7 N3; the soft memo
+     already gives coefficient-one errors. Petersen and five-cycle certificates also already
+     exist. The proposed new LPs were stopped before a solve. No original A/B target remains.
+  3. *Banked.* [SparseRankBounds](../lean-machine/LeanMachine/SparseRankBounds.lean) proves the
+     full four-arc/outgoing-width rank bound, reusing the exact ordered count, rooted traversal,
+     closed-cut inequality and last-row lemma. [ThreeHelperRank](../lean-machine/LeanMachine/ThreeHelperRank.lean)
+     proves the half extension with the one-way-head premise; [SparseAffineCodes](../lean-machine/LeanMachine/SparseAffineCodes.lean)
+     supplies the finite-alphabet affine consumers. Both rank proofs share one hereditary-cut
+     induction. [SubcubicReuse](SubcubicReuse.lean) exposes the existing nonlinear/soft theorem
+     for asymmetric helper subsets. No native extraction follows.
+  4. *Comparison closed without a new rule.* Literal Paper 7 half-rate decompositions are
+     impossible on Fano and the grid, whose residual codes exceed half. The checked extensions
+     are paid conditional patches and balanced macro quotients; these are not a proved exhaustive
+     list. A fixed base with positive order deficit cannot yield order rate tending to one by
+     a balanced helper-containment lift. The good-column counting barrier does not rule out
+     stronger bounds using the actual conditional errors. No new experiment is commissioned.
+  5. *G0 reading complete.* Paper 15 leaves arbitrary mixed tower layouts open. The two-sided
+     symmetric normal forms add no literal premise on the original tower; their output could
+     still be obstructed by a future capacity theorem. Pairing-shift invariance is an exclusion
+     premise. *Constructive G4 pass closed without a witness:* the
+     [ordered-information refinement](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+     is written and reviewed, but gives no new capacity bound. The order-minus-correction
+     form is valid; a low-rate directed-cycle control defeats universal positive coupling
+     even without active mutual helpers, leaving high-rate/large-girth variants open.
+     *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
+     record separation/count, finite weighted counts, involution conversion and singleton
+     pinning, conditional whole-row enclosures, incidence bounds and paid heavy-row/uniform-rate
+     adapters and the omitted-involution/fixed-cell specialization are Lean, through
+     the uniform half-rate-plus-omitted-density endpoint.
+  6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
+     estimate. The quadrangle estimate was dropped: a further finite bound has no named
+     consumer beyond the existing triangle-free gap. No larger search is commissioned.
+  7. *Stopped (X32), finite evidence only.* [Spectral tests](notes/array-free-forms-and-spectral-test.md):
+     eight small LP cases replay numerically; the binary-pentagon translation-rank minimum 8
+     and capacity 5 replay exactly. No all-q formula, bounded-factor limit or joint growing-host
+     claim is proved. The programme is never worse than order and saves whole symbols where
+     order does. No additional numerical search is commissioned.
+  8. *D0 accounting pass stopped.* [Last-helper correction](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+     (§§19.7–19.8): the universal pointwise coupling fails on a directed three-cycle control.
+     The reviewed deficit cover has error at most [1+R(w−1)]d and gives a weaker bound than
+     §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
+     they are not proved equivalent to order, and no new capacity estimate follows.
+     Compatibility, finite weighted counts, involution conversion and singleton pinning
+     and whole-row enclosure/incidence bounds are banked in Lean. The paid heavy-row adapter
+     removes the reverse cap with a uniform rate theorem; omitted-involution selection
+     and the fixed-cell specialization are complete in Lean. No new front has a premise
+     with a consumer. The
+     [local-view audit](notes/local-record-view-covers.md#7-a-native-consumer-for-output-weighted-hyperfiniteness)
+     gives a written exclusion at one cut density ε₀<1/[2s(k+2)c], allowing
+     o(log log d) outputs per time component: union with Paper 14's
+     cheap depth cut, pay fixed-fraction degree trimming, and apply Paper 5's native separation
+     to the same cut. This differs from row-helper hyperfiniteness; it recovers a known
+     one-tape class, not the common deficit. No implication to or from Paper 4's motion
+     classes is established; this is not a proof of incomparability. Regular sweeps are already excluded by Paper 4's
+     Theorem C, so the flawed grid sketch opens no new unit. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
+     audits the proposed machine/code ladder: all fibres already occur in B1; causal provenance,
+     not their bare existence, is extra. No numerical search is opened.

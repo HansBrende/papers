@@ -62,8 +62,11 @@ separation and exact counting use finitely many blocks, arbitrary additive
 alphabets and coordinate types, and also allow empty codes and trivial
 alphabets. The [weighted adapter](../lean-machine/LeanMachine/DisjointSumsWeighted.lean)
 now extends these results to coordinatewise additive-automorphism weights
-by a change of variables. Involution-orbit conversion and the geometric
-rate bounds remain separate work.
+by a change of variables, including explicit finite fibre and record counts.
+The [involution adapter](../lean-machine/LeanMachine/InvolutionSums.lean)
+identifies pair differences with this kernel and proves the exact orbit count.
+Pinned-coordinate/omitted-pair instantiation and geometric rate bounds remain
+separate work.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

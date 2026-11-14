@@ -59,7 +59,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   that whole-row codes ignore (the native crux, D9). A No closes the common-deficit route,
   not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
 - **Between this statement and the machine** ([ingredient ledger](notes/whole-row-ingredient-ledger.md)).
-  The statement is necessary for an oblivious transposer and not sufficient. A safe chain of
+  Existence of whole-row codes with rates tending to one (a **No** answer) is necessary
+  for an oblivious transposer and not sufficient. A safe chain of
   relaxations, each forgetting data of the one before:
   1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
      writes and appends on every input. Equivalent to the machine; a re-encoding, not a simpler
@@ -73,8 +74,9 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   Rungs 4 and 5 agree at leading rate (translated covers of the cube by one code), so "all
   fibres" is not a gap. 3→4 forgets which bits are read and how often; 2→3 forgets where the
   advice can be read and that one table produced it. The ingredients overlap and must come from
-  one common run. **No inequality that consumes a retained property is known.** A proposal for
-  one names its rung.
+  one common run. Existing local bounds need extra class premises; **no general native
+  extraction with a sufficient inequality is proved at these intermediate rungs.** A proposal
+  names its rung and the additional premise.
 - **Two-sided form** (D10; *finite upper-bound transfer and native consequences Lean*). Requiring row r to be a
   function of columns ρ(r) as well gives an **equivalent common-deficit question**, up to factor two:
   some translated intersection C∩(z+Cᵀ) is two-sided and has size ≥|C|²/q^(d²). A two-sided deficit
@@ -108,8 +110,9 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
-  written and reviewed; abstract counting, local extension and ordinary-sum record
-  separation under explicit view-cover premises now Lean; extraction/rate adapters written.
+  written and reviewed; abstract counting, weighted compatibility/record separation,
+  finite counts and full-invariance involution conversion are Lean. Pinned-coordinate
+  and whole-row incidence/rate adapters remain written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -324,8 +327,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      form is valid; a low-rate directed-cycle control defeats universal positive coupling
      even without active mutual helpers, leaving high-rate/large-girth variants open.
      *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
-     record separation/count, including automorphism weights, are Lean; involution and rate
-     adapters remain.
+     record separation/count, finite weighted counts and involution conversion are Lean;
+     pinned-coordinate and whole-row incidence/rate adapters remain.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
@@ -339,10 +342,11 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      The reviewed deficit cover has error at most [1+R(w−1)]d and gives a weaker bound than
      §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
      they are not proved equivalent to order, and no new capacity estimate follows.
-     Compatibility extraction and the weighted global adapter are banked in Lean. Next:
-     involution conversion (Astra); the gap map is delivered: the omitted-pair step needs
-     invariance under a proper subgroup of the block kernel, which the Lean hypothesis class
-     does not yet express. Fable: a consumer for rung 2 of the ladder in Section 1. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
+     Compatibility, finite weighted counts and involution conversion are banked in Lean.
+     Next: singleton-block pinning for omitted shifts, then whole-row enclosure/count
+     adapters. The [local-view audit](notes/local-record-view-covers.md) gives the conditioned
+     demand bound and record-overlap consumer; small sets and local capacities remain native
+     premises. Fable's bounded cover pass must use the same cut/depth for both. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
      audits the proposed machine/code ladder: all fibres already occur in B1; causal provenance,
      not their bare existence, is extra. No numerical search is opened.
 - Last re-evaluation (D0): 14 November 2026.

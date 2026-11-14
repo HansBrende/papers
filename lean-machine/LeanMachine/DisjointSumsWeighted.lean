@@ -11,6 +11,8 @@ ordinary disjoint-sum results. No recovery or extension proof is repeated.
 
 namespace LeanMachine.DisjointSums
 
+open scoped Classical
+
 variable {ι κ A : Type*} [AddCommGroup A]
 variable (D : DisjointSums ι κ) (θ : ι → A ≃+ A)
 
@@ -20,6 +22,31 @@ def weightedEncode : (ι → A) →+ (κ → A) :=
 
 @[simp] theorem weightedEncode_apply (x : ι → A) :
     D.weightedEncode θ x = D.encode (fun i => θ i (x i)) := rfl
+
+/-- Coordinate automorphisms preserve surjectivity of the block encoder. -/
+theorem weightedEncode_surjective [Fintype κ] :
+    Function.Surjective (D.weightedEncode θ) :=
+  D.encode_surjective.comp (AddEquiv.piCongrRight θ).surjective
+
+/-- Every weighted fibre has exactly the expected finite number of words. -/
+theorem weighted_fiber_card [Fintype ι] [Fintype κ] [Fintype A]
+    (y : κ → A) :
+    (Finset.univ.filter fun x : ι → A => D.weightedEncode θ x = y).card =
+      Fintype.card A ^ (Fintype.card ι - Fintype.card κ) := by
+  classical
+  have h := card_fiber_mul_card (D.weightedEncode θ) (D.weightedEncode_surjective θ) y
+  rw [Fintype.card_fun, Fintype.card_fun] at h
+  have hp : 0 < Fintype.card A ^ Fintype.card κ := pow_pos Fintype.card_pos _
+  apply Nat.eq_of_mul_eq_mul_right hp
+  rw [h, ← pow_add, Nat.sub_add_cancel D.card_le]
+
+/-- Finite kernel size, with the alphabet and both index types explicitly finite. -/
+theorem card_weighted_kernel [Fintype ι] [Fintype κ] [Fintype A] :
+    Nat.card (D.weightedEncode θ).ker =
+      Fintype.card A ^ (Fintype.card ι - Fintype.card κ) := by
+  classical
+  simpa only [Nat.card_eq_fintype_card, Fintype.card_subtype, AddMonoidHom.mem_ker] using
+    D.weighted_fiber_card θ (0 : κ → A)
 
 variable (C : Set (ι → A))
 variable (hstable : ∀ x ∈ C, ∀ z : ι → A, D.weightedEncode θ z = 0 → x + z ∈ C)
@@ -115,5 +142,22 @@ theorem card_eq_weighted_kernel_mul_record_image_of_recovery [Finite κ]
     have heq := D.weighted_encode_eq_of_invariant_recovery θ C hstable H T
       hrecover hinternal hincident hx hy (fun k hk => congrFun hrecord ⟨k, hk⟩)
     rw [map_sub, heq, sub_self]
+
+include hstable in
+/-- Finite-record corollary of the attained-image identity. -/
+theorem card_le_pow_of_weighted_invariant_recovery
+    [Fintype ι] [Fintype κ] [Fintype A]
+    (H : ι → Set ι) (T : Set κ)
+    (hrecover : ∀ i, ∀ u ∈ C, ∀ v ∈ C, Set.EqOn u v (H i) → u i = v i)
+    (hinternal : ∀ i k, (↑(D.support k) : Set ι) ⊆ H i → k ∈ T)
+    (hincident : ∀ k, (∀ i ∈ D.support k, i ∈ H i) → k ∈ T) :
+    Nat.card C ≤ Fintype.card A ^ (Fintype.card ι - Fintype.card κ + Nat.card T) := by
+  classical
+  rw [D.card_eq_weighted_kernel_mul_record_image_of_recovery θ C hstable H T
+    hrecover hinternal hincident, D.card_weighted_kernel θ, pow_add]
+  apply Nat.mul_le_mul_left
+  have h := Nat.card_le_card_of_injective
+    (Subtype.val : (D.weightedSyndromeRecord θ T '' C) → (T → A)) Subtype.val_injective
+  simpa only [Nat.card_fun, Nat.card_eq_fintype_card, Fintype.card_fun] using h
 
 end LeanMachine.DisjointSums

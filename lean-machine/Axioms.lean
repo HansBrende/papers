@@ -1799,3 +1799,20 @@ import LeanMachine
 #print axioms LeanMachine.DisjointSums.weighted_encode_eq_of_invariant_recovery
 #print axioms LeanMachine.DisjointSums.weightedSyndromeRecord
 #print axioms LeanMachine.DisjointSums.card_eq_weighted_kernel_mul_record_image_of_recovery
+
+-- Finite weighted fibres and involution-pair conversion.
+#print axioms LeanMachine.DisjointSums.weightedEncode_surjective
+#print axioms LeanMachine.DisjointSums.weighted_fiber_card
+#print axioms LeanMachine.DisjointSums.card_weighted_kernel
+#print axioms LeanMachine.DisjointSums.card_le_pow_of_weighted_invariant_recovery
+#print axioms LeanMachine.InvolutionSums.representatives
+#print axioms LeanMachine.InvolutionSums.blocks
+#print axioms LeanMachine.InvolutionSums.weights
+#print axioms LeanMachine.InvolutionSums.encode_apply
+#print axioms LeanMachine.InvolutionSums.orbitConstant
+#print axioms LeanMachine.InvolutionSums.kernel_eq
+#print axioms LeanMachine.InvolutionSums.card_partition
+#print axioms LeanMachine.InvolutionSums.card_orbitConstant
+#print axioms LeanMachine.InvolutionSums.differenceRecord
+#print axioms LeanMachine.InvolutionSums.card_eq_orbitConstant_mul_record
+#print axioms LeanMachine.InvolutionSums.card_le_pow

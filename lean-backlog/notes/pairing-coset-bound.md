@@ -3,8 +3,9 @@
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** written proofs, independently reviewed; abstract counting, local
 parity extension, compatibility extraction and recovery-to-record separation
-for ordinary and automorphism-weighted sums are Lean-verified. The involution
-adapter, incidence counts and rate bounds remain written.
+for ordinary and automorphism-weighted sums are Lean-verified, including finite
+counts and the full-invariance involution adapter. Pinned-coordinate/omitted-pair
+instantiation, whole-row incidence counts and rate bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -47,8 +48,15 @@ of two elements of C imply their difference lies in P. The record need only
 separate cosets **on C**; its ambient fibres can be larger. The code need not
 be linear or nonempty, and the record type need not be finite. The proof
 reuses Mathlib's subgroup saturation count. The local parity-extension step
-is formalized as described in Section 5; the involution-orbit instantiation
-of the separation argument in the next paragraph remains written.
+is formalized as described in Section 5. The involution-orbit instantiation is
+now in [`InvolutionSums.lean`](../../lean-machine/LeanMachine/InvolutionSums.lean):
+`kernel_eq` identifies the +1/−1 pair-sum kernel with orbit-constant shifts,
+`card_orbitConstant` proves q^((N+f)/2), and
+`card_eq_orbitConstant_mul_record` / `card_le_pow` prove exact counting and
+the bound q^((N+f)/2+|T|). The finite code bound allows empty C and trivial
+alphabets. Its views are arbitrary sets H(v); their whole-row bundles and
+the particular enclosure sets Q_c,Q₀ still need the geometric instantiation.
+The following written proof describes that application.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -99,6 +107,21 @@ additional price is **one symbol per omitted pair**, not two. In particular,
 
 The active-fixed-cell assumption matters if full compatibility is dropped. If inactive
 nonincident fixed cells are also permitted, add their number to the right side.
+
+**Formalization boundary and reuse.** The full-kernel hypothesis is stronger
+than the active-shift hypothesis here; omitted pairs are not only a numerical
+bill. But compatibility need not be proved again. Keep only the active pair
+blocks, and add a singleton zero-sum block {e} at each inactive coordinate e.
+Its kernel forces the shift at e to be zero. Record every singleton syndrome,
+which is exactly the raw value at e. The existing disjoint-sum library allows
+singleton blocks: its only size premise is nonemptiness. Its fully-viewed and
+all-incident enclosures are automatic for these always-recorded singletons;
+the remaining enclosures concern the active pairs. There are M−b active pairs
+and 2b singleton blocks if the original involution has M pairs. The kernel
+exponent is N−M−b, and recording 2b raw symbols yields the claimed net price b.
+Thus this is a written reduction to the existing full-kernel theorem, not a
+need for a new local-extension proof. The block construction, record conversion
+and its whole-row specialization are not yet Lean endpoints.
 
 This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
 alone does not supply them: a linear constraint can exclude every individual shift while
@@ -203,8 +226,12 @@ record, and `card_eq_weighted_kernel_mul_record_image_of_recovery` gives
 the exact weighted-kernel-times-attained-record count. These global
 statements need finitely many blocks, but allow empty codes, trivial
 alphabets and infinite coordinate or alphabet types. No field or scalar
-linearity is assumed. The involution-orbit conversion and the quantitative
-applications below remain written.
+linearity is assumed. `weighted_fiber_card`, `card_weighted_kernel` and
+`card_le_pow_of_weighted_invariant_recovery` explicitly assume finite
+coordinates, blocks and alphabet and give fibre size q^(N−m) and code bound
+q^(N−m+|T|). These remove the infinite-type degeneracy from finite applications.
+The involution conversion is formalized as above; pinned coordinates and the
+quantitative whole-row applications below remain written.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -248,8 +275,12 @@ Those examples need their own checks; being linear is not enough to contain a pa
 
 Abstract counting, local disjoint-parity extension, compatibility extraction
 and global separation/counting for ordinary and automorphism-weighted sums
-are Lean-verified. The involution-orbit adapter, incidence counts and the
-paid/asymptotic pairing and parity-block bounds remain written and reviewed.
+are Lean-verified, including finite cardinalities and the full-invariance
+involution conversion. Pinned-coordinate/omitted-block instantiation, the
+whole-row enclosures and incidence counts, and the paid/asymptotic bounds
+remain written and reviewed. Invariance is relative to a specified additive
+group on the entry alphabet; for b-bit symbols bitwise XOR supplies one such
+group. No claim identifies invariance under different choices of group law.
 The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large
 intersection with a template. The native question still needs a premise that supplies

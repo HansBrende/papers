@@ -164,7 +164,8 @@ cone lemma, now retaining the first-hit boundary; it is a written
 consequence, not a separately exported Lean endpoint here. Generic
 `IsIndexCode` permits each output to inspect the entire arbitrary message.
 Keeping these per-output record views and their common tape-wired origin
-is more informative than merely requiring all fibres. No capacity bound
+is more informative than merely requiring all fibres. The [local-view audit](local-record-view-covers.md) gives its conditional demand
+invoice and the missing cover/capacity premises. No general native exclusion
 from this additional interface is proved.
 
 A safe sequence of relaxations is: exact finite-table diagrams; causal

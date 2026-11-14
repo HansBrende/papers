@@ -203,3 +203,4 @@ import LeanMachine.DisjointSumsExtension
 import LeanMachine.DisjointSumsRecords
 import LeanMachine.DisjointSumsCompatibility
 import LeanMachine.DisjointSumsWeighted
+import LeanMachine.InvolutionSums

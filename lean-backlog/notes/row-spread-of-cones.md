@@ -1464,3 +1464,74 @@ entries. Bounded actual support degree makes these blocks sparse;
 one permutation block per edge is a further restriction. The
 [host audit](whole-row-host-audit.md) records the precise decomposition,
 its limitation, and the finite benchmarks for this unrestricted host.
+
+## 18. The excess over one half is half the synergy of the rows (Fable, 13 November 2026)
+
+Status: 18.1 is an **exact identity with a two-line proof**; 18.2–18.4 have
+**short written proofs, unreviewed**; 18.5 is a **candidate inequality
+(conjecture)**. Front D1, no restriction: any code, nonlinear, one-way
+helpers, any ρ. Everything here is a statement about the code as a set of
+arrays, not about a decoder.
+
+Let X be uniform on a code C and write Y_c for row c. Entropies are in
+symbols. Fix a linear order of the rows; <c and >c are the rows before and
+after c, and "rest" is all rows but c.
+
+**18.1 (identity).** With
+
+  Syn_c = I(Y_c; rest) − I(Y_c; Y_{<c}) − I(Y_c; Y_{>c}),
+
+every code and every order satisfy
+
+  H(X) = ½ Σ_c H(Y_c) + ½ Σ_c H(Y_c | rest) + ½ Σ_c Syn_c.
+
+*Proof.* Add the chain rules for the order and for its reverse, and write
+H(Y_c | Y_{<c}) = H(Y_c) − I(Y_c; Y_{<c}), likewise for >c. ∎
+
+Syn_c is the information about row c that the earlier and the later rows
+hold only jointly. It can be negative. The sum Σ_c Syn_c does not depend on
+the order.
+
+**18.2 (whole-row codes).** For a whole-row code:
+- H(Y_c | rest) is at most the number of columns r with c ∈ ρ(r) (the loop
+  cells of row c): every other cell of the row is a function of other rows.
+- So log_q|C| ≤ d²/2 + Loops/2 + ½ Σ_c Syn_c: **beyond loops, the excess over
+  one half is exactly half the total synergy.**
+- I(Y_c; Y_{<c}) is at least the entropy of the cells (c, r) with ρ(r) before
+  c, and likewise after. Only cells whose helper set lies on both sides of c
+  can carry synergy. Counting all of them gives the average of the forward
+  and backward order bounds, so order arguments are the estimate "every
+  split cell is synergy".
+
+**18.3 (the benchmarks).** A set of m mutually helping cells in m distinct
+rows with one sum-zero relation contributes exactly m − 2 to Σ_c Syn_c (a
+pair contributes 0). The scalar optimum 39 on the Fano plane is
+49/2 + 21/2 + 8/2: 21 loops and eight triangles. The basis host at d = 8,
+with capacity 46, is 64/2 + 24/2 + 4/2: 24 loops and two sets of four.
+
+**18.4 (no synergy without non-distributivity; linear codes).** Let 𝒮_c be
+the span, in the dual of C, of the coordinate functionals of row c. Then
+Syn_c = dim(𝒮_c ∩ (𝒮_{<c} + 𝒮_{>c})) − dim(𝒮_c ∩ 𝒮_{<c}) − dim(𝒮_c ∩ 𝒮_{>c}).
+If the row spaces are simultaneously coordinate subspaces of one basis (the
+lattice they generate is distributive), then dim C ≤ (d² + Loops)/2: a basis
+vector lying in one row space only is counted by H(Y_c | rest), hence by the
+loops, and every other one is counted at least twice in Σ_c dim 𝒮_c. The same bound holds when every
+cell is recoverable from one row of its choice, with no window at all:
+then the non-loop cell functionals of row c lie in single other row spaces, and
+Syn_c + H(Y_c | rest) is at most the number of loop cells of row c, for every order. A code above one half therefore has cells that
+are genuinely joint functions of several rows, at positive density, and its
+row spaces fail the distributive law at positive density.
+
+**18.5 (candidate inequality).** For whole-row codes at window w:
+
+- *weak form*, equivalent to a common deficit: Σ_c Syn_c ≤ (1 − 2δ)d² with
+  δ > 0 independent of w;
+- *strong form*, equivalent to the half conjecture with linear excess:
+  Σ_c Syn_c ≤ F(w, w′)·d.
+
+Both are about every code. Neither refers to a decoder, to sparsity of
+blocks or to linearity (18.1 is entropic). By 18.3 the strong form holds
+with equality in the known optima, where all synergy sits in cliques of
+near cells. A counterexample is a whole-row code in which, for a random
+split of the rows into two parts, a positive fraction of the information
+about a typical row is held by the two parts only jointly.

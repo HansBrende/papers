@@ -76,9 +76,11 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | any | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
 **What the proofs share.** Many charge one member of a paired block to the other, in coordinates
-or after a basis change. Spectral proofs instead bound eigenvalue counts; they need not exhibit
-two coordinate halves exchanged by the decoder. This is a guide to the mechanisms, not an
-equivalence of them.
+or after a basis change; spectral proofs bound eigenvalue counts instead. Exactly, for every code
+([row spread](notes/row-spread-of-cones.md) §18): the excess over one half, beyond loops, is half
+the total *synergy* of the rows, the information about a row that the rows before it and the rows
+after it hold only jointly. Pairing has none. A code above one half must have it at positive
+density; in the known optima it sits in cliques of near cells.
 
 **What is left.** For a fixed positive asymptotic gain above half at fixed window:
 1. the row-graph family cannot be hyperfinite, and recovery cannot decompose entirely into
@@ -203,11 +205,10 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). D1 in its host form: the cell (c, r) reads all of
-  the rows ρ(r) ([row spread](notes/row-spread-of-cones.md) 17.2). The tower feasibility pass
-  stopped at an exact reformulation (two restrictions: this family, its displayed support).
-  Fable: a global host constraint beyond the order bound. Astra: test that constraint against
-  the full-host and lane benchmarks, keeping decoder-preserving reductions distinct from
-  optimal-capacity claims (linear only if using ranks). No search before a mechanism, and no
-  resumption of the tower pass without a new constraint on the common palettes.
+- **Current focus** (replace, do not append). D1 with no restriction, in the synergy form
+  ([row spread](notes/row-spread-of-cones.md) §18): is the total synergy of the rows of a
+  whole-row code at most (1 − 2δ)d², or even O_w(d)? Astra: test the candidate against the
+  full-host and lane benchmarks and hunt a counterexample before any computation. Fable: what
+  the column condition forces on synergy across a random split of the rows. The tower pass is
+  closed without an exclusion; no search before a mechanism.
 - Last re-evaluation (D0): 14 November 2026.

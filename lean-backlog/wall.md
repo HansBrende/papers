@@ -31,9 +31,9 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   in ρ(r) determine the whole of column r: two arrays of C that agree on those rows agree on
   column r. The rule that computes the column may be anything; it need not be linear.
 - **Rate.** If C has as many arrays as there are ways to fill k entries freely, its rate is
-  k/d²; in general, (log of the number of arrays in C) / (number of bits in an array).
-- **R(w).** The best rate at window w when d is large: the largest rate over all choices of ρ
-  and C, in the limit of growing d.
+  k/d²; in general, (log₂ of the number of arrays in C) / (number of bits in an array).
+- **R(w).** The limsup, as d grows, of the largest rate over all choices of ρ and C at
+  window at most w, with the stated canonical bit width. A limit is not assumed to exist.
 - **Example.** ρ(r) = {r}, so w = 1: column r must be computable from row r. The symmetric
   arrays qualify (column r equals row r). Their d(d+1)/2 entries on and above the diagonal are
   free, so the rate is just over ½. This code is called *pairing*.
@@ -51,8 +51,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 - **No** is necessary for a machine, not sufficient: a machine must contain such codes of rate
   tending to 1, but codes alone do not give a machine. They would still have to be computed by
   tape passes in linear time (front D7), and an exclusion could still hold through structure
-  that whole-row codes ignore (the native crux, D9). So a No closes this route to the exclusion
-  and decides nothing about (T).
+  that whole-row codes ignore (the native crux, D9). A No closes the common-deficit route,
+  not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 
@@ -97,14 +97,19 @@ zero-corner projection bound is exactly the independence number, in every basis
 symmetry or decoder-specific arguments. The gaps, nearest the wall first:
 - **G0. Is sup_w R(w) = 1 already?** Paper 15's field kernels have rate at least 1 − e^{−λm} at
   degree bounded in m; whether the growing coupled family has a whole-row presentation at a
-  window depending only on m is open. A yes refutes a common deficit; a no matters only as far
-  as its mechanism generalises. Known ([grid note](notes/grid-labellings-and-amplified-codes.md)
-  §§6–7, [row spread](notes/row-spread-of-cones.md) §§16–17, *written*): layouts whose columns omit a
-  tensor factor fail; pairwise column tests always pass for some mixed layout (X23); the missing
+  window depending only on m is open. A yes with the dimension/lane adapter in grid §6 refutes
+  a common deficit; a no matters only as far as its mechanism generalises.
+  Known ([grid note](notes/grid-labellings-and-amplified-codes.md)
+  §§6–8, [row spread](notes/row-spread-of-cones.md) §§16–17, *written*): at canonical width,
+  columns omitting a tensor factor fail for the displayed majority support; the first
+  helper-column intersection test always passes for some mixed columns (X23); the missing
   obligation is one transversal row partition confining each column's helpers to w rows.
-  **No local test can decide it**: random swap lifts are presentable and have the same local
-  statistics as random relations, which are not. For the same reason a deficit proof cannot be a
-  statement about neighbourhoods; it must use the global exchange of rows and columns.
+  The fixed-column/palette completion is exactly Hall feasibility; choosing the common palettes
+  remains open. That bounded pass is complete and did not exclude the tower. **Limiting unmarked
+  fixed-radius statistics alone do not determine presentability**: loopless swap lifts and a
+  specified nonpresentable random-support family have the same directed-tree limit, also with
+  canonical lanes. This does not exclude exact or growing-radius tests, marked information,
+  global partition-free arguments, or local contributions to a capacity proof.
 - **G1. Nonlinear forms.** The basis and spectral pairings are proved for linear codes only; a
   machine's code need not be linear. Wanted: an entropy version.
 - **G2. One-way helpers without symmetry.** No common deficit is known. Oriented gadgets exist (Paley
@@ -116,6 +121,15 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   five restrictions (group, linear, mutual, one family, one profile); it is parked (X22).
 - **The general bound.** Any improvement of the deficit 1/(w+1) for all whole-row codes is progress
   on the wall itself.
+
+**Linear-host calibration.** The [host audit](notes/whole-row-host-audit.md) gives the unrestricted
+scalar/vector formulation. The 29/30 exact shear tests concern prescribed sparse graphs;
+their upper bounds do not extend to dense blocks. Genuine full-host results include Fano scalar
+dimension 39 over GF(2)/GF(3), canonical binary-vector exponent 119/3 and nonlinear upper 41,
+and the exact all-alphabet exponent 46 at d=8,w=3. None gives a fixed-window asymptotic gain
+beyond O(d). One partial-permutation block per edge cannot preserve every code, but whether
+it can attain every host's optimal linear capacity is unresolved. These are calibration and
+normal-form facts, not a new exclusion or construction at positive limiting gain.
 
 **What a proof and a machine must each respect.**
 - A proof must cover nonlinear recovery and growing alphabets; fail at growing windows (simplex and
@@ -190,8 +204,10 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). D1 in its host form: the cell (c, r) reads all of
-  the rows ρ(r) ([row spread](notes/row-spread-of-cones.md) 17.2). Astra: an exact feasibility
-  criterion for the row partition of the tower, stopping if it is only a reformulation (two
-  restrictions: this family, its displayed support). Fable: a global constraint on codes of the
-  host beyond the order bound (no restriction, or linear only). No search before a mechanism.
+  the rows ρ(r) ([row spread](notes/row-spread-of-cones.md) 17.2). The tower feasibility pass
+  stopped at an exact reformulation (two restrictions: this family, its displayed support).
+  Fable: a global host constraint beyond the order bound. Astra: test that constraint against
+  the full-host and lane benchmarks, keeping decoder-preserving reductions distinct from
+  optimal-capacity claims (linear only if using ranks). No search before a mechanism, and no
+  resumption of the tower pass without a new constraint on the common palettes.
 - Last re-evaluation (D0): 14 November 2026.

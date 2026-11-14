@@ -485,7 +485,72 @@ columns so that **one row partition** confines every column's full helper
 set to a bounded set of rows. Pairwise helper-column intersections do
 not ensure that consistency.
 
-## 8. What remains worth testing
+## 8. An exact test once columns and row palettes are fixed
+
+This completes the bounded feasibility pass. It is a reformulation using
+Hall's theorem, not a new capacity bound or an exclusion of the majority
+tower under arbitrary layouts.
+
+Fix columns $P_s$ of size $db$ in a digraph on $d^2b$ vertices. Write
+$A(v)=\{r:v\in N(P_r)\}$ for the source columns that use $v$ as a
+helper. Choose candidate row palettes $J_1,\ldots,J_d\subseteq[d]$
+such that each source label belongs to at most $w$ palettes. A vertex
+may occupy row $i$ exactly when $A(v)\subseteq J_i$; put
+$E_i=\{v:A(v)\subseteq J_i\}$. Palettes may repeat or be empty.
+
+**Proposition (simultaneous row feasibility).** These columns have a
+balanced row completion compatible with the palettes if and only if
+
+$$\left|P_s\cap\bigcup_{i\in I}E_i\right|\ge b|I|
+       \qquad(s\in[d],\ I\subseteq[d]). \tag{10}$$
+
+Consequently a presentation of the fixed columns with window at most
+$w$ exists exactly when some palette family with that frequency cap
+satisfies (10).
+
+*Proof.* A row completion puts $b|I|$ eligible vertices from each column
+in the rows indexed by $I$, proving necessity. For sufficiency, create
+$b$ distinguishable slots for each row. In column $P_s$, join each slot
+of row $i$ to $P_s\cap E_i$. Any set of slots with represented rows
+$I$ has that union as its neighbourhood and at most $b|I|$ slots.
+Equation (10) is therefore Hall's condition. A perfect matching assigns
+every vertex of $P_s$ to a slot. Do this independently for each column.
+If a helper of column $r$ is placed in row $i$, then $r\in J_i$;
+the frequency cap proves the window bound. Conversely, an existing
+presentation supplies palettes by listing the source columns using
+each row. ∎
+
+This uses the finite form of Hall's theorem, already available as
+`Finset.all_card_le_biUnion_card_iff_existsInjective'` in the pinned
+[Mathlib Hall library][Hall]. This application has not been formalized.
+For fixed palettes there is no fractional-versus-integral gap: within
+each column, an eligible fractional assignment giving mass $b$ to each
+row and mass one to each vertex implies (10), hence an integral assignment. A failed
+completion has a finite witness $(s,I)$ violating (10). Choosing the
+common palettes remains the global obligation.
+
+**A four-vertex control.** Let $d=2,b=w=1$, with columns
+$P_1=\{a_0,a_1\}$, $P_2=\{c_0,c_1\}$ and arcs
+$a_1\to a_0,a_1\to c_0,c_0\to a_0,c_0\to c_1$.
+The graph is loopless and both degrees are at most two.
+Its helper unions are $\{a_0,c_0\}$ and $\{a_0,c_1\}$, each meeting each
+column once. Every pairwise intersection test passes. But the profiles
+of $a_0,a_1,c_0,c_1$ are $\{1,2\},\varnothing,\{1\},\{2\}$.
+The palette of $a_0$'s row must contain both sources, leaving the other
+row's palette empty. Both $c_0$ and $c_1$ then require the same row, violating
+balance in $P_2$. Thus no common palettes exist for these columns at
+window one. In fact this tiny graph has no window-one presentation in
+any layout: the columns containing $a_1$ and $c_0$ have the common
+helper $a_0$, so their single helper rows must coincide and contain
+all three of $a_0,c_0,c_1$. A row has only two vertices. This strengthens
+the finite control; it says nothing about the amplified support or its rate.
+
+The criterion supplies an exact verification method for a specified
+proposal, but no new inequality for mixed layouts of the amplified
+support emerged. The bounded tower pass stops here. The tower's
+arbitrary-layout question remains open.
+
+## 9. What remains worth testing
 
 The open construction question is whether a growing amplified seed, or
 an assembly with sufficiently large coupled blocks, admits a balanced
@@ -511,3 +576,4 @@ counting and the cited coding lemma, not numerical evidence.
 [P5]: ../../Directed-Recovery-Structures-in-Tape-Computations/paper/sections/directed-coding.tex
 [P15amp]: ../../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/paper/sections/amplification.tex
 [P15all]: ../../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/paper/sections/partitions.tex
+[Hall]: https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Mathlib/Combinatorics/Hall/Finite.lean

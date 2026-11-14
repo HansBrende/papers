@@ -1364,53 +1364,103 @@ $\sum_\ell(d-w-|\rho(r_1,\ldots,r_\ell)|)_+$. This records the outcome
 of that particular counting argument, not a limitation on every method
 using the dual space.
 
-## 17. Swap lifts: no local test decides presentability (Fable, 13 November 2026)
+## 17. Swap lifts and the limit of fixed-radius statistics
 
-Status: 17.1 has a **short written proof, unreviewed** (the local-limit step
-is the standard exploration argument, not written out). 17.2 is a
-reformulation. Front D1, gap G0. One-way helpers allowed throughout.
+Fable's proposal, with Astra's proof and scope audit, 14 November 2026.
+Status: **written proof; not Lean-verified**. Front D1, gap G0.
+One-way helpers are allowed. This section concerns presentation of a
+specified support; it supplies no high-rate code.
 
-**Swap lifts.** Let B be a bipartite graph on [d] ⊔ [d] with w rows at each
-column and w′ columns at each row. For every edge (i, r) of B choose a
-bijection π_{r,i} from [d] to [d], and let the cell (c, r) read the cell
-(i, π_{r,i}(c)) for each i ∈ ρ(r). Every cell has out-degree w and in-degree
-w′, and the relation is whole-row at window w by construction: column r is
-mapped bijectively onto each of its helper rows.
+**Swap lifts.** Let B be any simple Δ-regular bipartite graph on d row
+ports and d column ports. Constant forward and reverse degrees on equal
+side sizes must agree, since dw = dw′. There are b ≥ 1 vertices in each
+cell, L = d²b. For each edge (i, r), independently choose a uniform
+bijection from the db vertices of column r to the db vertices of row i.
+Its arcs point from a vertex to its helper. The resulting graph has
+in- and outdegree Δ and a presentation of window Δ. At b = 1 this is
+the rule (c, r) → (i, π_{r,i}(c)). No girth or expansion assumption on B
+is made; even disjoint small complete bipartite components are allowed.
 
-**Proposition 17.1.** With the bijections uniform and independent, the swap
-lift is locally tree-like: for fixed t, all but o(d²) cells have a
-neighbourhood of radius t that is the (w, w′)-biregular directed tree. A
-uniformly random digraph with out-degree w and in-degree w′ (a union of
-random perfect matchings from out-ports to in-ports) has the same local limit
-and, by the count of the
-[grid note](grid-labellings-and-amplified-codes.md), section 7, is with
-probability tending to one not presentable at any window below
-d^{1−2/Δ−ε}.
+**Proposition 17.1 (local limit, including lanes).** Fix Δ and t. Put
 
-*Proof of the first part.* Explore the ball of a cell. Each new cell is
-(i, π_{r,i}(c)) or a preimage (π_{r,i}⁻¹(x), r); given what has been
-revealed, the new coordinate is uniform on at least d − (w+w′)^t values, so a
-coincidence within radius t has probability at most (w+w′)^{2t}/(d − (w+w′)^t). ∎
+  Q = 2Δ Σ_{h=0}^t (2Δ)^h.
 
-**Consequence.** Presentable and non-presentable bounded-degree relations
-have the same local statistics. No quantity that is a function of the
-distribution of bounded-radius neighbourhoods can decide a layout question:
-odd-walk counts (16.3 and its forward form), girth, paired separation,
-degrees. Row consistency is a global property of the relation, of the kind
-"V is a product [d] × [d] and every arc exchanges the factors up to B".
-The same holds on the other side: the abstract codes above one half are
-allowed by every local hypothesis, so a deficit theorem for presentable
-relations cannot be a statement about neighbourhoods either.
+For db > Q, any specified root has probability at most
+Q(Q+1)/(db−Q) of failing to have the radius-t ball of the directed tree
+with Δ incoming and Δ outgoing arcs at every vertex. Distance here is
+undirected graph distance, with arc orientations retained. Consequently,
+with probability tending to one, all but o(L) roots have this ball as
+d → ∞, uniformly in b ≥ 1 and B.
 
-**17.2 (the host, linear form).** By 16.1 every whole-row decoder for ρ is a
-sub-relation of one host: the cell (c, r) reads all of the rows ρ(r). For
-linear codes write x_r for column r and y_i for row i of X. A decoder is a
-family of d × d matrices Φ_{r,i}, one for each edge (i, r) of B, and the code
-is
+*Proof.* Explore all incoming and outgoing stubs at vertices at distance
+at most t, including the boundary; at most Q stubs are queried. Store
+each revealed matching pair and its graph edge. A query of an already
+known pair adds nothing. For a genuinely fresh forward or inverse query,
+the remaining bijection is conditionally uniform on at least db−Q
+unused coordinates. At most Q+1 choices hit an already discovered vertex.
+This deferred-exposure statement remains true for adaptive queries:
+the history fixes only the matching pairs already revealed.
 
-  x_r = Σ_{i∈ρ(r)} Φ_{r,i} y_i  for all r,
+Every first loop, opposite-arc pair or cycle is created by a fresh edge
+hitting a discovered vertex. A union bound gives the claimed probability.
+Querying boundary stubs detects extra edges inside the induced ball.
+The expected number of bad roots is O_{Δ,t}(d), so their fraction tends
+to zero in probability by Markov's inequality. ∎
 
-that is ker(I − Φτ) with Φ = Σ_{(i,r)∈B} E_{r,i} ⊗ Φ_{r,i}: sparse on B in one
-tensor factor, unconstrained in the other, and τ the exchange of the factors.
-Bounded-degree decoders have sparse Φ_{r,i}; swap lifts have permutation
-matrices. The linear wall is the maximum of dim ker(I − Φτ) over such Φ.
+Both comparison families below can be loopless. For each edge matching
+there are b forbidden self-pairs, each with probability 1/(db). Its
+probability of avoiding all of them is at least 1−1/d. Independence gives
+a full loop-free probability at least (1−1/d)^{dΔ} ≥ 4^{−Δ} for d ≥ 2.
+Conditioning on this event preserves the local-limit conclusion.
+
+**Corollary (same limit, different presentability).** For fixed Δ ≥ 3,
+there are loopless families of window Δ and loopless families requiring
+window greater than d^{1−2/Δ−ε}, for any fixed 0 < ε < 1−2/Δ, with the
+same limiting unmarked fixed-radius neighbourhood distributions. This
+holds also at canonical entry width.
+
+*Proof.* Compare the conditioned lifts with the exact model of
+[grid §7](grid-labellings-and-amplified-codes.md#7-why-the-intersection-test-cannot-decide-mixed-layouts):
+Δ independent uniform derangements on L vertices, with duplicate arcs
+ignored. That model is not a uniform simple regular digraph. Before
+conditioning, the permutation exploration has collision probability at
+most Q(Q+1)/(L−Q). The probability that all Δ permutations are
+derangements is at least 3^{−Δ}, so conditioning preserves convergence
+to the same directed tree. Ignoring duplicate arcs changes only bad
+neighbourhoods. Equation (9) of the grid note gives the claimed failure
+of presentation with probability tending to one. Intersect these events
+for any finite collection of radii, then choose a sequence by a diagonal
+argument. ∎
+
+**Scope.** The limiting, unmarked, fixed-radius distribution does not
+determine presentability. Exact finite histograms, growing-radius tests,
+global girth, and distances involving an additional partner marking are
+not decided by this corollary. In particular it proves neither that the
+Paper 13/15 high-rate supports have the same limit nor that local
+information cannot contribute to a capacity proof. No high-rate code is
+constructed on either comparison family. Global arguments invariant
+under relabelling remain possible: the counting proof itself quantifies
+over every partition. The earlier claims excluding all local tests or
+all partition-free proofs were too strong.
+
+**17.2 (the host, linear form).** Fix ρ and vectorize X by columns:
+x_r(c) = X[c,r], y_i(j) = X[i,j]. The swap τ maps stacked columns to
+stacked rows. A scalar-linear code C has whole-row recovery precisely
+when some family of d × d matrices Φ_{r,i} satisfies
+
+  x_r = Σ_{i∈ρ(r)} Φ_{r,i} y_i  for every X ∈ C and every r.
+
+Thus C is **contained in** ker(I−Φτ), where
+Φ = Σ_{(i,r)∈B} E_{r,i} ⊗ Φ_{r,i}. Recovery that is initially nonlinear
+on a linear code still factors linearly through the helper projection;
+extend that map from its image to obtain Φ. Conversely the full kernel
+is a code, so the maximum scalar-linear dimension is exactly
+max_Φ dim ker(I−Φτ). No coefficient bound is imposed.
+
+For b scalar lanes the same statement uses db × db blocks and τ swaps
+the two matrix indices while preserving the lane. Scalar linearity over
+an extension field does not cover every binary-linear code on b-bit
+entries. Bounded actual support degree makes these blocks sparse;
+one permutation block per edge is a further restriction. The
+[host audit](whole-row-host-audit.md) records the precise decomposition,
+its limitation, and the finite benchmarks for this unrestricted host.

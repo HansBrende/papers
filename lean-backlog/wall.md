@@ -272,9 +272,12 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
      new movement in the whole-row frontier.
   4. *Astra next bounded formalization:* the counting/order adapters for the genuinely weaker
      four-arc and arbitrary-width rank extensions, reusing original scalar endpoints where
-     applicable. *Fable next:* re-evaluate any proposed nonlinear/shortest-cycle extension
-     against Paper 7's actual private-parent decomposition before another experiment. A new
-     premise must go beyond N3/U3/T and name its native or whole-row consumer.
+     applicable. *Fable next (in progress):* read Paper 7's engine (Lemma E, Theorem D), its limits
+     and open problems, then answer one question that is not in the series: are the Fano and grid
+     Shannon certificates (B2, B4), which live on whole-row relations of unbounded cell in-degree,
+     instances of a nested-elimination decomposition, or do they use an inequality the engine
+     lacks? Consumer: Theorem D on whole-row hosts (front D1) through B1. No experiment before
+     the answer; a new premise must go beyond N3/U3/T and name its consumer.
   5. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
      not a replacement for the native-support or nonlinear questions.

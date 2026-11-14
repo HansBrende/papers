@@ -90,7 +90,8 @@ supplied by B1. By mechanism, at fixed window:
 - *Symmetric spectrum* (linear, half; Lean): bounded weight over ℂ and relatives.
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
-  finite abelian alphabets, with no reverse-degree bound. Written, reviewed; [bound](notes/pairing-coset-bound.md).
+  finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
+  written and reviewed; abstract coset-record counting now Lean, geometry adapters still written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -298,11 +299,12 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
   5. *G0 reading complete.* Paper 15 leaves arbitrary mixed tower layouts open. The two-sided
      symmetric normal forms add no literal premise on the original tower; their output could
      still be obstructed by a future capacity theorem. Pairing-shift invariance is an exclusion
-     premise. *Fable bounded unit: constructive G4.* One by-hand full-cell polymatroid formula
-     at fixed window and positive asymptotic excess; no solver or larger search without a
-     candidate. *Astra banked:* the nonlinear matching-plus-one-helper Hall theorem, including
-     partial matchings and exact odd-size/cardinality and boundary-record adapters, is now Lean.
+     premise. *Constructive G4 pass closed without a witness:* the
+     [ordered-information refinement](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+     is written and reviewed, but gives no new capacity bound. *Astra banked:* the nonlinear
+     matching-plus-one-helper theorem and the abstract coset-record count are now Lean;
+     pairing/parity geometry remains written.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
-     estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
-     not a replacement for the native-support or nonlinear questions.
+     estimate. The quadrangle reserve starts with a compressed-family size estimate: the previous
+     pair-intersection census exceeded 100,000 masks before any LP. No larger search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

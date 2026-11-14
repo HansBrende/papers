@@ -1768,3 +1768,7 @@ import LeanMachine
 #print axioms LeanMachine.MatchingRecovery.exists_determining_seed
 #print axioms LeanMachine.MatchingRecovery.card_code_le_record
 #print axioms LeanMachine.MatchingRecovery.card_code_le
+
+-- CosetRecords.
+#print axioms LeanMachine.CosetRecords.card_eq_subgroup_mul_image
+#print axioms LeanMachine.CosetRecords.card_le_subgroup_mul_card

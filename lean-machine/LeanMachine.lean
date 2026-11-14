@@ -198,3 +198,4 @@ import LeanMachine.SparseAffineCodes
 import LeanMachine.InvolutionCompletion
 import LeanMachine.MatchingSeed
 import LeanMachine.MatchingRecovery
+import LeanMachine.CosetRecords

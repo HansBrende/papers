@@ -1940,6 +1940,76 @@ these references or this placement. The next test must keep the full
 cell constraints and the asymptotic density, rather than enlarge a solved
 finite calibration or discard the grid intersections.
 
+**19.5 (ordered partial-helper information).** Written proof, independently
+reviewed; not Lean-verified. This refines the chain-rule accounting of
+18.3 and 19.1; it supplies no new uniform capacity deficit.
+
+Let h be any normalized monotone submodular function on all subsets of
+V=[d]×[d], with exact column recovery, and fix a row order. For a nonempty
+helper set ρ(c), let last(c) be its last row and put
+
+  E_c = {(p,c) : p < last(c), p ∉ ρ(c)},
+  E_q = ⋃_{last(c)=q} E_c,
+  P_q = ⋃_{last(c)=q} (ρ(c) ∖ {q}).
+
+Omit empty-helper columns from these definitions: their entropy is zero
+by recovery. Write R_q for row q, R_P for the union of rows in P,
+E=⋃_q E_q, Inc={(p,c):p∈ρ(c)}, A=Σ_q h(R_q), H=h(V), and
+TC_E=Σ_q h(E_q)−h(E). All conditional quantities below are polymatroid
+increments; the sets E_q and R_{P_q} may overlap. Then
+
+  2H + TC_E ≤ A + h(Inc | E)
+                   + Σ_q [I(E_q;R_{P_q}) − I(R_q;R_{P_q})].       (19h)
+
+In particular, under unit singleton caps and N=d²,
+
+  2H ≤ N + |Inc| + Σ_q I(E_q;R_{P_q}).                            (19i)
+
+*Proof.* The row chain rule gives A−H=Σ_q I(R_q;R_{<q}). Both
+E_q and R_{P_q} lie in earlier rows, and exact recovery gives
+h(E_q | R_q∪R_{P_q})=0. Hence the summand is
+
+  I(R_q;R_{P_q}) + h(E_q|R_{P_q})
+    + I(R_q;R_{<q} | R_{P_q}∪E_q).
+
+Also E∪Inc generates V by induction along the row order: a nonincident
+cell is either in E or has all its helpers in earlier rows. Thus
+H=h(E)+h(Inc|E). Substitution proves (19h); its exact nonnegative slack
+is Σ_q I(R_q;R_{<q}|R_{P_q}∪E_q). Dropping nonnegative terms and using
+the singleton caps proves (19i). ∎
+
+If |ρ(c)|≤w for every column, then for every row order H≥(1/2+ε)N
+requires the information sum in (19i) to be at least 2εN−wd.
+No estimate bounding that sum uniformly
+in w is proved here. The generating set E∪Inc is the usual last-helper
+order seed; the new display retains the partial-helper information instead
+of replacing it by a coordinate count. It is not covered by the claim
+that the count relaxation of 19.1 is order-dominated. At window one all
+P_q are empty and the existing half-plus-incident bound is recovered.
+For lanes the same proof uses all scalar coordinates and their actual
+entropies; no independence or linearity assumption is needed.
+
+**19.6 (a conditional-Shearer identity).** Written proof, independently
+reviewed; not a new entropy principle and not Lean-verified here. For
+arbitrary bundles Y_1,…,Y_w with w≥1, let Y be their union and Y_{−j}
+the union omitting j. Define DTC(Y)=Σ_j h(Y_{−j})−(w−1)h(Y).
+For any bundle C, without a recovery premise,
+
+  Σ_j h(C|Y_{−j}) + DTC(Y) − h(C)
+    = DTC(Y|C) + (w−1)h(C|Y) ≥ 0.                              (19j)
+
+Here conditional DTC uses the contracted polymatroid h_C. The identity
+is expansion of the definitions. Its nonnegativity is conditional
+Shearer: each h(Y_j|Y_{−j},C) is at most its chain-rule increment
+h(Y_j|Y_{<j},C). Paper 2's
+[`submodular_cover`](../../Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/lean/TransposeFollowup/SubmodularCover.lean)
+already formalizes the underlying covering inequality; (19j) is not a new
+covering theorem. Overlapping bundles are allowed. If w=0, the proposed
+inequality holds only when h(C)=0, as recovery from empty helpers ensures.
+At w=1 it is an identity. The fraction (m−2)/m from an independent
+m-cell parity gadget concerns its number of cells, not the helper
+window w; no universal triangle-lane fraction in w is asserted.
+
 ## 20. Cell budgets, token closures and the Shannon/order test
 
 Fable's proposals, audited and extended by Astra, 14 November 2026.

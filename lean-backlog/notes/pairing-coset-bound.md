@@ -1,7 +1,9 @@
 # Extending a pairing or parity-block template costs only a vanishing rate
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
-**Status:** written proofs, independently reviewed; not Lean-verified. Fable proposed the
+**Status:** written proofs, independently reviewed; the abstract record-counting
+step is Lean-verified, while the recovery geometry and rate bounds remain written.
+Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
 Front D1: a restriction on constructions, not a bound for every whole-row code.
@@ -33,6 +35,17 @@ T=Q₀∪⋃_c Q_c.
 in C. More precisely, if Z_T(C) is their attained image, then
 
 |C|=|P_ι|·|Z_T(C)| ≤ |P_ι| q^|T|.
+
+The abstract counting step is
+[`CosetRecords.card_eq_subgroup_mul_image`](../../lean-machine/LeanMachine/CosetRecords.lean).
+For an additive commutative group, a set C stable under a subgroup P, and a
+record invariant under P-translations on C, it proves
+`Nat.card C = Nat.card P * Nat.card (record '' C)` as soon as equal records
+of two elements of C imply their difference lies in P. The record need only
+separate cosets **on C**; its ambient fibres can be larger. The code need not
+be linear or nonempty, and the record type need not be finite. The proof
+reuses Mathlib's subgroup saturation count. The helper-bundle extension and
+separation argument in the next paragraph are not yet formalized.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -167,7 +180,10 @@ all-one word, whereas every full orbit-constant pairing subgroup contains that w
 The binary cyclic window-two difference code at d=3 likewise excludes the all-one word.
 Those examples need their own checks; being linear is not enough to contain a pairing code.
 
-All results here remain written and reviewed. The argument uses subgroup invariance
+The abstract attained-record count above is the only Lean-verified step of this
+note. Compatibility, the local shift extension, the incidence counts and the
+paid/asymptotic pairing and parity-block bounds remain written and reviewed.
+The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large
 intersection with a template. The native question still needs a premise that supplies
 one of these hypotheses, or a different capacity argument.

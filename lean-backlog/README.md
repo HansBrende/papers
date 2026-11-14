@@ -45,6 +45,11 @@ boundary data vary. The Hall selector uses minimal nonempty traps, in which ever
 an extra helper inside the set, and can retain one prescribed endpoint of a perfect matching.
 No native extraction is implied.
 
+The [pairing/parity-template note](notes/pairing-coset-bound.md) now reuses
+[CosetRecords.lean](../lean-machine/LeanMachine/CosetRecords.lean) for its abstract
+exact count by attained records on subgroup-invariant sets. Its recovery
+geometry and rate bounds remain written proofs.
+
 ## What is here
 
 | Item | File | Declaration names | Field | Status |

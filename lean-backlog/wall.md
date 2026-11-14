@@ -58,6 +58,23 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   tape passes in linear time (front D7), and an exclusion could still hold through structure
   that whole-row codes ignore (the native crux, D9). A No closes the common-deficit route,
   not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
+- **Between this statement and the machine** ([ingredient ledger](notes/whole-row-ingredient-ledger.md)).
+  The statement is necessary for an oblivious transposer and not sufficient. A safe chain of
+  relaxations, each forgetting data of the one before:
+  1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
+     writes and appends on every input. Equivalent to the machine; a re-encoding, not a simpler
+     criterion. A network code on a tape diagram with free gates is already weaker.
+  2. *Causal values and cut records* on the native bit DAG, with the records each output can
+     reach: at depth D at most 1+(k+1)K_D bounded-width records and K_D raw bits per output.
+  3. *An all-input index encoder of charged length on one native cone system* (B1 supplies it;
+     Lean). Every output may read the whole message.
+  4. *Whole-row fibres with a common relation*, after the paid enlargement of cones to rows.
+  5. *One large whole-row fibre*: the statement above.
+  Rungs 4 and 5 agree at leading rate (translated covers of the cube by one code), so "all
+  fibres" is not a gap. 3→4 forgets which bits are read and how often; 2→3 forgets where the
+  advice can be read and that one table produced it. The ingredients overlap and must come from
+  one common run. **No inequality that consumes a retained property is known.** A proposal for
+  one names its rung.
 - **Two-sided form** (D10; *finite upper-bound transfer and native consequences Lean*). Requiring row r to be a
   function of columns ρ(r) as well gives an **equivalent common-deficit question**, up to factor two:
   some translated intersection C∩(z+Cᵀ) is two-sided and has size ≥|C|²/q^(d²). A two-sided deficit
@@ -323,7 +340,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
      they are not proved equivalent to order, and no new capacity estimate follows.
      Compatibility extraction and the weighted global adapter are banked in Lean. Next:
-     involution conversion and Fable's gap map. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
+     involution conversion (Astra); the gap map is delivered: the omitted-pair step needs
+     invariance under a proper subgroup of the block kernel, which the Lean hypothesis class
+     does not yet express. Fable: a consumer for rung 2 of the ladder in Section 1. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
      audits the proposed machine/code ladder: all fibres already occur in B1; causal provenance,
      not their bare existence, is extra. No numerical search is opened.
 - Last re-evaluation (D0): 14 November 2026.

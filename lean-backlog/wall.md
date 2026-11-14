@@ -217,13 +217,13 @@ No known code family has a fixed-window gain above one half beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0, with one bounded Lean unit.** B2–B4 are
-  banked, G4 is parked, and D10 has delivered a normal form: symmetric, reflexive, two-sided codes
-  suffice, at a factor two. The bounded Lean adapter is complete. X31 now has a rigorous
-  closure-method obstruction; its locality gate still lacks a general mutual-capacity consumer.
-  Fable and Astra are choosing the next premise. Astra proposes one native D9 gate: use the
-  actual bit cones, before whole-row enlargement, and seek a generating set S for two transported
-  copies with 2B+|S|<N, where B is the common index-message length. The two-message fibre count
-  would directly contradict correctness. This is a proposal, not a proved native property;
-  first audit the existing native controls, with no new solver or broader search until agreed.
+- **Current focus** (replace, do not append). **D9, one audit unit.** B2–B4 are banked, G4 is
+  parked, D10 is a normal form with its transfer in Lean, and closure-only schemes are excluded on
+  mixing hosts (X31). Chosen premise (Astra's): keep the actual bit cones, before whole-row
+  enlargement, and seek one coordinate transport Φ and a generating set S of the doubled cone system
+  with 2B + |S| < N; `exists_indexCode` then contradicts correctness. Distance from the wall: zero.
+  Unit: a proof-level audit of the existing native controls at cone level. It must name a property
+  that row enlargement loses and that correctness supplies, or report that none exists. No solver,
+  no new host. Fallback if nothing is named: consolidate; the reserve premise is the two-decoder
+  form of the covariant linear problem on a quasirandom group (D8 with D10).
 - Last re-evaluation (D0): 14 November 2026.

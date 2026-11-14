@@ -70,9 +70,13 @@ handles active shifts that vanish on prescribed coordinates, recording their
 raw values with exact finite accounting. The
 [whole-row adapter](../lean-machine/LeanMachine/WholeRow/ParityTemplate.lean)
 now proves the record enclosures, incidence count and finite bounded-degree
-parity-template bound, including rectangular arrays and arbitrary lanes.
-Selecting active involution orbits, the sharper fixed-cell correction and
-paid heavy-row/asymptotic bounds remain separate work.
+parity-template bound, including conditional recovery given raw pins,
+rectangular arrays and arbitrary lanes. The
+[heavy-row adapter](../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
+constructs the deletion, charges one symbol per discarded block, removes the
+reverse-degree premise and proves a uniform vanishing excess over the
+active-template baseline. Selecting active involution orbits and the
+sharper fixed-cell correction remain separate work.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

@@ -206,3 +206,5 @@ import LeanMachine.DisjointSumsWeighted
 import LeanMachine.InvolutionSums
 import LeanMachine.DisjointSumsPinned
 import LeanMachine.WholeRow.ParityTemplate
+import LeanMachine.DisjointSumsDeletion
+import LeanMachine.WholeRow.ParityTrimming

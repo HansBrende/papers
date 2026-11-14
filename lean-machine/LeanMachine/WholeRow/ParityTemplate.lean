@@ -29,6 +29,20 @@ def RecoversFromRows (ρ : J → Finset R) (C : Set (LaneCell R J Λ → A)) : P
   ∀ v, ∀ x ∈ C, ∀ y ∈ C,
     Set.EqOn x y (↑(helperBundle (Λ := Λ) ρ v.2.1)) → x v = y v
 
+/-- Recovery may also use a common raw record of the pinned coordinates. -/
+def RecoversFromRowsGiven (ρ : J → Finset R) (E : Set (LaneCell R J Λ))
+    (C : Set (LaneCell R J Λ → A)) : Prop :=
+  ∀ v, ∀ x ∈ C, ∀ y ∈ C,
+    Set.EqOn x y ((↑(helperBundle (Λ := Λ) ρ v.2.1)) ∪ E) → x v = y v
+
+omit [Fintype R] in
+/-- Unconditional recovery remains valid when the decoder receives a raw record. -/
+theorem RecoversFromRows.given {ρ : J → Finset R} {C : Set (LaneCell R J Λ → A)}
+    (h : RecoversFromRows ρ C) (E : Set (LaneCell R J Λ)) :
+    RecoversFromRowsGiven ρ E C := by
+  intro v x hx y hy hxy
+  exact h v x hx y hy (hxy.mono Set.subset_union_left)
+
 /-- Coordinates that are among their own column's helper rows. -/
 def incidentCells (ρ : J → Finset R) : Finset (LaneCell R J Λ) :=
   univ.filter (fun v => v.1 ∈ ρ v.2.1)
@@ -51,23 +65,30 @@ def incidentBlocks : Finset κ :=
 def recordBlocks : Finset κ :=
   incidentBlocks D ρ ∪ univ.biUnion (internalBlocks D ρ)
 
+variable [AddCommGroup A] (θ : LaneCell R J Λ → A ≃+ A)
+variable (E : Set (LaneCell R J Λ))
+variable (hfree : ∀ k, ∀ v ∈ E, v ∉ D.support k)
+
+include hfree in
 private theorem internal_enclosure (v : LaneCell R J Λ) (k : κ)
-    (h : (↑(D.support k) : Set (LaneCell R J Λ)) ⊆ ↑(helperBundle (Λ := Λ) ρ v.2.1)) :
+    (h : (↑(D.support k) : Set (LaneCell R J Λ)) ⊆
+      (↑(helperBundle (Λ := Λ) ρ v.2.1)) ∪ E) :
     k ∈ recordBlocks D ρ := by
   exact mem_union_right _ (mem_biUnion.mpr
-    ⟨v.2.1, mem_univ _, mem_filter.mpr ⟨mem_univ _, h⟩⟩)
+    ⟨v.2.1, mem_univ _, mem_filter.mpr ⟨mem_univ _, fun u hu =>
+      (h hu).resolve_right (fun he => hfree k u he hu)⟩⟩)
 
+include hfree in
 private theorem incident_enclosure (k : κ)
-    (h : ∀ v ∈ D.support k, v ∈ helperBundle ρ v.2.1) :
+    (h : ∀ v ∈ D.support k,
+      v ∈ (↑(helperBundle (Λ := Λ) ρ v.2.1) : Set (LaneCell R J Λ)) ∪ E) :
     k ∈ recordBlocks D ρ := by
   apply mem_union_left
   apply mem_filter.mpr
   refine ⟨mem_univ _, fun v hv => ?_⟩
-  exact mem_filter.mpr ⟨mem_univ _, (mem_product.mp (h v hv)).1⟩
+  exact mem_filter.mpr ⟨mem_univ _, (mem_product.mp
+    ((h v hv).resolve_right (fun he => hfree k v he hv))).1⟩
 
-variable [AddCommGroup A] (θ : LaneCell R J Λ → A ≃+ A)
-variable (E : Set (LaneCell R J Λ))
-variable (hfree : ∀ k, ∀ v ∈ E, v ∉ D.support k)
 variable (C : Set (LaneCell R J Λ → A))
 variable (hstable : ∀ x ∈ C, ∀ z : LaneCell R J Λ → A,
   D.weightedEncode θ z = 0 → Set.EqOn z 0 E → x + z ∈ C)
@@ -75,42 +96,51 @@ variable (hstable : ∀ x ∈ C, ∀ z : LaneCell R J Λ → A,
 include hstable in
 /-- The geometrically defined record has the exact attained-image count.
 This is the pinned weighted theorem with the whole-row enclosures discharged. -/
-theorem parity_record_card_eq (hrec : RecoversFromRows ρ C) :
+theorem parity_record_card_eq (hrec : RecoversFromRowsGiven ρ E C) :
     Nat.card C = Nat.card ((D.withPins E hfree).weightedEncode θ).ker *
       Nat.card (D.pinnedRecord E θ (recordBlocks D ρ) '' C) := by
   exact D.card_eq_pinned_kernel_mul_record_image E hfree θ C hstable
-    (fun v => ↑(helperBundle (Λ := Λ) ρ v.2.1)) (recordBlocks D ρ) hrec
-    (internal_enclosure D ρ) (incident_enclosure D ρ)
+    (fun v => (↑(helperBundle (Λ := Λ) ρ v.2.1)) ∪ E) (recordBlocks D ρ) hrec
+    (internal_enclosure D ρ E hfree) (incident_enclosure D ρ E hfree)
 
 include hstable hfree in
 /-- Finite exact-record power bound, before replacing the record union by a sum. -/
-theorem parity_card_le_record [Fintype A] (hrec : RecoversFromRows ρ C) :
+theorem parity_card_le_record [Fintype A] (hrec : RecoversFromRowsGiven ρ E C) :
     Nat.card C ≤ Fintype.card A ^
       (Fintype.card (LaneCell R J Λ) - Fintype.card κ + (recordBlocks D ρ).card) := by
   simpa using
     D.card_le_pow_of_pinned_invariant_recovery E hfree θ C hstable
-      (fun v => ↑(helperBundle (Λ := Λ) ρ v.2.1)) (recordBlocks D ρ) hrec
-      (internal_enclosure D ρ) (incident_enclosure D ρ)
+      (fun v => (↑(helperBundle (Λ := Λ) ρ v.2.1)) ∪ E) (recordBlocks D ρ) hrec
+      (internal_enclosure D ρ E hfree) (incident_enclosure D ρ E hfree)
 
 include hstable hfree in
 omit [Fintype R] [Fintype κ] in
 private theorem active_compatibility [Nontrivial A] (hC : C.Nonempty)
-    (hrec : RecoversFromRows ρ C) (v : LaneCell R J Λ)
+    (hrec : RecoversFromRowsGiven ρ E C) (v : LaneCell R J Λ)
     (hv : v ∉ helperBundle ρ v.2.1) (k : κ) (hvk : v ∈ D.support k) :
     (↑(D.support k) : Set (LaneCell R J Λ)) ⊆
       insert v (↑(helperBundle (Λ := Λ) ρ v.2.1) : Set (LaneCell R J Λ)) := by
-  exact (D.withPins E hfree).weighted_support_subset_insert_of_recovery θ C
+  have h := (D.withPins E hfree).weighted_support_subset_insert_of_recovery θ C
     (fun x hx z hz =>
       let h := (D.withPins_encode_eq_zero_iff E hfree θ z).mp hz
-      hstable x hx z h.1 h.2) hC (↑(helperBundle (Λ := Λ) ρ v.2.1)) v (hrec v) hv
-    (Sum.inl k) hvk
+      hstable x hx z h.1 h.2) hC
+    ((↑(helperBundle (Λ := Λ) ρ v.2.1)) ∪ E) v (hrec v)
+    (by
+      rintro (hb | he)
+      · exact hv hb
+      · exact hfree k v he hvk) (Sum.inl k) hvk
+  intro u hu
+  rcases Set.mem_insert_iff.mp (h hu) with huv | hub
+  · exact Set.mem_insert_iff.mpr (Or.inl huv)
+  · exact Set.mem_insert_iff.mpr
+      (Or.inr (hub.resolve_right (fun he => hfree k u he hu)))
 
 omit [Fintype R] in
 include hstable hfree in
 /-- Every non-singleton internal active block lies in the helper-row / shared-column
 rectangle. This includes incident coordinates, using their own row as witness. -/
 theorem internal_support_subset_rectangle [Nontrivial A] (hC : C.Nonempty)
-    (hrec : RecoversFromRows ρ C) (c : J) (k : κ)
+    (hrec : RecoversFromRowsGiven ρ E C) (c : J) (k : κ)
     (hk : k ∈ internalBlocks D ρ c) (hsize : 2 ≤ (D.support k).card) :
     D.support k ⊆ ((ρ c) ×ˢ ((overlapColumns ρ c) ×ˢ (univ : Finset Λ))) := by
   intro v hv
@@ -155,7 +185,7 @@ include hstable hfree in
 /-- Exact incidence budget for the selected active blocks, including lanes.
 The block size parameter need not be a uniform exact size. -/
 theorem recordBlocks_card_bound [Nontrivial A] (hC : C.Nonempty)
-    (hrec : RecoversFromRows ρ C) (r : ℕ) (hr : 2 ≤ r)
+    (hrec : RecoversFromRowsGiven ρ E C) (r : ℕ) (hr : 2 ≤ r)
     (hsize : ∀ k, r ≤ (D.support k).card) :
     r * (recordBlocks D ρ).card ≤ Fintype.card Λ *
       ((∑ c, (ρ c).card) + ∑ c, (ρ c).card * (overlapColumns ρ c).card) := by
@@ -187,7 +217,7 @@ theorem recordBlocks_card_bound [Nontrivial A] (hC : C.Nonempty)
 include hstable hfree in
 /-- Finite whole-row parity-template bound with the exact incidence sum.
 Empty codes and trivial alphabets are handled without compatibility premises. -/
-theorem parity_card_le_incidence [Fintype A] (hrec : RecoversFromRows ρ C)
+theorem parity_card_le_incidence [Fintype A] (hrec : RecoversFromRowsGiven ρ E C)
     (r : ℕ) (hr : 2 ≤ r) (hsize : ∀ k, r ≤ (D.support k).card) :
     Nat.card C ≤ Fintype.card A ^ (Fintype.card (LaneCell R J Λ) - Fintype.card κ +
       (Fintype.card Λ * ((∑ c, (ρ c).card) +
@@ -241,7 +271,7 @@ theorem incidence_budget_le (w Drev : ℕ)
 
 include hstable hfree in
 /-- Bounded forward/reverse degree version, uniform in finite alphabet and lanes. -/
-theorem parity_card_le_degrees [Fintype A] (hrec : RecoversFromRows ρ C)
+theorem parity_card_le_degrees [Fintype A] (hrec : RecoversFromRowsGiven ρ E C)
     (r : ℕ) (hr : 2 ≤ r) (hsize : ∀ k, r ≤ (D.support k).card)
     (w Drev : ℕ) (hforward : ∀ c, (ρ c).card ≤ w)
     (hrev : ∀ r, (univ.filter (fun j => r ∈ ρ j)).card ≤ Drev) :

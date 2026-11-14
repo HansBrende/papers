@@ -113,7 +113,8 @@ supplied by B1. By mechanism, at fixed window:
   written and reviewed; abstract counting, weighted compatibility/record separation,
   finite counts, full-invariance involution conversion and singleton pinning are Lean.
   Whole-row record enclosures and finite active-parity incidence/degree bounds are Lean.
-  Omitted-orbit selection, the sharper fixed-cell correction and paid heavy-row/asymptotic bounds remain written.
+  Paid heavy-row deletion and the active-template uniform vanishing-excess theorem are Lean.
+  Original omitted-involution-orbit selection and the sharper fixed-cell correction remain written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -329,8 +330,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      even without active mutual helpers, leaving high-rate/large-girth variants open.
      *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
      record separation/count, finite weighted counts, involution conversion and singleton
-     pinning, whole-row enclosures and finite incidence/degree bounds are Lean; paid/asymptotic
-     adapters remain.
+     pinning, conditional whole-row enclosures, incidence bounds and paid heavy-row/uniform-rate
+     adapters are Lean; the original omitted-involution/fixed-cell specialization remains.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
@@ -345,14 +346,16 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
      they are not proved equivalent to order, and no new capacity estimate follows.
      Compatibility, finite weighted counts, involution conversion and singleton pinning
-     and whole-row enclosure/incidence bounds are banked in Lean. Next: the paid heavy-row
-     adapter, with explicit active-block selection and fixed-cell accounting. The
+     and whole-row enclosure/incidence bounds are banked in Lean. The paid heavy-row adapter
+     now removes the reverse cap with a uniform rate theorem. Next: the original
+     omitted-involution selection and sharper fixed-cell specialization. The
      [local-view audit](notes/local-record-view-covers.md#7-a-native-consumer-for-output-weighted-hyperfiniteness)
      gives a written exclusion at one cut density ε₀<1/[2s(k+2)c], allowing
      o(log log d) outputs per time component: union with Paper 14's
      cheap depth cut, pay fixed-fraction degree trimming, and apply Paper 5's native separation
      to the same cut. This differs from row-helper hyperfiniteness; it recovers a known
-     one-tape class, not the common deficit. Regular sweeps are already excluded by Paper 4's
+     one-tape class, not the common deficit. No implication to or from Paper 4's motion
+     classes is established; this is not a proof of incomparability. Regular sweeps are already excluded by Paper 4's
      Theorem C, so the flawed grid sketch opens no new unit. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
      audits the proposed machine/code ladder: all fibres already occur in B1; causal provenance,
      not their bare existence, is extra. No numerical search is opened.

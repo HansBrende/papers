@@ -281,6 +281,19 @@ recovers the known one-work-tape exclusion as a calibration. It claims
 no novelty for that exclusion and no new exclusion of arbitrary
 multi-tape motion. Expanding time diagrams need not meet the premise.
 
+**Comparison with Paper 4 (reading only).** No implication between this
+fragmentation premise and the hypotheses of M*, C, C′ or Cq has been
+established in either direction. This is not a proof of incomparability.
+M* is formulated through macroscopic limit labellings; C also has a
+finite-trace affine-run hypothesis with submacroscopic deviation. Neither
+has been shown here to supply our output-bounded cut. Conversely our
+components may be scattered in time and need not have bounded numbers of
+time vertices or bounded temporal diameter. No construction converting
+them to the interval labellings of M* is supplied. Tape edges need not be
+macroscopic, and no particular Bourgain–Yehudayoff motion is asserted to
+fail this fragmentation test. The common finite transition table also
+does not itself give one-hop class-uniform or shift-covariant recovery.
+
 ## 8. Regular sweeps: reuse the existing theorem, repair the grid sketch
 
 The proposed nested-period sweep calculation is not a proved grid

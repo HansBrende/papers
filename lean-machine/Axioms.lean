@@ -1846,3 +1846,25 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.overlapColumns_card_le
 #print axioms LeanMachine.WholeRow.incidence_budget_le
 #print axioms LeanMachine.WholeRow.parity_card_le_degrees
+
+-- Conditional raw records and paid parity-template trimming.
+#print axioms LeanMachine.WholeRow.RecoversFromRowsGiven
+#print axioms LeanMachine.WholeRow.RecoversFromRows.given
+#print axioms LeanMachine.DisjointSums.restrictBlocks
+#print axioms LeanMachine.DisjointSums.touchingBlocks
+#print axioms LeanMachine.DisjointSums.deleteTouching
+#print axioms LeanMachine.DisjointSums.deletionPins
+#print axioms LeanMachine.DisjointSums.touchingBlocks_card_le
+#print axioms LeanMachine.DisjointSums.card_deleteTouching
+#print axioms LeanMachine.DisjointSums.deletionPins_free
+#print axioms LeanMachine.DisjointSums.deleted_kernel_le
+#print axioms LeanMachine.WholeRow.rowCells
+#print axioms LeanMachine.WholeRow.trimRows
+#print axioms LeanMachine.WholeRow.heavyRows
+#print axioms LeanMachine.WholeRow.card_rowCells
+#print axioms LeanMachine.WholeRow.heavyRows_card_mul_succ_le
+#print axioms LeanMachine.WholeRow.reverse_trimRows_heavy_le
+#print axioms LeanMachine.WholeRow.RecoversFromRowsGiven.trim
+#print axioms LeanMachine.WholeRow.parity_card_le_delete_rows
+#print axioms LeanMachine.WholeRow.parity_card_le_forward
+#print axioms LeanMachine.WholeRow.parity_card_pow_le_baseline

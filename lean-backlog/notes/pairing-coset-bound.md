@@ -8,8 +8,10 @@ counts, the full-invariance involution adapter, and singleton pinning for
 prescribed zero shifts. The whole-row record enclosures, active-block
 incidence count and finite bounded-degree parity-template bound are also
 Lean-verified, with arbitrary finite lanes and rectangular row/column types.
-Selection from an omitted-orbit list, the sharper fixed-cell pairing
-correction, and the paid heavy-row/asymptotic bounds remain written.
+Paid heavy-row deletion and a uniform vanishing-excess theorem for active
+parity templates are Lean-verified as well. Selection from an omitted
+involution-orbit list and the sharper fixed-cell pairing correction remain
+separate written specializations.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -148,7 +150,8 @@ Empty codes and trivial additive alphabets are allowed. The generic
 adapter does not construct the active pairs from an involution. The
 whole-row enclosures and general active-block incidence estimate are now
 supplied by Section 5's adapter; the sharper fixed-cell correction in
-Section 2 and the heavy-row trimming still need their own endpoints.
+Section 2 still needs its own endpoint. The general active-template
+heavy-row theorem is now formalized below.
 
 This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
 alone does not supply them: a linear constraint can exclude every individual shift while
@@ -259,7 +262,7 @@ coordinates, blocks and alphabet and give fibre size q^(N−m) and code bound
 q^(N−m+|T|). These remove the infinite-type degeneracy from finite applications.
 The involution conversion and prescribed-coordinate pinning are formalized
 as above. The finite whole-row application is now formalized as described
-below; the heavy-row and asymptotic application remains written.
+below, including paid heavy-row deletion and the uniform asymptotic application.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -303,7 +306,11 @@ statement, not a selected decoder or field representation.
 
 The input D consists of m_act **active** blocks, disjoint from the pinned
 set E, and the code is invariant under their weighted kernel shifts that
-vanish on E. `recordBlocks` is the exact union of all-incident active blocks
+vanish on E. The endpoints accept the more general conditional form
+`RecoversFromRowsGiven`: agreement on the helper bundle **and E** determines
+the target. Ordinary whole-row recovery implies this premise via
+`RecoversFromRows.given`. Raw pins can therefore remain available while
+helper rows are removed. `recordBlocks` is the exact union of all-incident active blocks
 and active blocks contained in some helper bundle. `parity_record_card_eq`
 and `parity_card_le_record` discharge both enclosures in the pinned theorem
 and give exact attained-record counting and q^(N−m_act+|T|).
@@ -328,9 +335,59 @@ when forward degrees are at most w and reverse degrees at most D. These
 finite statements are uniform in the finite abelian alphabet and lane
 count, and strengthen the square-array formulation to rectangular arrays.
 The record union can be smaller than the sum used in this last estimate.
-The adapter takes active blocks/pins as data. Choosing them from a marked
-involution or deleting heavy rows, and the sharper fixed-cell cancellation
-in the pairing-specific formula, remain separate instantiations.
+The finite adapter takes active blocks/pins as data. Deleting heavy rows is
+now handled by the following construction; choosing the original active
+blocks from an omitted involution-orbit list and the sharper fixed-cell
+pairing correction remain separate specializations.
+
+
+**Paid heavy-row adapter and uniform rate (Lean).**
+[DisjointSumsDeletion.lean](../../lean-machine/LeanMachine/DisjointSumsDeletion.lean)
+constructs the subfamily avoiding a finite set F of coordinates. Let t_F be
+the number of discarded active blocks. Their disjoint nonempty
+intersections with F give t_F≤|F|. The new pin set is E′=E∪F∪(discarded
+supports). It is disjoint from all retained blocks, and every new kernel
+shift fixing E′ lies in the original kernel and fixes E. No discarded
+block is silently turned into a free shift.
+
+[WholeRow/ParityTrimming.lean](../../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
+uses F=H×J×Λ for a set H of rows. Given the common raw record E′, the
+original recovery implies recovery on ρ(c)∖H. The conditional version of
+the finite bound applies to the original C; no independent fibre partition
+or second charge for the raw record is needed. `parity_card_le_delete_rows`
+retains the exact price t_F, one symbol per discarded block. If trimmed
+reverse degrees are at most D, its exponent is
+
+  N−m_act+t_F + floor(|Λ||J|(w+w²D)/r).
+
+For H the rows of reverse degree greater than D, incidence counting gives
+(D+1)|H|≤w|J|. Thus `parity_card_le_forward` proves
+
+  |C| ≤ q^[N−m_act + |Λ||J| floor(w|J|/(D+1))
+                     + floor(|Λ||J|(w+w²D)/r)].
+
+This needs only forward width w; D is any chosen natural threshold,
+including zero. It remains valid for empty codes, trivial finite
+alphabets, empty index types and arbitrary finite lanes. In rectangular
+arrays the coarse row payment is w|Λ||J|²/(D+1); it is wN/(D+1) in the
+square case, not in general.
+
+For |R|=|J|=d, `parity_card_pow_le_baseline` makes the vanishing excess
+uniform and quantitative. Given any integer n≥1, choose D=2wn. Once
+
+  d ≥ n(w+w²(2wn)),
+
+it proves the entirely finite cardinality inequality
+
+  |C|^n ≤ q^[n(N−m_act)+N].
+
+Indeed twice n times the row payment is at most N; twice n times the
+incidence payment is also at most N, since r≥2 and the displayed
+threshold holds. Hence their sum is at most N/n. For q≥2, nonempty C
+and N>0 this says log_q|C|/N≤1−m_act/N+1/n. The threshold is independent
+of q, lanes, the particular relation, block sizes and additive weights.
+This is excess above a specified active-template baseline; that baseline
+can itself approach one. It is not a common deficit for arbitrary codes.
 
 ## Scope of the examples
 
@@ -344,9 +401,10 @@ Abstract counting, local disjoint-parity extension, compatibility extraction
 and global separation/counting for ordinary and automorphism-weighted sums
 are Lean-verified, including finite cardinalities and the full-invariance
 involution conversion, singleton pinning, whole-row enclosures and the
-finite general parity-template incidence and bounded-degree estimates.
-Omitted-orbit selection, the sharper pairing fixed-cell correction and
-paid heavy-row/asymptotic bounds remain written and reviewed. Invariance
+finite general parity-template incidence and bounded-degree estimates,
+paid heavy-row deletion, the forward-width-only bound and its uniform
+vanishing-excess consequence. Omitted-involution-orbit selection and the
+sharper pairing fixed-cell correction remain written specializations. Invariance
 is relative to a specified additive
 group on the entry alphabet; for b-bit symbols bitwise XOR supplies one such
 group. No claim identifies invariance under different choices of group law.

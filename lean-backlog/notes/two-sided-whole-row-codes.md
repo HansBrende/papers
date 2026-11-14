@@ -269,3 +269,57 @@ Repository searches found no prior same-helper-map two-advice reduction.
 The “two-sided rules” in Paper 17 concern linear offsets on a line and
 are different. The elementary translated-intersection counting identity
 itself is not claimed as a new general combinatorial theorem.
+
+## 7. The intersection lemma in general, odd walks, and the localisation gate (Fable, 14 November; unreviewed)
+
+**7.1 Transported intersections.** Let C be any code on N coordinates over a cyclic alphabet of
+size q, with recovery rules "the cells T are determined by the cells H". Let Φ₁, …, Φ_k be
+arbitrary bijections of the coordinate set. Then for some z₁, …, z_k the code
+D = C ∩ ⋂ᵢ (zᵢ + Φᵢ(C)) has |D| ≥ |C|^{k+1}/q^{kN}, and it obeys every rule of C together with
+every transported rule "Φᵢ(T) is determined by Φᵢ(H)". (Count tuples in C^{k+1} by their
+differences.) So, with gen the least size of a generating set of the combined closure system,
+
+log_q |C| ≤ (kN + gen)/(k + 1).
+
+Transposition is one Φ. Independent relabellings of rows and of columns are others, and they are
+also symmetries of the transposition problem, so native fibres have them too.
+
+*Calibrations.* (i) Window one, ρ(c) = {c}: take Φ = transposition followed by a relabelling for
+which "row r is determined by row r+1". One row generates everything, gen = d, and the bound is
+d(d+1)/2, the exact value. (ii) Disjoint triangles: a second triangle system can be chosen so that
+a third of the cells generate the rest; the bound is 2N/3, exact. (iii) Cyclic intervals
+ρ(c) = [c, c+w): a shifted transposed copy cascades from 2w−1 rows; the bound is d²/2 + O(wd).
+
+*Limit.* A transported column rule outputs full lines of its own grid, which are thin in the rows
+of that grid and freely placeable in the others. If m rows contain at most λm columns (λ < 1 on
+expanding hosts, about 1/(w−1) for tree-like clusters), the number of new complete rows per round
+is multiplied by kλ with k+1 grids. Percolation needs k + 1 of order w, and the bound is then
+of order 1 − 1/w again. **So transported intersections give normal forms and exact values on
+Følner-type hosts, and no window-independent deficit on expanders.**
+
+**7.2 Odd walks in the mutual graph.** On a symmetric relation G the mutual graph on cells is
+(p,c) ~ (q,m) iff q ∈ N(c) and m ∈ N(p). A closed walk of odd length ℓ through (p,c) exists iff
+G has a walk of length ℓ from p to c. So a cell with dist_G(p,c) > L lies on no odd cycle of
+length ≤ L, for every symmetric host; if G is bipartite, cells with both indices on one side lie
+on no odd cycle at all. This is the sector-walk statement without a group.
+
+**7.3 The localisation gate is not passed.** The target was Σ_v H(X_v | block of v, Z) ≤ K·Δ for
+a record Z of small entropy and K independent of the window.
+
+- It needs the record: the cyclic code X = S + tA is local only given t.
+- *Chained half-cliques.* Let Q₀, …, Q_{L−1} be mutual k-cliques of cells with every row of Q_{i+1}
+  adjacent to every column of Q_i, and impose one check on each Q_i ∪ Q_{i+1} (indices mod L,
+  L ≥ 3). Each cell is recovered row-wise from one check and column-wise from the other; the code
+  has rate 1 − 1/k, and a cell is determined by its block only up to the sum over its clique,
+  which is carried along the chain. So K ≥ k whenever such chains cover the cells, and the
+  record costs N/(kL).
+- With K ≥ w + 1 the inequality follows from the order bound. So a useful statement has to be
+  restricted to cells far from the diagonal, where mutual cliques are pairs, and I have no proof
+  there: Shearer over the bundles is vacuous, and 7.1 does not help.
+
+**7.4 What would consume it.** Given localisation at far cells, a code of rate 1 − ε is within
+K·ε·d² + H(Z) of a mutual-only storage code on the far part of the mutual graph, which by 7.2 has
+odd girth tending to infinity. Consumers we have: bounded-weight linear codes over ℂ (item A,
+Lean), hyperfinite G, groups with bounded sector coupling. For general mutual-only codes on these
+graphs the half bound is the old open problem (I2, D8), and its abstract analogue is false
+(papers 13, 15). So localisation would remove one-way help but not the remaining hypotheses.

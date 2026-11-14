@@ -206,6 +206,7 @@ No known code family has a fixed-window gain above one half beyond O(d).
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
 | **X30** | A constant plane deficit using only row-closure equalities from pencils at o(n) centres | Make all radial cells at k centres constant and the rest independent: these equalities admit entropy ≥N−kn²(n+1). Separately every row closure adds <nd cells. This does not prove a necessary growing proof depth or exclude arbitrary Shannon certificates ([note §5a](notes/triangle-free-hosts.md)) | Additional recovery/budget identities or information from Ω(n) centres; the general plane conjecture stays open |
+| **X31** | A window-independent deficit from further translated intersections, or from localising a two-sided cell to its mutual block by bundle counting | Transported copies percolate only when their number is of order w, giving 1 − O(1/w) again; chained half-cliques force a localisation constant at least the clique size, and at w+1 it is the order bound ([two-sided note §7](notes/two-sided-whole-row-codes.md)) | A localisation proof restricted to cells far from the diagonal; a use of expansion rather than of closure |
 
 ## Maintenance
 
@@ -215,14 +216,11 @@ No known code family has a fixed-window gain above one half beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D10: require a new localisation inequality before
-  further experiments.** B2–B4 are banked; G4 is parked. The transfer audit passed but establishes
-  an equivalent common-deficit question, not a qualitatively weaker one. Cyclic-five drops19→16
-  (pairing15), and basis-eight stays46 (pairing44); the cyclic proof covers every d≥2. Fable's
-  proposed next gate is a quantitative common-function estimate on symmetric relations, where
-  the bundle intersection really is the mutual block. Astra audits its exact premise and failure
-  controls. Paid symmetrization ties the symmetric case to the common-deficit question too;
-  distance is zero at that asymptotic target. No larger
-  host, LP or formalization campaign follows automatically from the calibrations; return to D0
-  if the estimate only restates the two recovery identities or reproduces a window-dependent bill.
+- **Current focus** (replace, do not append). **D0, with one bounded Lean unit.** B2–B4 are
+  banked, G4 is parked, and D10 has delivered a normal form: symmetric, reflexive, two-sided codes
+  suffice, at a factor two. Its localisation gate was not passed (X31). Astra: the single Lean
+  adapter that states the two-sided form and reuses the B1 reduction at half the deficit; nothing
+  further. Fable: a written re-evaluation of what is left in the normal form (expanding symmetric
+  relations, far cells, mutual graph of large odd girth) and the choice of the next premise.
+  No experiment until a premise is named with its consumer.
 - Last re-evaluation (D0): 14 November 2026.

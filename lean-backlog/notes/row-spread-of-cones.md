@@ -1465,73 +1465,240 @@ one permutation block per edge is a further restriction. The
 [host audit](whole-row-host-audit.md) records the precise decomposition,
 its limitation, and the finite benchmarks for this unrestricted host.
 
-## 18. The excess over one half is half the synergy of the rows (Fable, 13 November 2026)
+## 18. Signed row synergy and recovery budgets
 
-Status: 18.1 is an **exact identity with a two-line proof**; 18.2–18.4 have
-**short written proofs, unreviewed**; 18.5 is a **candidate inequality
-(conjecture)**. Front D1, no restriction: any code, nonlinear, one-way
-helpers, any ρ. Everything here is a statement about the code as a set of
-arrays, not about a decoder.
+Fable's proposal, audited and extended by Astra, 14 November 2026.
+Status: **written proofs, not Lean-verified**; the candidate common-deficit
+and strong-synergy bounds in 18.5 remain conjectural. Front D1. The entropy arguments allow nonlinear recovery and
+any distribution supported on a nonempty code. Uniformity is needed only
+for the cardinality and linear rank interpretations and their finite
+benchmarks, not for the entropy inequalities themselves.
 
-Let X be uniform on a code C and write Y_c for row c. Entropies are in
-symbols. Fix a linear order of the rows; <c and >c are the rows before and
-after c, and "rest" is all rows but c.
-
-**18.1 (identity).** With
+Use d rows, b scalar coordinates per entry, and a scalar alphabet of size
+q ≥ 2. Entropies are in base q, N = d²b, Y_c is row c, and H = H(X).
+For a fixed row order, write <c and >c for the preceding and following
+rows. Put A = Σ_c H(Y_c), R = Σ_c H(Y_c | rest), and
 
   Syn_c = I(Y_c; rest) − I(Y_c; Y_{<c}) − I(Y_c; Y_{>c}),
+  S = Σ_c Syn_c.
 
-every code and every order satisfy
+**18.1 (identity and terminology).** For every order,
 
-  H(X) = ½ Σ_c H(Y_c) + ½ Σ_c H(Y_c | rest) + ½ Σ_c Syn_c.
+  2H = A + R + S.
 
-*Proof.* Add the chain rules for the order and for its reverse, and write
-H(Y_c | Y_{<c}) = H(Y_c) − I(Y_c; Y_{<c}), likewise for >c. ∎
+*Proof.* Add the entropy chain rules in the two orders. For each row,
+H(Y_c | Y_{<c}) + H(Y_c | Y_{>c})
+= H(Y_c) + H(Y_c | rest) + Syn_c. ∎
 
-Syn_c is the information about row c that the earlier and the later rows
-hold only jointly. It can be negative. The sum Σ_c Syn_c does not depend on
-the order.
+Thus S is order-independent. It is a signed net quantity, not a
+nonnegative attribution of information to cells. In standard terminology,
+S = DTC − TC is the **negative O-information** of the rows, where
+TC = A−H and DTC = H−R. This is the quantity of
+[Rosas, Mediano, Gastpar and Jensen, *Physical Review E* 100, 032305
+(2019), Definition 1](https://arxiv.org/pdf/1902.11239), with the sign
+reversed; [published version](https://doi.org/10.1103/PhysRevE.100.032305).
+The identity and entropy invariant are not new.
 
-**18.2 (whole-row codes).** For a whole-row code:
-- H(Y_c | rest) is at most the number of columns r with c ∈ ρ(r) (the loop
-  cells of row c): every other cell of the row is a function of other rows.
-- So log_q|C| ≤ d²/2 + Loops/2 + ½ Σ_c Syn_c: **beyond loops, the excess over
-  one half is exactly half the total synergy.**
-- I(Y_c; Y_{<c}) is at least the entropy of the cells (c, r) with ρ(r) before
-  c, and likewise after. Only cells whose helper set lies on both sides of c
-  can carry synergy. Counting all of them gives the average of the forward
-  and backward order bounds, so order arguments are the estimate "every
-  split cell is synergy".
+All asymptotic bounds on S below are upper bounds, equivalently bounds
+on max(S,0). Large negative values are possible even at window one:
+if all rows repeat one uniform length-db vector, H=db, A=N, R=0 and
+S=2db−N for d ≥ 2.
 
-**18.3 (the benchmarks).** A set of m mutually helping cells in m distinct
-rows with one sum-zero relation contributes exactly m − 2 to Σ_c Syn_c (a
-pair contributes 0). The scalar optimum 39 on the Fano plane is
-49/2 + 21/2 + 8/2: 21 loops and eight triangles. The basis host at d = 8,
-with capacity 46, is 64/2 + 24/2 + 4/2: 24 loops and two sets of four.
+**18.2 (the two slack terms).** Let L be b times the number of cells
+(c,r) with c ∈ ρ(r). Whole-row recovery gives R ≤ L ≤ wdb: after all
+other rows are specified, only these loop coordinates can remain free.
+Since A ≤ N, the exact relation is
 
-**18.4 (no synergy without non-distributivity; linear codes).** Let 𝒮_c be
-the span, in the dual of C, of the coordinate functionals of row c. Then
-Syn_c = dim(𝒮_c ∩ (𝒮_{<c} + 𝒮_{>c})) − dim(𝒮_c ∩ 𝒮_{<c}) − dim(𝒮_c ∩ 𝒮_{>c}).
-If the row spaces are simultaneously coordinate subspaces of one basis (the
-lattice they generate is distributive), then dim C ≤ (d² + Loops)/2: a basis
-vector lying in one row space only is counted by H(Y_c | rest), hence by the
-loops, and every other one is counted at least twice in Σ_c dim 𝒮_c. The same bound holds when every
-cell is recoverable from one row of its choice, with no window at all:
-then the non-loop cell functionals of row c lie in single other row spaces, and
-Syn_c + H(Y_c | rest) is at most the number of loop cells of row c, for every order. A code above one half therefore has cells that
-are genuinely joint functions of several rows, at positive density, and its
-row spaces fail the distributive law at positive density.
+  2H = N + L + S − (N−A) − (L−R).                         (18a)
 
-**18.5 (candidate inequality).** For whole-row codes at window w:
+Both subtracted terms are nonnegative. Consequently H ≤ (N+L+S)/2,
+but equality requires both full row marginals and saturation of the
+residual loop allowance. The earlier unconditional description of the
+excess beyond the loop bound as S/2 omitted these slacks.
 
-- *weak form*, equivalent to a common deficit: Σ_c Syn_c ≤ (1 − 2δ)d² with
-  δ > 0 independent of w;
-- *strong form*, equivalent to the half conjecture with linear excess:
-  Σ_c Syn_c ≤ F(w, w′)·d.
+For a row order, partition each row's scalar coordinates into those
+recoverable wholly from earlier rows, those recoverable wholly from
+later rows, and an exceptional set E_c. Break ties arbitrarily. The
+first two tuples are functions both of Y_c and of the respective side;
+therefore the corresponding mutual informations dominate their entropies.
+Subadditivity then gives
 
-Both are about every code. Neither refers to a decoder, to sparsity of
-blocks or to linearity (18.1 is entropic). By 18.3 the strong form holds
-with equality in the known optima, where all synergy sits in cliques of
-near cells. A counterexample is a whole-row code in which, for a random
-split of the rows into two parts, a positive fraction of the information
-about a typical row is held by the two parts only jointly.
+  Syn_c + H(Y_c | rest) ≤ |E_c|.                         (18b)
+
+Taking loops and helper sets straddling the row as exceptions recovers
+the symmetrized order estimate. It is a budget inequality, not a claim
+that only split cells have synergy. For example, put a uniform sum-zero
+word of length d ≥ 2 on the diagonal and fix every other cell to zero, with
+ρ(r) = {r}. Then H=d−1, A=d, R=0, S=d−2, although no helper set is split.
+The contribution comes from correlated loop entries.
+
+**18.3 (nonlinear single-row recovery, with exceptions).** Suppose all
+but J scalar coordinates are recoverable from a single other row;
+the choice of row may depend on the coordinate but is fixed across codewords.
+Let Z be the tuple of those J exceptional coordinates. Then
+
+  S+R = 2H−A ≤ H(Z) ≤ J,       H ≤ (N+H(Z))/2.           (18c)
+
+*Proof.* Condition on Z. For each row order, put each nonexceptional
+coordinate in the first or second tuple of (18b) according to its helper
+row. Exceptional coordinates are now constants. Summing gives
+2H(X|Z) ≤ Σ_c H(Y_c|Z). Unconditioning gives
+2H−A ≤ 2H(Z)−Σ_c I(Y_c;Z). The revealed part Z_c of row c is a
+function of both Y_c and Z, so Σ_c I(Y_c;Z) ≥ Σ_c H(Z_c) ≥ H(Z).
+This proves (18c), without linearity or single-entry helpers. ∎
+
+In particular, if all nonloop coordinates have single-other-row
+recovery, S+R is at most the joint entropy of the loop coordinates,
+hence at most L. More generally, if J_joint additional nonloop
+coordinates need joint recovery, S+R ≤ L+J_joint. A rate at least
+1/2+η therefore forces J_joint ≥ 2ηN−L. This is a necessary extensive
+joint-recovery requirement when w is fixed and η > 0; a finite O(d)
+excess does not imply positive density.
+
+For the uniform law on a scalar linear code, let U_c be the span of its row-c coordinate
+functionals in its dual, U_< = Σ_{i<c} U_i, and U_> = Σ_{i>c} U_i.
+Then
+
+  Syn_c = dim(U_c ∩ (U_<+U_>)) − dim(U_c ∩ U_<) − dim(U_c ∩ U_>).
+
+Equivalently it is the nonnegative distributivity defect
+
+  dim(U_c ∩ (U_<+U_>)) − dim((U_c ∩ U_<)+(U_c ∩ U_>))
+
+minus dim(U_c ∩ U_< ∩ U_>). If all row spaces are coordinate
+subspaces in a common basis, this defect vanishes, so S ≤ 0 and the
+half-plus-loop bound follows. Positive total S forces a positive total
+defect, but the signed expression also subtracts redundant information.
+For vector-linear codes use all scalar coordinate functionals; no
+extension-field linearity is assumed.
+
+**18.4 (exact benchmarks, including far contributions).** Independent
+sum-zero gadgets of m ≥ 2 cells in distinct rows contribute m−2 to S;
+independence is what permits addition across gadgets. Each gadget has
+entropy m−1, row-entropy sum m and zero residual entropy. Free loop
+coordinates and pairs contribute zero. Thus the Fano scalar construction (optimal over GF(2) and GF(3))
+has H=39, A=49, R=21, S=8, and the basis host at d=8 has A=64, R=24, S=4.
+These saturate (18a)'s coarse entropy estimate, not a universal function
+F(w,w′).
+
+The earlier claim that all known synergy is in near cliques is false.
+Exact binary computations on the existing codes give:
+
+| Host | d | H | A | R | S |
+|---|---:|---:|---:|---:|---:|
+| Two basis helpers | 4 | 12 | 16 | 8 | 0 |
+| Three basis helpers | 8 | 46 | 64 | 24 | 4 |
+| Four basis helpers | 16 | 176 | 256 | 64 | 32 |
+| Clebsch helpers | 16 | 210 | 256 | 80 | 84 |
+
+In the last code the independent diagonal factors contribute 80 from
+K4 gadgets and **4 from the Clebsch diagonal**. Its 16 active cells
+have incidence distance five and their mutual graph is triangle-free.
+Thus those four units are not explained by disjoint near-clique gadgets
+in the given coordinates. This is a property of explicit independent
+factors, not a general decomposition of S into cell contributions.
+
+More generally the [folded-cube code](diagonal-code-calibration.md#2-a-binary-code-on-every-odd-folded-cube)
+on d=4^m active diagonal cells, at window 2m+1, has
+H=(d+2^m)/2, A=d, R=0 and S=2^m for m ≥ 1. Every active coordinate
+is uniform by translation invariance and is determined by its fitting
+equation. At m ≥ 2 these cells have distance 2m+1 and a triangle-free
+recovery graph. Fixing the other d²−d cells creates exactly that much
+row-marginal slack, so this is not a high-rate full-array example.
+
+For the full hypercube product at d=2^k with w ≤ k basis helpers, put
+
+  a(w) = Σ_{odd j≤w} binom(w,j) 2^{−(j+1)/2}.
+
+The existing construction has H=d²/2+d a(w), A=d² and R=wd, hence
+
+  S = d[2a(w)−w]
+    = d Σ_{odd j≥3} binom(w,j) 2^{−(j−1)/2}.              (18d)
+
+Terms with j>3 come from far non-clique factors of the full code.
+The coefficient grows exponentially in w but is constant at fixed w.
+None of these controls refutes an upper bound S≤F(w,w′)d at fixed caps.
+
+[Reproduction instructions and exact receipt](../tools/diagonal-calibration/row-synergy-README.md)
+check generator projections, parity-check shortening, the per-order
+identity and diagonal additivity. These are computer checks, not Lean
+proofs. Taking b independent copies multiplies H,A,R,S by b; dividing
+by b gives the same table in entry units. The entropy identities also
+apply to coupled lanes and nonlinear codes.
+
+**18.5 (what the candidate statements mean).** Fix one allowed alphabet/
+lane policy, such as canonical binary entries, and use uniform code laws
+for the candidate bounds. Let r(w) be the limsup of the suprema of H/N
+and s(w) the limsup of the suprema of S/N over the same
+whole-row codes at forward window at most w. Subadditivity gives S≤H;
+(18a) gives S≥2H−N−L. Therefore
+
+  2r(w)−1 ≤ s(w) ≤ r(w).                                 (18e)
+
+A common positive capacity deficit exists if and only if s(w) stays
+uniformly below one, **with a possible factor-two change in constants**.
+For example s(w)≤1−2δ gives r(w)≤1−δ, while r(w)≤1−δ only gives
+s(w)≤1−δ by this argument. This is an asymptotic equivalence; finite
+bounds retain L≤wdb.
+
+The strong proposal is S ≤ F(w,w′)db, uniformly in alphabets and lanes,
+when both forward and reverse
+row degrees are bounded by fixed w,w′. It suffices for half rate with
+linear excess. A converse is not supplied by the identity: (N−A) and
+(L−R) must also be controlled. With only a forward cap, paid trimming
+of high reverse rows would yield asymptotic half rate from this strong
+proposal, but not automatically a linear-excess bound. Indeed, freeze
+raw rows of reverse degree greater than t. There are at most wd/(t+1)
+of them, costing at most wN/(t+1) coordinates. On each fibre delete
+their helper incidences and apply the proposed bound with caps w,t.
+If s rows were frozen, their zero conditional entropy gives A≤N−sdb.
+Thus the conditional entropy bound plus the sdb reveal cost gives rate
+at most 1/2+w/[2(t+1)]+o(1) for fixed t. First let d grow, then let
+t grow. The raw S of the unconditioned code need not
+obey the same trimming estimate.
+
+Capacity alone does not control raw S. For d=4k, take k independent
+row triples (a,b,a+b), with a,b uniform vectors of length d, and k zero
+rows. Let every column read the 2k data rows. The host's exact capacity
+is q^{2kd}=q^{d²/2}; these rows determine the array and the code attains
+that many words. Yet A=3d²/4, R=0 and S=d²/4. Its window d/2 grows,
+so it is not a counterexample to the fixed-window strong proposal.
+
+Nor is a positive fraction of each row's information being joint enough:
+the diagonal sum-zero example has S=d−2 and rate tending to zero, even
+though almost every fair split of the other rows reveals its typical
+row only jointly. A strong-form counterexample must fix the degree
+caps and make S/(db) unbounded. To refute a common deficit one needs
+s(w) arbitrarily close to one as w varies.
+
+Finally, an order split is not an independent fair split. For a uniform
+random order, row c has predecessor set B with probability
+1/[d binom(d−1,|B|)]. Equivalently, choose p uniformly in [0,1] and
+place each other row before c independently with probability p. Hence
+S is the sum over c of the integral of the expected Syn_c over these
+Bernoulli(p) splits. This follows by conditioning on row c's independent
+uniform priority, or by integrating p^{|B|}(1−p)^{d−1−|B|}.
+At three parity rows the order total is 1, whereas summing the fair-split
+expectations gives 3/2. A random-split argument must use the correct
+weights or prove an additional comparison.
+
+**18.6 (what the existing barriers give).** The
+[row-separator proof](window-pages-and-input-attachments.md#entropic-strengthening-the-actual-row-marginals)
+does strengthen directly to S+R ≤ H(Z). If u is that note's number
+of revealed entry positions, H(Z) ≤ bu in scalar units. Consequently hyperfinite row relations have
+max(S,0)=o(N), and bounded components with no deleted vertices have max(S,0)=O(db).
+This follows from conditional single-other-group recovery, not merely
+from the old cardinality bound. An arbitrary deterministic common
+advice value Q is charged by 2H(Q)−Σ_c I(Y_c;Q) ≤ 2H(Q); the improved
+one-copy charge uses that Z consists of fixed coordinates.
+
+The [algebra and twisted-symmetry bounds](symmetry-and-locality.md)
+do not yet give a raw-S theorem in the original row coordinates.
+A proved dimension estimate 2H ≤ N+D gives only
+S ≤ D+(N−A)−R. For example the scalar common-algebra theorem supplies
+D=d√a when that algebra has dimension a; the good-characteristic
+subgroup theorem supplies its stated cubic-moment D. The extra term
+N−A cannot be silently dropped. Row basis changes used in those proofs
+need not preserve S: changing three one-coordinate rows (a,b,0) into
+(a,b,a+b) takes S from 0 to 1. No new raw-S bound, or counterexample
+to such a bound within the symmetry class, is proved here.

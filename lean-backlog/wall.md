@@ -66,21 +66,26 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
-| Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
+| Opposite row orders | Outside a fixed coordinate set Z of entropy o(d²b), every scalar coordinate is recoverable from one other row, chosen separately for each coordinate: 2H(X) ≤ ΣH(row)+H(Z) | nonlinear; full helper rows, not just copying one entry; helper choices fixed across codewords | *written*: [row spread §18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets); exceptions may include loops; no new Lean |
+| Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
 | Pairing in another basis | Group relations: coefficients invariant under any growing twisted-symmetry subgroup, or with a common factor algebra of dimension o(d²); anonymous local rules on any growing group family; sparse Bruhat profiles on SL₂(F_p) | linear, every field, one-way helpers | *written, reviewed*: [symmetry and locality](notes/symmetry-and-locality.md); first form in [row spread](notes/row-spread-of-cones.md) §14 |
 | | Commuting blocks; two shared blocks (every field); three shared blocks of special shape; one repeated seed | linear | *written*: [twisted swap](notes/twisted-swap.md) §7, [two-term](notes/two-term-equality.md), [assemblies](notes/three-term-seed-assemblies.md), [identity lifts](notes/identity-lift-comparison.md) |
 | Symmetric spectrum | Bounded weight Σ‖A‖‖B‖ over ℂ; contracting recovery; a sign symmetry (every field of characteristic ≠ 2); small coefficients; helper maps with a parity | linear | *Lean*: [A](A-bounded-weight.md), [B](B-recovery-matrix.md); *written*: [pass calculus](notes/pass-calculus.md) §5 |
 | Rank count | Decoder blocks invertible or zero (second rule) | linear | *Lean*: [C](C-second-rule.md) |
-| Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | any | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
+| Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | varies; folded-cube gains binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
 **What the proofs share.** Many charge one member of a paired block to the other, in coordinates
-or after a basis change; spectral proofs bound eigenvalue counts instead. Exactly, for every code
-([row spread](notes/row-spread-of-cones.md) §18): the excess over one half, beyond loops, is half
-the total *synergy* of the rows, the information about a row that the rows before it and the rows
-after it hold only jointly. Pairing has none. A code above one half must have it at positive
-density; in the known optima it sits in cliques of near cells.
+or after a basis change; spectral proofs bound eigenvalue counts instead. The exact entropy
+identity ([row spread](notes/row-spread-of-cones.md) §18) is 2H = A+R+S, with A the sum of row
+entropies, R the sum of residual row entropies, and S the signed net row synergy (negative
+O-information, an existing entropy statistic). The loop upper bound also includes two
+nonnegative slack terms: N−A and Loops−R, N=d²b. A fixed positive rate excess requires S=Ω(N)
+and extensive genuinely joint recovery. Known S need not lie in near cliques: the full Clebsch
+code has 84 units, including 4 from its far triangle-free diagonal. All such controls remain
+O_w(db). Separator proofs give a raw-S bound; algebra/symmetry dimension bounds alone do not
+remove the row-marginal slack, and row basis changes need not preserve S.
 
 **What is left.** For a fixed positive asymptotic gain above half at fixed window:
 1. the row-graph family cannot be hyperfinite, and recovery cannot decompose entirely into
@@ -206,9 +211,13 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). D1 with no restriction, in the synergy form
-  ([row spread](notes/row-spread-of-cones.md) §18): is the total synergy of the rows of a
-  whole-row code at most (1 − 2δ)d², or even O_w(d)? Astra: test the candidate against the
-  full-host and lane benchmarks and hunt a counterexample before any computation. Fable: what
-  the column condition forces on synergy across a random split of the rows. The tower pass is
-  closed without an exclusion; no search before a mechanism.
+  ([row spread](notes/row-spread-of-cones.md) §18): does S/N stay uniformly below one as w
+  varies? This is equivalent to a common deficit with a possible factor-two change of constants.
+  The sufficient stronger target S≤F(w,w′)db keeps both degree caps fixed; no converse to a
+  half-rate estimate is established. Astra's finite audit is complete: far synergy exists but
+  does not refute the target, and low-entropy parity rows defeat the qualitative test based on
+  fractions of a row's information. Fable: an extensive bound from the column condition using
+  the correct order-weighted split distribution. Astra: audit that bound and its genie/lane
+  costs, using 2H−ΣH(row)=S+R when helpful. The tower pass remains closed without an exclusion;
+  no search before a mechanism.
 - Last re-evaluation (D0): 14 November 2026.

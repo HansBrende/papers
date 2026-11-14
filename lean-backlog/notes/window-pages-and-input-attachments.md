@@ -97,6 +97,63 @@ cost remains payable. For arbitrary old storage codes, use the
 [raw-boundary transfer](row-spread-of-cones.md#4-arbitrary-code-fibres-the-raw-boundary-strengthening),
 not an assumption that a machine's step values preserve every such code.
 
+### Entropic strengthening: the actual row marginals
+
+The same separator gives more than the ambient-cardinality bound. For
+any law supported on the code, let $Y_i$ be its rows and let $Z$ consist
+of the **fixed set** of $u$ coordinates frozen in the proof above.
+In base-$q$ entropy,
+
+$$\boxed{2H(X)-\sum_iH(Y_i)\le H(Z)\le u.} \tag{2a}$$
+
+This is a written proof, not a new Lean theorem. In the notation of
+[row spread §18](row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets),
+it says $S+R\le H(Z)$, hence $S\le u$ without assuming full row
+marginals or linearity.
+
+*Proof.* Condition on $Z$. Group the surviving raw rows by their
+incidence components; deleted raw rows are fixed. Every unfrozen
+coordinate lies in a group different from the component of its column
+port. Its column reads rows in that other component, together with
+deleted rows already fixed by $Z$. Thus each such coordinate is a
+function of one other group. Empty groups cause no difficulty.
+
+For any order of the groups, split each group's coordinates by whether
+their chosen helper group is earlier or later. Each tuple is determined
+by the corresponding side. Subadditivity, followed by the two entropy
+chain rules, gives
+
+$$2H(X\mid Z)\le\sum_g H(Y_g\mid Z)
+                    \le\sum_i H(Y_i\mid Z).$$
+
+As $Z$ is a function of $X$, unconditioning yields
+
+$$2H(X)-\sum_iH(Y_i)
+ \le 2H(Z)-\sum_i I(Y_i;Z).$$
+
+Write $Z_i$ for the revealed coordinates in row $i$. They are functions
+of both $Y_i$ and $Z$, so $I(Y_i;Z)\ge H(Z_i)$. Since
+$\sum_iH(Z_i)\ge H(Z)$, (2a) follows. ∎
+
+More generally, if a deterministic common advice value $Q=Q(X)$
+makes the same single-other-group recovery possible on each fibre,
+the proof gives
+
+$$2H(X)-\sum_iH(Y_i)
+ \le 2H(Q)-\sum_i I(Y_i;Q)\le2H(Q). \tag{2b}$$
+
+The improvement to $H(Q)$ is justified for fixed coordinate reveals
+as above; it is not automatic for an arbitrary transcript or an
+adaptively selected coordinate set. The grouping may depend on the
+advice value, since the conditional argument is fibrewise.
+
+At $z=o(d)$ and $K=o(d)$, (2a) gives $\max(S,0)=o(d^2)$; uniform
+hyperfiniteness gives the same conclusion by the two successive limits.
+At $z=0$ and fixed $K$, it gives $\max(S,0)=O(d)$. These strengthen the entropy
+conclusion for the already excluded geometry, without producing a new
+separator or treating expanding row relations. For $b$ scalar lanes,
+multiply $u$ by $b$, or measure entropy in whole-entry symbols.
+
 ## 3. Input attachments can create a robust expander
 
 Use the ordered bipartite expanders of [Paper 5, Lemma 7.1][P5exp]. For

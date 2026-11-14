@@ -66,7 +66,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
-| Opposite row orders | Outside a fixed coordinate set Z of entropy o(d²b), every scalar coordinate is recoverable from one other row, chosen separately for each coordinate: 2H(X) ≤ ΣH(row)+H(Z) | nonlinear; full helper rows, not just copying one entry; helper choices fixed across codewords | *written*: [row spread §18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets); exceptions may include loops; no new Lean |
+| Opposite row orders | Outside a fixed coordinate set Z, every scalar coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row)+H(Z). If this holds after a common record Q is given, 2H(X) ≤ d²b+2H(Q)+H(Z\|Q), so subquadratic payment still gives half | nonlinear; full helper rows, not just copying one entry; fixed helper choices on each fibre | *written*: [§18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets) and [§20.6](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test); no new Lean |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
@@ -133,8 +133,10 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
 scalar/vector formulation. The 29/30 exact shear tests concern prescribed sparse graphs;
 their upper bounds do not extend to dense blocks. Genuine full-host results include Fano scalar
 dimension 39 over GF(2)/GF(3), canonical binary-vector exponent 119/3 and nonlinear upper 41,
-and the exact all-alphabet exponent 46 at d=8,w=3. None gives a fixed-window asymptotic gain
-beyond O(d). One partial-permutation block per edge cannot preserve every code, but whether
+the exact all-alphabet exponent 46 at d=8,w=3, and the cyclic d=4,w=2 host
+with capacity = full Shannon = order = 13 ([§20.5](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test)).
+The latter supplies a token design beyond disjoint cliques, with one paid shared symbol.
+None gives a fixed-window asymptotic gain beyond O(d). One partial-permutation block per edge cannot preserve every code, but whether
 it can attain every host's optimal linear capacity is unresolved. These are calibration and
 normal-form facts, not a new exclusion or construction at positive limiting gain.
 
@@ -210,11 +212,26 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Re-evaluation in progress (D0).** Five rounds at
-  D1 with no restriction (host form, signed synergy, conditional recovery, the full Shannon
-  question) produced exact reformulations and three negatives, and no bound beyond the order
-  bound ([row spread](notes/row-spread-of-cones.md) §§17–20). Open: whether sup over w of the
-  Shannon value Sh(ρ)/d² is below one. Each agent lists the three directions it judges most likely
-  to breach, with distance from the wall and what a success or failure would tell us; the next
-  target is chosen from those lists. No search before a mechanism.
+- **Current focus** (replace, do not append). **D0 choice pending Fable's comparison.** No new
+  asymptotic deficit or positive-rate gain. The one designated full Shannon test is complete
+  (cyclic d=4: 13); do not expand the search without a candidate inequality or feasible function.
+  Astra's proposed order of attack, with proofs and scopes in [§20](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test):
+  1. **Distributed token closures (D1, two restrictions: linear, transversal).** The non-clique
+     starting example is supplied. Next require overlapping square blocks that cannot all be
+     reduced to single-row recovery by one O_w(db)-entropy record, or prove such a reduction.
+     Success would give a class-wide mechanism or a genuinely different construction; a finite
+     gain or failure of one presentation alone decides neither the half nor common-deficit question.
+  2. **Full Shannon versus order (D1, no code-class restriction; a proof-method question).**
+     Order's fixed-window envelope tends to one. Full feasible near-order polymatroids on the
+     high-order families would rule out a common Shannon deficit; a strict gap supplies a new
+     technique, not an asymptotic theorem. Row budgets have rank at most dw; line envelopes
+     need both gluing and recovery proofs. No further blind LP.
+  3. **Native recovery with paid shared records (D9/D7, stronger hypotheses than whole rows).**
+     Retain actual tape provenance and a common paid transcript; seek a charge on a selected
+     cheap-cut fibre that exceeds the payment. Bounded degree or constant-depth Boolean
+     evaluation alone is already compatible with the abstract high-rate controls. No new
+     native estimate is asserted, and geometry-only counts are not a substitute for one.
+  Amplification remains parked without a row-preserving operation and an asymptotic seed;
+  a finite rate above half is not such a seed. The limits proved in §§17/19 concern unmarked
+  fixed-radius statistics and the count-only conditional estimate, not all local or conditioning methods.
 - Last re-evaluation (D0): 14 November 2026.

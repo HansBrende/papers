@@ -71,3 +71,38 @@ are checked. This is an incomplete-relaxation example, not a non-Shannon gap
 on the full cell polymatroid cone. The written proof covers every d and
 realizes the coarse data linearly over finite fields of size at least d;
 these finite certificate checks are not Lean formalizations.
+
+## Cyclic four-row host
+
+The single additional test in
+[row spread §20.5](../../notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test)
+uses d=4 and ρ(r)={r,r+1 mod 4}. Its capacity, full Shannon bound and
+acyclic/order bound are all **13**. Eight loop cells are free; the other
+eight form four pairs whose sums equal one free shared symbol. This works
+over every finite alphabet and gives a token matroid beyond disjoint
+clique-parity codes. It does not give a fixed-window asymptotic gain.
+
+Replay the saved rational primal/dual certificate without an optimizer:
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/verify_cyclic4_certificate.py
+```
+
+The standard-library verifier checks all 256 residual subset entropies,
+2,824 Shannon inequalities, normalization and recovery equalities, and
+the exact 43-term dual identity with value five. It also checks the
+explicit binary rank function and the mate/complete-pair recovery rule
+that works over any ℤ/qℤ. Adding the eight loops gives 13. The order
+argument in the note is a shorter independent proof of the upper bound.
+
+To regenerate the receipt, with SciPy installed:
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/cyclic4_shannon.py
+```
+
+SciPy proposes a solution; exact rational verification must pass before
+the generator writes `cyclic4-shannon-receipt.json`. The saved receipt was
+generated with SciPy 1.13.1; another solver version may choose a different
+optimal certificate. The tools test only this host. These are written
+proofs and exact finite checks, not Lean verification.

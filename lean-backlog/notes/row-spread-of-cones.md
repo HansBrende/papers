@@ -1937,46 +1937,201 @@ these references or this placement. The next test must keep the full
 cell constraints and the asymptotic density, rather than enlarge a solved
 finite calibration or discard the grid intersections.
 
-## 20. Three natural polymatroid candidates on the cells, and why each stops (Fable, 13 November 2026)
+## 20. Cell budgets, token closures and the Shannon/order test
 
-Status: **short written arguments, unreviewed**. Front D1, the full Shannon
-question of section 19. No candidate above one half is produced.
+Fable's proposals, audited and extended by Astra, 14 November 2026.
+Status: **written proofs and exact finite certificates, not Lean-verified**.
+Fronts D1/D0. No new asymptotic capacity bound or construction with a
+positive fixed-window asymptotic gain is obtained. Write V=[d]×[d],
+H_r=R_{ρ(r)}, and Sh(ρ) as in (19e).
 
-Write Sh(ρ) for the largest h(all cells) over polymatroids on the cells with
-singleton cap one and h(C_r ∪ R_{ρ(r)}) = h(R_{ρ(r)}).
+**20.1 (normalized budgets and the column-symmetry obstruction).** For a
+normalized monotone submodular g on cell sets,
 
-**20.1 (budget extension).** For any monotone submodular g on sets of cells,
-h(S) = min_{T⊆S} [g(T) + |S ∖ T|] is a polymatroid with singleton cap one. A
-row-level polymatroid a on sets of rows extends this way through
-g(T) = a(rows touched by T), giving h(S) = min_A [a(A) + |S ∖ R_A|]. It is
-always a valid polymatroid, and it never satisfies a column constraint with
-content: the cells of column r outside the bought rows cost one each.
+  h(S)=min_{T⊆S} [g(T)+|S∖T|]
 
-**20.2 (line budgets are not submodular).** Letting the budget buy columns as
-well, h(S) = min_{A,J} [u(A, J) + |S ∖ (R_A ∪ C_J)|] for a polymatroid u on
-rows and columns with u(ρ(r) ∪ {r}) = u(ρ(r)), satisfies the column
-constraints formally. It is not submodular in general: a cell covered by a
-row in one minimiser and by a column in the other is not covered by the
-intersection of the two line sets. This is the gluing failure of the coarse
-row/column data of section 19, seen from the cells.
+is a normalized polymatroid with singleton cap one. For minimizers T⊆S
+and U⊆Q, use T∪U and T∩U for S∪Q and S∩Q. Submodularity of g and the
+identity for the two residual cardinalities prove submodularity of h.
+Intersecting a larger-set minimizer with S proves monotonicity;
+T=∅ gives h(S)≤|S|. Normalization of g is required.
 
-**20.3 (token candidates are generic linear codes; they are not confined to one half).** Take g a
-coverage function: each cell x covers a set τ(x) of tokens and g(T) = |τ(T)|. Then h is the rank
-function of the transversal matroid of the cell–token incidence, linear over large fields: the
-cells are generic combinations of free token variables and the rank is the largest matching of
-cells to tokens. A cell lies in the closure of its helper rows exactly when its tokens lie in
-the tokens of a Hall-tight set of cells there. So the whole-row condition reads: **for each
-column r there are a token set Ω_r and as many cells in the rows ρ(r) involving only tokens of
-Ω_r and matchable to all of them (a square block), and every other cell of column r involves
-only tokens of Ω_r.** Pairing and every clique code are of this kind (a triangle is two tokens
-on three cells), so the class reaches at least what cliques reach. Counting unmatched cells
-through the blocks gives only rank ≤ (w′d² + Loops)/(w′ + 1), an order-type bound. Whether a
-token design exceeds d²/2 + O(d) at fixed window is open; it is a problem about matchings.
-(An earlier version of this paragraph claimed one half for the class. That was wrong.)
+A row polymatroid a gives g(T)=a(rows touched by T), equivalently
+h(S)=min_A[a(A)+|S∖R_A|]. These budgets **can** recover columns:
+a(A)=min(d|A|,r) gives h(S)=min(|S|,r), satisfying recovery whenever
+r≤d min_j|ρ(j)|. The actual limitation is stronger symmetry. If h is
+invariant under a transitive group of simultaneous column permutations,
+then a single column equality h(C_r∪H_r)=h(H_r) implies
 
-**What a candidate must be.** A full-cell polymatroid above one half at fixed
-window is either a token design as in 20.3 (then it is a linear code), or
-is induced by a budget that is not a coverage function and whose column
-constraints are not inherited from row or line data. None is known.
-On the hosts where Sh has been computed (the basis hosts at d = 4, 8, 16) it
-equals both the capacity and d² minus the largest induced acyclic set.
+  h(V)=h(H_r)≤d|ρ(r)|.                                  (20a)
+
+Indeed, the permutations fix H_r and transport the equality to every
+column. Submodularity says a union of zero-marginal sets still has zero
+marginal. Row budgets have this symmetry, hence rank at most dw at
+fixed window w. Arbitrary host polymatroids cannot be symmetrized this
+way: these column permutations need not preserve the host constraints.
+
+**20.2 (line envelopes can lose both submodularity and recovery).** Let
+u be a polymatroid on formal row and column labels and set
+
+  h(S)=min_{A,J}[u(A,J)+|S∖(R_A∪C_J)|].
+
+Even if every formal column lies in the closure of its formal helper
+rows, neither desired conclusion follows. Both failures occur at d=2,
+ρ(r)={r}, with labels 0,1 and formal line entropies at most two.
+
+- For u(A,J)=|A∪J|, put S=R_0∪C_0 and T=R_1∪C_1. Then
+  h(S)=h(T)=1, h(S∪T)=2 and h(S∩T)=1, violating submodularity.
+- Give formal R_0 and C_0 the same two independent symbols, R_1 a third
+  symbol, and C_1 none. Thus u(A,J)=2·1_{0∈A∪J}+1_{1∈A}.
+  The envelope is the modular function h(S)=|S∩C_0|: C_1 is free and
+  no other line purchase saves against paying individually for C_0.
+  But h(R_0)=1 and h(R_0∪C_0)=2, so recovery fails.
+
+Formal recovery transfers if one additionally proves
+h(H_r)=u(ρ(r),∅): buying those rows and column r then proves the
+required equality. This does not by itself prove submodularity.
+
+**20.3 (token closure, including loops).** If each cell x has token
+neighborhood τ(x) and g(T)=|⋃_{x∈T}τ(x)|, then h is the maximum matching
+size from S to the tokens: the minimum in 20.1 is the bipartite
+vertex-cover formula. This is a transversal matroid. For x **outside**
+a helper set H, x lies in its closure exactly when there are P⊆H and
+Ω such that
+
+  τ(P)=Ω,  |P|=|Ω|,  P has a perfect matching to Ω,  τ(x)⊆Ω.   (20b)
+
+One square block Ω_H works for all outside targets at once. To see this,
+choose a maximum matching on H and follow alternating paths from the
+unmatched tokens. Let Ω_H be the unreachable tokens and P their matched
+cells. No unmatched cell is reachable; every token in Ω_H is matched,
+and no cell of P has a neighbor outside Ω_H. Thus P is a square block.
+Adding x raises rank exactly when it has a reachable token neighbor,
+by the augmenting-path criterion. Any square block in (20b) also
+suffices, since it already saturates all its possible token neighbors.
+
+Consequently the whole-row criterion requires one such block inside
+H_r covering τ(x) for every x∈C_r∖H_r. **Host-loop targets x∈H_r are
+exempt.** For example H={x}, τ(x)={a,b} recovers x without any square
+block covering τ(x). Cardinality equality alone is not enough either: matchability
+is part of (20b).
+
+The linear realization is classical, not a new result. Put independent
+indeterminates at allowed cell–token matrix entries. A minor is nonzero
+exactly when its support has a perfect matching, since distinct matching terms
+are distinct monomials. Specializing a product of finitely many nonzero
+minors proves representability over sufficiently large fields of every
+characteristic; it does not promise a prescribed small or canonical
+field. See [Rutherford–Whitty, Theorems 2–3](https://arxiv.org/pdf/1707.06727v1)
+and [Piff–Welsh (1970)](https://doi.org/10.1112/jlms/s2-2.2.284).
+
+**20.4 (the reverse-degree count is a full Shannon bound).** Let h be
+any normalized polymatroid satisfying the column equalities, with
+h({v})≤a_v and a_v≥0. Let L=⋃_r(C_r∩H_r) be the host-loop cells and
+let w′ bound how many helper unions contain any one cell. Then
+
+  (w′+1)h(V) ≤ w′Σ_v a_v + Σ_{v∈L}a_v,
+  h(V) ≤ h(L) + w′/(w′+1) · Σ_{v∉L}a_v.                 (20c)
+
+*Proof.* Greedy marginals along any cell order give a modular vector x
+with 0≤x_v≤a_v, x(S)≤h(S) and x(V)=h(V); diminishing returns proves
+the subset inequality by comparing with the induced order on S.
+For every column,
+
+  x(C_r∖H_r)+x(H_r) ≤ h(C_r∪H_r)=h(H_r)≤Σ_{v∈H_r}a_v.
+
+Summing gives h(V)−x(L)≤Σ_v μ_v(a_v−x_v), where μ_v≤w′ is the
+reverse multiplicity. This proves the first bound. Contract L in h
+and apply the loopless bound to obtain the second. ∎
+
+For unit caps this includes (w′d²+|L|)/(w′+1), but uses no tokens,
+linearity or representability. It is not yet a matching-specific gain;
+the shared helper slack can still be charged w′ times.
+
+**20.5 (a non-clique token control, with exact Shannon value).** Take
+d=4 and ρ(r)={r,r+1 mod 4}. There are eight loop cells. List the others as
+
+  0=(2,0), 1=(3,0), 2=(0,1), 3=(3,1),
+  4=(0,2), 5=(1,2), 6=(1,3), 7=(2,3).
+
+Their residual helper sets, in column pairs, are
+{2,4,5,6}, {0,5,6,7}, {0,1,3,7}, {1,2,3,4}.
+Pair (0,5), (1,4), (2,6), (3,7), and give both cells of pair i
+token neighborhood {z,y_i}. On nonempty S the matching rank is
+min(|S|,1+number of pairs touched). Each helper set is a square block
+covering its two targets. The residual rank is five, and is the graphic
+matroid of K_{2,4}: overlapping four-cell circuits connect all four
+pairs, so this is not a direct sum of independent clique-parity codes.
+
+There is an explicit code over **every** finite alphabet. Identify it
+with ℤ/qℤ and impose
+
+  x_0+x_5=x_1+x_4=x_2+x_6=x_3+x_7=z.
+
+Choose z and one entry of each pair freely. A target reads its mate and
+one complete other pair, obtaining z and then itself. With eight free
+loops the code has q^13 words. Its entire entropy function agrees with
+the token rank: a subset with no complete pair is independent; otherwise
+it reveals z and one symbol per pair touched.
+
+For any row order with positions p_0,…,p_3∈{1,2,3,4}, the order bound is
+
+  Σ_r max(p_r,p_{r+1})=10+½Σ_r|p_r−p_{r+1}|≥13.
+
+The natural order attains 13, hence **capacity = Sh(ρ) = order = 13**.
+The largest induced acyclic set has three cells by Paper 17's
+Proposition `rows`(b). The saved full Shannon LP on the eight nonloop
+cells independently attains five. Removing loops is exact here:
+contraction gives the upper bound and adjoining free loops gives the
+lower bound, for both polymatroids and codes. The
+[standard-library replay](../tools/diagonal-calibration/README.md#cyclic-four-row-host)
+checks all 256 primal values, 2,824 Shannon inequalities, recovery
+equalities, an exact rational dual, and the explicit code. These are
+finite certificates, not Lean proofs. This was the single designated
+new host test; it found no strict Shannon/order gap.
+
+**20.6 (why one shared symbol does not supply the missing gain).** More
+generally, let Q be a deterministic function of a codeword, and Z a
+fixed exceptional coordinate tuple. If, after Q is given, every other
+scalar coordinate is a function of one other row, 18.3 applied
+conditionally gives
+
+  2H(X) ≤ Σ_c H(Y_c)+2H(Q)−Σ_c I(Y_c;Q)+H(Z|Q)
+        ≤ N+2H(Q)+|Z|.                                  (20d)
+
+In the four-pair control, Q=z and Z is the loop tuple. If Q is
+computable from one union of at most w helper rows, H(Q)≤wdb in scalar
+units. Thus this mechanism yields only O_w(db) excess when |Z|=O_w(db).
+The conclusion needs the actual common record and conditional recovery;
+it does not follow for arbitrary token designs. The next token target
+must address distributed, overlapping square blocks without assuming
+one cheap common record. A positive asymptotic rate gain needs Ω(d²b)
+excess, not merely an excess larger than O(db).
+
+**20.7 (what Shannon/order equality would settle).** Let σ(ρ) be the
+exact acyclic/order bound of Paper 17, Proposition `rows`. Its normalized
+envelope approaches one even when windows are fixed before d grows:
+
+  sup_w limsup_d sup_{|ρ(r)|≤w} σ(ρ)/d² = 1.             (20e)
+
+*Proof.* Fix 0<ε<1 and an integer w with wε²>2 ln 2. Independently
+sample w rows for each column, allowing repetitions, and put t=⌈εd⌉.
+A specified t-row, t-column rectangle has no incidences with probability
+at most exp(−wt²/d). There are at most 4^d such rectangles, so a relation
+with none exists. For every prefix S_j of j≤d−t rows, fewer than t
+columns have all their helpers in S_j. Writing this number a(S_j),
+
+  Σ_r max position(ρ(r)) = Σ_{j=0}^{d−1}(d−a(S_j))
+                         ≥ (d−t+1)².
+
+This holds for every order. Take d→∞ and then ε→0; σ≤d² gives equality
+in (20e). ∎
+
+Therefore full-cell witnesses with Sh(ρ)≥σ(ρ)−o(d²) on just these
+families would already refute (19f); equality on every host is a
+stronger sufficient target. No such witnesses are constructed here.
+A finite strict gap would instead exhibit a Shannon technique beyond
+order, without by itself proving any uniform asymptotic deficit.
+The basis controls and 20.5 are tight and do not decide either question.
+Writing an arbitrary cap-one h as its own budget extension (g=h) is
+tautological, not a classification of the remaining candidates.

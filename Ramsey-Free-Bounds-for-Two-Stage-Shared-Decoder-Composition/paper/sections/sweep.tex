@@ -16,19 +16,23 @@ $\Gamma$-free (\lean{IsCutFreeCausalPath}) if none of its strict predecessors li
 resulting $\Gamma$-truncated causal cone of step $v$ is \lean{trueConeSteps} (\lean{InCutCausalCone}),
 and its syntactic input-cell support is \lean{cutConeInputCells}.
 
-The causal-cone determination principle goes back in text to
+The causal-cone determination principle and out-degree cone-size bound go back in text to
 \cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, with earlier Lean formalizations for abstract
-functional DAGs in \cite{MergeDepth2026} (\leanname{MergeDepth/FieldDag.lean},
-\leanname{MergeDepth.FunDag.cone}) and for native cut replay in \cite{AdaptiveTransfer2026}
+functional DAGs and block machines of \leanname{Transpose.TM} in \cite[Lemma~4.7(a)]{MergeDepth2026}
+(\leanname{MergeDepth/FieldDag.lean}, \leanname{MergeDepth.FunDag.cone};
+\leanname{MergeDepth/SkeletonCones.lean}, \leanname{MergeDepth.card_coneV_le} giving
+$\sum_{h \le D}(k+1)^h$; and \leanname{MergeDepth/BlockMachine.lean},
+\leanname{MergeDepth.blockMachine_card_cone_le}) and for native cut replay in \cite{AdaptiveTransfer2026}
 (\leanname{AdaptiveTransfer/FrozenCutInvoice.lean},
 \leanname{AdaptiveTransfer.stepValue_eq_of_uncut_native_cut},
 \leanname{AdaptiveTransfer.native_cut_recovers}). What is new in \Cref{lem:tm-cut-cone} below are
-the Lean $(M.k + 1)^D$ size bound on \leanname{Transpose.TM} cones and the rooted $(1 + M.k)$-ary
+the $(M.k + 1)^D$ cone-size instance directly on the native step DAG (\lean{TMDepStep}: control-state
+spine plus last-work-visit edges) of frozen trace/cut fibres and the rooted $(1 + M.k)$-ary
 symbolic tree representation (\lean{CausalConeTree} in \leanfile{MachineSweepConsequences.lean}),
 extracted relative to column $c$ (\lean{traceConeTree}) and evaluated bottom-up on $\rot_c(X)$
 directly through $M.\delta$ (\lean{evalConeTree}, syntactic support \lean{treeCellSupport}):
 
-\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres; cf.\ {\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}}, {\cite{MergeDepth2026,AdaptiveTransfer2026}}]\label{lem:tm-cut-cone}
+\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres; cf.\ {\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}}, {\cite[Lemma~4.7(a)]{MergeDepth2026}}, {\cite{AdaptiveTransfer2026}}]\label{lem:tm-cut-cone}
 \formal{NativeSweepInterfaceProofs.lean}{tmTraceCutConeDetermination}
 \formal{MachineSweepConsequences.lean}{evalConeTree_cellSupport,evalConeTree_entryCellSupport_card_le,evalConeTree_traceConeTree_eq}
 Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \ge 1$, and let
@@ -209,13 +213,15 @@ distinct barriers prevent a direct reduction:
   in \Cref{thm:random-order-capacity}(b) strictly negative. (Note that \Cref{prop:negative-brackets}(b)
   uses only $M_{\mathrm{cls}} \ge L_{\mathrm{cut}} + 1$ and does not bound how many cut patterns
   actually occur: on periodic stretches few cut patterns may occur, where the bracket need not be
-  negative and the obstruction is instead item~(2) above.) As already observed in the commentary on
-  \cite[Problem~9.4(b)]{SeventeenthPaper2026}, because \lean{TMDepStep} includes the control-state
-  spine edge $u \to u + 1$, cut labels attach to individual output positions rather than whole
-  columns, motivating the per-position fixed-alphabet window formulation of
-  \cite[Problem~9.4(b)]{SeventeenthPaper2026}. Meanwhile, linear-time transposers can use curved,
+  negative and the obstruction is instead item~(2) above.) In \Cref{prop:negative-brackets}, this
+  occurs because \lean{TMDepStep} includes the control-state spine edge $u \to u + 1$, attaching cut
+  labels to individual output steps rather than whole columns; this reinforces the observation in the
+  commentary on \cite[Problem~9.4(b)]{SeventeenthPaper2026} that cut patterns divide outputs into
+  boundedly many per-entry classes, motivating the per-position fixed-alphabet window formulation of
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026}. Meanwhile, linear-time transposers must use curved,
   head-dependent, non-piecewise-affine motion on interacting work tapes rather than uniform
-  home-based passes (\cite[Section~3]{FourthPaper2026}), and \cite{StorageCodes2026,HighRate2026}
+  home-based passes (\cite[Theorems~3.10 and~3.12 and Corollary~3.24]{FourthPaper2026}), and
+  \cite{StorageCodes2026,HighRate2026}
   construct bounded-degree paired-distance-separated storage codes above rate $\frac{1}{2}$ and
   approaching rate $1$, so graph degree and separation alone cannot rule out linear-time transposition
   without exploiting one-dimensional head trajectory geometry.
@@ -272,7 +278,7 @@ combinatorial problems remain unresolved:
 \begin{enumerate}[label=\arabic*.]
 \item \textbf{Macroscopic rank deficit for $M_1 \ge 2$ and positive characteristic in two-stage linear composition (\cite[Sections~6 and~8]{SharedDecoders2026}).}
   For fixed $M_1 \ge 2$ and $M_2 \ge 1$ (at $M_1 = 1$, \cite[Theorem~6.6]{SharedDecoders2026} already
-  gives $\Omega(bd^2 / M_2)$), can the $\Omega\bigl(bd(\log d)^{1/(2M_2 - 1)}\bigr)$ error-rank bound
+  gives $\Omega(bd^2 / M_2)$ for $d \ge 4M_2 + 1$), can the $\Omega\bigl(bd(\log d)^{1/(2M_2 - 1)}\bigr)$ error-rank bound
   of \Cref{thm:2b} be strengthened to a positive normalized deficit $\Omega_{M_1,M_2}(bd^2)$ as asked
   in \cite[Section~8]{SharedDecoders2026}, and extended to fields in which $\operatorname{char}(F) \mid d$
   (such as $\F_2$ at $d = 2^m$)?

@@ -40,10 +40,15 @@ In comparison, the leading coefficient $c_M = 1 - \frac{5}{4M} + \frac{1}{M^2} -
 strictly smaller than the optimized leading coefficient of \cite[Theorem~3.5]{SharedDecoders2026}
 \emph{if and only if $2 \le M \le 40$}: at primes $d \ne \operatorname{char}(F)$,
 \Cref{thm:1b-multi-class}(b) improves on \cite[Theorem~3.5]{SharedDecoders2026} for $2 \le M \le 40$
-once $d$ exceeds a finite crossover (from $d \ge 7$ at $M = 2$ to $d \ge 39{,}163$ at $M = 40$), while
+once $d$ exceeds a finite crossover (from $d \ge 7$ at $M = 2$, where $\frac{19}{32}\,b d^2 +
+\frac{9}{8}\,b d$ is also $< b d^2$ for all primes $d \ge 3$ and $< \frac{3}{4}\,b d^2$ for all primes
+$d \ge 11$, up to $d \ge 39{,}163$ at $M = 40$), while
 at $M = 2$ for general (possibly composite) $d$ with $\operatorname{char}(F) \nmid d$,
-\Cref{thm:1b-two-class}(b) improves on \cite[Theorem~3.4]{SharedDecoders2026} (and is non-vacuous) for
-$d \ge 14$ and improves on \cite[Theorem~3.5]{SharedDecoders2026} for $d \ge 35$. Conversely, for
+\Cref{thm:1b-two-class}(b) lies strictly below \cite[Theorem~3.4]{SharedDecoders2026} for all $d \ge 1$,
+is non-vacuous ($< b d^2$) for $d \ge 14$, improves on \cite[Theorem~3.5]{SharedDecoders2026} for
+$d \ge 35$, and lies below $\frac{3}{4}\,b d^2$ for $d \ge 93$ (all exact rational threshold and
+$(u,v)$-minimization checks are recorded in \leanfile{tools/verify_linear_capacity_crossovers.py}).
+Conversely, for
 every $M \ge 41$ the $1 - \Theta(M^{-1/2})$ leading coefficient of
 \cite[Theorem~3.5]{SharedDecoders2026} is strictly smaller than $c_M$ (at $M = 41$, $u = v = 11$ gives
 $\frac{2603}{2684} \approx 0.96982 < c_{41} \approx 0.97010$), and \cite[Theorem~3.5]{SharedDecoders2026}
@@ -222,10 +227,14 @@ $2 \cdot \frac{m(m+1)}{2} + 2m = m^2 + 3m$.
 Averaging \Cref{thm:1a-single-shift} across shifts $s \in \Z_d$ via the Grassmann inequality
 $2\dim_F \mathcal{X} \le b d^2 + \dim_F\bigl(\mathcal{X} \cap \rot_s^{-1}(\mathcal{X})\bigr)$ yields
 leading coefficient $\frac{19}{32}$ for two classes whenever $\operatorname{char}(F) \nmid d$---strictly
-below the $\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} (beating it for $d \ge 14$,
-and lying below $\frac{3}{4}\,b d^2$ for $d \ge 93$) and below the $\frac{5}{8} - o(1)$
+below the $\frac{41}{64}$ bound of \cite[Theorem~3.4]{SharedDecoders2026} (non-vacuous for $d \ge 14$,
+improving on \cite[Theorem~3.5]{SharedDecoders2026} for $d \ge 35$, and lying below
+$\frac{3}{4}\,b d^2$ for $d \ge 93$) and below the $\frac{5}{8} - o(1)$
 nested-component certificate floor of \cite[Theorem~C.6]{SharedDecoders2026}---and leading coefficient
-$c_M < 1 - \frac{1}{2M}$ for every $M \ge 2$ at prime $d \ne \operatorname{char}(F)$:
+$c_M < 1 - \frac{1}{2M}$ for every $M \ge 2$ at prime $d \ne \operatorname{char}(F)$ (at $M = 2$,
+$\frac{19}{32}\,b d^2 + \frac{9}{8}\,b d$ is $< b d^2$ for primes $d \ge 3$, beats
+\cite[Theorem~3.5]{SharedDecoders2026} for primes $d \ge 7$, and is $< \frac{3}{4}\,b d^2$ for primes
+$d \ge 11$; see \leanfile{tools/verify_linear_capacity_crossovers.py}):
 
 \begin{theorem}[Two-class $19/32$ capacity ceiling when $\operatorname{char}(F) \nmid d$]\label{thm:1b-two-class}
 \formal{ExtensionLinearRunProofs.lean}{extension_Theorem1B_TwoClass,linearClassUniform_twoClass_finrank_le}
@@ -250,10 +259,7 @@ any $s \in \Z_d$, write $Q_s := \abs{\{c \in \Z_d : p(c) \ne p(c + s)\}}$
     \;\le\;
     \frac{19}{32}\,b d^2 \;+\; \frac{3}{2}\,b d^{3/2}.
   \]
-  Here $\frac{19}{32} = \frac{38}{64} = 0.59375 < \frac{5}{8} = \frac{40}{64} < \frac{41}{64}$
-  (non-vacuous and strictly below \cite[Theorem~3.4]{SharedDecoders2026} for $d \ge 14$, strictly below
-  \cite[Theorem~3.5]{SharedDecoders2026} for $d \ge 35$, and strictly below $\frac{3}{4}\,b d^2$ for
-  $d \ge 93$).
+  Here $\frac{19}{32} = \frac{38}{64} = 0.59375 < \frac{5}{8} = \frac{40}{64} < \frac{41}{64}$.
 \end{enumerate}
 \end{theorem}
 \begin{outline}
@@ -298,10 +304,9 @@ For $M \ge 2$, define the rational leading coefficient (\lean{multiClassLeadingC
     \;\le\;
     c_M\,b d^2 \;+\; \Bigl(\frac{5}{4} - \frac{1}{4M}\Bigr) b d
   \]
-  (giving $\dim_F \mathcal{X} \le \frac{19}{32}\,b d^2 + \frac{9}{8}\,b d$ for any finite $\abs{\kappa} \le 2$
-  at $M = 2$, which is $< b d^2$ for all primes $d \ge 3$, beats \cite[Theorem~3.5]{SharedDecoders2026}
-  for all primes $d \ge 7$, and is $< \frac{3}{4}\,b d^2$ for all primes $d \ge 11$; and implying the
-  simpler form $\dim_F \mathcal{X} \le c_M\,b d^2 + b M d$ for $M \ge 3$).
+  (giving $\dim_F \mathcal{X} \le \frac{19}{32}\,b d^2 + \frac{9}{8}\,b d$ for any finite
+  $\abs{\kappa} \le 2$ at $M = 2$, and implying the simpler form
+  $\dim_F \mathcal{X} \le c_M\,b d^2 + b M d$ for $M \ge 3$).
 \item \emph{Strict win over the flag bound for all $M \ge 2$}: for every $M \ge 2$,
   \[
     \Bigl(1 - \frac{1}{2M}\Bigr) - c_M \;=\; \frac{(M - 1)(3M - 1)}{4M^3} \;>\; 0,

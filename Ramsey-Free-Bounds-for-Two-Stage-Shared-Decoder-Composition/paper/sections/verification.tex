@@ -14,7 +14,8 @@ lake build
 lake env lean Axioms.lean
 \end{verbatim}
 Then return to this paper's directory, regenerate the declaration index and axiom audit, verify all
-proofs in \texttt{lean/}, run the optional numerical script for \Cref{rem:two-sided-numerical}, and
+proofs in \texttt{lean/}, run the optional crossover and numerical scripts for
+\Cref{sec:linear-capacity} and \Cref{rem:two-sided-numerical}, and
 build the manuscript PDF:
 \begin{verbatim}
 cd ../Ramsey-Free-Bounds-for-Two-Stage-Shared-Decoder-Composition
@@ -24,6 +25,7 @@ lake exe cache get
 lake build
 lake env lean PaperAxioms.lean
 cd ..
+python3 tools/verify_linear_capacity_crossovers.py
 python3 tools/verify_two_sided_svd.py
 cd paper
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex

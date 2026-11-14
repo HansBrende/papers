@@ -29,10 +29,14 @@ linear decoders to the column-rotated matrix $\rot_c(X)_{i,j} = X_{i, j+c}$. As 
 admit high-rate network coding, whereas the class-uniform model captures translation covariance along
 a single regular sweep.
 
-In the sequel \emph{Capacity and Composition of Shared Transposition Decoders}
+Multi-stage compositions $K_t \cdots K_1$ of class-uniform hops were first examined for interval
+classes in \cite[Remark~6.14 and Section~7.4]{SeventeenthPaper2026} (where $M$ interval classes per
+hop gave $\dim_F\ker(\mathrm{sw} - K_t \cdots K_1) \le (d^2 + d + tMd)/2$). In the sequel
+\emph{Capacity and Composition of Shared Transposition Decoders}
 \cite[Section~6]{SharedDecoders2026} (where all results cited in this paper are Lean-verified),
-Brende and GPT-6 Astra initiated the study of \emph{two-stage
-compositions} $K_2 \circ K_1$ of linear class-uniform operators on $\Mat_{d\times d}(F^b)$, where
+Brende and GPT-6 Astra studied exact and approximate \emph{two-stage
+factorizations} $K_2 \circ K_1$ of linear class-uniform operators on $\Mat_{d\times d}(F^b)$ for
+arbitrary column partitions, where
 $K_1$ has $M_1$ column classes and $K_2$ has $M_2$ column classes:
 \begin{itemize}[leftmargin=1.5em]
 \item For exact factorizations $K_2 \circ K_1 = \tau$ over any field $F$,
@@ -62,13 +66,13 @@ linear shared decoders. Throughout this paper, ``Ramsey-free'' means avoiding va
 Hales--Jewett progression numbers by substituting Cauchy--Schwarz density cube extraction
 \cite{Szemeredi1969,GRS1990} and K\H{o}v\'ari--S\'os--Tur\'an extremal graph bounds
 \cite{KovariSosTuran1954}. Within the linear class-uniform and swap-code models, exploiting
-\emph{linearity of the shared decoders} addresses three open questions from prior work: in two-stage
-composition (\cite[Section~6]{SharedDecoders2026}), replacing arithmetic progressions (which
+\emph{linearity of the shared decoders} makes progress on three open questions from prior work: in
+two-stage composition (\cite[Section~8]{SharedDecoders2026}), replacing arithmetic progressions (which
 translate-covering $\Z_d$ by a Behrend set \cite{Behrend1946} limits to length $< 3$ at
 $M_1 = 2^{O(\sqrt{\log d})}$, and whose non-wrapping monochromatic length in $\{0, \dots, d-1\}$ is
 $O(\log d)$ already under a random $2$-coloring \cite{GRS1990,AlonSpencer2016}) by \emph{affine Hilbert
 cubes} (over every field) and \emph{shifted monochromatic sumsets} (when $\operatorname{char}(F) \nmid d$,
-i.e.\ $(d : F) \ne 0$) eliminates tower-type van der Waerden dependencies \cite{Gowers2001} for
+i.e.\ $(d : F) \ne 0$) eliminates five-fold exponential van der Waerden dependencies \cite{Gowers2001} for
 $M_1 \ge 2$; in one-stage linear capacity (\cite[Problem~9.1(a)]{SeventeenthPaper2026};
 \cite[Section~3 and Appendix~C]{SharedDecoders2026}), when $\operatorname{char}(F) \nmid d$,
 run-extension equations at the right endpoints of monochromatic cyclic runs push strictly below the
@@ -138,17 +142,19 @@ outside characteristics~$2$ and~$3$.
   sufficiently large $d$, this replaces the iterated-logarithmic growth rates obtained from
   \cite[Theorem~6.6]{SharedDecoders2026} via Gowers' van der Waerden bound \cite{Gowers2001} by an
   explicit log-power rate. By contrast, at $M_1 = 1$, $\mathsf{W}(1, \ell) = \ell$ already gives
-  $\Omega(bd^2/M_2)$ for all $d$ in \cite[Theorem~6.6]{SharedDecoders2026}; at $M_1 = 2, M_2 = 1$,
-  $k = 2$ with $\mathsf{W}(2, 5) = 178$ gives $b(d - 177)$, which \Cref{cor:2b-m2-one} beats only for
-  $d \gtrsim 10^{216}$ (and the formalized threshold satisfies
-  $D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$). \Cref{ex:d12-band} constructs an explicit
-  $24$-dimensional shift-covariant $4$-channel band witness ($q = 4$, $b = 2$, $M_2 = 1$) over $\C$ at
-  $d = 12$ showing that a single half-density band ($k = 2$) without the $(2M_2)$-fold sumset
-  iteration admits $kd = 24$-dimensional solutions, so the iteration in \Cref{thm:sumset-rank} is
-  essential.
+  $\Omega(bd^2/M_2)$ for all $d \ge 4M_2 + 1$ in \cite[Theorem~6.6]{SharedDecoders2026}; at
+  $M_1 = 2, M_2 = 1$, $k = 2$ with $\mathsf{W}(2, 5) = 178$ \cite{StevensShantaram1978} gives
+  $b(d - 177)$, which \Cref{thm:2b} ($c(2,1) = \frac{1}{144\log 32}$) beats only for
+  $d \gtrsim 10^{216}$ (and the formalized threshold at $(2,1)$ satisfies
+  $D_0(2,1) = 32^{36} + 2 \approx 1.53 \times 10^{54}$). \Cref{ex:d12-band} constructs an explicit
+  $24$-dimensional shift-covariant $4$-channel band witness ($q = 4$; formalized at $b = 2, M_2 = 1$
+  where $bkd = 48$) over $\C$ at $d = 12, k = 2$: under the text-only parameter reading
+  $(b, M_2) = (1, 2)$ ($24 = bkd$), a single half-density band without any annihilating-polynomial
+  step admits $bkd$-dimensional solutions ($r \ge 0$), showing in that reading that the
+  annihilating-polynomial steps in \Cref{thm:sumset-rank} cannot all be dropped.
 
 \item \textbf{Run-extension bounds for one-stage linear shared decoders (\Cref{sec:linear-capacity}).}
-  In \cite[Theorem~3.4 and Theorem~C.6]{SharedDecoders2026}, iterating
+  In \cite[Theorem~3.4]{SharedDecoders2026}, iterating
   $C \cap \rot_s^{-1}(C) \le H_{\{0,s\}}$ gave $\frac{41}{64}\,bd^2 + \frac{5}{3}\,bd^{3/2}$ for two
   classes, while the nested-component certificates of \cite{SharedDecoders2026} cannot go below
   $(\frac{5}{8} - o(1))bd^2$ on almost every two-class partition (\cite[Theorem~C.6]{SharedDecoders2026};
@@ -232,15 +238,19 @@ outside characteristics~$2$ and~$3$.
   \cite[Proposition~6.25(a)]{SeventeenthPaper2026} for affine row-coset stages) yet runs in $O(L)$
   time on a $2$-work-tape Turing machine (\Cref{prop:stone-tm}, proved in the shared library
   \texttt{lean-machine} alongside $3$-tape shuffle and $2$-tape unshuffle). \Cref{sec:antidiag}
-  repackages the shift-covariance characterization of \cite[Lemma~3.1]{SharedDecoders2026} via an
+  repackages the shift-covariance subspace of \cite[Lemma~3.1]{SharedDecoders2026} (together with the
+  compatibility equivalence \leanname{SharedDecoders.isSharedCode_iff_compatible} in its Lean library)
+  via an
   explicit \leanname{TensorProduct} isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$
   (where $(\sigma^t v)_a = v_{a+t}$, \Cref{thm:anti-diagonal}) and records the two-subspace Grassmann
   relaxation (\Cref{prop:mask-floors}).
 
 \item \textbf{Cut-cone evaluation, random-order set capacity, and negative brackets for two column-class cut reductions (\Cref{sec:sweep}).}
   On frozen trace/cut fibres of \leanname{Transpose.TM}, \Cref{lem:tm-cut-cone} extends the causal-cone
-  lemmas of \cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, \cite{MergeDepth2026}, and
-  \cite{AdaptiveTransfer2026} by constructing depth-$D$ symbolic \lean{CausalConeTree}s directly from
+  lemmas of \cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026},
+  \cite[Lemma~4.7(a)]{MergeDepth2026}, and
+  \cite{AdaptiveTransfer2026} by instantiating the $(M.k+1)^D$ cone-size bound on the native step DAG
+  and constructing depth-$D$ symbolic \lean{CausalConeTree}s directly from
   $M.\delta$ whose syntactic input-cell support has size at most $b(M.k+1)^D$.
   \Cref{thm:random-order-capacity} formalizes in Lean the column-class analogue of the
   $1/(\Delta+1)$ random-order acyclic-subgraph bound of

@@ -124,8 +124,11 @@ counters for $b$ and $H$ on two work tapes, buffers the first $H$ words on a thi
 interleaves $b$-bit words from the buffer and the second half of the input tape. The $2$-work-tape
 unshuffle machine emits even-indexed $b$-bit words directly from the input tape while buffering
 odd-indexed words on tape~$0$ using a unary $b$-counter on tape~$1$, then replays tape~$0$. The
-$2$-work-tape row-shear machine copies each $db$-bit row to tape~$0$ and emits it cyclically shifted
-by $rb$ bits. \lean{computesWithin_toTransposeTM} transports each proof identically to
+$2$-work-tape row-shear machine keeps a save/emit row template on tape~$0$: for row~$r$, it buffers
+the first $rb$ bits on tape~$1$, streams the remaining $(d - r)b$ bits directly from the input tape
+to the output, and then emits the $rb$ buffered bits from tape~$1$ (advancing the save region on
+tape~$0$ by $b$ cells for the next row). \lean{computesWithin_toTransposeTM} transports each proof
+identically to
 \leanname{Transpose.ComputesWithin}.
 \end{outline}
 
@@ -158,12 +161,12 @@ combines at most two source rows into each output row; since row~$0$ of $\tau(X)
 $2^m$ input rows when $b \ge 1$, equality with $\tau$ forces $2^m \le 2^t$.
 \end{outline}
 
-Over finite fields, \Cref{prop:shear-control}(c) (which holds over every commutative semiring) is a
+Over finite fields, \Cref{prop:shear-control}(c) is a
 linear special case of \cite[Proposition~6.25(a)]{SeventeenthPaper2026} (proved in text), which bounds
 arbitrary (not necessarily linear) pipelines over a $q$-symbol alphabet on $d = 2^m$ whose stages read
 input rows inside affine cosets of $\F_2^m$: row-diagonal maps have coset dimension $0$ and
 $S, S^{-1}$ have coset dimension $1$, so \cite[Proposition~6.25(a)]{SeventeenthPaper2026} bounds
-transposed sets by $q^{(d^2 + 2^t d)/2}$ and subsumes \Cref{prop:shear-control}(c) over finite fields.
+transposed sets by $q^{(d^2 + 2^t d)/2}$ and subsumes \Cref{prop:shear-control}(c).
 By contrast, \Cref{thm:osr-pass}(a) allows dense
 column-uniform linear row operators $A \otimes I_{db}$ (which read all $2^m$ rows and have coset
 dimension $m$ in \cite[Proposition~6.25(a)]{SeventeenthPaper2026}) while excluding row-varying
@@ -192,13 +195,17 @@ information.
 \subsection{Anti-diagonal untwisting of shift-collision equations}\label{sec:antidiag}
 
 We close this section by recording a \leanname{TensorProduct} packaging of the shift-covariance
-characterization of \cite[Lemma~3.1]{SharedDecoders2026} (and the shift-link covariance spaces of
-\cite[Section~6]{SeventeenthPaper2026}). In \cite{SharedDecoders2026}, Lemma~3.1 and its Lean module
-formalize shift-collision compatibility (\leanname{SharedDecoders.isSharedCode_iff_compatible},
-\leanname{SharedDecoders.IsSharedCode.commonPreimage_le_covariance}), the anti-diagonal row
+subspace of \cite[Lemma~3.1]{SharedDecoders2026} (and the shift-link covariance spaces of
+\cite[Section~6]{SeventeenthPaper2026}) together with the compatibility characterization of
+\cite{SharedDecoders2026}'s Lean library. In \cite{SharedDecoders2026}, Lemma~3.1
+(\leanname{CapacityAmbient.lean}) establishes the necessity inclusion $C_E \subseteq H_E$
+(\leanname{SharedDecoders.IsSharedCode.commonPreimage_le_covariance}), the anti-diagonal row
 normalization (\leanname{SharedDecoders.covarianceSpace}, \leanname{SharedDecoders.covarianceEquiv}),
 its dimension $bd\chi(E)$ (\leanname{SharedDecoders.finrank_covarianceSpace}), and its rotation
-invariance (\leanname{SharedDecoders.covarianceSpace_rot}). Theorem~\ref{thm:anti-diagonal}(a),(c)
+invariance (\leanname{SharedDecoders.covarianceSpace_rot}), while the two-way compatibility
+equivalence (\leanname{SharedDecoders.isSharedCode_iff_compatible}) is proved in
+\leanname{CapacityGluing.lean} of \cite{SharedDecoders2026}'s Lean library.
+Theorem~\ref{thm:anti-diagonal}(a),(c)
 and \Cref{prop:mask-floors} below restate those properties; what is new here is packaging the
 anti-diagonal coordinate change $a = c + j \in \Z_d$ (\lean{antiDiagLinear}, \lean{fromAntiDiagLinear}),
 \[
@@ -211,7 +218,7 @@ for $d \ge 1$ as the explicit linear tensor isomorphism
 $\Psi = \lean{antiDiagTensorEquiv} : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\;\sim\;}
 \Mat_{d\times d}(A)$ sending $u \otimes v$ to $(c, j) \mapsto u_c\,v_{j+c}$.
 
-\begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation; after {\cite[Lemma~3.1]{SharedDecoders2026}}]\label{thm:anti-diagonal}
+\begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation; cf.\ {\cite[Lemma~3.1]{SharedDecoders2026}} and \leanname{SharedDecoders.isSharedCode_iff_compatible}]\label{thm:anti-diagonal}
 \formal{OperatorDualityProofs.lean}{pairwiseShiftCollisionCharacterization,antiDiagonalTensorSeparation}
 \formal{DualityAndSwapConsequences.lean}{antiDiagTensorEquiv_intertwines_rot,shiftSetCovariance_tensor_finrank}
 Let $F$ be a field, $d \ge 1$, $A$ an $F$-vector space, and $p : \Z_d \to \kappa$.

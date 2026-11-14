@@ -129,7 +129,8 @@ Applying \Cref{lem:affine-cube} with $k = M_2$ gives
 contradicting $bd > 0$. For the asymptotic clauses (proved in text), if $M_2 \ge 2$ is fixed and
 $M_1(d) = o(d^{1/2^{M_2}})$, then $(2M_1(d))^{2^{M_2}} = o(d)$ and $8M_1(d)M_2^2 = o(d^{1/4}) = o(d)$;
 if $M_1 \ge 2$ is fixed and $M_2(d) \le (1 - \eps)\log_2\log_2 d$, then $2^{M_2(d)} \le (\log_2 d)^{1-\eps}$,
-so $\log_2((2M_1)^{2^{M_2(d)}}) \le (\log_2(2M_1))(\log_2 d)^{1-\eps} = o(\log_2 d)$. Finally, for
+so $\log_2((2M_1)^{2^{M_2(d)}}) \le (\log_2(2M_1))(\log_2 d)^{1-\eps} = o(\log_2 d)$ while
+$8M_1 M_2(d)^2 = O\bigl((\log\log d)^2\bigr) = o(d)$. Finally, for
 $d \ge 4$ and $N = \lfloor d/2\rfloor$, Behrend \cite{Behrend1946} constructs an integer $3$-AP-free
 set $B \subseteq \{0, \dots, N-1\}$ of size $\abs{B} \ge N\exp(-c\sqrt{\log N})$. Because
 $0 \le x + z, 2y < d$ for all $x, y, z \in B$, $B$ (and hence every cyclic translate $t + B \subseteq
@@ -156,7 +157,7 @@ is large relative to $M_2$:
 \item Conversely, for every fixed $M_2 \ge 2$, any progression-based cutoff from
   \cite[Theorem~6.3]{SharedDecoders2026} is at least $M_2(\mathsf{W}(M_1, M_2 + 1) - 1) \ge
   M_2(\mathsf{W}(M_1, 3) - 1)$, which is superpolynomial in $M_1$ by Behrend \cite{Behrend1946} (and
-  tower-type in $M_2$ under explicit van der Waerden upper bounds \cite{Gowers2001}), whereas
+  five-fold exponential in $M_2$ under explicit van der Waerden upper bounds \cite{Gowers2001}), whereas
   \Cref{thm:2a} gives the polynomial-in-$M_1$ bound $(2M_1)^{2^{M_2}}$ for fixed $M_2 \ge 2$.
 \end{itemize}
 \end{remark}
@@ -189,9 +190,7 @@ $J_{13} = \{0, 1, 4, 5\} = \{0,1\} + \{0,4\} \subseteq \Z_{13}$.
 \begin{outline}
 Residue inspection verifies that $J_{13}$ has no non-constant $3$-term progression modulo~$13$, and
 cyclic shift periodicity gives $\dim_F\ker(T_s - \mathrm{id}) = 2$ for every $s \ne 0$ in $\Z_{13}$.
-Conceptually, the constant mode contributes $2$ dimensions and $7$ nonzero Fourier modes each satisfy
-a rank-$3$ alignment system inside a $4$-dimensional mode space ($2 + 7 = 9$); in Lean, over every
-field $F$ with $(13 : F) \ne 0$, explicit integer matrices $E \in \Z^{26\times 9}$ and
+Over every field $F$ with $(13 : F) \ne 0$, explicit integer matrices $E \in \Z^{26\times 9}$ and
 $L_{13} \in \Z^{9\times 26}$ satisfy $L_{13}(T_c E) = 13 I_9$ for all $c \in J_{13}$, directly
 certifying both $\dim_F W = 9$ and shift-invariant injectivity of $L_{13}$.
 \end{outline}

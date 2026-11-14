@@ -45,6 +45,10 @@ $$\boxed{\operatorname{Sh}(\rho_n)\le n^2U,
 \qquad (n-\lceil\eta n\rceil+1)^2S
        \le\sigma(\rho_n)\le n^2S.}$$
 
+The hosts can also be chosen so that their **bipartite incidence girth
+is Ω(log n)**, at the same degree bounds. In particular their residual
+cell relation has no mutual triangle for all sufficiently large n.
+
 In particular,
 
 $$\sigma(\rho_n)-\operatorname{Sh}(\rho_n)
@@ -86,6 +90,50 @@ The last inequality holds because τ≥η and the bracket is positive at
 negative constant times n. Hence all sufficiently large sizes admit
 the required mixing property. No expander theorem or computational
 search is needed.
+
+### Removing short cycles without changing the degree bound
+
+The strict assumption on t lets us choose a fixed η₀<η with
+tη₀>2 log(e/η₀). First impose the rectangle property at
+r₀=⌈η₀n⌉ instead of r=⌈ηn⌉. We will isolate o(n) vertices while
+retaining every row and column label. The final rectangles of size r
+will still contain rectangles of size r₀ on unisolated vertices.
+
+Put K=4st and g=⌊log n/(4 log K)⌋. Count simple cycles of length
+ℓ≤g in the underlying simple incidence graph, assigning each cycle
+edge one of its witnessing matching colors. There are at most
+(2s)^ℓ choices of base vertices, t^ℓ choices of colors, and n^ℓ
+choices of fine vertices. In a valid simple cycle the constraints on
+any one random matching are either inconsistent or prescribe m
+distinct images at distinct arguments, with probability 1/(n)_m.
+For n≥2g this is at most (2/n)^m. Multiplying over the independent
+matchings bounds the probability of the ℓ prescribed edges by
+(2/n)^ℓ. Thus the expected number of simple ℓ-cycles is at most K^ℓ.
+This overcounts orientations and starting vertices, which only helps
+the upper bound. Repeated edges and length-two walks are not cycles
+in this simple graph.
+
+Summing over 4≤ℓ≤g gives expectation at most
+[K/(K−1)] n^(1/4). By Markov's inequality there are fewer than √n
+such cycles with probability tending to one. Simultaneously the r₀
+rectangle property holds with probability tending to one. Choose one
+vertex from each short cycle and delete all edges incident with these
+chosen vertices, keeping the vertices as isolated labels. No short
+cycle remains and no new cycle is created.
+
+For sufficiently large n, any r rows and r columns of an incident
+clone-group pair retain at least r−√n≥r₀ unisolated vertices on each
+side. Their original mixing edge has unisolated endpoints and survives.
+Consequently the final host has the r-rectangle property needed below,
+girth greater than g, the same degree bounds, and the same coarse
+helper containment. All Shannon and order conclusions therefore survive.
+
+A mutual triangle of nonincident cells must have three distinct point
+rows and three distinct column labels; otherwise two of its cells
+could not mutually help. Its six cross-incidences form a simple
+six-cycle in the incidence graph. Girth greater than six excludes
+such triangles. This removes fine-scale triangles; an optional coarse
+quotient can still contain triangles, as the Fano quotient does.
 
 ## 3. Aggregating cells preserves the Shannon upper bound
 
@@ -156,7 +204,7 @@ For the Fano base take
 $$s=7,\quad U=119/3,\quad S=41,\quad e_0=21,
 \quad w_0=w'_0=3,\quad\eta=1/100,\quad t=1200.$$
 
-The mixing failure probability is at most
+For the unaltered construction, the mixing failure probability is at most
 
 $$21\exp\{-n(10-2\log100)/100\},$$
 
@@ -171,6 +219,12 @@ $$\operatorname{Sh}(\rho_n)\le\frac{17}{21}d^2,
 These are finite inequalities for every successful lift, not only
 limiting rates. The exact coefficient follows from
 41(99/100)²−119/3=15523/30000 and d²=49n².
+
+The growing-girth version keeps the same degree 3600 and the same gap:
+one may take η₀=1/105 in the short-cycle deletion argument. Indeed,
+1200η₀=80/7>2 log(105e). No new host search or stronger degree budget
+is needed for this additional property. The modified family has girth
+Ω(log d) and has no residual mutual triangles eventually.
 
 The new conclusion is a positive-density improvement over the **best**
 order bound on a growing fixed-window family. The same hosts already

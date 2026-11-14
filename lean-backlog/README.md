@@ -154,14 +154,26 @@ Native extraction and source audit:
   exclusion. Computer-assisted, not Lean-verified.
 - [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
   any strict finite Shannon/order gap persists at positive density on
-  growing fixed-window hosts. Fano gives both degrees at most 3600 and
-  a gap exceeding one percent of all cells. This separates proof methods;
+  growing fixed-window hosts, also with incidence girth Ω(log d) at the
+  same degree bounds. Fano gives both degrees at most 3600 and a gap
+  exceeding one percent of all cells. This separates proof methods;
   these hosts already have an order-based deficit. The
   [paid Fano inequality](notes/fano-soft-recovery.md) charges arbitrary
   recovery errors, and the [orbit dictionary](tools/fano-shannon/orbit-dictionary.md)
   makes its certificate geometric. Written and independently reviewed,
   not Lean-verified. The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
   gives order 140 and triangle lower bound 130, without a new Shannon upper.
+- [Triangle-free grid gap](notes/triangle-free-shannon-gap.md): an exact
+  18-term certificate gives 21≤Sh_res≤114/5<23 on the rectangular grid;
+  the exact Shannon value and capacity remain open. Complete cloning
+  supplies an 18×18 square base with no residual mutual triangles and
+  the same normalized gap. The paid information constant is at most
+  30/11, below the soft order value 36/13. The
+  [robust coarse-pattern bound](notes/paid-coarse-patterns.md) gives
+  Sh≤d²−4dG/21 from G columns fitting a balanced Fano layout, and proves
+  why optimizing that count cannot give a deficit uniform in the window
+  on random high-order hosts. Written and exactly checked where finite,
+  independently reviewed, not Lean-verified; no new native exclusion.
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the

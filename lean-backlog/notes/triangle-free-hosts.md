@@ -249,20 +249,43 @@ join to the entire residual host. A larger-plane proof is not forced to use
 many closures by this observation alone. The missing ingredient remains a
 useful bound on the cross-tuple information, coupled across the host.
 
-### 5a. Why line pairs through one point cannot give a constant (Fable, unreviewed)
+### 5a. The limitation of closure equalities from a few centres
 
-Fix o. A cell (a, m) is *radial* for o if o ∈ m. The cells shared by the closures of two lines
-through o, beyond the row of o, are radial for o, and there are (n+1)n² radial cells in all: a
-fraction 1/(n+1) of the n²(n²+n+1) cells. Every decomposition of the point set into unions of
-lines through o therefore gains at most about n³ of n⁴.
+This is a reviewed restriction on a specified family of equalities, not on
+all Shannon proofs for planes. Write d=n²+n+1 and N=n²d for the residual size.
+A residual cell (a,m) is *radial* for o when o∈m. There are n²(n+1) such
+cells, fraction **(n+1)/d**, rather than the earlier stated 1/(n+1).
 
-More generally a single closure gains little at any density. If the point set S misses a set B,
-the lines inside S are the lines missing B, and by the expander mixing lemma for the incidence
-graph (degree n+1, second eigenvalue √n) there are fewer than n·d/|B| of them. Their columns add at
-most |B| cells each outside the rows of S, so every row closure exceeds its rows by fewer than n·d
-cells, about a fraction 1/n. A proof of a constant deficit for planes has to compose closures
-around all centres to a depth that grows with n. I have no such argument; the route is closed in
-the roadmap as X30.
+Fix k centres. Set the union of their radial cells constant and all remaining
+cells independent with unit entropy. This distribution satisfies every
+row-closure equality whose initial row set is a union of lines through any
+one of those centres. Indeed a proper union of pencil lines contains no
+other complete line; the newly recovered cells are radial and already
+constant. The full pencil gives the trivial full-set equality. Its entropy
+is at least N−k n²(n+1). Thus these equalities and Shannon inequalities
+alone cannot force a constant deficit with k=o(n). A constant deficit
+requires Ω(n) centres **within this restricted proof system**.
+
+A separate elementary bound controls the size of any one row closure.
+If S misses b>0 points and a lines avoid those points, count incidences
+of these a lines on the d−b remaining points. The sum of incidence counts
+is a(n+1), and the sum of their squares is a²+na, because two lines meet
+once. Cauchy–Schwarz gives
+
+$$a(b+n)\le n(d-b),\qquad
+ab\le\frac{nb(d-b)}{b+n}<nd.$$
+
+Their columns add at most ab cells outside the purchased rows. For b≥2
+no new outside row becomes complete, as proved above; for b=1 these
+columns already supply the entire missing row. For b=0 there is no
+addition. Hence every row closure adds fewer than nd cells.
+
+Neither count proves that an unrestricted constant-deficit argument
+requires growing composition depth: many shallow inequalities may
+combine information from many centres. General row budgets or additional
+column-recovery constraints are not covered by the restricted witness.
+The particular one-centre pass found no inequality and is parked as X30;
+the plane conjecture itself remains open.
 
 ## 6. Numerical leads (heuristic only)
 

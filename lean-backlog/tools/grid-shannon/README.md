@@ -8,7 +8,8 @@ and exact Python-checked, not Lean-verified.
 
 ## Small proof replay
 
-From any working directory, run the script by its path, without `-O`:
+Use Python 3.10 or later (the checker uses integer bit counts), without
+`-O`. From the repository root:
 
 ```sh
 python3 lean-backlog/tools/grid-shannon/verify_certificate.py

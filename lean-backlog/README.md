@@ -163,6 +163,18 @@ Native extraction and source audit:
   makes its certificate geometric. Written and independently reviewed,
   not Lean-verified. The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
   gives order 140 and triangle lower bound 130, without a new Shannon upper.
+- [Two-sided whole-row codes](notes/two-sided-whole-row-codes.md): a
+  translated-intersection argument makes common-deficit existence
+  equivalent to the one-sided question, with at most a factor-two loss.
+  Fixing heavy rows and columns also makes symmetric helper relations
+  sufficient, at arbitrarily small additional asymptotic cost.
+  It supplies the native crux at half the two-sided deficit through the
+  existing transfer. The cyclic host has exact all-alphabet two-sided
+  capacity and Shannon exponent d(d+1)/2+1 for every d≥2; basis-eight
+  stays at 46. Two finite row/rectangle bounds are sharpened as well.
+  Written and independently reviewed, not yet Lean-verified. Reproduce
+  the finite certificates with
+  `python3 lean-backlog/tools/two_sided_controls.py`.
 - [Triangle-free grid gap](notes/triangle-free-shannon-gap.md): an exact
   18-term certificate gives 21≤Sh_res≤114/5<23 on the rectangular grid;
   the exact Shannon value and capacity remain open. Complete cloning

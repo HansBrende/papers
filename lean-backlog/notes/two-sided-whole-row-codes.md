@@ -1,94 +1,271 @@
-# Two-sided whole-row codes: using the involution of the problem
+# Two-sided whole-row codes and the one-sided deficit
 
-Status: proposal and written arguments by Claude Fable, 14 November 2026. Not reviewed, not
-Lean-verified. Section 1 must be audited against the Lean transfer before anything is built on it.
-Front D10 of the [roadmap](../wall.md). No novelty claim.
+Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
+**Status: independently reviewed written proofs, not Lean-verified.**
+The transfer reuses the existing Lean theorem after a new, still unformalized
+finite adapter. No literature novelty claim. Front D10 of the [roadmap](../wall.md).
 
-## 1. The observation
+Fix a helper map ρ on [d] and a finite alphabet Q of size q≥2. A set C of
+d×d arrays over Q is **two-sided** if column r is determined by rows ρ(r), and row r is determined
+by columns ρ(r), for every r. Equivalently, C and Cᵀ are both one-sided
+whole-row codes for the **same** ρ. Neither C=Cᵀ nor linearity is required.
+The window is max_r|ρ(r)|.
 
-Let an oblivious machine transpose, and let ρ be the helper map of breach B1: after the cheap cut,
-output row r depends on the input only through input rows ρ(r) and the advice. ρ depends on the
-schedule, not on the data.
+The two-sided condition is stricter on an individual code and reduces some
+exact capacities. However, **existence of a common positive deficit is
+equivalent for the two classes**, up to a factor of two.
 
-Output row r on input A is column r of A. Output row r on input Aᵀ is **row r of A**, and it depends
-on input rows ρ(r) of Aᵀ, which are **columns ρ(r) of A**.
+## 1. Translation and intersection
 
-Let a(A) be the advice, B bits. Fix the most frequent pair (τ, τ′) and put
-C = {A : a(A) = τ, a(Aᵀ) = τ′}. Then |C| ≥ 2^{N − 2B}, and on C
+**Finite transfer.** Every one-sided code C has a two-sided code D on the
+same host and alphabet satisfying
 
-- column r is a function of rows ρ(r), and
-- row r is a function of columns ρ(r),
+$$|D|\ge |C|^2/q^{d^2}.$$
 
-for every non-exceptional r, with the same ρ. Call such a code *two-sided*. Equivalently C and Cᵀ
-are both whole-row codes for ρ.
+**Proof.** Identify Q with the cyclic group of order q; this imposes no
+algebraic assumption on C. Coordinatewise alphabet bijections preserve
+functional recovery, as do subsets. Thus
 
-**Consequence.** If every two-sided whole-row code at window w has at most 2^{(1 − δ₂)N} words,
-then B ≥ δ₂N/2. So in the wall statement "whole-row code" may be replaced by "two-sided whole-row
-code", at the cost of a factor two in the deficit. The class of codes is smaller; every bound we
-have still applies.
+$$D_z=C\cap(z+C^{\mathsf T})$$
 
-To audit: the Lean transfer (`cruxOn_of_wholeRowBounds`) takes one fibre of one advice value. The
-two-sided version needs the fibre of the pair (a(A), a(Aᵀ)) and exceptional rows as well as columns.
+inherits forward recovery from C and reverse recovery from z+Cᵀ. Every pair
+(x,y)∈C×C contributes exactly once, at z=x−yᵀ; y is uniquely determined by
+x and z. Therefore Σ_z|D_z|=|C|². There are q^(d²) translations, so one
+intersection has at least the average size. Neither z nor D must be
+transpose-invariant. ∎
 
-## 2. What survives and what does not
+Let κ₁ and κ₂ be the maximal logarithm-base-q code sizes in the one-sided
+and two-sided classes on this fixed host. Then
 
-- **Pairing survives exactly on symmetric incidences.** A pair (p,c) ~ (q,m) serves both
-  directions iff q ∈ ρ(c), c ∈ ρ(q), p ∈ ρ(m), m ∈ ρ(p). On a symmetric relation (p ∈ ρ(c) iff
-  c ∈ ρ(p)) every pairing code is two-sided.
-- **Triangles survive.** Index Fano by the standard polarity (column r is the line r^⊥). The
-  three-lane triangle code is two-sided, so the value 119/3 is unchanged. The complete host
-  ρ(r) = [s] ∖ {r} with one diagonal check is two-sided too. So the two-sided statement still fails
-  at growing windows, as it must.
-- **One-way recovery is expensive.** Cells x → y → z → x with each recovered row-wise from the
-  next and column-wise from the previous form a two-sided code of rate 1/3: two independent checks
-  for three cells, against one check for two cells in a pair.
-- **Not known to survive:** the difference code on ρ(r) = {r, r+1}. Its only symmetric incidences
-  are the loops. Row c would have to be recovered from columns c and c + 1, which carry differences
-  in the wrong index. I expect the two-sided value there to be d(d+1)/2 + O(1) against d(d+3)/2 − 1.
+$$\max(0,2\kappa_1-d^2)\le\kappa_2\le\kappa_1,\qquad
+  \frac{d^2-\kappa_2}{2}\le d^2-\kappa_1\le d^2-\kappa_2.$$
 
-## 3. A first lemma: rows without a symmetric incidence are redundant
+A two-sided upper bound q^a gives a one-sided bound q^((d²+a)/2), without
+changing dimension, alphabet, helper map or window. A common two-sided
+deficit δ₂ thus gives a one-sided deficit δ₂/2, preserving the canonical
+growing-alphabet quantifiers. The converse implication loses nothing.
+Two-sided half rate would give one-sided rate at most 3/4, enough for the
+common-deficit route; it would **not** prove one-sided half rate.
 
-Put ρ²(p) = ∪_{c ∈ ρ(p)} ρ(c). In a two-sided code row p is a function of columns ρ(p), hence of
-rows ρ²(p).
+These are statements about actual finite codes, not a comparison between
+one-sided and two-sided **Shannon relaxation optima**. A two-sided Shannon
+upper bound remains useful because it bounds actual two-sided codes.
 
-**Lemma.** Let R = {p : p ∉ ρ²(p)}. Then log_q |C| ≤ d² − d|R|/(2w² + 1).
+## 2. Advice, exceptions and the native reduction
 
-*Proof.* The digraph p → ρ²(p) on R has out-degree at most w², so its underlying graph has an
-independent set A with |A| ≥ |R|/(2w² + 1). For p ∈ A the rows ρ²(p) lie outside A, so the rows of
-A are functions of the other rows. ∎
+The original observation is valid. An oblivious transposer uses the same
+schedule on A and Aᵀ. Fixing a(A) and a(Aᵀ) gives the two recovery
+directions with the same ρ. With B advice bits and no exceptions or other
+observations, some fibre has at least 2^(N−2B) words, N=d²b.
 
-So at rate 1 − ε all but ε(2w² + 1)d row indices p have some c with c ∈ ρ(p) and p ∈ ρ(c). On a
-relation with no symmetric incidences the closure cascades: for a uniformly random relation a row
-set of density s has P(ρ²(p) ⊂ S) ≈ s^{w²} > 0, so the hosts that are hardest for one-sided order
-bounds have two-sided rate o(1) (heuristic count, not written out).
+**Exceptions must be paid in both directions.** Freeze exceptional
+columns E_c and exceptional rows E_r. Their union has
+d(|E_c|+|E_r|)−|E_c||E_r| entries, and every missing target becomes constant.
+For one common set E of size e the bill is **2de−e²**.
 
-## 4. Common functions of a row bundle and a column bundle
+For the actual cone adapter, let enc be an m-bit index code on the full
+N-bit cube with transpose demand. Suppose the old cones lie in the new
+cones plus a raw set U, and the new cones have row cover ρ except at E.
+Let T transpose entry addresses without changing bit lanes, and let F_E
+contain all bits in rows or columns E. Fix the observation
 
-In a two-sided code X[p,c] = f(rows ρ(c)) = g(columns ρ(p)). The two bundles meet in the w × w
-block ρ(c) × ρ(p), which is exactly the set of cells mutual with (p,c).
+$$(\operatorname{enc}(x),\operatorname{enc}(Tx),
+  x|_{\,U\cup T(U)\cup F_E}).$$
 
-**Lemma (rectangle form).** For a row set S and a column set T let
-V = {(p,c) : ρ(c) ⊂ S, ρ(p) ⊂ T, (p,c) ∉ S × T}. Then X_V is a common function of X_{rows S} and
-X_{columns T}, so H(X_V | X_{S×T}) ≤ I(rows S; columns T | S × T) ≤ 2(d² − H(X)), and
-|V| ≤ 3(d² − H(X)) in symbol units.
+The existing entry-word lemma applies to x and Tx separately. Every fibre
+is a complete two-sided code for ρ, so a bound q^a, q=2^b, gives
 
-With T everything this is the order bound. Optimising S and T gives a deficit of order 1/w again,
-so the lemma is a new mechanism with no new constant. What would give more: showing that at high
-rate X[p,c] is (nearly) a function of its mutual block. Shearer over the bundles gives only
-Σ_{p,c} H(X[p,c] | block) ≤ 2wd(d² − H(X)), which is vacuous. If that localisation held, every
-theorem we have for mutual-only recovery would apply to native fibres.
+$$N\le2m+|U\cup T(U)\cup F_E|+ba
+ \le2m+2|U|+b(2de-e^2)+ba.$$
 
-## 5. Tests that decide whether the premise has bite
+This uses the full-cube index-code predicate, not machine correctness or
+equality of the two messages.
 
-Exact two-sided values (same pipeline, both closure rules) on hosts where the one-sided value
-exceeds pairing:
+An even shorter route is Section 1: convert the two-sided cardinality
+hypothesis to the existing one-sided hypothesis at half the deficit,
+then reuse all geometry and cone proofs unchanged:
 
-| host | pairing | one-sided value | two-sided |
-|---|---:|---:|---|
-| cyclic ρ(r) = {r, r+1}, d = 5 | 15 | 19 | ? |
-| basis host d = 8, w = 3 (symmetric relation) | 44 | 46 | ? |
-| Fano with the polarity indexing | — | 119/3 | 119/3 (triangle code) |
+- A common two-sided deficit δ₂ along canonical alphabets gives Paper 14's
+  literal **Crux at δ₂/2**. Uniformity over positive bit widths gives
+  the corresponding CruxOn statement.
+- At the explicit window of
+  [wholeRow_window_bound_excludes](../RowSpreadCrux.lean), exclusion follows if
 
-If the first two drop to pairing, the natural conjecture is that two-sided codes at fixed window
-have rate one half, with fewer gadgets in the way. If neither drops, the premise is a free
-strengthening of the statement and nothing more.
+  $$\delta_2>\frac{169}{32}\varepsilon.$$
+
+  The window remains rowSpreadWindow(k,β,genieDepth(k,β,C,ε),C,ε);
+  it is not doubled, and the original machine hypotheses remain.
+
+Indeed the raw-cone route has |U|≤(63/64)εN and e≤(21/32)εd, yielding
+N≤2m+(105/32)εN+ba. The direct machine route has U empty and
+m≤(127/64)εN. Its two messages and two exception bills total (169/32)εN.
+The geometric guards remain d≥4, b≥1, C≥1, ε>0, the stated time/depth
+bounds and a complete output prefix. The overlap term −be² may sharpen
+a finite bill but is unnecessary for this implication.
+
+**Formalization boundary.** [ConeCodeTransfer](../ConeCodeTransfer.lean)
+and [RowSpreadCrux](../RowSpreadCrux.lean) are Lean-verified. The new
+two-sided predicate and Section 1's adapter are not yet formalized.
+The existing real fibre-counting lemma can be reused on C×C and
+(x,y)↦x−yᵀ; no new native-machine development is needed.
+
+### Symmetric helper relations suffice after a small payment
+
+The existing paid reverse-degree normalization extends to both directions.
+For an integer R≥0 let H be the indices with reverse degree greater than R.
+Since there are at most wd incidences, |H|≤wd/(R+1). Freeze all entries in
+rows H or columns H, costing 2d|H|−|H|². Within every fibre both decoders
+may discard these fixed helpers. Thus the fibre is two-sided for
+ρ₀(r)=ρ(r)∖H, whose forward and reverse degrees are at most w and R.
+
+Enlarge to the symmetric relation σ=ρ₀∪ρ₀⁻¹, of window at most w+R.
+Granting additional helpers preserves both recovery directions. Therefore,
+if every symmetric two-sided code at window w+R has size at most q^a,
+every original two-sided code satisfies
+
+$$|C|\le q^{\,a+2d|H|-|H|^2}
+       \le q^{\,a+2wd^2/(R+1)}.$$
+
+For a common asymptotic rate bound, fix R from w and the desired slack
+before taking d large. This preserves the alphabet quantifiers and makes
+the payment arbitrarily small. **Symmetric and unrestricted two-sided
+codes have the same best common asymptotic rate bound.** One may also
+add all diagonal incidences, increasing the window by at most one.
+
+Consequently a common deficit for symmetric, even reflexive, two-sided
+hosts suffices for the native question through Section 1. This does not
+preserve a literal finite bound with no slack, nor automatically transfer
+a deficit that shrinks with the enlarged window. The reduction uses only
+conditioning and relation enlargement; it does not make codes symmetric
+or their decoders linear.
+
+## 3. The cyclic host is exactly pairing plus one
+
+**Theorem.** For every d≥2 and every q≥2, the host
+ρ(r)={r,r+1 mod d} has two-sided maximum code size
+
+$$\boxed{q^{\,d(d+1)/2+1}.}$$
+
+Its full two-sided Shannon value is the same exponent.
+
+**Upper bound.** Purchase every entry on or above the diagonal and the
+additional cell (1,0). Rows 0 and 1 are complete, so forward recovery
+supplies column 0. Column d−1 was already purchased; reverse recovery
+from columns d−1 and 0 supplies row d−1. Descend through r=d−2,…,2:
+column r is complete from its purchased upper entries and the recovered
+rows below it, so columns r and r+1 supply row r. Rows 0 and 1 were
+complete initially. This generates the array from d(d+1)/2+1 entries.
+For d=2 the purchase already is the whole array. Zero conditional ranks
+and singleton caps make this a Shannon proof as well.
+
+**Lower bound.** In the cyclic group Q, choose an arbitrary symmetric
+array S and an independent symbol t. Put X=S+tA, where A is 1 strictly
+above the diagonal and 0 elsewhere. The upper-minus-lower difference
+of any off-diagonal pair is t. Helpers r and r+1 expose such a pair,
+including the wrap pair {d−1,0}. Having recovered t, row r determines
+column r by its known transpose correction; the helper columns similarly
+determine row r. The map is injective: t=X[0,1]−X[1,0], then S=X−tA.
+No division or field assumption is used. ∎
+
+Thus d=5 has value **16**, below one-sided 19 but above pairing 15.
+For general d, the one-sided excess over pairing is d−1; the two-sided
+excess is exactly one. This is a shared-symbol gain, not a positive-density
+counterexample. For d≥3 only the diagonal is freely adjoinable in both
+directions; the 2d one-sided loop cells cannot all be treated as free.
+At d=2 every cell is a self-helper in both directions.
+
+## 4. Symmetric hosts and the second calibration
+
+Each member of a pair (p,c),(q,m) is a helper for the other in both directions precisely when
+q∈ρ(c), p∈ρ(m), c∈ρ(q), and m∈ρ(p). On a symmetric incidence relation,
+every mutual-helper clique therefore serves both directions with its
+same sum-zero relation. The chosen code need not be transpose-invariant.
+
+The basis host at d=8 has an existing partition into 24 free loop cells,
+16 disjoint mutual pairs and two four-cell mutual cliques. Its
+all-alphabet code has q^(24+16+2·3)=q^46 words and is two-sided. The
+existing 18-cell acyclic witness bounds the larger one-sided class and
+its Shannon relaxation by 64−18=46. Hence **two-sided capacity and Shannon
+value are exactly 46**, above pairing 44.
+
+Fano indexed by the polarity i·j=0 is symmetric too. Its triangle lane
+code remains two-sided, so its two-sided Shannon value is 119/3.
+Attainment uses three lanes over any base alphabet, equivalently
+cube-sized cell alphabets; scalar attainment for every q is not asserted.
+On ρ(r)=[d]∖{r}, one diagonal sum-zero check gives d²−1 symbols in both
+directions. Growing-window counterexamples therefore still apply.
+
+The [exact controls](../tools/two_sided_controls.py) replay the cyclic
+recovery/generator certificates, the saved basis partition and acyclic
+upper witness, and the Fano lane-support check. No new LP was needed.
+
+## 5. Finite inequalities and their limits
+
+**Rows without a symmetric incidence.** Put ρ²(p)=⋃_{c∈ρ(p)}ρ(c),
+R={p:p∉ρ²(p)}, and a_p=|ρ²(p)∩R|. Row p is determined by columns ρ(p),
+hence by rows ρ²(p). Consequently
+
+$$\log_q|C|\le d^2-d\sum_{p\in R}\frac1{a_p+1}
+ \le d^2-\frac{d|R|}{w^2+1}.$$
+
+Order R uniformly at random and keep p when it precedes all its
+out-neighbours in R. The kept set is acyclic and has expected size
+Σ_p1/(a_p+1). One such set is recoverable in reverse topological order
+from the other rows. This improves the independent-set denominator
+2w²+1 in the initial proposal.
+
+Absence of symmetric incidences alone does not force vanishing rate.
+For d=3m, let ρ advance each index around one of m disjoint directed
+three-cycles. Assign an independent symbol to each unordered pair of
+cycles, constant on the corresponding matrix block or transposed blocks.
+This gives a two-sided code of size q^(m(m+1)/2), with limiting rate 1/18.
+Random relabelling preserves it. This is not the iid random w-choice
+model; that model is not decided here. The single estimate s^(w²)
+for a potential closure step proves no vanishing-rate claim.
+
+**Common functions and the rectangle bound.** With singleton entropy
+caps one, put Δ=d²−H(X). For row set S and column set T put U=S×T and
+
+$$V=\{(p,c):\rho(c)\subseteq S,\ \rho(p)\subseteq T\}\setminus U,
+ \qquad \Delta_U=|U|-H(X_U).$$
+
+X_V is a common function of the rows S and columns T. The sharper bound is
+
+$$|V|\le\Delta-\Delta_U+
+ I(X_{\mathrm{rows}\ S};X_{\mathrm{columns}\ T}\mid X_U)
+ \le2(\Delta-\Delta_U)\le2\Delta.$$
+
+Write the bundles as U∪A and U∪B with A,B disjoint. Unit caps and
+completion outside their union give I(A;B|U)≤Δ−Δ_U. Since V∩U=∅,
+completion also gives H(V|U)≥|V|−Δ+Δ_U. The common-function condition
+bounds H(V|U) by I(A;B|U). These are Shannon inequalities. If one bundle
+contains the other, the conditional mutual information is zero and the
+stronger |V|≤Δ−Δ_U follows.
+
+For a single target (p,c), the bundle intersection is **ρ(c)×ρ(p)**.
+The original one-sided mutual-helper block is instead ρ(c)×ρ⁻¹(p),
+where ρ⁻¹(p)={j:p∈ρ(j)}. These coincide for symmetric ρ, but not in
+general. The earlier unqualified identification was false. Localisation
+into either common block remains a proposed step, not a consequence
+of the two recovery identities.
+
+## 6. Consequences and next gate
+
+Both requested tests are settled: cyclic drops from 19 to 16; basis
+stays 46. The transfer survives, but the common-deficit question has not
+become qualitatively weaker. The general cyclic theorem shows that its
+additional constraint nevertheless has real finite content.
+
+A next step needs an inequality using both directions beyond their
+separate order bounds. By the paid normalization, symmetric relations
+suffice for a common deficit. Their bundle intersection is the mutual
+block, so localisation there is a concrete candidate tied to the full
+question, not a further unbridged host restriction.
+No such estimate, common deficit or unconditional native exclusion is
+proved here. Once a capacity bound is available the existing native
+transfer can be reused.
+
+Repository searches found no prior same-helper-map two-advice reduction.
+The “two-sided rules” in Paper 17 concern linear offsets on a line and
+are different. The elementary translated-intersection counting identity
+itself is not claimed as a new general combinatorial theorem.

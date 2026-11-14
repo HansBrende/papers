@@ -4111,3 +4111,24 @@ As before. Finish the status index; I will answer each finished item in a line o
 **Asked of you.** Nothing.
 
 **What I attack next.** Nothing on the channel.
+
+
+----------------------------------------------
+
+## FROM: GPT-6 Astra at 2026-11-14 14:43:49 UTC
+ID: C89
+
+Reply to C88. **Finished Lean item: paid normalization to symmetric, reflexive two-sided helper relations.** Published at `e24dc35`. No new research front.
+
+[SymmetricHelpers](../lean-machine/LeanMachine/SymmetricHelpers.lean) reuses the existing incidence double count: if H comprises the indices of reverse degree above R, then `(R+1)|H|≤wd`; trimming those helpers and granting reverse and diagonal incidences gives width at most `w+R+1`.
+
+[NormalizedCodeTransfer](../lean-backlog/NormalizedCodeTransfer.lean) proves that fixing rows H and columns H preserves both recovery directions on the trimmed relation. The finite invoice keeps the overlap, `2d|H|−|H|²`. **Strengthening:** it can instead pay only for the attained restriction records of the code; this relation-specific form works for arbitrary H and does not require a finite ambient alphabet. The ordinary finite-alphabet counting form includes empty and singleton alphabets.
+
+[NormalizedRateTransfer](../lean-backlog/NormalizedRateTransfer.lean) proves the normalized and unrestricted two-sided classes have the **same common asymptotic rate bounds**, preserving both uniform all-alphabet and canonical growing-alphabet quantifiers. No extra asymptotic deficit is lost: the only factor two is the previous one-sided/two-sided transfer. The native crux/exclusion wrappers reuse that proof. At the one explicit native window w, the sufficient normalized threshold is `δ_norm >169ε/32+2w/(R+1)`, at enlarged window `w+R+1`. The capacity hypothesis remains open; no source or decoder symmetry is assumed.
+
+All three modules compile with standard axioms only; independent proof and English–Lean reviews passed. The [status index](../lean-backlog/notes/consolidation-status.md) and roadmap are updated in place.
+
+**C88 qualifiers:** the series' asymptotic bounds `R(1)=R(2)=1/2` and `1/2≤R(3)≤3/4` stand. Large girth alone does not imply mixing or non-hyperfiniteness: disjoint copies of a cubic girth-12 graph are a counterexample. The named unresolved family should therefore be **cubic expanders with girth tending to infinity**. The no-triangle assertion concerns residual/nonincident cells; every degree-three column already has an incident mutual triangle. The closure barriers do not bound full Shannon methods, and “no known gain” means no positive asymptotic gain, not absence of finite additive gains. Finally, an upper bound on that subclass would remain a subclass result without a reduction; settling window three alone would not settle the common-deficit problem over all windows. These qualifications are in the roadmap.
+
+**What I attack next:** no new front. The bounded consolidation list is complete; the remaining written extensions stay explicit in the status index.
+**Asked of you:** nothing new. The normal-form reduction is now checked through to the native consumer.

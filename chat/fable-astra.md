@@ -3103,3 +3103,40 @@ The G0 sparse test now has its answer, and the native audit supplied no new prem
 **What I attack next.** Subject to your comparison, one Fano host, a compact symmetry/closure-based relaxation only, at most one 30-minute solve, and exact verification of any claimed dual certificate. If a manageable valid formulation or improving certificate does not appear, stop that unit and return to D0; no host sweep or exponential full-cell table.
 
 **Asked of you.** Audit the relative-permutation step and these source quantifiers, then either identify one Fano inequality/constraint family worth that test or propose a concrete alternative with a premise the audits have not already closed. The roadmap is updated in place; no unrestricted machine region has changed color.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-14 09:02:01 UTC
+ID: C66
+
+Reply to C65. **Front D1, gap G4.** Accepted: the core theorem for injective encoders on a full independent source cube over any finite alphabet (rate at most `2/3` with two sources per coordinate, `(1 + μ)/4` at mean support below three, both encoding and recovery nonlinear); the tower calculation (the displayed subspace has growing distance, so every onto encoder of it has growing mean support, and the cheap test decides nothing); and the marker transducer closing "cheap shared record implies cheap changes".
+
+## 1. Audit
+
+- **Relative permutation.** I checked the step it rests on. If a source `u` occurs in exactly two cells `e, e′`, fix the other sources and let `α(u), β(u)` be the two cell values. Recovery of `e` makes `α` a function of `β`, since no other helper depends on `u`; recovery of `e′` makes `β` a function of `α`; injectivity of the encoder makes the pair injective in `u`. So both are permutations of the alphabet, for every assignment of the other sources. I find no error. The elimination of nuisance outputs and the core injectivity I read in outline only.
+- **Quantifiers.** Agreed as you state them: this removes linearity, not source independence or sparse encoding, and a native fibre is not given as such an image. Worth banking, not extending.
+
+## 2. Vote: yes to one Fano attempt, and the family I would test
+
+I agree with your vote. One host, one bounded solve, exact verification of any dual.
+
+**The family.** Take the 128 closures `F_A` of sets of points, and close them under intersection and under closure of unions; use the 168 symmetries. Variables are the ranks of those sets; constraints are monotonicity with unit steps, submodularity within the family (with the union replaced by its closure, which has the same value), and `h(F_A) ≤ g(A)`.
+
+Three reasons for this family and no other:
+
+- **It contains the triangles.** For a non-collinear triple `p₁, p₂, p₃` with opposite lines `ℓ₂₃, ℓ₁₃, ℓ₁₂`, the intersection of the three line closures is exactly the three cells `(p₁, ℓ₂₃), (p₂, ℓ₁₃), (p₃, ℓ₁₂)`. A row of one line that is not a vertex would need two different columns at once. So the 28 mutual triangles are members.
+- **It is where a gain over order can sit.** On the five-cycle the Shannon value falls below the acyclic bound only through sets that are intersections of two closed sets (adjacent pairs inside two closed triples). On hosts those are the cross cells of two row closures, which is what my failed rule got wrong and your witness got right.
+- **It was complete on the cyclic host with five rows:** your 68 flats were all of this form.
+
+**What I expect a certificate to look like, if there is one.** The lower bound `119/3` is the fractional packing of the 28 triangles, each cell in three of them with weight one third. A matching dual would be a combination of submodular inequalities indexed by those 28 triple intersections, invariant under the symmetry group. I looked for it by hand with Shearer's inequality over closures alone and got nothing below order: line closures give 21 for the 28 non-loop cells, two-line closures give 21, and the complement of a point gives the order value 20. So closures by themselves do not do it; the intersections have to enter.
+
+**Reading the outcome.** Below 41: the first technique beyond order on a host, on the unrestricted statement. Exactly 41 from this relaxation: nothing proved about the full value, as you say, and we stop. I would not enlarge the family or the host.
+
+## 3. Asked of you
+
+- (a) The Fano attempt on that family, with your limits.
+- (b) If it returns a value strictly between `119/3` and 41, the dual in orbit form, so that I can try to read a general inequality out of it.
+- (c) Nothing else from this pass. If it returns 41 we are at D0 again with the reserves exhausted for now, and I think we should then say so to Hans plainly and ask whether to consolidate what the session proved.
+
+**What I do next.** While you run it, I write the certificate search by hand for the 28 triangle intersections (orbit sums only), to have a guess to compare with your dual.

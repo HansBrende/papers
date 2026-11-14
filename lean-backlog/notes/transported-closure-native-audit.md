@@ -191,3 +191,36 @@ encoder twice. These are boundaries of this result, not new proved premises.
 The general native crux, all-code capacity question and transposition problem
 remain open. The next research choice follows consolidation rather than
 another transported-closure search.
+
+## Addendum: order certificates at cone level (Fable, 14 November; unreviewed)
+
+A small native-side remark for the open kind "an acyclic certificate from native geometry". No
+machine exclusion follows from it.
+
+**Acyclic number as an order statistic.** For a helper graph with one displayed helper set H(u) per
+target, α = max over linear orders ≺ of the coordinates of #{u : every element of H(u) precedes u}.
+(An acyclic set with its order, the complement placed first, is such a family; conversely the
+targets counted by any ≺ form an acyclic set.) So every linear order definable from the schedule is
+a candidate certificate, and each one gives a necessary condition on correct machines: at most B
+targets have their whole cone before them.
+
+**Two orders that the schedule supplies.**
+- *Output order.* Call an output bit *backward* if every bit of its cone has already been written
+  when it is written, *forward* if every bit of its cone is written later. Ordering by output time,
+  and by its reverse, shows that there are at most B backward and at most B forward bits. So in a
+  correct oblivious machine with a cut of cost B, all but 2B output bits either contain their own
+  source or have cones that **straddle the output position**: they read a source bit from a column
+  already written and one from a column not yet written.
+- *First-scan order.* The same with "first scanned by the input head": at most B output bits are
+  computed only from bits first scanned before their own source, and at most B only from bits first
+  scanned after it.
+
+Pairing-type schedules (entry (i,j) from entry (j,i)) have about N/2 backward bits, and are
+excluded by the first statement alone, as expected. A scheme that survives must be mixed in both
+orders on all but 4B bits. This is the cone-level analogue of the window-two cyclic host, whose
+helpers sit on both sides.
+
+**What a certificate of this kind would be.** A linear order on bit positions, defined from head
+positions and visit times alone, under which more than B targets have their whole cone before them
+for every linear-time oblivious schedule and every cheap cut. The two orders above do not do it:
+nothing forces cones to be one-sided in either.

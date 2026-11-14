@@ -142,8 +142,11 @@ $2^{O(\sqrt{\log d})}$ $3$-AP-free classes.
 \end{outline}
 
 \begin{remark}[Comparison with van der Waerden cutoffs across parameter regimes]\label{rem:2a-vs-p19}
-\Cref{thm:2a} improves on \cite[Theorem~6.3]{SharedDecoders2026} only when $M_1, M_2 \ge 2$ and $M_1$
-is large relative to $M_2$:
+Comparing \Cref{thm:2a} with \cite[Theorem~6.3]{SharedDecoders2026} across parameter regimes shows
+that \Cref{thm:2a} never improves on \cite[Theorem~6.3]{SharedDecoders2026} at $M_1 = 1$ or
+$M_2 = 1$, loses at $M_1 = M_2 = 2$, and wins for every fixed $M_2 \ge 2$ once $M_1$ is sufficiently
+large, whereas for fixed $M_1 \ge 2$ and growing $M_2$ the comparison depends on the unknown growth
+rate of $\mathsf{W}(M_1, M_2 + 1)$:
 \begin{itemize}[leftmargin=1.5em]
 \item At $M_2 = 1$, two distinct columns in a single stage-1 class already contradict
   $\ell d \le M_2 d + (\ell - 1)M_2\gcd(d, s)$ at $\ell = 2$ in
@@ -152,13 +155,16 @@ is large relative to $M_2$:
 \item At $M_1 = 1$, $\mathsf{W}(1, M_2 + 1) = M_2 + 1$ gives $d \le M_2^2$ in
   \cite[Theorem~6.3]{SharedDecoders2026}, whereas \Cref{thm:2a} gives
   $d \le \max(8M_2^2, 2^{2^{M_2}})$.
-\item At $M_1 = M_2 = 2$, \cite[Corollary~6.4]{SharedDecoders2026} uses $\mathsf{W}(2, 3) = 9$ to
+\item At $M_1 = M_2 = 2$, \cite[Corollary~6.4]{SharedDecoders2026} uses $\mathsf{W}(2, 3) \le 9$ to
   obtain $d \le 2(9 - 1) = 16$, whereas \Cref{thm:2a} gives $d \le \max(64, 4^4) = 256$.
 \item Conversely, for every fixed $M_2 \ge 2$, any progression-based cutoff from
   \cite[Theorem~6.3]{SharedDecoders2026} is at least $M_2(\mathsf{W}(M_1, M_2 + 1) - 1) \ge
-  M_2(\mathsf{W}(M_1, 3) - 1)$, which is superpolynomial in $M_1$ by Behrend \cite{Behrend1946} (and
-  five-fold exponential in $M_2$ under explicit van der Waerden upper bounds \cite{Gowers2001}), whereas
-  \Cref{thm:2a} gives the polynomial-in-$M_1$ bound $(2M_1)^{2^{M_2}}$ for fixed $M_2 \ge 2$.
+  M_2(\mathsf{W}(M_1, 3) - 1)$, which is superpolynomial in $M_1$ by Behrend \cite{Behrend1946},
+  whereas \Cref{thm:2a} gives the polynomial-in-$M_1$ bound $(2M_1)^{2^{M_2}}$ for fixed
+  $M_2 \ge 2$. For fixed $M_1 \ge 2$ and growing $M_2$, \Cref{thm:2a} gives the doubly exponential
+  bound $(2M_1)^{2^{M_2}}$, while explicit van der Waerden upper bounds \cite{Gowers2001} show only
+  that $M_2(\mathsf{W}(M_1, M_2 + 1) - 1)$ is at most five-fold exponential in $M_2$ (and known
+  lower bounds on $\mathsf{W}(M_1, M_2 + 1)$ are exponential in $M_2$).
 \end{itemize}
 \end{remark}
 

@@ -41,7 +41,8 @@ Capacity and Composition of Shared Transposition Decoders:
        - Across 2 <= M <= 40: strictly below Paper 19 Theorem 3.5 for all primes d past
          an exact finite prime crossover (from d >= 7 at M = 2 up to d >= 39,163 at M = 40,
          where the last prime failure is 39,161), proved for ALL primes d via exact integer
-         evaluation through the pair-by-pair rational tail threshold D_tail(M) <= 40,200.
+         evaluation through the pair-by-pair rational tail threshold D_tail(M) <= 39,322
+         (attained at M = 40).
 
 No formal Lean proof depends on this script; it documents the Section 5 prose comparisons.
 """
@@ -141,8 +142,15 @@ def sieve_primes(limit: int) -> list[int]:
 
 def verify_leading_coefficients() -> dict[int, Fraction]:
     """Verify all leading-coefficient comparisons against flag and Theorem 3.5."""
-    # Flag comparison for Theorem 3.5 and square_cover_bound:
-    for m in range(2, 30):
+    # Flag comparison for Theorem 3.5 (gamma*_M < 1 - 1/(2M) iff M >= 7) and
+    # square_cover_bound (1 - 1/(4 ceil(sqrt(2M))) < 1 - 1/(2M) iff M >= 11):
+    #   - Checked directly below for 2 <= M <= 40.
+    #   - For ALL M >= 41, gamma*_M < c_M < 1 - 1/(2M) since gamma*_M < c_M (proved below for
+    #     all M >= 41) and (1 - 1/(2M)) - c_M = (M - 1)(3M - 1)/(4M^3) > 0 for all M >= 2.
+    #   - For ALL M >= 12, 2 ceil(sqrt(2M)) < 2(sqrt(2M) + 1) < M since M - 2 > 2 sqrt(2M)
+    #     <=> (M - 2)^2 > 8M <=> M^2 - 12M + 4 > 0, which holds for all M >= 12.
+    assert 12 * 12 - 12 * 12 + 4 > 0
+    for m in range(2, 41):
         gamma_m, uv = thm35_leading_coeff(m)
         flag_m = Fraction(1, 1) - Fraction(1, 2 * m)
         if m <= 6:
@@ -150,9 +158,7 @@ def verify_leading_coefficients() -> dict[int, Fraction]:
         else:
             assert gamma_m < flag_m, f"Expected gamma_{m} < flag at M={m}"
         if m == 7:
-            assert (4, 5) == uv or (
-                Fraction(1, 1) - Fraction(21 - 7, 21 * 9) == Fraction(25, 27) < Fraction(13, 14)
-            )
+            assert uv == (4, 5) and gamma_m == Fraction(25, 27) < Fraction(13, 14)
         t_sqrt = math.ceil(math.sqrt(2 * m))
         sq_coeff = Fraction(1, 1) - Fraction(1, 4 * t_sqrt)
         if m <= 10:
@@ -160,10 +166,12 @@ def verify_leading_coefficients() -> dict[int, Fraction]:
         else:
             assert sq_coeff < flag_m, f"Expected sq_coeff < flag at M={m}"
 
-    # c_M vs gamma*_M for 2 <= M <= 500:
+    # c_M vs gamma*_M (and c_M < 1 - 1/(2M)) for 2 <= M <= 500:
     gamma_map: dict[int, Fraction] = {}
     for m in range(2, 501):
         cm = c_m_fraction(m)
+        flag_m = Fraction(1, 1) - Fraction(1, 2 * m)
+        assert flag_m - cm == Fraction((m - 1) * (3 * m - 1), 4 * m**3) > 0
         gm, _ = thm35_leading_coeff(m)
         if m <= 40:
             assert cm < gm, f"Expected c_{m} < gamma*_{m}"
@@ -206,9 +214,11 @@ def verify_theorem_54_thresholds(gamma2: Fraction) -> None:
     # Check analytic tail for d >= 61:
     # Need ((17/20 - 19/32) d^2 - d) > (3/2) d^{3/2}, i.e., ((41/160) d - 1)^2 > (9/4) d
     # with (41/160) d > 1 (holds for d >= 4).
-    # ((41/160) d - 1)^2 - (9/4) d = (1681 d^2 - 70880 d + 25600) / 25600 > 0 for all d >= 42!
+    # ((41/160) d - 1)^2 - (9/4) d = (1681 d^2 - 70720 d + 25600) / 25600 > 0 for all d >= 42!
     for d in (42, 61):
-        assert 1681 * d * d - 70880 * d + 25600 > 0
+        diff = (Fraction(41 * d, 160) - 1) ** 2 - Fraction(9 * d, 4)
+        assert diff == Fraction(1681 * d * d - 70720 * d + 25600, 25600)
+        assert diff > 0
 
     # Exact integer/rational check on 1 <= d <= 60:
     # B_54(d)/b < thm35(2, d)  <=>  (3/2) d^{3/2} < thm35(2, d) - (19/32) d^2.
@@ -273,7 +283,7 @@ def verify_theorem_55_prime_crossovers(gamma_map: dict[int, Fraction]) -> tuple[
         tail_caps[m] = compute_pair_tail_cap(m, cm, lin_coeff)
 
     max_tail = max(tail_caps.values())
-    assert max_tail <= 41000, f"Unexpectedly large tail cap: {max_tail}"
+    assert max_tail == 39322 and tail_caps[40] == 39322, f"Unexpected max tail cap: {max_tail}"
     primes = sieve_primes(max_tail)
 
     # At M = 2: (19/32) d^2 + (9/8) d

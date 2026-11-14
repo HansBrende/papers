@@ -166,7 +166,8 @@ linear special case of \cite[Proposition~6.25(a)]{SeventeenthPaper2026} (proved 
 arbitrary (not necessarily linear) pipelines over a $q$-symbol alphabet on $d = 2^m$ whose stages read
 input rows inside affine cosets of $\F_2^m$: row-diagonal maps have coset dimension $0$ and
 $S, S^{-1}$ have coset dimension $1$, so \cite[Proposition~6.25(a)]{SeventeenthPaper2026} bounds
-transposed sets by $q^{(d^2 + 2^t d)/2}$ and subsumes \Cref{prop:shear-control}(c).
+transposed sets by $q^{(d^2 + 2^t d)/2}$ and subsumes the conclusion $2^m \le 2^t$ of
+\Cref{prop:shear-control}(c).
 By contrast, \Cref{thm:osr-pass}(a) allows dense
 column-uniform linear row operators $A \otimes I_{db}$ (which read all $2^m$ rows and have coset
 dimension $m$ in \cite[Proposition~6.25(a)]{SeventeenthPaper2026}) while excluding row-varying
@@ -206,8 +207,9 @@ invariance (\leanname{SharedDecoders.covarianceSpace_rot}), while the two-way co
 equivalence (\leanname{SharedDecoders.isSharedCode_iff_compatible}) is proved in
 \leanname{CapacityGluing.lean} of \cite{SharedDecoders2026}'s Lean library.
 Theorem~\ref{thm:anti-diagonal}(a),(c)
-and \Cref{prop:mask-floors} below restate those properties; what is new here is packaging the
-anti-diagonal coordinate change $a = c + j \in \Z_d$ (\lean{antiDiagLinear}, \lean{fromAntiDiagLinear}),
+and the upper bound of \Cref{prop:mask-floors}(a) below restate those properties; what is new here
+are packaging the anti-diagonal coordinate change $a = c + j \in \Z_d$ (\lean{antiDiagLinear},
+\lean{fromAntiDiagLinear}),
 \[
   Z_{c,a} \;:=\; X_{c,\,a - c},
   \qquad
@@ -216,7 +218,8 @@ anti-diagonal coordinate change $a = c + j \in \Z_d$ (\lean{antiDiagLinear}, \le
 \]
 for $d \ge 1$ as the explicit linear tensor isomorphism
 $\Psi = \lean{antiDiagTensorEquiv} : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\;\sim\;}
-\Mat_{d\times d}(A)$ sending $u \otimes v$ to $(c, j) \mapsto u_c\,v_{j+c}$.
+\Mat_{d\times d}(A)$ sending $u \otimes v$ to $(c, j) \mapsto u_c\,v_{j+c}$, together with the
+converse construction of \Cref{prop:mask-floors}(a) and \Cref{prop:mask-floors}(b).
 
 \begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation; cf.\ {\cite[Lemma~3.1]{SharedDecoders2026}} and \leanname{SharedDecoders.isSharedCode_iff_compatible}]\label{thm:anti-diagonal}
 \formal{OperatorDualityProofs.lean}{pairwiseShiftCollisionCharacterization,antiDiagonalTensorSeparation}
@@ -268,8 +271,9 @@ Let $F$ be a field, $d \ge 1$, and $A$ a finite-dimensional $F$-vector space.
   $C_0, C_s \le \Mat_{d\times d}(A)$ with $\dim_F C_0 = \dim_F C_s$ and
   $C_0 \cap C_s \le H_{\{0,s\}}(p)$, Grassmann modularity gives
   $2\dim_F C_0 \le d^2\dim_F A + \dim_F H_{\{0,s\}}(p)$. Conversely, once the right-factor shift
-  coupling $C_s = \rot_{-s}(C_0)$ is dropped, splitting a complement of $U_{\{0,s\}}(p)$ in
-  $(\Z_d \to F)$ into two equal-sized subspaces constructs $C_0 = \Psi(V_0 \otimes \top)$ and
+  coupling $C_s = \rot_{-s}(C_0)$ is dropped, choosing two independent subspaces of dimension
+  $\lfloor(d - \dim_F U_{\{0,s\}}(p))/2\rfloor$ inside a complement of $U_{\{0,s\}}(p)$ in
+  $(\Z_d \to F)$ constructs $C_0 = \Psi(V_0 \otimes \top)$ and
   $C_s = \Psi(V_s \otimes \top)$ with $C_0 \cap C_s = H_{\{0,s\}}(p)$, $\dim_F C_0 = \dim_F C_s$, and
   \[
     d^2\dim_F A + \dim_F H_{\{0,s\}}(p) \;\le\; 2\dim_F C_0 + d\dim_F A.

@@ -143,9 +143,12 @@ $\dim_E \ker P(T_{\mathrm{band}}) \le b M_2 k L_0$.
 \begin{outline}
 The homogeneous linear system $\sum_{x \in \widetilde{B}} P_x \chi(\nu x) = 0$ ($0 \le \nu < k$) has
 $k$ equations in $k + 1$ unknowns, hence a nonzero solution $P$ supported in $\widetilde{B}$ of
-degree $\le \max\widetilde{B} = \diam_{\N}(\widetilde{B}) \le L_0$. On $(\Z_d \to E^q)$, the linear
-recurrence $P(T_1)w = 0$ determines $w$ from at most $\deg P$ coordinates once $\deg P \le d$ (and
-trivially $\dim \le q d \le q \deg P$ when $\deg P > d$).
+degree $\le \max\widetilde{B} = \diam_{\N}(\widetilde{B}) \le L_0$. On $(\Z_d \to E^q)$, setting
+$m := \deg P$ ($P_m \ne 0$), restricting $\ker P(T_1)$ to the $m$ residues
+$(0 \bmod d, \dots, (m - 1) \bmod d)$ ($q m$ coordinates) is injective for every $m$: if
+$P(T_1)w = 0$ and $w_{(j \bmod d)} = 0$ for all $0 \le j < m$, strong induction on $n \in \N$ shows
+$w_{(n \bmod d)} = 0$ for all $n \ge m$ by evaluating $(P(T_1)w)_{((n - m) \bmod d)} = 0$ and
+dividing by $P_m \ne 0$.
 \end{outline}
 
 \subsection{Sumset rank bound, K\H{o}v\'ari--S\'os--Tur\'an extraction, and Theorem 2B}\label{sec:thm2b}
@@ -202,8 +205,8 @@ scale $1 \le k \le d$ satisfying
 Start from the densest color class $A_0 \subseteq \{0,\dots,d-1\}$ ($\abs{A_0} \ge \lceil d/M_1\rceil$).
 At each of the $2M_2 - 1$ steps, partition $\{0,\dots,d-1\}$ into $4M_2$ intervals of width at most
 $\lfloor d/(4M_2)\rfloor + 1$, pick the densest bucket $I \cap A$ of size
-$m \ge \lceil\abs{A}/(4M_2)\rceil$, split $I \cap A$ into its lower $\lfloor m/2\rfloor$ and upper
-$\lceil m/2\rceil$ elements, and apply the K\H{o}v\'ari--S\'os--Tur\'an double count
+$m \ge \lceil\abs{A}/(4M_2)\rceil$, split $I \cap A$ into its lower $\lceil m/2\rceil$ and upper
+$\lfloor m/2\rfloor$ elements, and apply the K\H{o}v\'ari--S\'os--Tur\'an double count
 \cite{KovariSosTuran1954} to $(k+1)$-tuples of differences
 $a_{\mathrm{hi}} - a_{\mathrm{lo}} \in [0, \lfloor d/(4M_2)\rfloor]$ (so $a_{\mathrm{lo}} + b =
 a_{\mathrm{hi}} \in A \subseteq [0, d)$ never wraps modulo~$d$). Iterating $2M_2 - 1$ times extracts

@@ -18,11 +18,12 @@ and its syntactic input-cell support is \lean{cutConeInputCells}.
 
 The causal-cone determination principle and out-degree cone-size bound go back in text to
 \cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, with earlier Lean formalizations for abstract
-functional DAGs and block machines of \leanname{Transpose.TM} in \cite[Lemma~4.7(a)]{MergeDepth2026}
-(\leanname{MergeDepth/FieldDag.lean}, \leanname{MergeDepth.FunDag.cone};
-\leanname{MergeDepth/SkeletonCones.lean}, \leanname{MergeDepth.card_coneV_le} giving
+functional DAGs in \cite[Lemma~3.3(b)]{MergeDepth2026}
+(\leanname{MergeDepth/FieldDag.lean}, \leanname{MergeDepth.FunDag.cone}), for cone-size bounds on
+skeletons and block machines of \leanname{Transpose.TM} in \cite[Lemma~4.7(a)]{MergeDepth2026}
+(\leanname{MergeDepth/SkeletonCones.lean}, \leanname{MergeDepth.card_coneV_le} giving
 $\sum_{h \le D}(k+1)^h$; and \leanname{MergeDepth/BlockMachine.lean},
-\leanname{MergeDepth.blockMachine_card_cone_le}) and for native cut replay in \cite{AdaptiveTransfer2026}
+\leanname{MergeDepth.blockMachine_card_cone_le}), and for native cut replay in \cite{AdaptiveTransfer2026}
 (\leanname{AdaptiveTransfer/FrozenCutInvoice.lean},
 \leanname{AdaptiveTransfer.stepValue_eq_of_uncut_native_cut},
 \leanname{AdaptiveTransfer.native_cut_recovers}). What is new in \Cref{lem:tm-cut-cone} below are
@@ -32,7 +33,7 @@ symbolic tree representation (\lean{CausalConeTree} in \leanfile{MachineSweepCon
 extracted relative to column $c$ (\lean{traceConeTree}) and evaluated bottom-up on $\rot_c(X)$
 directly through $M.\delta$ (\lean{evalConeTree}, syntactic support \lean{treeCellSupport}):
 
-\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres; cf.\ {\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}}, {\cite[Lemma~4.7(a)]{MergeDepth2026}}, {\cite{AdaptiveTransfer2026}}]\label{lem:tm-cut-cone}
+\begin{lemma}[Syntactic cut-cone support and symbolic tree evaluation on frozen fibres; cf.\ {\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}}, {\cite[Lemmas~3.3(b) and~4.7(a)]{MergeDepth2026}}, {\cite{AdaptiveTransfer2026}}]\label{lem:tm-cut-cone}
 \formal{NativeSweepInterfaceProofs.lean}{tmTraceCutConeDetermination}
 \formal{MachineSweepConsequences.lean}{evalConeTree_cellSupport,evalConeTree_entryCellSupport_card_le,evalConeTree_traceConeTree_eq}
 Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \ge 1$, and let
@@ -282,7 +283,7 @@ combinatorial problems remain unresolved:
   of \Cref{thm:2b} be strengthened to a positive normalized deficit $\Omega_{M_1,M_2}(bd^2)$ as asked
   in \cite[Section~8]{SharedDecoders2026}, and extended to fields in which $\operatorname{char}(F) \mid d$
   (such as $\F_2$ at $d = 2^m$)?
-\item \textbf{Closing $\frac{19}{32}$ to $\frac{1}{2} + o(1)$ and positive characteristics in Problem~9.1(a)--(b).}
+\item \textbf{Closing $\frac{19}{32}$ to $\frac{1}{2} + o(1)$ and positive characteristics in Problem~9.1(a)--(b) of \cite{SeventeenthPaper2026}.}
   Can the $\frac{19}{32}\,bd^2 + \frac{3}{2}\,bd^{3/2}$ two-class ceiling of \Cref{thm:1b-two-class}
   be lowered to $(\frac{1}{2} + o(1))bd^2$, can the averaged multi-class bound of
   \Cref{thm:1b-multi-class} ($M \ge 3$) be extended from primes to composite $d$, and can
@@ -293,14 +294,14 @@ combinatorial problems remain unresolved:
   characteristic~$3$ ($21 \le D_1 \le 28$ from symmetric matrices and
   \cite[Theorem~6.4]{SeventeenthPaper2026}; whether $25$ is attainable in characteristic~$3$ is
   \cite[Problem~6.1]{ClassUniformMemo2026})?
-\item \textbf{Remaining dimensions in Remark~5.6, two-sided multi-scale bounds in Problem~9.3, and periodic Walsh masks.}
+\item \textbf{Remaining dimensions in Remark~5.6 and two-sided multi-scale bounds in Problem~9.3 of \cite{SeventeenthPaper2026}, and periodic Walsh masks.}
   Does any three-term swap code exceed $d(d+1)/2$ at $d = 5$ or at any $d \ge 8$ outside $\{9, 12\}$
   (\cite[Remark~5.6]{SeventeenthPaper2026})? Is $\bigl\lfloor \frac{1}{2}\bigl(d^2 +
   \sum_{i, j} \min(\abs{I_i}, \abs{J_j})\bigr)\bigr\rfloor$ (\Cref{rem:two-sided-numerical}) an upper
   bound on swap-code dimension for all two-sided interval partitions, and can
   \Cref{thm:two-sided-coarse-fine} be extended from two scales to general multi-scale dyadic interval
   profiles (\cite[Problem~9.3]{SeventeenthPaper2026})? On the periodic variant of
-  \cite[Problem~9.3]{SeventeenthPaper2026} ($d = 2^m$), when both $A_a$ and $B_a$ lie in the
+  \cite[Problem~9.3]{SeventeenthPaper2026} ($d = 2^m$), when both $A_a$ and $B_a$ lie in the at most
   $(m + 1)2^m$-dimensional span of periodic Walsh digit masks composed with rotations
   (\Cref{prop:walsh-dichotomy}), is $\dim_F {}$\leanname{SwapRigidity.swapCode}$(A, B) \le (1 - c)d^2$
   for a constant $c > 0$?

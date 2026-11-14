@@ -310,3 +310,34 @@ No result in Sections 1–5 relies on these searches. A positive construction
 requires an exact verified recovery/rank certificate; failure to find one
 proves no upper bound. The current grid range is 21≤Sh_res≤114/5, with the
 same lower/upper range for its capacity exponent; neither optimum is known.
+
+## 7. Grid lanes on the parabolic quadrangle of every order (Fable, 14 November; unreviewed)
+
+This extends the [two-lane code on GQ(2,2)](quadrangle-grid-control.md) to the family and replaces
+my conjecture "c = 2 on generalised quadrangles", which that code refutes.
+
+**The m × m grid code.** Points (i, j) ∈ [m]², lines R_k and C_k, 2m²(m−1) non-incident cells. With
+A_j[i,k] = X[(i,j), R_k] and B_i[j,k] = X[(i,j), C_k] put, for the smaller index first,
+A_j[i,k] = S_j[i,k], A_j[k,i] = S_j[i,k] − D[i,k], B_i[j,k] = T_i[j,k], B_i[k,j] = T_i[j,k] − D[j,k].
+The helper rows of R_k contain row k of every A_j and all of B_k, which reveals every D[j,k′]; the
+same with A and B exchanged for C_k. Free symbols: (2m+1)·m(m−1)/2. Rate on the non-incident cells:
+(2m+1)/(4m) = 1/2 + 1/(4m).
+
+**Grids in Q(4,s).** Rows = points and columns = lines of the parabolic quadric in PG(4,s), a
+generalised quadrangle of order (s,s). Let p be a point off a line ℓ and π the plane they span. Of
+the s+1 hyperplanes through π none is elliptic (it contains ℓ), and a tangent hyperplane T_x
+contains ℓ only for x ∈ ℓ and contains p only for the one x ∈ ℓ collinear with p. So exactly one is
+tangent and **s are hyperbolic**: every non-incident cell lies in exactly s full (s+1) × (s+1)
+grids, each containing all points of ℓ.
+
+**Proposition.** Over an alphabet with s lanes, assign the lanes of each non-incident cell to the s
+grids through it and put an independent copy of the grid code on each grid. This is a whole-row
+code on the Q(4,s) host of rate 1/2 + 1/(4(s+1)) on the non-incident cells. Hence
+
+c_ent(Q(4,s)) ≥ 4(s+1)/(2s+1) = 12/5, 16/7, 20/9, …,
+
+which tends to 2. (Recovery of a cell in a grid uses only cells in the rows of the points of its
+line and in grid columns, in the lane of that grid.)
+
+The surviving form of the conjecture is asymptotic: c_Sh(Q(4,s)) → 2. I have no inequality for it,
+and the lower bound shows that any proof must lose a term of order 1/s at each finite order.

@@ -44,10 +44,16 @@ Let $F$ be a field.
 \end{enumerate}
 \end{lemma}
 \begin{outline}
-Part~(a) is direct verification on $\Z_6$ and prime factors of $6$. For~(b), extend scalars to
-$K = \overline{F}$ via \Cref{prop:linear-model-bridges}(b)--(c) and choose a primitive $6$-th root of
-unity $\zeta \in K^\times$ ($\zeta^2 = \zeta - 1$, with $(2 : K) \ne 0$ and $(3 : K) \ne 0$). Because
-$W := \mathcal{X}_K \cap \rot_1^{-1}(\mathcal{X}_K)$ lies in $H_{\{0,1\}}$ ($X_{1,j} = X_{0,j+1}$ and
+Part~(a) is direct verification on $\Z_6$ and prime factors of $6$. For~(b), extend the two
+$F$-linear class decoders $\mathcal{A}_0, \mathcal{A}_1$ by scalars to $K = \overline{F}$ via
+\Cref{prop:linear-model-bridges}(b)--(c), let $\mathcal{X}_K := \{X \in \Mat_{6\times 6}(K) :
+\forall c \in \Z_6,\; X_{c,:} = \mathcal{A}_{\mathrm{cls}(c), K}(\rot_c(X))\}$ be the \emph{maximal}
+$K$-linear class-uniform code cut out by $\mathcal{A}_{0,K}, \mathcal{A}_{1,K}$ (containing the
+scalar-extended image of $\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})$ inside
+$W := \mathcal{X}_K \cap \rot_1^{-1}(\mathcal{X}_K)$, so
+$\dim_F(\mathcal{X} \cap \rot_1^{-1}(\mathcal{X})) \le \dim_K W$), and choose a primitive $6$-th root
+of unity $\zeta \in K^\times$ ($\zeta^2 = \zeta - 1$, with $(2 : K) \ne 0$ and $(3 : K) \ne 0$). Because
+$W$ lies in $H_{\{0,1\}}$ ($X_{1,j} = X_{0,j+1}$ and
 $X_{5,j} = X_{4,j+1}$), $H_{\{0,1\}}$ has dimension $4 \cdot 6 = 24$ and decomposes into six
 $4$-dimensional column-Fourier eigenspaces $V_\eta = \{Y \in H_{\{0,1\}} : \rot_1(Y) = \zeta^\eta Y\}$
 ($\eta \in \Z_6$). Let $K_\eta := W \cap V_\eta$, $W_{\mathrm{pure}} := \bigoplus_{\eta \in \Z_6} K_\eta$,
@@ -63,7 +69,9 @@ $\dim_K W = S_K + \dim_K Q$.
   $S_a := \Z_6 \setminus \{a, a + 3\}$ and $W_{S_a} := W \cap \bigoplus_{\eta \in S_a} V_\eta$. Because
   both classes have size $3$ with antipodal cancellation and $(Z^6 - 1)/(Z - \zeta^{c_0})$ has all six
   coefficients nonzero, any $Y \in W_{S_a}$ has each of its four mode components $\pi_\eta(Y)$
-  ($\eta \in S_a$) individually in $W$, i.e.\ $W_{S_a} = \bigoplus_{\eta \in S_a} K_\eta$. Thus the
+  ($\eta \in S_a$) individually satisfy the decoder equations defining $\mathcal{X}_K$ and the
+  shifted-membership equations for $\rot_1^{-1}(\mathcal{X}_K)$, hence lie in $W$ by maximality of
+  $\mathcal{X}_K$, i.e.\ $W_{S_a} = \bigoplus_{\eta \in S_a} K_\eta$. Thus the
   induced map $Q \to (V_a / K_a) \oplus (V_{a+3} / K_{a+3})$ is injective for each $a \in \{0,1,2\}$.
   Summing $\dim_K Q \le 8 - \dim_K K_a - \dim_K K_{a+3}$ over $a \in \{0,1,2\}$ yields
   $3\dim_K Q + S_K \le 24$. Whenever $S_K \le 10$, this immediately gives

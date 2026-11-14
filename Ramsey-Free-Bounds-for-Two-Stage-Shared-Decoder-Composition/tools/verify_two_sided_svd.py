@@ -18,18 +18,19 @@ Across the 9 benchmark interval partitions at d in {5, 6, 7, 8}, this script che
          D_diamond(I, J) := floor((d^2 + sum_{I, J} min(|I|, |J|)) / 2),
      the budgeted search finds no witness at D_diamond + 1 on any tested partition
      (tail singular-value norm ||sigma_{> d^2 - D}(sw - K)||_2 > 0.1 across the restarts).
-  3. Witnesses at D = D_diamond for s >= floor(d / 2): on the contiguous fine-singleton +
-     coarse-complement partitions with s >= floor(d / 2) (including the half-density
-     benchmark s = d / 2, where D_diamond = (5/8) d^2 + O(d)) and the d = 6 two-run
-     partition, the search finds bounded-norm operators K converging to
+  3. Witnesses at D = D_diamond on 6 benchmark partitions: for the contiguous
+     fine-singleton + coarse-complement partitions (d, s) in {(5, 2), (6, 3), (7, 4), (8, 4)}
+     (including the half-density cases s = d / 2, where D_diamond = (5/8) d^2 + O(d)), for
+     d = 6 with s_A = 3 and s_B = 4, and for the d = 6 two-run partition {0},{1,2},{3},{4,5},
+     the search finds bounded-norm operators K converging to
      ||sigma_{> d^2 - D_diamond}(sw - K)||_2 < 1e-11 with singular-value gap
      sigma_{d^2 - D_diamond}(sw - K) > 0.5.
-  4. Sub-D_diamond witnesses on three partitions with s < d - s or unequal coarse blocks:
-     on d = 7, s = 3 (D_diamond = 34), d = 7 asymmetric (1+1+5 vs 2+2+3, D_diamond = 31),
-     and d = 8, s = 3 (D_diamond = 42), the budgeted search finds no witness at
-     D = D_diamond (tail > 0.15 across the tested restarts) and finds bounded-norm
-     witnesses of dimensions D = 32, D = 27, and D = 40 to < 1e-11 (intermediate
-     dimensions between those witnesses and D_diamond are not ruled out by local search).
+  4. Sub-D_diamond witnesses on 3 remaining partitions: for (d, s) = (7, 3) (D_diamond = 34),
+     (d, s) = (8, 3) (D_diamond = 42), and the d = 7 partition 1+1+5 vs 2+2+3 (D_diamond = 31),
+     the budgeted search finds no witness at D = D_diamond (tail > 0.15 across the tested
+     restarts) and finds bounded-norm witnesses of dimensions 32, 40, and 27 to < 1e-11
+     (intermediate dimensions between those witnesses and D_diamond are not ruled out by local
+     search).
 
 No formal proof in the manuscript depends on this numerical script.
 """
@@ -231,7 +232,7 @@ def check_generic_nullity_zero(
 def main() -> None:
     t0 = time.perf_counter()
     rng = np.random.default_rng(20261113)
-    print("1. Checking D_diamond witnesses on s >= floor(d/2) and two-run partitions...")
+    print("1. Checking D_diamond witnesses on the 6 attaining benchmark partitions...")
     for label, d, part_a, part_b in ATTAINING_CASES:
         assert sorted(x for iv in part_a for x in iv) == list(range(d)), label
         assert sorted(x for iv in part_b for x in iv) == list(range(d)), label

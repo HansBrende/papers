@@ -190,12 +190,11 @@ Cyclic d = 5, w = 2 has Shannon value 19, with no matching code claimed. None gi
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Full-cell Shannon versus order (G4)** after D0:
-  the higher-support token pass stops at X24. The single cyclic-five test is complete:
-  Sh=19=order, certified on every cell subset by a compact integer witness (§25). Next gate:
-  one bounded attempt to extract a full-cell extension rule, with an explicit growing-host
-  target and a check of all polymatroid axioms; no new LP or representability detour.
-  Stop if there is no rule or obstruction to one. Equality here is not a general Shannon
-  barrier. The native side (D9/D7), then whole-row-preserving amplification, remain reserves;
-  the general token class stays open.
+- **Current focus** (replace, do not append). **Full Shannon value against the order value (G4)**,
+  chosen at D0 after the token pass stopped (X24). Calibration: equal on the basis hosts and on the
+  cyclic hosts d = 4, 5. Candidate extension rule ([row spread](notes/row-spread-of-cones.md) §26):
+  budgets on row closures give the order value and column recovery but are not submodular; the
+  repair puts inclusion–exclusion budgets on their intersections. Next: check that repair on the
+  cyclic-five witness; stop if it is neither a rule nor an obstruction. Reserve: the native side
+  (D9/D7), amplification. The general token class stays open.
 - Last re-evaluation (D0): 14 November 2026.

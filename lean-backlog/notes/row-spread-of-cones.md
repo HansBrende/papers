@@ -3025,3 +3025,54 @@ remain fixed before dimension grows and the attainable rates must tend
 to one as the window grows. The finite witness supplies neither. This
 calibration ends the one-host experiment; no larger LP search is justified
 by equality at one more instance.
+
+## 26. A candidate full-cell extension rule: budgets on row closures and their intersections (Fable, 14 November 2026)
+
+Status: 26.1–26.3 have **short written proofs, unreviewed**; 26.4 is a
+**candidate rule, not proved**, to be checked against the cyclic-five
+witness of section 25. Front D1, gap G4 (full Shannon value against the
+order value); no restriction on the code.
+
+For a set A of rows let J(A) be the columns r with ρ(r) ⊆ A, let
+F_A = R_A ∪ C_{J(A)} be the closure of the rows A, and let g(A) be the order
+value of the rows A: the least number of cells whose closure contains R_A,
+equivalently the minimum over orders i₁, i₂, … of A of Σ_l (d − |J(i₁,…,i_{l−1})|).
+
+**26.1 (the rule).** Put h(X) = min_A [g(A) + |X ∖ F_A|]. Then h(∅) = 0, h is
+monotone, h(x) ≤ 1, h(all cells) is the order value of the host, and every
+column equality holds: h(R_{ρ(r)} ∪ C_r) = h(R_{ρ(r)}).
+
+*Proof.* For the last claim let A minimise for R_{ρ(r)} and put A′ = A ∪ ρ(r).
+Completing the rows ρ(r) cell by cell gives g(A′) ≤ g(A) + |R_{ρ(r)} ∖ F_A|, and
+F_{A′} contains C_r. For the value: generators of R_A together with the cells
+outside F_A generate everything, and A = all rows attains the order value. ∎
+
+Buying columns as well changes nothing: a column outside J(A) costs exactly
+its cells outside the rows A.
+
+**26.2 (it is not submodular).** Window one, d = 2, ρ the identity:
+g(1) = g(2) = 2, g(12) = 3, F₁ = {(1,1), (1,2), (2,1)}, F₂ = {(2,2), (2,1), (1,2)}.
+Then h(F₁) = h(F₂) = 2, h(F₁ ∪ F₂) = 3 and h(F₁ ∩ F₂) = 2, so
+h(F₁) + h(F₂) < h(F₁ ∪ F₂) + h(F₁ ∩ F₂). In the true optimum the two cells of
+F₁ ∩ F₂ are parallel and have rank one.
+
+**26.3 (what is missing, exactly).** With budgets on the sets F_A only, the
+only loss in the submodular inequality is at the cells of F_A ∩ F_{A′}
+outside F_{A∩A′}, so h is submodular provided that loss is paid:
+
+  g(A) + g(A′) ≥ g(A ∪ A′) + g(A ∩ A′) + |A∖A′|·|J(A′)∖J(A)| + |A′∖A|·|J(A)∖J(A′)|
+
+This fails at window one, where the left side exceeds the first
+two terms by |A∖A′|·|A′∖A| and the cross term is twice that. So the
+intersections of row closures must themselves carry budgets below their size.
+
+**26.4 (candidate).** Let 𝓛 be the family of all intersections of row
+closures, and give F_{A₁} ∩ … ∩ F_{A_k} the budget
+Σ_{∅≠T} (−1)^{|T|+1} g(∪_{j∈T} A_j) when that is below its number of cells.
+Put h(X) = min_{F∈𝓛} [budget(F) + |X ∖ F|]. At window one this is the rank
+function of the symmetric matrices. Three things are to be checked, in this
+order: that the budget of a set does not depend on how it is written as an
+intersection; that h is submodular; that h equals the witness of section 25
+on the cyclic host with five rows. If the first fails on some host, the
+inclusion–exclusion values there are inconsistent, and that host is a
+candidate for a Shannon value strictly below the order value.

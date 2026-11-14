@@ -67,7 +67,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
 | Opposite row orders | Outside a set Z every coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row) + H(Z); given a common record Q, add 2H(Q). Also 2K ≤ N + L + N₃ when every helper union resolves all independent sources it touches and nonnegative column weights cover every row with total weight one; this gives half when L+N₃=o(N) | nonlinear | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§18, 20, 21 |
-| Token counting | Token designs (generic linear codes). Paid reduction to cores of minimum token occurrence three: K = t + (N − N_*)/2 + K_*. **At most two tokens per coordinate: rate ≤ 2/3 + o(1) on every fixed-window host.** Bounded supports of mean at most a fixed μ < 5/2: rate ≤ (1 + 2μ)/6 + o(1). This last bound needs no genericity: it holds for every linear code, in any choice of sources with those supports (§28, *written, unreviewed*). Fundamental presentations on hosts of codegree one: 2K ≤ N + L + N₃, giving half when L+N₃=o(N) | linear, transversal; no symmetry, alignment or reverse-degree assumption; coupling unbounded | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§21–23 |
+| Source elimination and token counting | Exact paid core reduction K = t + (N − N_*)/2 + K_* for arbitrary field-linear generators. **Two sources per coordinate: rate ≤ 2/3 + o(1)** on every fixed-window host. Fixed maximum support and mean μ < 3: rate ≤ (1 + μ)/4 + o(1). Separately, fundamental transversal presentations on codegree-one hosts have 2K ≤ N + L + N₃, giving half when L+N₃=o(N) | linear with the stated source support; genericity only in the separate fundamental case; no reverse-degree or bounded-coupling assumption | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§21–23, 28 |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
@@ -78,8 +78,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | varies; folded-cube gains binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells
-or after a change of basis; spectral proofs bound eigenvalue counts; the token proofs count tokens
-of low occurrence and force near cells. Exactly, for every code
+or after a change of basis; spectral proofs bound eigenvalue counts; the source proofs count
+low-occurrence variables, force near cells, and eliminate paired coordinates. Exactly, for every code
 ([row spread](notes/row-spread-of-cones.md) §18): 2H = ΣH(row) + ΣH(row | rest) + S, with S the
 signed net synergy of the rows (negative O-information). A fixed gain above one half needs
 S = Ω(N); in every known code S is O_w(db).
@@ -91,10 +91,11 @@ S = Ω(N); in every known code S is O_w(db).
 2. for mutual recovery on group relations: components meeting unboundedly many diagonals;
 3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule.
 
-For the stronger target of **rates approaching one**, bounded-support token designs must
-survive the paid reduction to minimum-occurrence-three cores; mean support cannot stay below
-5/2 by a fixed amount, and two-token presentations are excluded. These constant-deficit
-results do not exclude every gain above one half.
+For the stronger target of **rates approaching one**, field-linear codes with bounded-size
+generator supports must survive the paid reduction to minimum-occurrence-three cores. Their
+mean support cannot stay below three by a fixed amount in any such sequence of bases;
+two-sparse generators are excluded. This does not prove growing density in every basis,
+or exclude every gain above one half. Sparse recovery is a different property (X26).
 
 Open questions, nearest the wall first:
 - **G0. Is sup_w R(w) = 1 already?** Paper 15's codes have rate 1 − e^{−λm} on abstract relations;
@@ -183,6 +184,8 @@ None gives a fixed-window gain beyond O(d).
 | **X22** | Enlarging the balanced split/nonsplit SL₂ profile search | The single algebra pass gives common algebra dimension d²/2 and a 3/4 cap, but no mechanism for gain. The five-restriction excursion is parked, not disproved ([proof](notes/symmetry-and-locality.md) §6) | A concrete cancellation mechanism that could beat pairing |
 | **X23** | Forcing window to grow by the helper-column intersection test alone | At canonical width every loopless support with both degrees ≤Δ has balanced columns passing that test with parameter 16(4Δ−1). Yet random supports in a specified bounded-degree model usually have no fixed-window presentation ([grid note](notes/grid-labellings-and-amplified-codes.md) §7) | A constraint on one common transversal row partition, or additional code structure; not another cylinder-only exclusion |
 | **X24** | Bounding all core defect reuse by an absolute multiplicity | All-far doubled-cycle presentations have token degree four but forced reuse 2w; their full-grid rates tend to ½ ([row spread §24](notes/row-spread-of-cones.md#24-cores-of-supports-three-boundary-counts-and-their-limitation)). This closes the universal charge, not the higher-support capacity question | A rate-sensitive charge or another way to use overlapping squares |
+| **X25** | Inclusion–exclusion budgets on row-closure intersections, including the minimum/clipping repair | The repaired rule fails recovery and submodularity on d=4, ρ(r)=[4]∖{r}, despite attainable row budgets and capacity=Sh=order=15 ([row spread §29](notes/row-spread-of-cones.md#29-the-repaired-completion-rule-fails-at-window-three)). This closes the recipe, not G4 | A different completion with a proved polymatroid/recovery theorem, or a valid universal inequality |
+| **X26** | Bounded recovery degree, even with O(N) encoding circuits, forces a sparse generator after cheap linear advice | High-girth regular-graph cycle codes have arbitrarily high constant rate and bounded recovery degree, but every generator has mean support ≥g(K−t)/N after t linear reveals ([row spread §30](notes/row-spread-of-cones.md#30-sparse-recovery-and-cheap-circuits-need-not-give-sparse-generators)). No whole-row/native realization is asserted | A property of the actual grid or paid tape computation, beyond these abstract circuit conditions |
 
 ## Maintenance
 
@@ -192,13 +195,15 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Full Shannon value against the order value (G4)**,
-  chosen at D0 after the token pass stopped (X24). Raw inclusion–exclusion budgets fail even on
-  entropic, order-tight hosts; their failure does not prove a Shannon gap. Minimizing over
-  intersection presentations and clipping reproduces the entire cyclic-five witness
-  ([row spread](notes/row-spread-of-cones.md) §26.4), now realized by the all-d difference code (§27).
-  Next bounded pass: a proof or explicit failure of this modified rule at window at least three,
-  before any new LP. Stop if it supplies neither a valid completion nor a separate Shannon
-  inequality; do not enlarge the window-two calibration. Reserve: the native side (D9/D7),
-  amplification. The general token class stays open.
+- **Current focus** (replace, do not append). **D0/native paid extraction (D9), with the linear
+  case stated explicitly.** The bounded G4 completion pass ends at X25; the full Shannon question
+  remains open. Source elimination now removes the transversal premise (§28), but degree-only
+  sparse-generation extraction is false (X26). Next proof-level unit: retain one actual
+  source/trace/cut fibre and identify a grid/transport premise capable of paying for a source
+  basis. For a linear fibre K≥N−B, a clean restriction with t revealed sources and surviving
+  incidence I′ must obey 3N−I′≤4(B+t); useful extraction must reverse it. First test the proposed
+  premise against the cycle-code/circuit control and the native controls in the
+  [audit](notes/native-cone-property-audit.md). No automatic linearity of native fibres,
+  no genericity premise, and no new finite search. If no additional native premise appears in
+  one pass, return to D0; reserve amplification and a different full-Shannon proof mechanism.
 - Last re-evaluation (D0): 14 November 2026.

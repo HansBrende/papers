@@ -129,6 +129,14 @@ palette. This elementary observation supplies neither uniform generation nor
 unit-speed tape wiring. Bounded circuit depth and a finite local gate palette
 alone are insufficient; the physical realization is the missing resource.
 
+**Further source-basis caution.** [Row spread §30](row-spread-of-cones.md#30-sparse-recovery-and-cheap-circuits-need-not-give-sparse-generators)
+now gives a separate obstruction to extracting sparse generators from bounded
+read-degree: regular high-girth cycle codes have bounded local recovery and
+linear-size encoding circuits, but every generator basis has growing mean
+support, even after a small linear reveal. No native or whole-row realization
+is supplied. This reinforces the need for the physical/grid premise; sparse
+recovery checks alone do not supply the source supports required by §28.
+
 ## 3. What is already excluded, and what remains
 
 There is no established **smallest remaining class** of schedules. A list of

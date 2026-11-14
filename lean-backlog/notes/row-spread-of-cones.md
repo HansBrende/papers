@@ -2673,7 +2673,9 @@ forward-only estimate uses the full balanced grid in its deletion cost.
 This is a common deficit for the entire two-token subclass, and for
 bounded-arity presentations of mean support size at most any fixed μ<5/2.
 It is not a half bound, an unrestricted transversal theorem, or a
-native-machine exclusion.
+native-machine exclusion. Section 28 now proves the corresponding finite
+bound and exact core reduction directly for arbitrary field-linear
+generators, removing the matching-matroid premise.
 
 The [exact controls](../tools/diagonal-calibration/README.md#two-token-presentations)
 check graph versus matching ranks, recovery, the loop charge and the
@@ -2827,9 +2829,10 @@ The [fixed controls](../tools/diagonal-calibration/README.md#block-core-controls
 check raw-core failures, the paid repair, two successive clean peeling
 steps, and peeling ordinary pairs to rank zero. The bounded reduction
 pass is complete. What remains is a deficit for higher-degree cores,
-especially at larger support sizes, or an argument without the transversal
-restriction. No such higher-degree bound or general machine exclusion
-has been proved here.
+especially at larger support sizes. Section 28 removes the transversal
+restriction by linear elimination and strengthens the bounded-arity
+mean-support threshold to three. No higher-degree core deficit or general
+machine exclusion follows.
 
 ## 24. Cores of supports three: boundary counts and their limitation
 
@@ -3034,7 +3037,7 @@ Fable's proposal, audited and extended by Astra, 14 November 2026.
 Status: **reviewed written arguments and exact finite checks, not
 Lean-verified**. Front G4. The original inclusion–exclusion prescription
 fails. A modified envelope reproduces the entire cyclic-five witness;
-its validity on general hosts remains open.
+section 29 refutes its validity on general hosts.
 
 **26.1 (the row-order envelope).** For row sets A let
 J(A)={r:ρ(r)⊆A} and F_A=R_A∪C_{J(A)}. Define g(∅)=0 and
@@ -3163,8 +3166,9 @@ satisfies h_*(X)≤h_*(F)+|X∖F|. Minimize this over the defining flats in
 (25b), now with loop cells paid at unit cost, to obtain h_*≤h. ∎
 
 No general submodularity or recovery theorem for (26d) follows. Section
-27 identifies the cyclic witness as a graph-difference code, providing a
-constructive explanation of this positive calibration.
+29 now refutes both on a window-three host. Section 27 identifies the
+cyclic witness as a graph-difference code, providing a constructive
+explanation of this positive calibration.
 
 **Why nonnegative coverage profiles cannot be the general repair.** If an
 actual feasible polymatroid has row entropies
@@ -3273,48 +3277,285 @@ tape implementation or window-three capacity bound follows. The bounded
 literature check identified the underlying token graph and the existing
 d=3,4 special cases; no novelty claim for the full application is made.
 
-## 28. The small-support bound does not need generic coefficients (Fable, 14 November 2026)
+## 28. Arbitrary-coefficient source bounds and exact core reduction
 
-Status: **short written proof, unreviewed**. Front D1; it removes the
-restriction "transversal" from the finite bound of section 22 and leaves
-"linear with a sparse generator matrix".
+Fable's extension, audited and strengthened by Astra, 14 November 2026.
+Status: **reviewed written proofs, not Lean-verified**. The transversal
+premise in sections 22–23 is removed here. What remains is linearity and,
+for inexpensive exceptional-cell deletion, a bound on generator support.
+The mean-support consequence improves the earlier threshold 5/2 to 3.
 
-Let C be a linear whole-row code of dimension K over any field, given as the
-image of K independent source symbols, and let the *support* of a cell be the
-set of sources with a non-zero coefficient in it. No genericity is assumed:
-the difference code of section 27 (coefficients ±1, a graphic matroid) is an
-example that is not a token design.
+**Setup.** Let G be an N×K matrix of column rank K over any field F.
+Its image is a linear whole-row code on a coordinate set V, with the
+specified row and column partitions; write ℓ_x for its coordinate
+functionals. A *source* is one of these K independent generator columns.
+Its degree counts nonzero entries in that column. Put
 
-**28.1.** Three facts hold for every such code, whatever the coefficients:
-(i) K is at most the number of sources that occur;
-(ii) a source occurring in exactly one cell forces that cell to be a host
-loop;
-(iii) a cell is recoverable from a set of cells only if each of its sources
-occurs in some cell of that set.
+  I=Σ_x |supp(ℓ_x)|,
 
-*Proof.* (iii): a combination of cells in which a source does not occur has
-coefficient zero at that source. (ii) follows. ∎
+and let a≥2 bound every coordinate support. The finite clean-core
+statement will not need a. Zero coordinates are retained in V. L and
+N₃ count coordinates at incidence distance one and exactly three,
+respectively, in the row-helper bipartite graph, as in section 22.
 
-**28.2.** The forcing step of section 22 holds: if a cell e at distance more
-than three contains two sources u, v each occurring in exactly one other
-cell (a and b), then a and b are host loops.
+Recovery may initially be nonlinear: on a linear code it implies that
+ℓ_x lies in the linear span of the helper functionals. Indeed their
+common kernel is contained in ker(ℓ_x), so ℓ_x factors linearly through
+the helper map. We use these exact linear identities below. Source
+counts require a full-rank generator, not a redundant parametrization.
 
-*Proof.* By (iii) the recovery of e needs a and b among its helper rows. If
-a is not a loop, its recovery needs another occurrence of u, which can only
-be e, with a non-zero coefficient; the coefficient of v so introduced has to
-be cancelled, and b is the only other cell containing v; so b lies in the
-helper rows of the column of a. That is the walk row(e), column(a), row(b),
-column(e) of length three. (If a = b, the two cells are proportional on
-{u, v} or e is not recoverable; in the first case u and v can be merged into
-one source and K is smaller than assumed.) ∎
+**28.1 (low-source forcing, with arbitrary coefficients).** A source
+occurring once forces its sole cell to be a host loop. Distinct such
+sources have distinct sole cells, since two generator columns supported
+on the same cell would be proportional. Thus n₁≤L.
 
-**28.3 (consequence).** The counting of section 22 uses only 28.1 and 28.2.
-Hence for every linear whole-row code whose cells have supports of size at
-most two in some choice of sources, 6K ≤ 5N + 6L + N₃, and after the trimming
-of rows of high reverse degree K/N ≤ 5/6 + O_w(d^{−1/2}) on every fixed-window
-host. With supports of size at most a and total support I the same holds for
-6K ≤ 2I + N + (2a+2)L + (a−1)N₃. So **a linear code of rate close to one needs,
-in every choice of sources, mean support at least 5/2.**
+Suppose a nonloop cell e contains two degree-two sources u,v, whose
+other occurrences are p,q. Recovery forces p,q into e's helper union.
+They are distinct: if p=q, recovery makes the coefficient pair at e a
+scalar multiple of the pair at p; the two source columns, supported only
+there, would be proportional. If p is nonloop, its recovery uses e with
+nonzero coefficient to supply u, then must use q to cancel v. Hence
 
-Not checked here: whether the paid reduction to cores and the bound 2/3 of
-section 23 also survive without genericity. Their proofs use Hall squares.
+  row(e) — column(p) — row(q) — column(e)
+
+is a length-three walk. A far e, meaning neither a loop nor distance
+three, therefore has p and q on host loops. The argument applies to
+every pair of degree-two sources at e, regardless of its support size.
+
+The incidence count in 22.5 now applies without square matchings:
+3K≤I+2n₁+n₂, and the same loop/near charge gives
+
+  2n₂≤N+2(a−1)L+(a−1)N₃.
+
+Consequently
+
+  6K≤2I+N+(2a+2)L+(a−1)N₃.                             (28a)
+
+For a=2 this is 6K≤5N+6L+N₃. This proves Fable's extension of the
+finite theorem over every field; the sharper consequences below also
+remove genericity from the core argument.
+
+**28.2 (source deletion).** Fixing t selected source values to zero
+restricts G to the other K−t columns. They remain independent, so the
+new dimension is exactly K−t; every recovery identity survives. If the
+deleted columns contain J nonzero entries in total, the new incidence
+count is I−J, with J≥t. This is deletion in the same source basis, not
+an uncharged rebasing or coordinate deletion.
+
+**28.3 (clean elimination and exact peeling).** Suppose every nonzero
+coordinate is far. Call degree-two sources low and the others high.
+There are no degree-one sources. A low source occurs at most once in
+any helper union: if its two cells x,y both help a column r, recovery
+of x also requires y to help column(x), giving
+row(x)—r—row(y)—column(x), a forbidden length-three walk. No cell
+contains two low sources, by 28.1 and the absence of nonzero loops.
+Their coordinate pairs are therefore disjoint.
+
+Let C retain the pure-high and zero coordinates. For a low source u
+at x,y with coefficients α_x,α_y, recovery of x must use y with
+coefficient α_x/α_y. Every other helper carrying a low source has
+coefficient zero: that source appears only once in the helper union
+and not in x. It follows that
+
+  ℓ_x−(α_x/α_y)ℓ_y ∈ span{ℓ_z : z∈C}.                 (28b)
+
+Modulo this span each low pair contributes at most one dimension, and
+exactly one by projection to its distinct low-source coordinate. As all
+coordinate functionals span F^K,
+
+  rank(G restricted to C)=K−n₂=number of high sources.
+
+For a pure-high target, all low-bearing helper coefficients likewise
+vanish. Thus C itself recovers using only its pure-high helper cells.
+Its original high-source columns remain a full-rank generator; no basis
+change increases the supports. In particular
+
+  K=(N−|C|)/2+rank(G restricted to C).                  (28c)
+
+Recompute degrees on C and repeat. Each nontrivial step removes one
+source and two cells per low pair. The inherited coordinate mask keeps
+all initial constants, and removed cells are not counted again. The
+process ends at a code with minimum source occurrence three and
+
+  K=(N−N_*)/2+K_*.                                    (28d)
+
+This is the complete linear counterpart of 23.3, with no maximum-support
+bound, in every characteristic. Hall squares are replaced by (28b).
+
+**28.4 (payment and strengthened consequences).** Delete every source
+touched by a loop or distance-three coordinate; this costs at most
+a(L+N₃). The surviving code is clean, so 28.2–28.3 give the exact
+paid decomposition
+
+  K=t+(N−N_*)/2+K_*.                                  (28e)
+
+More generally t may include a preliminary deletion making designated
+helper rows zero and removing them from the relation. No payment is
+needed for the clean case; no cheap payment is asserted without a
+support bound or a separate estimate for t.
+
+If the maximum support is two, the terminal incidence count gives
+3K_*≤2N_*. Substitution into (28e) yields K≤2N/3+t.
+
+There is a stronger mean-support bound than (28a). In the first clean
+step, K=n₂+|H|, N≥2n₂+|H|, and I≥2n₂+3|H|, because the pure-high
+coordinate restriction has rank |H|. Adding the last two inequalities
+gives 4K≤N+I. After the payment of 28.2, with its actual incidence loss J,
+
+  4(K−t)≤N+I−J,
+  4K≤N+I+4t−J≤N+I+3t.                               (28f)
+
+On a balanced d×d grid with b scalar lanes and forward window w,
+first delete sources touched by rows of reverse degree greater than an
+integer R≥1, then delete those touched by the loop/near coordinates
+of the trimmed relation. Exactly as in 23.4, N=d²b and
+
+  t/N≤aw/(R+1)+aw/d+aw(w−1)(R−1)/d =: E_{a,w,d}(R).   (28g)
+
+The high-reverse rows become zero, so removing them from every helper
+set preserves recovery. The remaining relation has reverse degree at
+most R and exceptional masses at most wdb and db·w(w−1)(R−1).
+These counts and literal source deletion prove (28g).
+
+Thus two-sparse full-rank generators satisfy
+
+  K/N≤2/3+E_{2,w,d}(R),
+
+and generators with I/N≤μ satisfy
+
+  K/N≤(1+μ)/4+(3/4)E_{a,w,d}(R).                      (28h)
+
+For fixed a,w, take R=⌈√d⌉. The bounds are uniform in the field,
+coefficients, lane count and chosen generator. In particular every
+fixed-window family with a uniformly bounded maximum support and
+mean support μ<3 by a fixed margin has a common positive deficit.
+A family of rates tending to one must have liminf I/N≥3 in every
+sequence of bases satisfying that maximum-support condition. Arbitrary
+bases with unbounded maximum support are not covered by this deduction.
+For maximum support two, the separate 2/3 bound is stronger.
+This does not force density growing with d: maximum and mean support
+three remain unexcluded.
+
+For a selected linear fibre with K≥N−B, a subsequent clean source
+restriction of cost t and incidence I′ must therefore satisfy
+3N−I′≤4(B+t). A native extraction contradicts the fibre only if it
+reverses this inequality on that same paid fibre. Neither a sparse
+recovery relation nor an unspecified bounded generator mean supplies it.
+
+**What changed and what remains.** Genericity, alignment, row codegree,
+reverse-degree bounds and bounded coupling are not premises. Linear
+codes with special cancellations, including graphic difference codes,
+are included. The exact core reduction holds at arbitrary support size;
+only its inexpensive payment uses bounded maximum support. The full
+nonlinear question and linear generators of mean at least three remain
+open. Bounded recovery degree is a different property, as section 30
+shows. The [fixed exact controls](../tools/diagonal-calibration/README.md#arbitrary-coefficient-source-controls)
+check actual coefficient ranks and recovery, not matching ranks.
+
+## 29. The repaired completion rule fails at window three
+
+Astra, 14 November 2026. Status: **exact finite certificate with written
+argument, not Lean-verified**. This closes the specific rule (26d), not
+the full Shannon question. The first control already decides it; no LP
+or further host search was run.
+
+Take d=4 and ρ(r)=[4]∖{r}. Then g(A)=4|A| for proper A and g([4])=15.
+For example, with indices zero through three,
+
+  F_{ {0,1} } ∩ F_{ {1,2} } ∩ F_{ {1,3} } ∩ F_{ {0,2,3} }
+    ={(1,1)}
+
+has inclusion–exclusion budget zero. The exact minimum/clipping rule
+of (26d), including **all** 167 nonempty antichain presentations, has
+49 intersection sets and simplifies to
+
+  h_*(X)=|X|−1_{X contains a diagonal cell}.             (29a)
+
+The [finite checker](../tools/diagonal-calibration/completion_window3_counterexample.py)
+verifies the following complete certificate: every
+clipped budget is at least |F|−1; every discounted intersection meets
+the diagonal; each diagonal singleton has budget zero; and the empty
+set has budget zero. These facts prove (29a) on every subset by the
+envelope formula: buy one diagonal singleton when present, and use
+unit costs otherwise.
+
+Two distinct diagonal singletons have h_*-value zero while their union
+has value one, violating submodularity. Recovery fails too: the union H
+of rows 1,2,3 has h_*(H)=11, whereas H∪C₀ adds the cell (0,0) and has
+value 12. Nevertheless h_*(V)=15 equals the order value.
+
+This host is **order-tight and entropic**, so the failure again proves
+no Shannon/order gap. Let its twelve off-diagonal cells be independent
+and impose one sum-zero relation on the four diagonal cells. The other
+three rows determine the missing diagonal entry of each column, so this
+is a code of size q¹⁵ for every alphabet size q≥2. The order expression
+is 4+4+4+3=15 in every row order, giving the matching Shannon upper bound.
+Its true entropy profile is |X|−1_{X contains all four diagonal cells};
+it attains h(F_A)=g(A) for every row set A. The proposed rule has turned
+a four-way parity dependence into a false discount on every nonempty
+diagonal subset. The natural minimum/clipping repair is therefore
+retired; no universal entropy inequality follows from its failure.
+
+## 30. Sparse recovery and cheap circuits need not give sparse generators
+
+Astra, 14 November 2026. Status: **written proof using classical graph
+existence, not Lean-verified**. This is a limitation of a proposed native
+extraction, not a whole-row or tape construction. No novelty is claimed
+for the cycle-code facts.
+
+Let Γ be a finite connected r-regular simple graph, r≥3, with N edges
+and girth g. Orient its edges arbitrarily. Over any field, let C be the
+kernel of its signed vertex-edge incidence matrix. A spanning tree
+shows that the matrix has rank |V(Γ)|−1, and hence
+
+  K=dim C=N−|V(Γ)|+1=(1−2/r)N+1.                       (30a)
+
+At either endpoint, the zero-divergence equation recovers an edge from
+the other r−1 incident edges. Choose one endpoint for each recovery;
+its reverse recovery degree is at most 2(r−1). Every nonzero codeword
+has support containing a cycle: an acyclic nonempty support has a leaf
+where zero divergence forces its sole nonzero edge coefficient to
+vanish. Therefore its weight is at least g.
+
+Each column of **any** full-rank generator is a nonzero codeword. Thus
+its total source incidence I obeys
+
+  I/N≥gK/N.                                           (30b)
+
+Connected r-regular graphs of arbitrarily large girth exist for every
+fixed r≥3: [Erdős–Sachs, *Reguläre Graphen gegebener Taillenweite mit
+minimaler Knotenzahl* (1963), Satz 2](https://www.renyi.hu/~p_erdos/1963-16.pdf),
+p. 257; take a connected component if needed. At fixed r, recovery
+degree stays bounded while the minimum mean generator support tends
+to infinity. By choosing r large first, the rates can be arbitrarily
+close to one as well. Constants depend on that choice of r.
+
+**Linear advice cannot make this cheap.** A nonempty fibre of at most
+t linear advice symbols is an affine translate of a subcode of
+dimension K′≥K−t, still with minimum nonzero weight at least g. Every
+generator of its translation space therefore has mean support at least
+g(K−t)/N. To lower that mean to M one must pay
+
+  t≥K−MN/g.                                           (30c)
+
+This concerns linear/affine advice, not arbitrary nonlinear fibres.
+
+**Even linear-size encoding is possible.** Choose the cotree edge flows
+as K independent source values. Compute their divergences b_v at all
+vertices, then subtree sums s_v=b_v+Σ_{children u}s_u in a rooted
+spanning tree. Orient tree edges from child to parent and set that flow
+to −s_v. Every nonroot divergence is zero; the root is zero because
+Σ_v b_v=0. This gives a bounded-fan-in arithmetic encoding circuit with
+O(N) gates (XOR gates over F₂), despite (30b). Each source enters its
+two endpoint sums, and each subtree sum feeds its parent and one output,
+so bounded fanout can be retained. This counts arithmetic, not tape
+movement or the delivery of values to those gates.
+
+**Native scope.** Bounded read-degree alone, even combined with a
+linear-size linear encoding circuit, cannot supply a source basis of
+bounded mean support after an inexpensive linear reveal. These graphs
+have not been given a fixed-window balanced grid labelling or realized
+as native tape cones. Any native extraction must use an additional
+property of that geometry or paid computation. Moreover an unspecified
+finite mean-support bound would not suffice for (28h): it must lie
+below three by a fixed margin, or supply another core-deficit premise.

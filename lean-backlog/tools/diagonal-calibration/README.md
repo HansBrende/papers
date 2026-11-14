@@ -148,7 +148,7 @@ are inconsistent, even on a nonempty set after clipping. Taking the
 minimum over presentations and clipping to $[0,|F|]$ instead reproduces
 the full witness: rank domination on all intersections and agreement on
 its 68 defining cyclic flats certify equality on all $2^{25}$ subsets.
-No general-host validity theorem for this modified rule is claimed.
+The modified rule fails already at window three, as checked below.
 
 The second command checks the connected difference graph and every
 recovery identity over the integers at $d=2,3,4,5,8$. At $d=5$ it
@@ -158,6 +158,21 @@ finite abelian group, and over every field. Recovery uses two whole
 rows, potentially many scalar entries in each, so it does not settle
 the sparse two-scalar-helper problem. Both commands use only the
 standard library, run no optimizer or host search, and write no files.
+
+To reproduce that failure on the single host $d=4$,
+$\rho(r)=[4]\setminus\{r\}$:
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/completion_window3_counterexample.py
+```
+
+All 167 nonempty antichains give 49 intersections. Their exact budgets
+certify $h_*(X)=|X|-1_{X\text{ meets the diagonal}}$ on all subsets.
+Two diagonal singletons violate submodularity; column recovery has
+values 11 and 12. The actual all-alphabet code has one parity constraint
+on its four diagonal entries and free off-diagonal cells, attaining 15.
+Thus the proposed rule fails even with attainable row budgets; this
+does not give a Shannon/order gap. No optimizer is used.
 
 ## Fundamental token blocks
 
@@ -191,8 +206,10 @@ assumption is used. The two-token matching-matroid premise remains.
 The same Hall-matching proof extends to maximum support size a and total
 incidence I: 6K≤2I+N+(2a+2)L+(a−1)N₃. For fixed a,w and I/N≤μ<5/2,
 it gives asymptotic rate at most (1+2μ)/6. The matching-matroid recovery
-condition remains essential; sparsity of an arbitrary coefficient matrix
-does not imply it.
+condition is a premise of that Hall-matching proof; sparsity of an arbitrary
+coefficient matrix does not imply it. Section 28 removes this premise by
+linear elimination and strengthens the mean-support bound, as described
+under Arbitrary-coefficient source controls below.
 
 ```sh
 python3 lean-backlog/tools/diagonal-calibration/bicircular_controls.py
@@ -255,3 +272,27 @@ In the singleton version every token occurs three times and all
 defects are support defects. Both families have limiting rate one half;
 they do not refute a common deficit or a rate-sensitive charge. Standard
 library only, with no search over hosts or output files.
+
+## Arbitrary-coefficient source controls
+
+[Row spread §28](../../notes/row-spread-of-cones.md#28-arbitrary-coefficient-source-bounds-and-exact-core-reduction)
+extends the finite support bound and exact paid core reduction from
+transversal presentations to all field-linear codes with a full-rank
+generator. Linear elimination replaces Hall matchings. Two-sparse
+generators have rate at most $2/3+o(1)$ at fixed window. With bounded
+maximum support and mean support $\mu<3$, the stronger estimate is
+$(1+\mu)/4+o(1)$. All are written proofs, not Lean formalizations.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/linear_core_controls.py
+```
+
+This reuses existing modular rank and host-distance functions. Nine fixed
+controls over $\mathbb F_2,\mathbb F_3,\mathbb F_5$ check actual coefficient
+ranks, whole-row recovery, source-deletion payment, and exact peeling with
+the coordinate mask retained. The cyclic difference code has a four-cycle
+of rank three whose support-matching rank is four, so it tests a genuinely
+nongeneric case. A near-helper control verifies why raw core deletion can
+break recovery; a clean control peels through dimensions $3\to2\to1$
+while retaining all 22 original constant coordinates. No optimizer, random
+search or external package is used, and no files are written.

@@ -138,7 +138,12 @@ Open questions, nearest the wall first:
   comes with a precise inequality.
   For classical Q(4,s), the [reviewed grid-family construction](notes/triangle-free-hosts.md#7-grid-lanes-on-every-classical-parabolic-quadrangle)
   gives c_ent≥2+2/(2s+1); convergence of c_Sh to2 remains conjectural.
-- **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
+- **The general bound, and the first open window.** For all whole-row codes the best deficit is
+  still 1/(w+1). Window two is settled at one half. **Window three is the smallest open case:
+  1/2 ≤ R(3) ≤ 3/4, with neither end improved.** On hosts of window three whose incidence graph has
+  girth above 8 there are no mutual triangles and no grids, so none of our codes beats pairing, and
+  the relation is mixing, so none of our bounds beats order. Any improvement of either end there
+  would be new.
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact values on full hosts: Fano
 Shannon119/3 (attained on cube-sized alphabets; scalar-linear39 over F₂ and F₃; order41);
@@ -229,17 +234,12 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Consolidated; no front open.** Banked: B1–B4.
-  Lean: the two-sided transfer, assigned-rule theorem, soft order bound, full Fano result and
-  finite rectangle barrier, both entropy-to-exact-subcode forms (record bound H(X∣Z)), and the
-  grid upper certificate/order comparison. Written: symmetric normal form, amplification,
-  grid lower construction and classical quadrangle code family. Closed today: X29–X31. No premise with an inequality exists for a high-order
-  family: balanced helper-containment refinements inherit the fixed base's order deficit;
-  Bernoulli incidence at fixed positive density has unbounded mutual cliques and hence no
-  uniform soft constant (this alone is not a capacity-to-one proof). Planes still have the
-  conjectural residual constant3; the classical quadrangle constant is strictly above2 at
-  every finite order, and its proposed limit2 remains open.
-  Astra: the remaining Lean statements of the status index, at its own pace. Fable: the report. A front
-  reopens only with a premise of kinds (i)–(iii) of "What cannot work, and what can", or a
-  correctness-forced source restriction with a named consumer, and an inequality attached.
+- **Current focus** (replace, do not append). **Consolidated; no front open.** Lean: B1, the
+  two-sided transfer, Fano and grid certificates with their order optima (B2, B4), the paid
+  inequalities, the soft order bound, both closure barriers, the subcode forms. Written: B3, the
+  symmetric normal form, the quadrangle family. Closed today: X29–X31. Astra finishes the status
+  index at its own pace. A front reopens only with a premise and an inequality, of the kinds listed
+  under "What cannot work, and what can", or a correctness-forced source restriction with a named
+  consumer. The standing sharp form of the question is the first open window (window three, large
+  girth).
 - Last re-evaluation (D0): 14 November 2026.

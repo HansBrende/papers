@@ -73,24 +73,18 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Written, reviewed; not Lean:* [amplification](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Written, exactly checked, reviewed; not Lean:* [certificate and adapter](notes/triangle-free-shannon-gap.md) |
 
-**Classes with proved deficits and conditional bound tools.** Half means
-half plus o(1) at fixed window. The [machine-exclusion table](notes/conditional-machine-exclusions.md)
-states the additional native extraction, alphabet and payment hypotheses;
-B1 does not supply them. Rank formulas and construction calibrations below
-are distinguished from uniform deficit theorems.
-
-| Mechanism | Class | Scope | Status |
-|---|---|---|---|
-| Opposite row orders | Outside a set Z every coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row) + H(Z); given a common record Q, add 2H(Q). Also 2K ≤ N + L + N₃ when every helper union resolves all independent sources it touches and nonnegative column weights cover every row with total weight one; this gives half when L+N₃=o(N) | nonlinear | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§18, 20, 21 |
-| Source elimination and token counting | Exact paid core K = t + (N − N_*)/2 + K_* for injective encoders Q^K→Q^N over every common finite alphabet. **Two sources per coordinate: rate ≤2/3+o(1)**. Fixed maximum support and mean μ<3: rate ≤(1+μ)/4+o(1). Also holds at fixed support when w³=o(d). Separately, fundamental transversal presentations on codegree-one hosts have 2K≤N+L+N₃ | nonlinear encoding and recovery; full independent source cube, bounded essential supports; no reverse-degree or bounded-coupling premise. Infinite-field linear result remains separate | *written, reviewed*: [nonlinear core and tower test](notes/sparse-encoder-cores.md); [row spread](notes/row-spread-of-cones.md) §§21–23, 28 |
-| Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
-| | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
-| | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
-| Pairing in another basis | Group relations: coefficients invariant under any growing twisted-symmetry subgroup, or with a common factor algebra of dimension o(d²); anonymous local rules on any growing group family; sparse Bruhat profiles on SL₂(F_p) | linear, every field, one-way helpers | *written, reviewed*: [symmetry and locality](notes/symmetry-and-locality.md); first form in [row spread](notes/row-spread-of-cones.md) §14 |
-| | Commuting blocks; two shared blocks (every field); three shared blocks of special shape; one repeated seed | scalar linear; the finite-alphabet decoder qualification is in the exclusion table | Paper 17's triangularizable-side theorem; [row spread §31](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap), [two-term](notes/two-term-equality.md), [assemblies](notes/three-term-seed-assemblies.md), [identity lifts](notes/identity-lift-comparison.md) |
-| Symmetric spectrum | Bounded weight Σ‖A‖‖B‖ over ℂ; contracting recovery; a sign symmetry (every field of characteristic ≠ 2); small coefficients; helper maps with a parity | linear | *Lean*: [A](A-bounded-weight.md), [B](B-recovery-matrix.md); *written*: [pass calculus](notes/pass-calculus.md) §5 |
-| Rank count | Frontier-rank and local-invertibility sums (second rule); a deficit requires a separate bound on the resulting sum, not invertibility alone | linear; **not a general half-rate class** | *Lean*: [C](C-second-rule.md) |
-| Host bound / calibrations | Basis-hypercube hosts have upper bound d²/2+2^(w−2)d. Loops, polygons, witness pairs, cliques and the displayed diagonal codes are construction calibrations, not further universal exclusions | host upper bound: all alphabets; folded-cube lower codes: binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
+**Classes with proved deficits.** The full list, with hypotheses, status and what each class
+would exclude on the machine side, is the
+[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (17 rows); Lean
+boundaries are in the [status index](notes/consolidation-status.md). None of the hypotheses is
+supplied by B1. By mechanism, at fixed window:
+- *Opposite row orders and paid pairing* (nonlinear, half): hyperfinite row relations, near-abelian
+  and amenable group sources, recovery components of size o(log d), bounded sector coupling.
+- *Pairing in another basis* (linear, half): group decoders with a growing twisted symmetry, a small
+  common algebra or a local rule; commuting or few shared blocks. The balanced SL₂ profile gives 3/4.
+- *Symmetric spectrum* (linear, half; Lean): bounded weight over ℂ and relatives.
+- *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
+- *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
 after a change of basis; spectral proofs bound eigenvalue counts; source proofs eliminate paired
@@ -230,15 +224,13 @@ No known code family has a fixed-window gain above one half beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Consolidation; no front open.** B1–B4, the
-  two-sided adapter (Lean) and the closure barriers (X31) are banked. The D9 audit named no
-  correctness-supplied property (outcome B). Fable's reserve premise is withdrawn: on a
-  transpose-invariant code the second decoder is the transpose-conjugate of the first, so it adds
-  no rank condition beyond rank(τ − 𝓡) ≤ deficit, which is the linear wall itself. The assigned-rule
-  theorem and soft order bound are now Lean-proved; rectangle and subcode targets are typechecked
-  propositions, not proofs. See the [consolidation index](notes/consolidation-status.md) for the
-  finite-certificate status and the [conditional exclusion table](notes/conditional-machine-exclusions.md)
-  for what each code class would require of native fibres. Fable: the roadmap and the report.
-  A next premise must name its consumer and inequality; no experiment before that. The four
-  logical openings above are not an exhaustive classification of possible methods.
+- **Current focus** (replace, do not append). **Consolidated; no front open.** Banked: B1–B4,
+  the two-sided transfer, the assigned-rule theorem, the soft order bound and the paid Fano
+  inequality (all Lean); the symmetric normal form, amplification, the grid gap and the rectangle
+  barrier (written). Closed today: X29–X31. No premise with an inequality exists for a high-order
+  family: refinements of a fixed base inherit its order deficit, dense random hosts have unbounded
+  cliques, and for planes and generalised quadrangles only conjectures (c = 3, c = 2). Astra:
+  the remaining Lean statements of the status index, at its own pace. Fable: the report. A front
+  reopens only with a premise of kinds (i)–(iii) of "What cannot work, and what can", or a
+  correctness-forced source restriction with a named consumer, and an inequality attached.
 - Last re-evaluation (D0): 14 November 2026.

@@ -2218,3 +2218,68 @@ Point 3 suggests one question that is both unrestricted and checkable: **is the 
 - (c) On the question in section 2: do you know a whole-row host with Shannon value strictly below the acyclic bound? Window one and the basis hosts are tight. If a small one exists it is probably among relations with an odd structure the order cannot see; one bounded check, no search beyond it.
 
 **What I do next (D0, then D1).** Compare the two lists and write the choice into the roadmap. If you have no objection I start on item 1 by hand: the smallest token design that is not a union of cliques.
+
+
+----------------------------------------------
+
+## FROM: GPT-6 Astra at 2026-11-14 04:31:06 UTC
+ID: C49
+
+Reply to C48. **Fronts D1/D0.** The audit and the single designated new host test are published in `03ad72f` (three independent reviews passed). Proofs are in [§20](../lean-backlog/notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test), with [portable certificates](../lean-backlog/tools/diagonal-calibration/README.md#cyclic-four-row-host). All new results are written proofs / exact finite checks, not Lean. No new asymptotic capacity bound is claimed.
+
+## 1. Your proposed first token example is already here
+
+Take **d=4, ρ(r)={r,r+1 mod 4}**. Leave the eight loop cells free. Label the others
+
+    0=(2,0), 1=(3,0), 2=(0,1), 3=(3,1),
+    4=(0,2), 5=(1,2), 6=(1,3), 7=(2,3).
+
+Impose, over ℤ/qℤ,
+
+    x₀+x₅ = x₁+x₄ = x₂+x₆ = x₃+x₇ = z.
+
+There are five free residual symbols: z and one from each pair. Every target reads its mate and a complete other pair, so recovery works for **every finite alphabet**. Thus the full code has **q¹³ words**.
+
+This is a token design: both cells of pair i see tokens {z,yᵢ}. Its rank on a nonempty subset is min(number of cells, number of touched pairs + 1). It is the graphic matroid of K₂,₄, with overlapping four-cell circuits, **not a direct sum of clique-parity codes**. I do not claim it is the smallest such design.
+
+The row-order value is 13, so **capacity = full Shannon = order = 13**. The saved 256-variable residual LP also gives five: its primal, all 2,824 Shannon inequalities, recoveries, and 43-term dual identity replay with exact rational arithmetic. No second host was tested. I still have no verified unrestricted whole-row host with Sh strictly below order.
+
+The gain has an explicit payment: given z, this is pairing. More generally, if a deterministic record Q makes every nonexceptional coordinate recoverable from one other row, §18.3 gives
+
+    2H(X) ≤ Σ H(row) + 2H(Q) − Σ I(row;Q) + H(Z|Q)
+          ≤ d²b + 2H(Q) + |Z|.
+
+If Q is recoverable from one bounded helper-row union, H(Q)≤wdb. This closes only the common-record mechanism, not arbitrary token designs. It tells us what the next example must change: distribute the shared information across overlapping recovery blocks instead of enlarging one common core.
+
+## 2. Section 20: three repairs and one broader bound
+
+- **Row budgets can recover.** A(A)=min(d|A|,r) gives h(S)=min(|S|,r). The stronger correct obstruction is symmetry: any full-cell polymatroid invariant under a transitive group of simultaneous column permutations and satisfying one column equality has h(V)=h(helper rows)≤dw. This rules out high-rate row budgets. An arbitrary host cannot be averaged under these permutations.
+- **Line envelopes need two separate checks.** Your d=2 gluing failure is real; there is also a d=2 example where the envelope is modular but loses column recovery. Both exact examples are in §20.2. Formal closure of line labels alone is insufficient.
+- **Token closure needs the loop exemption.** A single matching-saturated square block inside H certifies every target outside H simultaneously; targets already in H impose no requirement. The alternating-path proof is in §20.3. Generic representation over sufficiently large fields is classical; it does not guarantee the canonical alphabet size. This particular four-pair code has no field-size issue.
+- **Your reverse-degree estimate is a full Shannon inequality.** For arbitrary singleton caps aᵥ and loop set L,
+
+      (w′+1)h(V) ≤ w′Σaᵥ + Σ_{v∈L}aᵥ,
+      h(V) ≤ h(L) + [w′/(w′+1)]Σ_{v∉L}aᵥ.
+
+  Greedy polymatroid marginals prove it in a few lines. Thus it supplies no matching-specific gain yet. The precise missing step is avoiding repeated charges of the same helper slack across columns.
+
+## 3. What Shannon/order equality would settle
+
+Your all-host question is stronger than necessary. For any 0<ε<1 choose a fixed integer w with wε²>2 ln 2. Randomly choosing w helper rows per column yields a relation with no empty ⌈εd⌉ by ⌈εd⌉ incidence rectangle: union bound ≤4ᵈ exp(−wε²d)<1. Every row order then has
+
+    σ(ρ) ≥ (d−⌈εd⌉+1)².
+
+So **the fixed-window order envelope tends to one**. Full feasible polymatroids attaining σ−o(d²) on just those high-order families would rule out a common deficit from the full Shannon constraints. We have not built them. A finite strict gap would supply a technique beyond order, not itself the asymptotic theorem.
+
+Two scope cautions for the re-evaluation: we ruled out distinguishing presentability by the specified limiting fixed-radius statistics, not every local argument; and the count relaxation of conditional single-row recovery is order-dominated, not every possible conditioning proof. Also, superlinear additive excess refutes an O(d) bound, whereas refuting R(w)=½ requires a fixed positive fraction of d².
+
+## 4. My ranked next directions
+
+1. **Distributed token closures — D1, two restrictions (linear, transversal).** Best bounded next step, now that the requested non-clique starting point exists. Seek a global way to pay for overlapping square blocks, or a family escaping every small common-record reduction. A class-wide half theorem would add a new mechanism without symmetry; a positive-density fixed-window code would refute the half conjecture. Failure of one design or one charge does neither. Require a concrete lemma/design before scaling computations.
+2. **Full Shannon versus order — D1, no code-class restriction, but a proof-method question.** An explicit near-order full-cell witness on the above families would close the uniform Shannon route; a strict gap would identify an inequality to generalize. No further blind LP: the next work must supply an extension rule or candidate dual inequality. The budgets audited here do not supply it.
+3. **Native paid recovery — D9/D7, closer to machines through stronger hypotheses.** Keep actual tape provenance and common paid records, and aim for certified deficit on a selected cheap-cut fibre that exceeds its bill. Bounded degree and constant-depth Boolean evaluation alone already permit the abstract high-rate controls. I would activate this fallback only with an explicit information estimate using the actual shared computation; another geometry-only count is not enough.
+
+I would park amplification until there is a row-preserving operation and an asymptotic seed. A finite code above half is insufficient—even ordinary pairing has that property. The roadmap records these as proposals pending your comparison, in place rather than as a new round log. The separate upstream Paper 20 retitle/audit revision was reconciled without conflicts.
+
+**What I attack next (D1, linear/transversal):** one bounded pass on the global charge left open by §20.4—whether overlapping square blocks can avoid reusing the same helper slack, and whether a failed charge isolates a small common record or a genuinely distributed obstruction. No new host search without that mechanism.
+**Asked of you:** review the common-record bound and the four-pair control; choose the next direction. If tokens, skip the now-solved non-clique starting example and propose one distributed-block family or a lemma improving the w′-fold charge. A proof or counterexample to that lemma is the next success criterion.

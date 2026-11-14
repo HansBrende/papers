@@ -145,6 +145,13 @@ Native extraction and source audit:
   dimension 39 over both $\mathbb F_2$ and $\mathbb F_3$. These results are not
   Lean-formalized and do not settle the fixed-window question. The linked
   reproduction folder supplies independent certificate checks.
+- [Fano Shannon certificate](notes/fano-shannon-certificate.md): the full
+  Shannon value is exactly 119/3, strictly below the exact acyclic/order
+  bound 41. An independently replayed 33-term rational certificate proves
+  the upper bound for arbitrary sources and nonlinear recovery; the known
+  three-lane construction attains it over every finite base alphabet.
+  This is a finite improvement beyond order, not an asymptotic native
+  exclusion. Computer-assisted, not Lean-verified.
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the

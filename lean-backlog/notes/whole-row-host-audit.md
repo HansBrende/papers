@@ -90,7 +90,7 @@ per host edge is not decided here.
 |---|---|---|
 | Initial shear controls, $d=7,11,13$, windows $3,4,5$ | 29 of 30 exact capacities; one interval remains | Prescribed sparse helper graphs, every finite alphabet; no dense coefficient search |
 | Fano incidence, $d=7,w=3$ | Scalar-linear dimension exactly 39 over $\mathbb F_2$ and $\mathbb F_3$ | Unrestricted dense blocks; computer-assisted proofs, not Lean |
-| Same Fano host, three binary lanes | 119 free bits out of 147; normalized exponent $119/3$ | Vector construction; general alphabet-eight upper bound 41 |
+| Same Fano host, three binary lanes | Exactly 119 information bits out of 147; normalized exponent and full Shannon value $119/3$ | Matching unrestricted Shannon certificate; order bound 41; not Lean |
 | Basis hosts on $\mathbb F_2^s$, $s=2,3,4$, $w=s$ | Exponents exactly 12, 46, 176 | Full hosts, every finite alphabet, nonlinear recovery allowed |
 | Cyclic $\rho(r)=\{r,r+1\}$, every $d\ge2$ | Exponent exactly $d(d+3)/2-1$ | Every finite alphabet; attains the universal whole-row window-two upper bound |
 | Clebsch host, $d=16,w=5$ | Binary exponent at least 210; all-alphabet upper 211 | General cross-diagonal gain remains open |
@@ -112,7 +112,10 @@ coefficient free. Its exact minimum rank is 10 over both fields.
 The lower code is eight disjoint triangles and two pairs, plus the
 loops; the rank-nine exclusions have checked Boolean proof traces.
 The [proof and certificate instructions][simplex] distinguish scalar
-39, vector $119/3$, and nonlinear upper 41. The rank-ten control and the
+39 from the three-lane value $119/3$. The later
+[Shannon certificate](fano-shannon-certificate.md) proves the matching
+unrestricted upper $119/3$, strictly below the exact order bound 41.
+The rank-ten control and the
 13,964-addition binary proof were replayed in this audit. The large
 ternary trace was not replayed anew; its prior verification record was read.
 

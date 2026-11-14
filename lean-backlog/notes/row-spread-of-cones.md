@@ -1576,7 +1576,7 @@ extension-field linearity is assumed.
 sum-zero gadgets of m ≥ 2 cells in distinct rows contribute m−2 to S;
 independence is what permits addition across gadgets. Each gadget has
 entropy m−1, row-entropy sum m and zero residual entropy. Free loop
-coordinates and pairs contribute zero. Thus the Fano scalar construction (optimal over GF(2) and GF(3))
+coordinates and pairs contribute zero. Thus the Fano scalar construction (the scalar-linear optimum over GF(2) and GF(3))
 has H=39, A=49, R=21, S=8, and the basis host at d=8 has A=64, R=24, S=4.
 These saturate (18a)'s coarse entropy estimate, not a universal function
 F(w,w′).
@@ -1814,7 +1814,10 @@ new expansion is at least min(1/2,η/(4Δ)). This control does not assert
 that an order eliminates every split cell; it distinguishes two expansion
 hypotheses.
 
-**19.4 (the full Shannon question, and its finite calibration).** For
+**19.4 (the full Shannon question, and its finite calibration).** The later
+[Fano certificate](fano-shannon-certificate.md) proves a strict full-host
+gap, Sh=119/3 versus order=41, with no linearity or source-independence
+assumption. The asymptotic question below remains open. For
 V=[d]×[d], let R_i and C_r be the coordinate sets of row i and column r,
 and R_{ρ(r)} their prescribed helper union. Define Sh(ρ) as the maximum
 of h(V) over normalized, monotone, submodular functions on **all** subsets
@@ -2131,8 +2134,11 @@ Therefore full-cell witnesses with Sh(ρ)≥σ(ρ)−o(d²) on just these
 families would already refute (19f); equality on every host is a
 stronger sufficient target. No such witnesses are constructed here.
 A finite strict gap would instead exhibit a Shannon technique beyond
-order, without by itself proving any uniform asymptotic deficit.
-The basis controls and 20.5 are tight and do not decide either question.
+order, without by itself proving any uniform asymptotic deficit. This
+alternative is now realized by the [Fano certificate](fano-shannon-certificate.md):
+Sh=119/3<41=σ. Universal equality is false; near-order witnesses on the
+random-like asymptotic families in (20e) are still not excluded. The basis
+controls and 20.5 remain tight.
 Writing an arbitrary cap-one h as its own budget extension (g=h) is
 tautological, not a classification of the remaining candidates.
 
@@ -3019,8 +3025,9 @@ equality for every whole-row host. Section 27 supplies the formerly
 missing graphic and entropic realization; independent copies also attain
 Sh_b(ρ)=19b for scalar lanes, as bounded in 19.4. Fano's
 scalar-linear value 39 over F₂ and F₃ is a different kind of result:
-its known three-bit construction implies Sh(Fano)≥119/3, while order
-gives at most 41. Token-matching counts cannot be imposed on arbitrary
+its known three-bit construction implies Sh(Fano)≥119/3, and the later
+[exact Shannon certificate](fano-shannon-certificate.md) gives the matching
+upper bound, below order 41. Token-matching counts cannot be imposed on arbitrary
 feasible polymatroids without proving their additional premises.
 
 The next useful step would be a full-cell extension rule that produces

@@ -246,9 +246,12 @@ its exact generator, solver command and receipt, rather than the large
 trace itself. These are computer-assisted proofs with written encoding
 arguments, not Lean theorems.
 
-The eight-cell acyclic witness also gives the weaker bound
-$\log_{|A|}|C|\le41$ for every alphabet and nonlinear code. Together with
-the three-bit construction, the current certified range at alphabet size
-eight is $119/3\le\log_8|C|\le41$. These scalar optimality results do not close
-this gap. The $13\times13$ disjoint-clique baseline likewise remains only
-a lower bound for unrestricted codes.
+The eight-cell acyclic witness gives the weaker bound
+$\log_{|A|}|C|\le41$ for every alphabet and nonlinear code. The later
+[Fano Shannon certificate](fano-shannon-certificate.md) sharpens the
+unrestricted bound to $119/3$ and proves that this is the full Shannon
+value. The existing three-bit construction attains it: alphabet-eight
+capacity is exactly $8^{119/3}=2^{119}$. The new upper certificate is
+computer-assisted, independently replayed, and not Lean-verified.
+The $13\times13$ disjoint-clique baseline remains only a lower bound for
+unrestricted codes; no larger plane was tested in that Shannon pass.

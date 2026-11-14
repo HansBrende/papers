@@ -5,6 +5,11 @@ They verify finite constructions and the scalar Fano optimum over
 $\mathbb F_2$ and $\mathbb F_3$. They do not determine nonlinear capacity,
 prove the random asymptotic theorem, or perform Lean verification.
 
+The separate [Fano Shannon certificate](../fano-shannon/README.md) now gives
+the matching unrestricted upper bound 119/3 for the three-lane construction,
+strictly below order 41. Its small independent checker is separate from
+the scalar rank certificates in this directory.
+
 Run the following commands from this directory with ordinary Python 3;
 do not disable assertions with `-O`.
 

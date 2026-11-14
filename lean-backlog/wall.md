@@ -61,6 +61,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | | Date | What fell | Status |
 |---|---|---|---|
 | **B1** | 13 Nov 2026 | *Codes, machines and counting are tied.* An additional cheap cut puts all cones of almost every output row into boundedly many input rows. A common positive whole-row deficit along the canonical alphabets gives the literal native crux at every fixed depth and excludes oblivious linear-time transposers. The direct route needs a deficit only at one explicit window, exceeding 169ε/64. Before this the wall was three separate obstacles (paper 17, Section 4). | *Lean throughout:* geometry in [WindowSpread.lean](WindowSpread.lean), finite counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), `uniformWholeRowRateCanonicalBits_crux`, `uniformWholeRowRateCanonicalBits_excludes` and `wholeRow_window_bound_excludes` in [RowSpreadCrux.lean](RowSpreadCrux.lean), reusing Paper 14. Capacity remains a hypothesis. See [row spread](notes/row-spread-of-cones.md) §§2–5. |
+| **B2** | 14 Nov 2026 | *Full Shannon inequalities can beat every order bound on a whole-row host.* Fano has Sh=119/3 and exact acyclic/order value 41; arbitrary sources and nonlinear recovery are covered. The known three-lane code attains the bound. This disproves universal Shannon/order equality, not the possibility of asymptotic near-equality or high rates. | *Written/computer-assisted, independently replayed, not Lean:* [proof and 33-term certificate](notes/fano-shannon-certificate.md). One finite host; no new native-machine exclusion. |
 
 **Classes with proved deficits** (half plus o(1) at fixed window unless stated otherwise).
 
@@ -83,6 +84,8 @@ low-occurrence variables, force near cells, and eliminate paired coordinates. Ex
 ([row spread](notes/row-spread-of-cones.md) §18): 2H = ΣH(row) + ΣH(row | rest) + S, with S the
 signed net synergy of the rows (negative O-information). A fixed gain above one half needs
 S = Ω(N); in every known code S is O_w(db).
+The Fano certificate adds a different finite mechanism: submodularity across
+intersections and recovery closures, with exact charges for added cells.
 
 **What is left.** A fixed gain above one half at fixed window needs:
 1. a row relation that is not hyperfinite, with recovery not confined to components of size
@@ -112,16 +115,18 @@ Open questions, nearest the wall first:
 - **G1. Nonlinear forms** of the basis and spectral pairings.
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
   [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
-- **G4. Is the full Shannon value bounded away from d² as w grows?** It equals the order
-  value on the computed basis hosts d = 4, 8, 16 and every cyclic window-two host. No verified full-host
-  strict gap is known here. Token-matching and field-specific rank bounds have additional
-  premises; they are not Shannon-only consequences of whole-row recovery. Fano's scalar
-  value 39 does not settle its Shannon value, which lies between 119/3 and 41
-  ([host audit](notes/whole-row-host-audit.md), [row spread](notes/row-spread-of-cones.md) §§19–20, 25–27).
+- **G4. Is the full Shannon value bounded away from d² as w grows?** Universal
+  Shannon/order equality is false: Fano has Sh=119/3<41=σ (B2), with the
+  full unrestricted source/recovery scope. Equality still holds on the basis
+  hosts d=4,8,16 and every cyclic window-two host. The new target is to extract
+  structural hypotheses from the Fano intersection/closure identity that allow
+  repeated use with shared coordinates charged. One finite gap does not supply
+  a uniform deficit or rule out asymptotic near-order witnesses.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
-**Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar
-39 over F₂ and F₃ (order bound 41); basis host d = 8, w = 3: 46 for all alphabets.
+**Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar-linear
+39 over F₂ and F₃, full Shannon 119/3, attained on every cube-sized alphabet
+(order bound 41); basis host d = 8, w = 3: 46 for all alphabets.
 Cyclic w = 2 has capacity and Shannon/order value d(d+3)/2−1 for every d≥2 and every alphabet;
 this attains the universal window-two upper bound. The cyclic-five witness is graphic.
 None gives a fixed-window gain beyond O(d).
@@ -203,13 +208,12 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0, comparing reserves after the bounded checks.**
-  The source-core theorem now removes linearity, using relative permutations, but retains a
-  full independent sparse-source representation. The majority-tower support check does not
-  supply it, even after nonlinear reparametrization of the displayed subspace. The native
-  audit supplies no useful E bound (X28). Candidate next: one bounded G4 certificate attempt
-  on the full Fano host, whose Shannon value remains between 119/3 and the order bound 41;
-  a verified upper bound below 41 would exhibit a technique beyond order. A restricted relaxation
-  returning 41 would not settle its full Shannon value. Do not enlarge that test without a
-  concrete certificate mechanism, or restart the closed completion recipes.
+- **Current focus** (replace, do not append). **D1/G4, understand the certified Fano gap.**
+  The one bounded solve matched 119/3; the independent 33-term proof uses only 34
+  set orbits and no code-specific assumptions. Extract its incidence requirements
+  and identify a paid repeated-use statement before any larger-host computation.
+  No host sweep, second LP, or claim of an asymptotic deficit from this finite result.
+  The source-core theorem is banked; the tower sparse gate and record-only native
+  change invoice remain closed at their stated scope. Neither supplies an alternative
+  premise for a new search.
 - Last re-evaluation (D0): 14 November 2026.

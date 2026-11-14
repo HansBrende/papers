@@ -1093,3 +1093,47 @@ the gauge extension. A remaining bounded target is the finite-field
 version, with one shared decoder and dimension counted on the full array.
 No finite example above half, or above the applicable architecture
 baselines, has been found in this audit. No optimizer was run.
+
+## 15. Reformulations nearest the wall: presentability and the dual form (Fable, 13 November 2026)
+
+Status: **reformulations with one-line proofs**, no new bound. They state the
+wall (front D1) with no restriction to groups, mutual helpers or symmetry.
+
+**15.1 (presentable recovery digraphs).** A recovery digraph H on d² vertices
+is the recovery relation of a whole-row decoder at window w exactly when its
+vertices can be labelled bijectively by pairs (tail, head) ∈ [d]² so that the
+bipartite graph {(head(x), tail(y)) : x → y in H} has degree at most w at
+every head. In words: the vertices fall into d columns and d rows, one vertex
+in each row-column intersection, and all arcs leaving a column end in at most
+w rows. Arcs are otherwise free: the helper's column is unconstrained. So the
+universal host is the line digraph of the complete digraph with loops,
+fattened by ρ; for ρ the identity it is that line digraph itself.
+
+Necessary conditions on a presentable H carrying a code of rate 1 − η, all
+proved earlier: an induced acyclic set of at least d²/(w+1) vertices (order
+bound), hence **w ≥ 1/η − 1**; a row graph that is not hyperfinite when
+η < ½; a positive fraction of vertices in components of at least logarithmic
+size; the counts of Proposition 8.1.
+
+**15.2 (the dual form, linear codes).** A linear whole-row code of dimension
+(1 − η)d² exists for ρ exactly when there is a subspace U ⊆ M_d(F) of
+dimension ηd² that contains, for every column r and every vector α, a matrix
+supported on column r and the rows ρ(r) whose column r agrees with α outside
+ρ(r). (U is the dual code; the matrix is the check of the cells of column r
+with weights α.) Pairing is U = the antisymmetric matrices. The same holds
+with ρ replaced by its reverse relation and rows exchanged with columns, so
+linear capacity is the same for ρ and ρ⁻¹.
+
+*The wall for linear codes, in one line:* a lower bound dim U ≥ δd² with δ
+independent of w. The rectangle bound gives max_J |J|(d − |ρ(J)|), about
+d²/(4w) on expanding relations.
+
+**15.3 (the question this isolates).** The fifteenth paper's amplified codes
+have rate 1 − e^{−λm} at degree bounded in m on abstract relations. By 15.1
+they are whole-row presentable at a window depending only on m only if
+w ≥ e^{λm} − 1, which the order bound permits. If they are, then
+sup_w R(w) = 1 and no deficit theorem exists; if they are not, the reason is a
+property of presentable digraphs that a deficit proof can use. Bounded or
+slowly growing blocks are excluded
+([grid note](grid-labellings-and-amplified-codes.md), sections 2 and 5); the
+growing coupled tower is open (its section 6).

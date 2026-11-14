@@ -6,8 +6,10 @@ consequences are Lean-verified in [TwoSidedCodeTransfer](../TwoSidedCodeTransfer
 The finite rectangle barrier and its invoice are Lean-verified in
 [RectangleBarrier](../RectangleBarrier.lean). Exact subcode selection, including
 the stronger record-fibre bound, is Lean-verified in [SubcodeSelection](../SubcodeSelection.lean)
-and [ConditionalSubcode](../ConditionalSubcode.lean). Symmetry normalization, exact
-examples and the random-host existence argument retain reviewed written proofs. Their status and the assigned-rule bound are listed in the
+and [ConditionalSubcode](../ConditionalSubcode.lean). Paid symmetry normalization and its
+common-rate/native consequences are Lean-verified in [NormalizedCodeTransfer](../NormalizedCodeTransfer.lean)
+and [NormalizedRateTransfer](../NormalizedRateTransfer.lean). Exact examples and the random-host
+existence argument retain reviewed written proofs. Their status and the assigned-rule bound are listed in the
 [consolidation index](consolidation-status.md). No literature novelty claim.
 Front D10 of the [roadmap](../wall.md).
 
@@ -124,7 +126,7 @@ alphabets. The uniform all-alphabet implication is also proved. The native endpo
 `uniformTwoSidedWholeRowRateCanonicalBits_excludes` and
 `twoSidedWholeRow_window_bound_excludes` reuse
 [RowSpreadCrux](../RowSpreadCrux.lean) at half the deficit. The alternative direct
-pair-message invoice above and the paid symmetry proof below remain written proofs.
+pair-message invoice above remains a written proof; the paid symmetry reduction below is now formalized.
 All checked declarations depend only on Lean's standard axioms. No capacity bound
 or unconditional machine exclusion is asserted.
 
@@ -132,7 +134,8 @@ Check with the repository's pinned dependencies:
 
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
-lake env python3 ../../lean-backlog/check.py TwoSidedCodeTransfer
+lake env python3 ../../lean-backlog/check.py \
+  TwoSidedCodeTransfer NormalizedCodeTransfer NormalizedRateTransfer
 ```
 
 The original row-spread modules must already have been checked; running the same
@@ -143,13 +146,15 @@ command without the module argument checks that full chain.
 The existing paid reverse-degree normalization extends to both directions.
 For an integer R≥0 let H be the indices with reverse degree greater than R.
 Since there are at most wd incidences, |H|≤wd/(R+1). Freeze all entries in
-rows H or columns H, costing 2d|H|−|H|². Within every fibre both decoders
+rows H or columns H, costing at most 2d|H|−|H|². More precisely, the finite
+counting price is the number of attained restriction records on this union,
+which can be smaller than q^(2d|H|−|H|²). Within every fibre both decoders
 may discard these fixed helpers. Thus the fibre is two-sided for
 ρ₀(r)=ρ(r)∖H, whose forward and reverse degrees are at most w and R.
 
-Enlarge to the symmetric relation σ=ρ₀∪ρ₀⁻¹, of window at most w+R.
-Granting additional helpers preserves both recovery directions. Therefore,
-if every symmetric two-sided code at window w+R has size at most q^a,
+Enlarge to the symmetric, reflexive relation σ=ρ₀∪ρ₀⁻¹∪id, of window
+at most w+R+1. Granting additional helpers preserves both recovery directions.
+Therefore, if every symmetric, reflexive two-sided code at window w+R+1 has size at most q^a,
 every original two-sided code satisfies
 
 $$|C|\le q^{\,a+2d|H|-|H|^2}
@@ -158,8 +163,10 @@ $$|C|\le q^{\,a+2d|H|-|H|^2}
 For a common asymptotic rate bound, fix R from w and the desired slack
 before taking d large. This preserves the alphabet quantifiers and makes
 the payment arbitrarily small. **Symmetric and unrestricted two-sided
-codes have the same best common asymptotic rate bound.** One may also
-add all diagonal incidences, increasing the window by at most one.
+codes have the same best common asymptotic rate bound**, even when the
+symmetric target is required to be reflexive. Omitting diagonal helpers
+gives a symmetric-only finite refinement at width w+R by the same written
+argument; that sharper finite-window variant is not a separate Lean endpoint.
 
 Consequently a common deficit for symmetric, even reflexive, two-sided
 hosts suffices for the native question through Section 1. This does not
@@ -167,6 +174,30 @@ preserve a literal finite bound with no slack, nor automatically transfer
 a deficit that shrinks with the enlarged window. The reduction uses only
 conditioning and relation enlargement; it does not make codes symmetric
 or their decoders linear.
+
+**Lean coverage.** [SymmetricHelpers](../../lean-machine/LeanMachine/SymmetricHelpers.lean) reuses the existing
+incidence-trimming double count and proves the exact union size.
+`twoSided_fixedCross_fibre` and `twoSided_card_le_of_fixedCross_image` in
+[NormalizedCodeTransfer](../NormalizedCodeTransfer.lean) handle an arbitrary
+fixed index set H and pay only for attained records; this stronger finite
+form does not require the ambient alphabet to be finite. Its finite-alphabet
+corollary permits empty and singleton alphabets. The exponent adapter uses
+q≥1 and gives window w+R+1 with payment 2w/(R+1); the extra one grants all
+self-helpers. Neither dimension nor alphabet changes.
+
+[NormalizedRateTransfer](../NormalizedRateTransfer.lean) proves equality of the
+normalized and unrestricted two-sided **common rate bounds**, both uniformly
+over finite alphabets and at canonical growing bit alphabets. The native
+crux and exclusion reuse the prior two-sided adapter, with deficit δ/2 and
+no further asymptotic loss. At the one explicit native window w, a fixed
+cutoff R yields the sufficient condition
+
+$$\delta_{\mathrm{norm}}>\frac{169}{32}\varepsilon+\frac{2w}{R+1}$$
+
+for a normalized bound at window w+R+1. This is an implication from an open
+capacity hypothesis, not a new unconditional exclusion. These declarations
+concern actual codes; no comparison of one-sided and two-sided Shannon
+optima is asserted.
 
 ## 3. The cyclic host is exactly pairing plus one
 

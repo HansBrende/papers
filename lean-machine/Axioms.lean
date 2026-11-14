@@ -41,6 +41,23 @@ import LeanMachine
 #print axioms LeanMachine.IncidenceTrimming.retained_leftDegree_le
 #print axioms LeanMachine.IncidenceTrimming.degree_trimming
 
+-- SymmetricHelpers.lean
+#print axioms LeanMachine.SymmetricHelpers.mem_reverseHelpers
+#print axioms LeanMachine.SymmetricHelpers.mem_heavyHelpers
+#print axioms LeanMachine.SymmetricHelpers.mem_trimHelpers
+#print axioms LeanMachine.SymmetricHelpers.mem_normalizedHelpers
+#print axioms LeanMachine.SymmetricHelpers.normalizedHelpers_reflexive
+#print axioms LeanMachine.SymmetricHelpers.normalizedHelpers_symmetric
+#print axioms LeanMachine.SymmetricHelpers.trimHelpers_subset_normalizedHelpers
+#print axioms LeanMachine.SymmetricHelpers.helpers_subset_normalized_union
+#print axioms LeanMachine.SymmetricHelpers.reverse_trimHelpers
+#print axioms LeanMachine.SymmetricHelpers.reverse_trim_heavy_card_le
+#print axioms LeanMachine.SymmetricHelpers.normalizedHelpers_card_le
+#print axioms LeanMachine.SymmetricHelpers.heavyHelpers_card_mul_succ_le
+#print axioms LeanMachine.SymmetricHelpers.mem_fixedCross
+#print axioms LeanMachine.SymmetricHelpers.fixedCross_card_add_square
+#print axioms LeanMachine.SymmetricHelpers.fixedCross_card_le
+
 -- MatrixRankCertificate.lean
 #print axioms LeanMachine.MatrixRankCertificate.finrank_range_tensorProduct_map
 #print axioms LeanMachine.MatrixRankCertificate.rank_kronecker

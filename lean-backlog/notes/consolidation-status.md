@@ -8,6 +8,7 @@ is still open.
 
 | Item | Lean coverage | What remains |
 |---|---|---|
+| Paid symmetric/reflexive normalization | [SymmetricHelpers.lean](../../lean-machine/LeanMachine/SymmetricHelpers.lean) proves the degree budget and exact fixed-cell union size. [NormalizedCodeTransfer.lean](../NormalizedCodeTransfer.lean) proves the finite fibre bound, sharpened to attained records. [NormalizedRateTransfer.lean](../NormalizedRateTransfer.lean) proves same-rate equivalence for common two-sided bounds, for both all finite alphabets and canonical bits, and the native crux/exclusion consumers. | No missing step in this reduction. A common capacity deficit remains an open hypothesis; no symmetry of the code or decoder is assumed. The alternative direct pair-message invoice and exact two-sided examples remain written. |
 | Assigned-rule theorem | [ClosureBarriers.lean](../ClosureBarriers.lean): `assigned_rule_card_le`, `card_le_seed_add`, `transported_invoice_ge`. Arbitrary finite helper graphs, loops included, arbitrary coordinate transports and positive copy count. | The separate multiple-helper-option extension remains a written proof. |
 | No-empty-rectangle barrier | [RectangleBarrier.lean](../RectangleBarrier.lean): `rectangle_barrier` proves `d²+(r−1)²≤\|S\|+(m+1)d(r−1)` for explicit finite recovery witnesses and arbitrary bijective layouts. The copies may have different helper relations, each with no empty r×r rectangle. `rectangleBarrierTarget` proves the original common-relation statement; `rectangle_invoice_ge` proves its real invoice form. Equal recovery ranks and m growing with d are allowed. | The probabilistic construction of fixed-window relations with this rectangle property remains written. The finite barrier and invoice have no unproved step. |
 | Soft order bound | [EntropyConsolidation.lean](../EntropyConsolidation.lean): `acyclic_conditional_le`, `soft_order`, `soft_order_of_acyclic`, `soft_order_entropy`. The polymatroid statement assumes no exact recovery or singleton caps; loops outside the acyclic set are allowed. | No missing step in these declarations. The conditional-entropy interpretation uses the same polymatroid inequality. |
@@ -56,6 +57,7 @@ Build from the existing pinned environment:
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
 lake env python3 ../../lean-backlog/check.py \
+  TwoSidedCodeTransfer NormalizedCodeTransfer NormalizedRateTransfer \
   ClosureBarriers RectangleBarrier EntropyConsolidation \
   DecoderSelection DecoderEntropy SubcodeSelection ConditionalSubcode \
   ShannonCertificate FanoCertificate FanoFull FanoOrder FanoAttainment \

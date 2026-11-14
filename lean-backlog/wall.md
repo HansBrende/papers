@@ -59,7 +59,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   δ₂ therefore gives the one-sided deficit and native Crux δ₂/2. Two-sided half rate would suffice,
   giving one-sided rate at most 3/4. Paid degree normalization also makes symmetric, reflexive
   helper relations sufficient for a common bound. This compares actual codes, not Shannon optima
-  ([Lean adapter](TwoSidedCodeTransfer.lean); [written symmetry proof and exact
+  ([Lean adapter](TwoSidedCodeTransfer.lean); [symmetry proof and exact
   calibrations](notes/two-sided-whole-row-codes.md)).
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
@@ -138,12 +138,17 @@ Open questions, nearest the wall first:
   comes with a precise inequality.
   For classical Q(4,s), the [reviewed grid-family construction](notes/triangle-free-hosts.md#7-grid-lanes-on-every-classical-parabolic-quadrangle)
   gives c_ent≥2+2/(2s+1); convergence of c_Sh to2 remains conjectural.
-- **The general bound, and the first open window.** For all whole-row codes the best deficit is
-  still 1/(w+1). Window two is settled at one half. **Window three is the smallest open case:
-  1/2 ≤ R(3) ≤ 3/4, with neither end improved.** On hosts of window three whose incidence graph has
-  girth above 8 there are no mutual triangles and no grids, so none of our codes beats pairing, and
-  the relation is mixing, so none of our bounds beats order. Any improvement of either end there
-  would be new.
+- **The general bound, and the first open window.** Paper 17's general order bound gives
+  R(w)≤w/(w+1); at windows one and two the sharper bound is asymptotically one half.
+  **Window three is the smallest open case: 1/2≤R(3)≤3/4.** The series establishes no
+  sharper unrestricted bound. A concrete unresolved subclass consists of cubic incidence
+  **expander families with girth tending to infinity**. Girth above 8 excludes residual
+  (nonincident) mutual triangles and literal line grids; it does not imply mixing or
+  non-hyperfiniteness. No known construction has a positive asymptotic gain above pairing
+  on this subclass. The closure-invoice barriers apply, but they do not bound full Shannon
+  methods. A better upper bound here would be a subclass result; a positive-density code
+  would improve the global lower bound. Settling window three alone would not settle the
+  common-deficit question over all fixed windows.
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact values on full hosts: Fano
 Shannon119/3 (attained on cube-sized alphabets; scalar-linear39 over F₂ and F₃; order41);
@@ -171,7 +176,7 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
 | **D0** | *Standing*: brainstorm a new front, re-evaluate the wall, or tie an indirect front to it | Permanent | — |
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): the statement of Section 1 | Open for w ≥ 3. Main front; see "what is left" | [StatementsRowSpread.lean](StatementsRowSpread.lean); linear form `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
 | **D9** | *The native crux*: index codes for the cone systems of oblivious linear-time schedules need (ρ(D) − o(1))L bits, with ρ(D_ε) > ε for one ε | Open; follows from D1 by B1. Restricted native bounds only ([audit](notes/native-cone-property-audit.md)) | `Crux`, `crux_excludes` in the fourteenth paper's library |
-| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)) | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Symmetry normalization and examples: *written, reviewed* |
+| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)) | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Same-rate symmetric/reflexive normalization and its native consumers: *Lean*, [NormalizedRateTransfer](NormalizedRateTransfer.lean). Examples: *written, reviewed* |
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
@@ -235,11 +240,11 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **Consolidated; no front open.** Lean: B1, the
-  two-sided transfer, Fano and grid certificates with their order optima (B2, B4), the paid
-  inequalities, the soft order bound, both closure barriers, the subcode forms. Written: B3, the
-  symmetric normal form, the quadrangle family. Closed today: X29–X31. Astra finishes the status
+  two-sided transfer and paid symmetric/reflexive normalization, Fano and grid certificates
+  with their order optima (B2, B4), the paid inequalities, the soft order bound, both closure
+  barriers, the subcode forms. Written: B3 and the quadrangle family. Closed today: X29–X31. Astra finishes the status
   index at its own pace. A front reopens only with a premise and an inequality, of the kinds listed
   under "What cannot work, and what can", or a correctness-forced source restriction with a named
-  consumer. The standing sharp form of the question is the first open window (window three, large
-  girth).
+  consumer. Window three on cubic large-girth expanders is the smallest named open subclass, not an
+  equivalent replacement for the common-deficit question.
 - Last re-evaluation (D0): 14 November 2026.

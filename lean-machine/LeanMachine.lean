@@ -3,6 +3,7 @@ import LeanMachine.TutteBerge.MatchingNumber
 import LeanMachine.RankCertificate
 import LeanMachine.ColorOrder
 import LeanMachine.IncidenceTrimming
+import LeanMachine.SymmetricHelpers
 import LeanMachine.MatrixRankCertificate
 import LeanMachine.LinearRecovery
 import LeanMachine.BucketChains

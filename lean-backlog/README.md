@@ -10,7 +10,8 @@ and closed fronts of the attack on it. Read it before choosing work; Claude Fabl
 the Lean proofs from the remaining written results and open targets.
 Both entropy-to-exact-subcode statements are proved, with a sharper conditional-entropy
 bound for a code selected inside one record fibre. The triangle-free grid upper
-certificate and its exact row-order comparison are also verified. The
+certificate and its exact row-order comparison are also verified. Paid symmetric/reflexive
+normalization now preserves common two-sided rate bounds in Lean, through the native consumers. The
 [conditional machine-exclusion table](notes/conditional-machine-exclusions.md)
 lists the exact extra fibre, relation and decoder hypotheses needed to apply
 the proved code classes through the native transfer. It asserts no new native
@@ -70,7 +71,15 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   common-deficit equivalence and reuses the native crux/exclusion endpoints, including
   the direct `169ε/32` threshold. The capacity hypothesis remains open. The
   [two-sided note](notes/two-sided-whole-row-codes.md) distinguishes these formal results
-  from its written symmetry normalization, finite examples and closure-method bounds.
+  from its written finite examples and the alternative direct pair-message invoice.
+- [SymmetricHelpers.lean](../lean-machine/LeanMachine/SymmetricHelpers.lean) and
+  [NormalizedCodeTransfer.lean](NormalizedCodeTransfer.lean) formalize paid normalization
+  to symmetric, reflexive helper relations, retaining the exact fixed-cell overlap and,
+  more sharply, the number of attained records. [NormalizedRateTransfer.lean](NormalizedRateTransfer.lean)
+  proves equality of common normalized and unrestricted two-sided rate bounds, preserving
+  all-alphabet and canonical-width quantifiers. Its native consumers retain half the
+  normalized deficit; the direct one-window condition adds only 2w/(R+1) at window w+R+1.
+  No capacity bound, source symmetry or decoder linearity is introduced.
 - The proof chain reuses actual native definitions:
   [interval amortization](WindowAmortization.lean),
   [native visits and labels](WindowLabels.lean),

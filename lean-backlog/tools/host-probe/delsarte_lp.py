@@ -9,9 +9,11 @@ scheme on q points, with one relation per support, so the LP has one variable A_
     maximise sum_S A_S   subject to   A_empty = 1,  A_S >= 0,
     sum_S A_S * (-1/(q-1))^{|S & T|} >= 0   for every T.
 
-Every code has at most LP-value words.  Splitting a symbol into sub-symbols does not refine the
-bound: the invertible linear maps of each symbol preserve the forbidden set and act transitively
-on its nonzero values, so the finer LP symmetrises back to this one.
+The exact LP optimum bounds every code; the solver output below is floating point.
+For the prime-power alphabets tested, splitting a symbol into sub-symbols does not refine the
+complete automorphism-invariant Fourier programme: invertible linear maps of each symbol
+preserve the forbidden set and act transitively on its nonzero values. This does not address
+other hierarchies or additional sub-symbol constraints.
 
 Usage: uv run --no-project --with numpy --with scipy --with networkx python delsarte_lp.py
 """

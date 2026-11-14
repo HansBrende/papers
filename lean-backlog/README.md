@@ -52,6 +52,10 @@ geometry and rate bounds remain written proofs. The local
 [disjoint-sum extension criterion](../lean-machine/LeanMachine/DisjointSumsExtension.lean)
 is also verified for arbitrary target sums and additive-automorphism weights,
 without finite alphabet or finite coordinate assumptions.
+The [recovery-to-record adapter](../lean-machine/LeanMachine/DisjointSumsRecords.lean)
+now proves global separation and exact attained-record counting for ordinary
+sums under explicit view-cover/compatibility hypotheses. Extracting those
+hypotheses and the remaining geometric rate bounds is still separate work.
 
 ## What is here
 

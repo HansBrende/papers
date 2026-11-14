@@ -2024,6 +2024,77 @@ At w=1 it is an identity. The fraction (m−2)/m from an independent
 m-cell parity gadget concerns its number of cells, not the helper
 window w; no universal triangle-lane fraction in w is asserted.
 
+**19.7 (last-helper correction and a directed-cycle control).** Written
+proofs, independently reviewed; not Lean-verified. Assume exactly three
+distinct helpers per column, with ordered helper rows p₁(c)<p₂(c)<p₃(c).
+Use positions φ in {1,…,d}, and put S_i=Σ_c φ(p_i(c)). Retain E_q and
+P_q from 19.5. Let M_c be the cells of column c strictly between p₂(c)
+and p₃(c), and let J={(p₃(c),c):c∈[d]} be the last-helper cells. Set
+
+  U = Σ_c h(M_c | R_{p₁(c)}∪R_{p₂(c)}),
+  D_q = {(q,c):p₃(c)<q},   F_q=R_q∖D_q,
+  Z_q = R_{P_q}∪D_q,      W=Σ_q h(E_q|Z_q).
+
+For any full polymatroid with unit singleton caps and exact recovery,
+
+  H ≤ S₂ + U + h(J) ≤ S₂ + U + d,                           (19k)
+  H + W ≤ Σ_q h(F_q|Z_q) ≤ S₃.                             (19l)
+
+*Proof.* Expand H in a row-major cell order. The cells at or before
+their column's second helper cost at most S₂. The middle-cell increments
+are at most U, since both earlier helper rows precede them. The subsequence
+of last-helper increments costs at most h(J), and cells after the last
+helper have zero increment. This proves (19k).
+
+Every D_q is determined by earlier rows. Both P_q and E_q lie in earlier
+rows, and E_q is determined by F_q∪Z_q. The row chain rule therefore gives
+the exact identity
+
+  H = Σ_q h(F_q|Z_q) − W
+        − Σ_q I(F_q;R_{<q}|Z_q∪E_q).
+
+Dropping the last nonnegative sum and using Σ_q|F_q|=S₃ proves (19l).
+The original correction to the order bound is H≤S₃−W; the intermediate
+conditional-row invoice can be much sharper. ∎
+
+Thus an additional premise W≥κU, κ≥0, would give
+
+  H ≤ [κS₂+S₃+κh(J)]/(1+κ).                                (19m)
+
+These displays refine the chain-rule arguments in 19.1 and 19.5; they do
+not themselves supply κ. In particular, deleting mutual helper arcs is
+insufficient for κ>0 valid for every code and row order, even at forward
+and reverse degree three.
+
+**Exact control.** Use row/column labels 0,…,6 in their natural order,
+with positions label+1 and helper sets
+
+  ρ = [{0,1,6}, {0,1,4}, {0,1,5}, {2,3,6},
+       {2,3,6}, {2,4,5}, {3,4,5}].
+
+Copy one free alphabet symbol to a=(4,0), b=(5,1), c=(6,2), and fix
+every other cell. Over every alphabet of size q≥2 this is a q-word code:
+a reads c, c reads b, and b reads a. All three cells are nonincident;
+none of their pairs is mutual even in the full allowed host. Constant
+cells require no reads. Every forward and reverse degree is exactly three.
+
+The only nonzero middle term is column 0, so U=1. The only E_q with
+positive entropy is E₆, containing a. Its P₆={0,1,2,3} rows are constant,
+but D₆ contains c, so W=0. In total
+
+  (H,S₂,S₃,U,W)=(1,24,44,1,0),   h(J)=0.
+
+Thus loss through D_q need not come from mutual partners. The stronger
+conditional-row invoice in (19l) is exactly 1 on this example. The code
+has rate 1/49 and uses constant dummy columns and unused declared helpers;
+it does not refute a near-order, high-rate, large-girth, averaged-order or
+paid-error coupling premise. No asymptotic capacity conclusion follows.
+
+The [standard-library checker](../tools/host-probe/ordered_correction_control.py)
+verifies recovery, degrees, the absence of active mutual pairs and every
+displayed finite entropy/count value. It evaluates this explicit law
+exactly; it performs no host search or numerical entropy optimization.
+
 ## 20. Cell budgets, token closures and the Shannon/order test
 
 Fable's proposals, audited and extended by Astra, 14 November 2026.

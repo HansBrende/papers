@@ -1777,3 +1777,10 @@ import LeanMachine
 #print axioms LeanMachine.DisjointSums.exists_extension_iff
 #print axioms LeanMachine.DisjointSums.exists_kernel_shift
 #print axioms LeanMachine.DisjointSums.exists_weighted_extension_iff
+
+-- DisjointSumsRecords.
+#print axioms LeanMachine.DisjointSums.encode_eq_of_recovery_view
+#print axioms LeanMachine.DisjointSums.encode_eq_of_record_cover
+#print axioms LeanMachine.DisjointSums.encode_eq_of_compatibility
+#print axioms LeanMachine.DisjointSums.syndromeRecord
+#print axioms LeanMachine.DisjointSums.card_eq_kernel_mul_record_image

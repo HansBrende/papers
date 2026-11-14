@@ -91,8 +91,8 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
-  written and reviewed; abstract coset counting and disjoint-parity extension now Lean,
-  recovery geometry and rate adapters still written.
+  written and reviewed; abstract counting, local extension and ordinary-sum record
+  separation under explicit view-cover premises now Lean; extraction/rate adapters written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -263,7 +263,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
 - **X29** A common deficit from counting columns that fit the best balanced Fano layout
 - **X30** A constant plane deficit using only row-closure equalities from pencils at o(n) centres
 - **X31** Transported closure with additive message bills as a stronger coding bound
-- **X32** A gain over the order bound from the first-level Delsarte programme or translation-invariant rank certificates on the forbidden-difference form (tested hosts only)
+- **X32** Bounded Delsarte and translation-invariant rank experiments stopped without a scalable certificate; no all-q or growing-host barrier proved
 
 ## Maintenance
 
@@ -303,16 +303,18 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      still be obstructed by a future capacity theorem. Pairing-shift invariance is an exclusion
      premise. *Constructive G4 pass closed without a witness:* the
      [ordered-information refinement](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
-     is written and reviewed, but gives no new capacity bound. *Astra banked:* the nonlinear
-     matching-plus-one-helper theorem, coset-record count and disjoint-parity extension
-     are now Lean; pairing/parity recovery geometry remains written.
+     is written and reviewed, but gives no new capacity bound. The order-minus-correction
+     form is valid; a low-rate directed-cycle control defeats universal positive coupling
+     even without active mutual helpers, leaving high-rate/large-girth variants open.
+     *Astra banked:* the nonlinear matching theorem and ordinary-sum record separation/count
+     under explicit compatibility are Lean; extraction, weighted global and rate adapters remain.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
-  7. *Closed (X32), scope as tested.* [Array-free forms and a spectral test](notes/array-free-forms-and-spectral-test.md):
-     on odd cycles and the Petersen graph Delsarte's programme exceeds the order bound only by a
-     bounded factor of codewords. It is never worse than the order bound, so it saves whole
-     symbols where order does; no claim about other spectral, rank or semidefinite certificates.
-     *In progress:* Astra, the recovery-to-record-separation adapter (Lean). Fable, the written
-     re-evaluation (D0).
+  7. *Stopped (X32), finite evidence only.* [Spectral tests](notes/array-free-forms-and-spectral-test.md):
+     eight small LP cases replay numerically; the binary-pentagon translation-rank minimum 8
+     and capacity 5 replay exactly. No all-q formula, bounded-factor limit or joint growing-host
+     claim is proved. The programme is never worse than order and saves whole symbols where
+     order does. *Next:* Astra, compatibility extraction for the parity adapter. Fable, D0 with
+     the ordered-coupling control; no additional numerical search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

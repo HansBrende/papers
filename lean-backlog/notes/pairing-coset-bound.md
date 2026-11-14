@@ -1,9 +1,10 @@
 # Extending a pairing or parity-block template costs only a vanishing rate
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
-**Status:** written proofs, independently reviewed; abstract record counting
-and disjoint-parity partial-assignment extension are Lean-verified. The recovery
-compatibility, record-separation geometry and rate bounds remain written.
+**Status:** written proofs, independently reviewed; abstract counting, local
+parity extension and recovery-to-record separation for ordinary sums are
+Lean-verified. Compatibility extraction, weighted global and involution
+adapters, incidence counts and rate bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -153,8 +154,26 @@ supports outside S, then adds that correction while fixing S. The derived
 their sums agree on every fully observed block. The theorem
 `exists_weighted_extension_iff` covers the automorphisms θ_v above.
 These statements require only an additive commutative group: neither the
-alphabet nor the coordinate type must be finite. They prove local extension,
-not the whole-row compatibility or global record-separation implications.
+alphabet nor the coordinate type must be finite.
+
+**Recovery-to-record adapter (Lean, ordinary sums).**
+[`DisjointSumsRecords.lean`](../../lean-machine/LeanMachine/DisjointSumsRecords.lean)
+now proves the global step for ordinary block sums and arbitrary coordinate
+helper views. Its local lemma only requires that a block be contained in a
+helper view together with its recovered coordinate. For a code invariant
+under the sum kernel, aligning that view and then recovering the coordinate
+determines the block's sum. The global theorem needs only one such view for
+each unrecorded block, with every block wholly in that chosen view recorded.
+Thus it is weaker than requiring the template geometry at every coordinate.
+
+`encode_eq_of_compatibility` derives separation from the displayed
+nonincident-coordinate compatibility premise, recording all fully viewed
+and all all-incident blocks. `card_eq_kernel_mul_record_image` then proves
+the exact product of kernel cardinality and attained-record cardinality.
+These results allow nonlinear or empty codes and need only a finite block
+index, not a finite alphabet or coordinate type. Compatibility is still an
+explicit hypothesis. Its extraction from recovery, conjugation of the global
+theorem by the weights θ_v, and the involution-orbit adapter remain written.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -196,10 +215,11 @@ all-one word, whereas every full orbit-constant pairing subgroup contains that w
 The binary cyclic window-two difference code at d=3 likewise excludes the all-one word.
 Those examples need their own checks; being linear is not enough to contain a pairing code.
 
-Abstract attained-record counting and local disjoint-parity extension are
-Lean-verified. Compatibility, the involution-orbit adapter, global record
-separation, incidence counts and the paid/asymptotic pairing and parity-block
-bounds remain written and reviewed.
+Abstract counting, local disjoint-parity extension, and global separation
+for ordinary sums under explicit compatibility are Lean-verified.
+Compatibility extraction, the weighted global and involution-orbit adapters,
+incidence counts and the paid/asymptotic pairing and parity-block bounds
+remain written and reviewed.
 The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large
 intersection with a template. The native question still needs a premise that supplies

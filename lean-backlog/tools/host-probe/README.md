@@ -27,12 +27,18 @@ Incidence hosts: rows = points, columns = lines, helpers of a column = the point
   in difference form, at several alphabet sizes; `rank_bound_pentagon.py`: exhaustive
   translation-invariant rank bound over F₂ on the binary 5-cycle. Finite tests for
   [this note](../../notes/array-free-forms-and-spectral-test.md); floating-point LP.
+- `ordered_correction_control.py`: exact seven-row directed-cycle control for
+  [the ordered entropy correction](../../notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question).
+  It has forward/reverse degree three, no active mutual helper pair, and
+  positive middle entropy with zero correction. This is a low-rate control,
+  not a capacity search; Python standard library only.
 
 The symbolic certificate needs only the Python standard library:
 
 ```sh
 python3 grid_code_check.py
 python3 gq_grid_control.py
+python3 ordered_correction_control.py
 ```
 
 The host probes need NumPy. For example, to compute the grid summary without an optimizer:

@@ -200,3 +200,4 @@ import LeanMachine.MatchingSeed
 import LeanMachine.MatchingRecovery
 import LeanMachine.CosetRecords
 import LeanMachine.DisjointSumsExtension
+import LeanMachine.DisjointSumsRecords

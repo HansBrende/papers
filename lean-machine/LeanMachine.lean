@@ -189,3 +189,7 @@ import LeanMachine.ShuffleShear.StoneUnshuffle
 import LeanMachine.ShuffleShear.RowShear
 
 import LeanMachine.LastRowSupport
+import LeanMachine.OrderedRowRank
+import LeanMachine.ClosedCutRank
+import LeanMachine.SupportTraversal
+import LeanMachine.SparseRankBounds

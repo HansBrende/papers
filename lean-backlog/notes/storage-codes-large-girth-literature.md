@@ -15,8 +15,9 @@ asymmetric-helper adapter. The conjectural wording and proposed finite searches 
 missed these results. No new experiment is needed to establish either target.
 
 The [new rank proof](subcubic-half-rank.md) still contributes a shorter argument and the weaker
-four-arc/arbitrary-outgoing-width extensions. Its local span lemma is now Lean-verified; its
-new rank-counting/traversal adapters remain written.
+four-arc/arbitrary-outgoing-width extensions. Its local span lemma, exact rank count, traversal and
+closed-cut adapters, and the full arbitrary-width rank bound are now Lean-verified.
+The three-helper half theorem under the weakened pattern remains written.
 
 A *storage code* on a graph is a set of words in which every coordinate is a function of its
 neighbours' coordinates (guessing games, index coding with symmetric side information). Pairing on a
@@ -107,8 +108,8 @@ maximum degree at most three. Then nullity(B)≤⌊n/2⌋, allowing asymmetric z
 The [new proof](subcubic-half-rank.md) uses the last independent row of a support-respecting
 row order. The initial audit missed Paper 4's existing proof of the original and directed
 reciprocity forms, including two outgoing helpers. Its genuinely weaker four-arc hypothesis
-and arbitrary-outgoing-width bound are new relative to those declarations and remain partly
-formalized. These are coordinate degrees, not whole-row windows.
+and arbitrary-outgoing-width bound are new relative to those declarations. The latter is now
+fully formalized; the three-helper half extension under the weakened pattern remains written. These are coordinate degrees, not whole-row windows.
 
 **Target B (abstract, nonlinear; already Lean-verified in Paper 7, Theorem N3).** Every finite
 triangle-free graph G of maximum degree at most three satisfies the weighted Shannon bound

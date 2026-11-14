@@ -3,7 +3,9 @@
 Hans Brende, GPT-6 Astra and Claude Fable 5.2, 14 November 2026.
 
 **Status:** the new proof and strengthenings are written and independently reviewed;
-the [last-row lemma](../../lean-machine/LeanMachine/LastRowSupport.lean) is now Lean-verified. **Reuse correction:** the original asymmetric triangle-free
+the [last-row lemma](../../lean-machine/LeanMachine/LastRowSupport.lean), the exact ordered
+count, the closed-cut and traversal adapters, and the full arbitrary-width Corollary A3
+are now Lean-verified. **Reuse correction:** the original asymmetric triangle-free
 subcubic theorem, the directed reciprocity form below, and the two-helper special case were
 already proved in Paper 4, Theorem S, including in
 [`MotionDepthCodes/Subcubic.lean`](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Subcubic.lean).
@@ -142,6 +144,19 @@ At k=3 this gives code rate at most 2/3 with arbitrary incoming degrees. Theorem
 to half when its one-way-head premise holds. At larger k the deficit is only 1/k; this does
 not supply the common whole-row deficit or the depth-dependent native invoice.
 
+**Sharper reachable form (Lean-verified).** If a chosen vertex reaches all vertices, the
+closed-cut induction is unnecessary. For rank at least two the same count gives
+`N + k ≤ k rank B + 2`, without assuming k≥2. The Lean hypothesis asks only that every
+proper cut containing the chosen vertex have an outgoing arc. It does not ask that the
+whole relation be strongly connected. At k≥2 this saves k−2 compared with A3.
+
+**Degree-four comparison.** Paper 7's thirteen-vertex degree-four example is triangle-free,
+so its scalar F₄ recovery matrix satisfies the four-arc exclusion. A3 gives rank at least
+⌈13/4⌉=4, hence dimension at most 9; its seven-dimensional code is consistent with this
+bound. The finite rate ceiling here is 9/13 (the coarser uniform ceiling is 3/4). The example's
+Lean implementation uses two-bit symbols and 2×2 binary recovery blocks. Four symbol helpers
+must not be read as four scalar binary helpers when applying A3.
+
 The one-way-head premise in the half theorem cannot simply be discarded at outgoing degree
 three: the existing [seven-vertex Paley code](../PaleyTournament.lean) has four binary dimensions
 and no reciprocal edges. It satisfies the four-arc exclusion, but all its one-way arcs enter
@@ -189,8 +204,19 @@ The [last-row support argument](../../lean-machine/LeanMachine/LastRowSupport.le
 Lean-verified as `subsingleton_of_rows_mem_span_insert`, `card_le_one_of_rows_mem_span_insert`
 and `new_columns_subsingleton`. It works over any semiring without zero divisors, with arbitrary
 ambient index type and only the displayed columns' diagonal/span hypotheses. The proportional
-restriction lemma needs only a semiring. The full rank statements remain field statements;
-their new counting/order adapters are not yet formalized.
+restriction lemma needs only a semiring. The rank statements remain field statements.
+[OrderedRowRank.lean](../../lean-machine/LeanMachine/OrderedRowRank.lean) proves the exact
+ordered bound `N≤a+h(rank−2)+1`, including the count of selected rows and the partition of new
+columns. [SupportTraversal.lean](../../lean-machine/LeanMachine/SupportTraversal.lean) supplies
+an ordering from the root-containing cut condition.
+[ClosedCutRank.lean](../../lean-machine/LeanMachine/ClosedCutRank.lean) proves the principal-cut
+rank inequality and the rank-at-most-one boundary.
+[SparseRankBounds.lean](../../lean-machine/LeanMachine/SparseRankBounds.lean),
+`card_le_mul_rank`, combines them by induction to prove A3 in full; its
+`card_add_width_le_mul_rank_add_two_of_cut` proves the sharper reachable form.
+The k=2 instance gives half under the weaker four-arc exclusion. Still to formalize are the
+three-outgoing-helper half theorem with its one-way-head premise under that weaker exclusion,
+the explicit affine-code cardinality wrappers, and Lemma 3's nonlinear Hall argument.
 Existing scalar half/matching endpoints should be reused rather than reproved merely to
 obtain the original statement. Fable's binary census is consistent with the theorem;
 neither that census nor a floating-point search is used in the proof.

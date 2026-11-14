@@ -1685,3 +1685,46 @@ import LeanMachine
 #print axioms LeanMachine.LastRowSupport.subsingleton_of_rows_mem_span_insert
 #print axioms LeanMachine.LastRowSupport.card_le_one_of_rows_mem_span_insert
 #print axioms LeanMachine.LastRowSupport.new_columns_subsingleton
+
+-- OrderedRowRank.
+#print axioms LeanMachine.OrderedRowRank.mem_selectedRows
+#print axioms LeanMachine.OrderedRowRank.mem_selectedPrefix
+#print axioms LeanMachine.OrderedRowRank.mem_newColumns
+#print axioms LeanMachine.OrderedRowRank.prefixRows_zero
+#print axioms LeanMachine.OrderedRowRank.prefixSpan_zero
+#print axioms LeanMachine.OrderedRowRank.prefixRows_succ
+#print axioms LeanMachine.OrderedRowRank.prefixSpan_succ
+#print axioms LeanMachine.OrderedRowRank.prefixSpan_mono
+#print axioms LeanMachine.OrderedRowRank.prefixRows_all
+#print axioms LeanMachine.OrderedRowRank.selectedPrefix_zero
+#print axioms LeanMachine.OrderedRowRank.selectedPrefix_all
+#print axioms LeanMachine.OrderedRowRank.selectedPrefix_succ
+#print axioms LeanMachine.OrderedRowRank.selectedPrefix_card
+#print axioms LeanMachine.OrderedRowRank.selectedRows_card
+#print axioms LeanMachine.OrderedRowRank.apply_eq_zero_of_mem_prefixSpan
+#print axioms LeanMachine.OrderedRowRank.newColumns_eq_empty_of_not_selected
+#print axioms LeanMachine.OrderedRowRank.newColumns_disjoint
+#print axioms LeanMachine.OrderedRowRank.newColumns_cover
+#print axioms LeanMachine.OrderedRowRank.sum_selected_newColumns
+#print axioms LeanMachine.OrderedRowRank.prefixSpan_eq_full_of_selected_le
+#print axioms LeanMachine.OrderedRowRank.last_newColumns_card_le_one
+#print axioms LeanMachine.OrderedRowRank.rank_count_of_order
+
+-- ClosedCutRank.
+#print axioms LeanMachine.ClosedCutRank.rank_principal_add_compl_le
+#print axioms LeanMachine.ClosedCutRank.card_le_two_of_rank_le_one
+
+-- SupportTraversal.
+#print axioms LeanMachine.SupportTraversal.EarlierParent.snoc
+#print axioms LeanMachine.SupportTraversal.exists_list
+#print axioms LeanMachine.SupportTraversal.exists_equiv
+
+-- SparseRankBounds.
+#print axioms LeanMachine.SparseRankBounds.mem_outgoing
+#print axioms LeanMachine.SparseRankBounds.outgoing_submatrix_card_le
+#print axioms LeanMachine.SparseRankBounds.noFourArcPattern_submatrix
+#print axioms LeanMachine.SparseRankBounds.newColumns_le_outgoing
+#print axioms LeanMachine.SparseRankBounds.newColumns_le_outgoing_add_one
+#print axioms LeanMachine.SparseRankBounds.card_add_width_le_mul_rank_add_two_of_cut
+#print axioms LeanMachine.SparseRankBounds.card_le_mul_rank_of_cut
+#print axioms LeanMachine.SparseRankBounds.card_le_mul_rank

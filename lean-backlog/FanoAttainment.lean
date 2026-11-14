@@ -130,6 +130,17 @@ theorem residual_shannon_exact :
       (∀ v, h {v} ≤ 1) ∧ h univ = 56 / 3) :=
   ⟨FanoCertificate.residual_le, residual_attainment⟩
 
+/-- The existing half-rate decomposition engine cannot cover this relation:
+the attained polymatroid already exceeds one half. This does not exclude a
+generalized decomposition with a different rate or an explicitly paid context. -/
+theorem residual_no_decomp (pcs : List (Finset Cell)) :
+    ¬ HalfRate.Decomp nbhd ∅ pcs := by
+  intro hD
+  have hb := HalfRate.rateBound_of_decomp hD triangleRank
+    triangleRank_isPolymatroid triangleRank_isValid
+  rw [triangleRank_total] at hb
+  norm_num [triangleRank_singleton] at hb
+
 open FanoFull
 
 /-- The residual witness with an independent unit of rank at every incident cell. -/
@@ -212,5 +223,6 @@ end LeanBacklog.FanoAttainment
 
 #print axioms LeanBacklog.FanoAttainment.residual_attainment
 #print axioms LeanBacklog.FanoAttainment.residual_shannon_exact
+#print axioms LeanBacklog.FanoAttainment.residual_no_decomp
 #print axioms LeanBacklog.FanoAttainment.full_attainment
 #print axioms LeanBacklog.FanoAttainment.full_shannon_exact

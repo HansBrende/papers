@@ -25,7 +25,13 @@ Lean-verified Theorem S; the note corrects the initial overlap claim. The local 
 zero divisors. [SubcubicReuse.lean](SubcubicReuse.lean) composes Paper 7's existing N3 and
 soft-recovery results: the entire original nonlinear Target B and its coefficient-one error
 bound were already proved, also for directed helper subsets. No new certificate search is needed.
-Remaining formalization concerns the actual four-arc/arbitrary-width rank extensions.
+The full arbitrary-width theorem is now proved in
+[SparseRankBounds.lean](../lean-machine/LeanMachine/SparseRankBounds.lean):
+`N ≤ k rank B` over every field, assuming nonzero diagonal, outgoing degree
+at most `k ≥ 2`, and the four-arc exclusion, with no incoming-degree bound. A root-reachable
+matrix of rank at least two satisfies the sharper `N + k ≤ k rank B + 2`.
+The three-outgoing-helper half theorem under the weakened four-arc condition,
+its affine-code wrappers, and the matching-plus-one-helper proof remain written.
 
 ## What is here
 

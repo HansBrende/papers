@@ -92,7 +92,8 @@ supplied by B1. By mechanism, at fixed window:
 - *Sparse recovery rank* (every field): Paper 4 already covers the original scalar and directed
   reciprocity forms. The new [short proof](notes/subcubic-half-rank.md) weakens the forbidden
   pattern to a reciprocal pair of outgoing neighbours and proves rank≥⌈N/k⌉ at outgoing width
-  k≥2. Its last-row lemma is Lean; remaining new adapters are written. Matching plus one helper
+  k≥2; this full rank bound and its counting/order/cut adapters are now Lean. The three-helper
+  half extension under the weaker pattern is still written. Matching plus one helper
   has a separate written nonlinear half-size seed proof.
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
@@ -266,18 +267,18 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
      original A is Paper 4 Theorem S; full weighted nonlinear B is Paper 7 N3; the soft memo
      already gives coefficient-one errors. Petersen and five-cycle certificates also already
      exist. The proposed new LPs were stopped before a solve. No original A/B target remains.
-  3. *Banked.* [LastRowSupport](../lean-machine/LeanMachine/LastRowSupport.lean) proves the new
-     local four-arc lemma over semirings without zero divisors. [SubcubicReuse](SubcubicReuse.lean)
-     exposes the existing nonlinear/soft theorem for asymmetric helper subsets. Neither claims
-     new movement in the whole-row frontier.
-  4. *Astra next bounded formalization:* the counting/order adapters for the genuinely weaker
-     four-arc and arbitrary-width rank extensions, reusing original scalar endpoints where
-     applicable. *Fable next (in progress):* read Paper 7's engine (Lemma E, Theorem D), its limits
-     and open problems, then answer one question that is not in the series: are the Fano and grid
-     Shannon certificates (B2, B4), which live on whole-row relations of unbounded cell in-degree,
-     instances of a nested-elimination decomposition, or do they use an inequality the engine
-     lacks? Consumer: Theorem D on whole-row hosts (front D1) through B1. No experiment before
-     the answer; a new premise must go beyond N3/U3/T and name its consumer.
+  3. *Banked.* [SparseRankBounds](../lean-machine/LeanMachine/SparseRankBounds.lean) proves the
+     full four-arc/outgoing-width rank bound, reusing the exact ordered count, rooted traversal,
+     closed-cut inequality and last-row lemma. [SubcubicReuse](SubcubicReuse.lean) exposes the
+     existing nonlinear/soft theorem for asymmetric helper subsets. No native extraction follows.
+  4. *Astra next bounded formalization:* the three-helper half extension under the weakened
+     four-arc condition and its remaining code wrappers. *Fable comparison (in progress):*
+     the literal Paper 7 half-rate decomposition is impossible on Fano and the grid, since their
+     residual codes exceed half; [FanoAttainment](FanoAttainment.lean) proves the Fano obstruction in
+     Lean. A generalized paid/rate piece theorem is a separate, unspecified extension. Its
+     coefficients and structural piece premise must be stated before claiming a whole-row
+     consumer. Both finite certificates already use Shannon inequalities; this is not evidence
+     that they require non-Shannon inequalities. No new experiment is commissioned.
   5. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
      not a replacement for the native-support or nonlinear questions.

@@ -27,6 +27,10 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 |---|---|---|
 | [`LeanMachine/TutteBerge/`](LeanMachine/TutteBerge/) | Berge's augmenting-path theorem, the Tutte–Berge formula, the matching number, and the components of G − U as barrier blocks | external ([jtraverso/berge-matching](https://github.com/jtraverso/berge-matching) at `f01d042`), plus our additions |
 | [`LeanMachine/LastRowSupport.lean`](LeanMachine/LastRowSupport.lean) | One adjoined row leaves at most one new column under a four-arc exclusion; localized span/diagonal hypotheses over semirings without zero divisors | this repository |
+| [`LeanMachine/OrderedRowRank.lean`](LeanMachine/OrderedRowRank.lean) | Exact prefix-rank and new-column accounting; supplied-order bound N ≤ a + h(rank − 2) + 1 | this repository |
+| [`LeanMachine/ClosedCutRank.lean`](LeanMachine/ClosedCutRank.lean) | Rank lower bound across a closed principal cut; rank-one boundary under the four-arc exclusion | this repository |
+| [`LeanMachine/SupportTraversal.lean`](LeanMachine/SupportTraversal.lean) | Rooted ordering of a finite directed relation from its root-containing cut condition | this repository |
+| [`LeanMachine/SparseRankBounds.lean`](LeanMachine/SparseRankBounds.lean) | Every-field bound N ≤ k rank for nonzero diagonal, outgoing width k ≥ 2 and the four-arc exclusion; sharper reachable bound N + k ≤ k rank + 2 | this repository |
 | [`LeanMachine/RankCertificate.lean`](LeanMachine/RankCertificate.lean) | Arbitrary-field finite-dimensional rank identity from an intertwining defect | this repository |
 | [`LeanMachine/ColorOrder.lean`](LeanMachine/ColorOrder.lean) | Ordered recovery and a nonlinear half-size record from port colors | this repository |
 | [`LeanMachine/IncidenceTrimming.lean`](LeanMachine/IncidenceTrimming.lean) | Double counting and paid degree reduction for finite directed incidence | this repository |

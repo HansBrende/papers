@@ -1201,3 +1201,73 @@ that ignores any tensor factor at canonical width. Every decoder of the
 full field kernel also fails the natural tensor-cylinder columns (§6).
 Arbitrary fully mixed partitions, and alternative binary-fibre decoders,
 remain open.
+
+## 16. Presentable relations: normal form, and gates that do not depend on the partition (Fable, 13 November 2026)
+
+Status: **short written proofs, unreviewed**; 16.3 is a corollary of 12.1.
+Front D1, gap G0. 16.1, 16.2 and 16.4 allow one-way helpers and nonlinear
+recovery; 16.3 is for mutual (symmetric) supports only.
+
+**16.1 (normal form).** A recovery digraph H on d² vertices is whole-row
+presentable at window w exactly when there are maps φ, ψ from its vertices to
+[d] (column and row), with (ψ, φ) a bijection onto [d]², and a bipartite
+graph B with at most w rows at each column, such that
+
+  u → v in H  ⟹  (ψ(v), φ(u)) ∈ B.
+
+The row of the helper is confined by the column of the cell that reads it.
+If H is symmetric, it is a spanning subgraph of the two-token graph of B
+(section 12).
+
+**16.2 (shortening; the column gate and where it stops).** For any set S of
+cells and any word x⁰, the words of C that agree with x⁰ outside S form a
+storage code on the relation induced on S. Hence: on one column at most w
+free symbols (the column gate of the
+[grid note](grid-labellings-and-amplified-codes.md), section 6); on a union
+of columns J at most |ρ(J)|·|J|, which is the rectangle bound read on the
+code; on any S at most |S| minus its largest induced acyclic set.
+*Where it stops.* For a linear code of dimension (1 − η)d² and a set S in
+general position, the subcode supported in S has dimension
+max(0, |S| − ηd²). On unions of columns that is below |ρ(J)|·|J| whenever
+the rectangle bound holds. So shortening sees a partition only through sets
+that support more codewords than a generic set of their size. Cylinders do;
+a mixed partition need not. It cannot be extended to mixed partitions
+without another input.
+
+**16.3 (a gate for every partition, mutual supports).** Let the forward and
+reverse windows be w and w′. In a presentable symmetric support, at most
+
+  d·w·(ww′)^{(ℓ−1)/2}
+
+vertices lie on an odd closed walk of length at most ℓ, for every odd ℓ.
+
+*Proof.* By 16.1 the support lies in a two-token graph, and by 12.1 a cell
+(c, r) on such a walk has row port c within distance ℓ of column port r. ∎
+
+So a presentable mutual support is locally bipartite, to radius of order
+log d / log(ww′), at all but a vanishing share of its vertices, whatever the
+rows and columns are. For the amplified support with a surviving odd
+coefficient γ_s, a vertex has an odd closed walk as soon as s of its
+coordinates do in the seed. Consequences: a seed in which a positive share of
+vertices lie on odd closed walks of bounded length is not presentable at any
+bounded window in any layout; for a connected non-bipartite seed of diameter
+D the gate reads log(ww′) ≳ log d/(2D), which for a seed of logarithmic
+diameter is a bound exponential in m and independent of d. That agrees with
+the order bound and is **not an exclusion**.
+
+**16.4 (spread and concentration).** In a presentable relation the heads of
+the arcs leaving one column number at most w in any single column, and the
+tails of the arcs entering one row lie in at most w′ columns. If every vertex
+has in-degree at most Δ and out-degree at least one, the arcs leaving a
+column reach at least d/(Δw) different columns. So the quotient of H by its
+columns is dense: every column partition with a sparse quotient is excluded
+at once, cylinders among them, while the arcs from a column into each of its
+w helper rows number of order d. In the group model the swap supplies this
+(a column is mapped onto each of its helper rows by a bijection). A layout
+of the tower must supply two transversal partitions with the same pattern.
+
+**Remark (the dual form gives the order bound and no more).** In the dual
+form 15.2, ordering the columns and counting, for each column, the checks
+that are not supported in the earlier columns and their helper rows
+reproduces Σ_l (d − w − |ρ(r₁,…,r_l)|)₊. Support counting on the dual side
+is the order argument again.

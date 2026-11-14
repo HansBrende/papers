@@ -96,7 +96,9 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   Presentability of the growing coupled family at a window depending only on m remains open.
   The displayed support fails column labels omitting any tensor factor at canonical width;
   the full field kernel fails every decoder on tensor-cylinder columns. Arbitrary mixed
-  partitions and alternative binary-fibre decoders survive. A positive result needs the
+  partitions and alternative binary-fibre decoders survive. For every partition, a mutual
+  support must be locally bipartite at almost all vertices ([row spread](notes/row-spread-of-cones.md)
+  §16); for the tower this is consistent, not an exclusion. A positive result needs the
   dimension/lane adapter in the [grid note](notes/grid-labellings-and-amplified-codes.md) §6.
   It would refute a common positive deficit, not every window-dependent or native exclusion.
   A negative result for this one tower matters insofar as its mechanism generalizes.

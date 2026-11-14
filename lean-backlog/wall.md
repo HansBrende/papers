@@ -226,16 +226,12 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **Token designs** (generic linear codes on the host;
-  D1, two restrictions: linear, transversal). The two-token working case is **complete for a
-  constant deficit**: 5/6+o(1) on every fixed-window host, uniformly in lanes, with no alignment,
-  codegree, symmetry or component restriction ([row spread](notes/row-spread-of-cones.md) §22,
-  *written, reviewed*). The Hall-matching proof already extends to bounded maximum support
-  size with mean bounded by a fixed μ<5/2. The remaining restriction is support sparsity, on top of linearity
-  and transversalness. Next bounded target: a Hall-tight-block charge useful at larger mean
-  support size, or a concrete obstruction to that charge. Do not try to reprove the extension
-  of the degree-two forcing step: §22.5 establishes it for arbitrary supports.
-  Do not continue optimizing alignment costs or constants in the two-token subclass. Alignment
-  across different rows suffices for the older stronger bounds; weak alignment alone has a
-  proof gap, and a cheap repair to half remains open.
-  In reserve, not active: full Shannon versus order; native paid recovery; amplification.
+  D1, two restrictions: linear, transversal). Proved by Astra, *written, reviewed*
+  ([row spread](notes/row-spread-of-cones.md) §§21–22): K ≤ N/2 + O(db) for fundamental
+  presentations on hosts of codegree one; **K/N ≤ 5/6 + o(1) on every fixed-window host when
+  supports have size at most two, or bounded size and mean below 5/2**, with no further
+  assumption. Open, and the target: designs of larger support, where tokens of degree at least
+  three dominate (§23: block cores). A result must extend the covered supports or remove a
+  restriction. In reserve, not active: full Shannon versus order; native paid recovery;
+  amplification. This file is over its size; next edit trims Sections 1 and 4 in place.
 - Last re-evaluation (D0): 14 November 2026.

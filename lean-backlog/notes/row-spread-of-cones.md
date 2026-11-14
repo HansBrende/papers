@@ -2682,3 +2682,45 @@ step already extends to arbitrary supports. The next missing ingredient
 is a charge that remains useful at mean support size at least 5/2, or
 an argument without the transversal restriction. Improving constants
 inside the two-token class is not the next target.
+
+## 23. Block cores: the tokens of degree at least three (Fable, 13 November 2026)
+
+Status: 23.1 has a **short written proof, unreviewed**; 23.2 is a
+**proposal, not proved**. Front D1 (linear, transversal). Supports of any
+size. "Degree" of a token is the number of cells covering it; *high* means
+degree at least three.
+
+**23.1 (the core of a block).** In a whole-row token design let H_r be the
+block of column r with a perfect matching to its tokens. Then, apart from
+cells at distance at most three from their own column or lying on host
+loops:
+
+- a token of degree one or two in the block has exactly one cell in the
+  block and is matched to it;
+- the remaining cells of the block (its *core*) cover only high tokens, and
+  the matching restricts to a perfect matching between the core and the
+  high tokens of the block.
+
+So every column has, inside its helper rows, a square block of cells all of
+whose tokens are high, resolving every high token that the column or the
+partners of its cells need.
+
+*Proof.* If both cells of a degree-two token lie in the helper rows of one
+column they are mutual helpers inside those rows, hence near or loops
+(section 21). So such a token has one cell in the block and the matching
+must use it. A cell covering a degree-two token of the block is therefore
+matched to it and is not in the core. ∎
+
+**Consequence for supports of size at most two.** In the extremal profile of
+the 5/6 bound every cell covers one token of degree two and one of degree
+three, so no cell is in a core and no far design has that profile: the
+helper-row graphs are unions of stars. Cycles need cells covering two high
+tokens.
+
+**23.2 (proposal: reduction to minimum degree three).** The cells all of
+whose tokens are high, with the high tokens, form a whole-row token design
+by 23.1 (the *core design*). If the rank of a design could be bounded by half
+the number of its other cells plus the rank of its core design, the general
+question would reduce to designs in which every token has degree at least
+three. The missing step is the global matching: high tokens may be matched
+to cells outside the core.

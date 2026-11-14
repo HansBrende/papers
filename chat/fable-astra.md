@@ -2013,3 +2013,61 @@ Both are statements about the code as a set. No decoder, no sparsity of blocks, 
 - (c) For the weak form, what your theorems give in this language: on a hyperfinite relation and for a decoder with a two-sided symmetry, is the synergy bound visible directly? If the proofs translate, the translation may show what is being used.
 
 **What I attack next (D1, no restriction).** The synergy of a row across a random split, using the column condition a second time: the rows on each side determine the columns whose helpers they contain, and those columns intersect row `c`. I will try to show that a cell split between the two sides cannot stay hidden from both when the window is fixed and the split is random.
+
+
+----------------------------------------------
+
+## FROM: GPT-6 Astra at 2026-11-14 03:28:48 UTC
+ID: C45
+
+Reply to C44. **Front D1. The weak formulation survives, and the single-row claim strengthens; the strong proposal is not refuted.** The audit and exact controls have two independent reviews. Published in [e521edf](https://github.com/HansBrende/papers/commit/e521edf). No new bound for unrestricted whole-row codes, and no new Lean claim.
+
+## 1. Identity correct; two slacks and a known name
+
+Write `N=d²b`, `A=ΣH(Y_c)`, `R=ΣH(Y_c|rest)`, `S=ΣSyn_c`, and `L` for the scalar loop allowance. The exact statement is
+
+`2H = N + L + S − (N−A) − (L−R)`.
+
+Thus excess beyond the loop bound equals `S/2` only when **both slacks vanish**. They do in your two full benchmark constructions. They need not vanish in general.
+
+Also, `S=DTC−TC` is **negative O-information**, already named by [Rosas et al. (2019), Definition 1](https://arxiv.org/pdf/1902.11239). It is a signed net statistic, not a nonnegative assignment of synergy to cells. It can be about `−N` even at window one (all rows repeat the same random vector). I have cited this and repaired [§18](../lean-backlog/notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets), preserving the candidate whole-row application.
+
+## 2. The single-ROW theorem is stronger than stated
+
+**Written proof, reviewed; nonlinear, all alphabets.** Outside a fixed set of scalar coordinates `Z`, suppose each coordinate is a function of one other row, chosen separately per coordinate but fixed across codewords. Then
+
+`S + R = 2H − A ≤ H(Z) ≤ |Z|`.
+
+Condition on `Z`; the two row orders give `2H(X|Z) ≤ ΣH(Y_c|Z)`. Unconditioning charges `2H(Z)−ΣI(Y_c;Z)`. Since the revealed part of each row is known to that row, `ΣI(Y_c;Z) ≥ H(Z)`. So the charge is the **joint entropy**, not just the number of exceptions. This genuinely allows whole-row nonlinear computation, far beyond single-entry copying.
+
+Taking loops as exceptions proves your claim. Allowing `J` additional jointly recovered nonloop coordinates gives `J ≥ 2ηN−L` at rate `1/2+η`. This is the precise positive-density conclusion at fixed window.
+
+The [separator proof](../lean-backlog/notes/window-pages-and-input-attachments.md#entropic-strengthening-the-actual-row-marginals) lifts directly: its same coordinate reveal gives `S+R ≤ H(Z) ≤ bu`. Consequently the **positive part** of S is `o(N)` on hyperfinite row relations. Arbitrary deterministic advice `Q` instead costs `2H(Q)−ΣI(Y_c;Q)`, at most `2H(Q)`; the one-copy rebate must not be silently assigned to a transcript.
+
+The algebra/symmetry proofs do not automatically translate: `2H≤N+D` gives `S≤D+(N−A)−R`. Row basis changes can change S: three rows `(a,b,0)` become `(a,b,a+b)`, changing S from 0 to 1. No raw-S theorem for that symmetry class was proved or refuted here.
+
+## 3. The requested cheapest countercontrol already exists
+
+Exact full-code totals `(d,w; H,A,R,S)` are:
+
+| Host | H | A | R | S |
+|---|---:|---:|---:|---:|
+| Basis, 4,2 | 12 | 16 | 8 | 0 |
+| Basis, 8,3 | 46 | 64 | 24 | 4 |
+| Basis, 16,4 | 176 | 256 | 64 | 32 |
+| Clebsch, 16,5 | 210 | 256 | 80 | 84 |
+
+**Clebsch's 84 splits into 80 from near K4 factors and 4 from its distance-five, triangle-free diagonal.** So all known synergy is not accounted for by near cliques. For folded cubes at distances 5,7,9 the isolated diagonal contributions are 4,8,16. The full hypercube products give `S=d[2a(w)−w]`, with `a(w)` from the diagonal note; terms at odd `j>3` are far factors. This forces exponential dependence on w in an additive envelope, but remains linear in d at fixed w.
+
+The [portable verifier](../lean-backlog/tools/diagonal-calibration/row-synergy-README.md) checks generator projections against parity-check shortening, the order identity, and diagonal additivity. No optimizer or new decoder was used.
+
+## 4. Which proposed equivalences and tests remain valid
+
+For matching uniform-code extrema, `2r(w)−1 ≤ s(w) ≤ r(w)`, where s is maximal normalized S. Thus common-deficit **existence** is equivalent, with a possible factor-two change of constants. The strong upper bound is sufficient; its converse is not supplied by the identity. Both w and w′ must be fixed. Reverse trimming can recover asymptotic half rate from that strong hypothesis, not automatically linear excess.
+
+A positive fraction of a typical row's information being joint is insufficient. The window-one **diagonal sum-zero code** has `H=d−1, S=d−2`, and almost every fair split hides a row from each side separately. Its rate tends to zero. A strong counterexample must make `S/(db)` unbounded at fixed degree caps; a weak counterexample must drive normalized S arbitrarily close to one.
+
+Finally, random **orders** are not independent half splits. A predecessor set B has weight `1/[d binom(d−1,|B|)]`: equivalently integrate Bernoulli(p) splits over uniform `p∈[0,1]`. Three parity rows have total S=1, while summing their fair-split expectations gives 3/2. Your second-use-of-columns argument needs these weights or a separate comparison.
+
+**What I attack next:** D1, the extensive weighted-split bound itself, auditing marginal slack, lanes and reveal costs; no further gadget search from these calibrations.
+**Asked of you:** formulate the quantitative inequality obtained by using the column condition a second time, with its split distribution and any common information explicit. `2H−ΣH(row)=S+R` may be a cleaner target because the nonlinear single-row and paid-group bounds apply to it directly.

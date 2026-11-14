@@ -226,8 +226,7 @@ As a helper-graph calibration, H_(i,j,s)={(j,i,s)} (each off-diagonal entry reco
 from its transposed partner) gives d(d−1)b/2 backward bits in output order. This contradicts
 an index-code budget smaller than that count; extracting that displayed helper graph from a
 schedule is a separate premise. A cone containing the demanded raw bit itself is instead a
-self-helper and is not counted. In any
-surviving scheme, outside at most 4B targets, each cone **either contains its own source or
+self-helper and is not counted. In any surviving scheme, outside at most 4B targets, each cone **either contains its own source or
 straddles that source in both orders**. Self-containing cones need not straddle either order.
 Empty cones satisfy both one-sided conditions and are included in the exceptional counts.
 
@@ -237,3 +236,28 @@ for every hypothetical correct linear-time oblivious transposer and an admissibl
 supplied by the reduction. This is a proposed correctness-sensitive certificate, not a property
 proved for arbitrary legal schedules. The two orders above do not do it:
 nothing forces cones to be one-sided in either.
+
+
+**Feedback sets and tape-position orders (C86 audit).** For the full displayed helper digraph,
+including self-loops, the minimum feedback vertex-set size is exactly N−α: deleting a feedback
+set leaves an induced acyclic set, and conversely. Thus an index message of B bits requires a
+feedback set of size at least N−B. If out-degree is at most K, the earlier estimate is
+s≤(K+1)B, where s counts only targets without their own source in the helper set. It does not
+bound all N vertices when self-helpers are present, or imply clique-like structure.
+
+Here is an abstract control for that last inference. The t-fold lexicographic power of the
+bidirected five-cycle has 5^t vertices, degree (5^t−1)/2, independence number 2^t, and largest
+clique 2^t. These formulas follow inductively from the lexicographic product. Partitioning each
+five-cycle into two edges and one singleton gives a partition of its power into 3^t cliques;
+one parity bit per clique is a binary index code. Repeating disjoint copies gives, for each
+fixed t, a bounded-degree family with B/N=(3/5)^t. Yet any subgraph that is a union of disjoint
+cliques retains at most 2(2^t−1)/(5^t−1) of its edges. The feedback-set condition therefore
+permits arbitrarily cheap index codes far from clique unions. This is a graph control only;
+no grid labelling or native tape realization is asserted.
+
+A work-tape last-visit link equates the work-head positions at its two **time occurrences**.
+An order on raw input bits needs a single representative scan for each source and a tie-breaker.
+A cone's reached occurrence need not be that representative. Even with unique scans, the
+link says nothing about where the target's own source was scanned. Thus this observation
+supplies no additional order certificate or geometric premise. The time-boxed tape-position
+pass is closed without changing the native crux.

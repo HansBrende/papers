@@ -3,8 +3,10 @@
 The [proof note](../../notes/triangle-free-shannon-gap.md) gives residual
 upper **114/5 < 23** on the 9-row, 6-column grid host. The full-host bound
 is **204/5 < 41**, with a known lower code of size q³⁹. The exact Shannon
-value and exact capacity are **not** determined. All proofs are written
-and exact Python-checked, not Lean-verified.
+value and exact capacity are **not** determined. The paid scalar-error inequality,
+residual/full upper bounds, residual triangle-freeness and exact row-order values are
+**Lean-verified**. The lower code, joint-column-error price 8/15, general acyclic/order
+adapter and square balancing remain written with exact checks where applicable.
 
 ## Small proof replay
 
@@ -26,6 +28,22 @@ The separate [symbolic code check](../host-probe/grid_code_check.py)
 verifies every recovery and parameter-extraction identity over the
 integers. The formulas therefore work over every finite abelian group,
 including a cyclic group of any prescribed alphabet size.
+
+## Lean verification
+
+```sh
+python3 lean-backlog/tools/grid-shannon/generate_lean.py --check
+cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
+lake env python3 ../../lean-backlog/check.py \
+  ShannonCertificate GridCertificate GridFull GridOrder
+```
+
+Omit `--check` to regenerate the committed certificate. The generator uses no solver;
+Lean checks the actual incidences, required automorphisms, helper containments, paid
+steps and integer combination. The Fano and grid modules share their generic purchase,
+recovery and averaging proofs in [ShannonCertificate](../../ShannonCertificate.lean).
+The full-host adapter proves |C|⁵≤|A|²⁰⁴, while the order adapter checks 512 point
+subsets and one attaining order. All declarations use only standard axioms.
 
 ## Discovery replay
 

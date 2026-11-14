@@ -1,5 +1,4 @@
-import MotionDepthCodes.Symmetry
-import SoftRecovery.Decomposition
+import ShannonCertificate
 
 /-!
 # The paid Fano Shannon certificate
@@ -20,7 +19,7 @@ and order value 41. The actual triangle-code realization remains written.
 
 namespace LeanBacklog.FanoCertificate
 
-open Finset MotionDepthCodes SoftRecovery
+open Finset MotionDepthCodes SoftRecovery LeanBacklog.ShannonCertificate
 open scoped BigOperators
 set_option autoImplicit false
 set_option maxRecDepth 4096
@@ -459,45 +458,6 @@ private theorem vertexAut_isAut (v : Cell) : IsAut nbhd (vertexAut v) := by
   · exact aut48_isAut
 
 private theorem vertexAut_zero : ∀ v, vertexAut v 0 = v := by decide
-
-
-/-- Repeated diminishing returns, with a uniform price for the added cells. -/
-private theorem adjoin_uniform {V : Type*} [DecidableEq V]
-    {h : Finset V → ℝ} (hh : IsPolymatroid h) (S D : Finset V) (b : ℝ)
-    (hb : ∀ v ∈ D, increment h S v ≤ b) :
-    h (S ∪ D) ≤ h S + (D.card : ℝ) * b := by
-  revert hb
-  induction D using Finset.induction_on with
-  | empty => intro _; simp
-  | @insert v D hv ih =>
-    intro hb
-    have hi := ih (fun u hu => hb u (mem_insert_of_mem hu))
-    have hs := (increment_antitone hh
-      (subset_union_left : S ⊆ S ∪ D) v).trans (hb v (mem_insert_self v D))
-    simp only [increment] at hs
-    rw [union_insert, card_insert_of_notMem hv, Nat.cast_add, Nat.cast_one]
-    linarith
-
-/-- Pay for an explicit list of additional coordinates. -/
-private theorem purchase {h : Finset Cell → ℝ} (hh : IsPolymatroid h)
-    {s : ℝ} (hs : ∀ v, h {v} = s) {A B D : Finset Cell} {n : ℕ}
-    (hcover : A ⊆ B ∪ D) (hcard : D.card = n) :
-    h A ≤ h B + (n : ℝ) * s := by
-  have h1 := adjoin_uniform hh B D s (fun v _ =>
-    (increment_le_singleton hh B v).trans (hs v).le)
-  rw [hcard] at h1
-  exact (hh.mono hcover).trans h1
-
-/-- A recovery step with its actual conditional-rank error retained. -/
-private theorem recover_paid {h : Finset Cell → ℝ} (hh : IsPolymatroid h)
-    {e : ℝ} (he : ∀ v, increment h (nbhd v) v = e)
-    {A B D : Finset Cell} {n : ℕ}
-    (hcover : A ⊆ B ∪ D) (hguard : ∀ v ∈ D, nbhd v ⊆ B)
-    (hcard : D.card = n) : h A ≤ h B + (n : ℝ) * e := by
-  have h1 := adjoin_uniform hh B D e (fun v hv =>
-    (increment_antitone hh (hguard v hv) v).trans (he v).le)
-  rw [hcard] at h1
-  exact (hh.mono hcover).trans h1
 
 private theorem singleton_uniform {h : Finset Cell → ℝ}
     (hi : ∀ σ, IsAut nbhd σ → ∀ S, h (S.map σ.toEmbedding) = h S) (v : Cell) :
@@ -1112,34 +1072,6 @@ private theorem paid_invariant (h : Finset Cell → ℝ) (hh : IsPolymatroid h)
   have he_sum : (∑ v, increment h (nbhd v) v) = 28 * e := by simp_rw [he]; simp
   rw [hs_sum, he_sum]
   linarith only [certificate]
-
-
-/-- Averaging preserves the sum of the actual per-coordinate recovery errors. -/
-private theorem sum_symmetrize_error (h : Finset Cell → ℝ) :
-    ∑ v, increment (symmetrize nbhd h) (nbhd v) v =
-      ∑ v, increment h (nbhd v) v := by
-  have e : ∀ σ ∈ autSet nbhd,
-      (∑ v, (relabel σ h (insert v (nbhd v)) - relabel σ h (nbhd v))) =
-        ∑ v, increment h (nbhd v) v := by
-    intro σ hσ
-    have ha : ∀ v, (nbhd v).map σ.toEmbedding = nbhd (σ v) := mem_autSet.mp hσ
-    simp only [relabel, map_insert, ha]
-    change (∑ v, increment h (nbhd (σ v)) (σ v)) = _
-    exact Equiv.sum_comp σ (fun v => increment h (nbhd v) v)
-  simp only [increment, symmetrize, ← mul_sub, ← Finset.sum_sub_distrib,
-    ← Finset.mul_sum]
-  rw [Finset.sum_comm]
-  have he :
-      (∑ σ ∈ autSet nbhd,
-        ∑ v, (relabel σ h (insert v (nbhd v)) - relabel σ h (nbhd v))) =
-      ∑ σ ∈ autSet nbhd, ∑ v, increment h (nbhd v) v := by
-    apply Finset.sum_congr rfl
-    intro σ hσ
-    exact e σ hσ
-  rw [he]
-  simp only [Finset.sum_const, nsmul_eq_mul]
-  field_simp [(autSet_card_pos nbhd).ne']
-  rfl
 
 /-- The paid Fano inequality on the actual 28-coordinate residual helper graph. -/
 theorem paid_fano (h : Finset Cell → ℝ) (hh : IsPolymatroid h) :

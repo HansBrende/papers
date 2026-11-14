@@ -2,8 +2,12 @@
 
 Hans Brende, GPT-6 Astra and Claude Fable 5.2, 14 November 2026.
 Fable proposed this test and constructed the lower code; Astra extracted
-and independently checked the upper certificate. **Status: written proofs
-with exact finite checks, not Lean-verified.** No literature novelty claim.
+and independently checked the upper certificate. **Status:** the paid scalar-error inequality,
+residual and full upper bounds, residual triangle-freeness, and exact row-order values are
+Lean-verified in [GridCertificate](../GridCertificate.lean), [GridFull](../GridFull.lean), and
+[GridOrder](../GridOrder.lean). The lower construction, separate joint-column-error coefficient,
+general order/acyclic-set identification, square adapter and amplification retain reviewed
+written proofs with exact checks where applicable. No literature novelty claim.
 
 The grid has **nine point rows and six line columns**. It is a rectangular
 calibration, not itself a square matrix family. On its 36 nonincident
@@ -62,7 +66,9 @@ a column when all twelve cells of its helper union have been included.
 The recovery equalities imply h(cl(S))=h(S). Average h over the 72 grid
 automorphisms: independent permutations of the two axes and their exchange.
 This preserves the helper relation, feasibility and h(W); it imposes no
-symmetry on the code.
+symmetry on the code. The Lean proof instead averages over the full helper-automorphism
+group and checks the finite maps needed by the certificate; its proof does not require
+a separate count of that group.
 
 The certificate uses only fifteen submodular inequalities
 
@@ -90,8 +96,12 @@ $$5\bar h(W)\le2\cdot3+6\cdot18=114.$$
 The [standalone checker](../tools/grid-shannon/verify_certificate.py)
 reconstructs the host, automorphisms, recovery closures, purchase set and
 every inequality from those operands. It checks the integer identity
-without importing a solver or the discovery generator. This is an ordinary
-exact Python verification, not a Lean proof.
+without importing a solver or the discovery generator. The separate
+[Lean generator](../tools/grid-shannon/generate_lean.py) emits the actual incidences,
+automorphisms, helper containments, recovery steps and integer combination. Lean checks
+these obligations; neither the Python run nor the saved certificate is trusted as a premise.
+The shared purchases, recovery increments and averaging lemmas are reused from
+[ShannonCertificate](../ShannonCertificate.lean), also used by the Fano proof.
 
 ## 3. A paid inequality and an information constant
 
@@ -103,7 +113,7 @@ for the twelve residual cells in v's helper rows, and put
 $$\boxed{H(X_W\mid Z)\le\frac{19}{30}\sum_v H(X_v\mid Z)
                       +\frac{11}{30}\sum_v\varepsilon_v.}$$
 
-If δ_ℓ=H(X_column ℓ∣X_helper union ℓ,Z), a second valid error term is
+**Separate written form (not yet Lean-verified).** If δ_ℓ=H(X_column ℓ∣X_helper union ℓ,Z), a second valid error term is
 (8/15)Σ_ℓδ_ℓ in place of (11/30)Σ_vε_v.
 
 **Proof.** Retain the true conditional rank increment at each use of
@@ -178,16 +188,36 @@ From the repository root, without disabling assertions:
 
 ```sh
 python3 lean-backlog/tools/grid-shannon/verify_certificate.py
+python3 lean-backlog/tools/grid-shannon/generate_lean.py --check
 python3 lean-backlog/tools/grid-shannon/closure_relaxation.py \
   --verify lean-backlog/tools/grid-shannon/search-receipt.json
 ```
 
-The first replays the small proof and paid coefficients. The second
-reconstructs the saved discovery relaxation and its exact primal/dual.
-Both use only Python's standard library. See the
+The first replays the small proof and paid coefficients. The second checks that the
+committed Lean source matches the saved operands. The third reconstructs the saved discovery
+relaxation and its exact primal/dual. All three use only Python's standard library. See the
 [tools README](../tools/grid-shannon/README.md) for the bounded solve command.
 
-## 5. Relation to the square and growing questions
+The Lean full-host theorem `storage_card_fifth` proves |C|⁵≤|A|²⁰⁴ for every finite
+alphabet, including the empty and singleton cases. The paid full theorem retains the joint
+entropy of the 18 incident cells and conditional singleton prices. `GridOrder` checks the
+512 point subsets and one attaining order, and identifies its prefix cost with the sum of
+last-helper positions; it does not enumerate all 9! orders. The strict comparison with every
+such row order is also proved in Lean. The exact Shannon optimum is not asserted.
+
+Build in the existing pinned environment:
+
+```sh
+cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
+lake env python3 ../../lean-backlog/check.py \
+  ShannonCertificate GridCertificate GridFull GridOrder
+```
+
+All cited declarations use only Lean's standard axioms. The generated finite certificate
+permits 2,000,000 heartbeats, and the finite adapters permit 1,000,000; these are computation
+budgets, not additional logical assumptions.
+
+## 5. Relation to the square and growing questions (written)
 
 There is a square adapter that preserves all normalized values. Replace
 each of the nine point rows by **two** clones and each of the six line

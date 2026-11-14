@@ -9,7 +9,8 @@ and closed fronts of the attack on it. Read it before choosing work; Claude Fabl
 **Consolidation:** the [proof-status index](notes/consolidation-status.md) separates
 the Lean proofs from the remaining written results and open targets.
 Both entropy-to-exact-subcode statements are proved, with a sharper conditional-entropy
-bound for a code selected inside one record fibre. The
+bound for a code selected inside one record fibre. The triangle-free grid upper
+certificate and its exact row-order comparison are also verified. The
 [conditional machine-exclusion table](notes/conditional-machine-exclusions.md)
 lists the exact extra fibre, relation and decoder hypotheses needed to apply
 the proved code classes through the native transfer. It asserts no new native
@@ -204,12 +205,15 @@ Native extraction and source audit:
   the exact Shannon value and capacity remain open. Complete cloning
   supplies an 18×18 square base with no residual mutual triangles and
   the same normalized gap. The paid information constant is at most
-  30/11, below the soft order value 36/13. The
+  30/11, below the soft order value 36/13. The grid upper bounds, scalar paid
+  inequality, triangle-freeness and row-order values are Lean-verified
+  ([status](notes/consolidation-status.md)). The
   [robust coarse-pattern bound](notes/paid-coarse-patterns.md) gives
   Sh≤d²−4dG/21 from G columns fitting a balanced Fano layout, and proves
   why optimizing that count cannot give a deficit uniform in the window
-  on random high-order hosts. Written and exactly checked where finite,
-  independently reviewed, not Lean-verified; no new native exclusion.
+  on random high-order hosts. This coarse-pattern result, the grid lower code
+  and the square adapter remain reviewed written proofs, with exact checks
+  where finite. No new native exclusion follows.
 - [Quadrangle grid code](notes/quadrangle-grid-control.md): ten copies of
   the existing grid code cover every residual cell of GQ(2,2) twice.
   The two-lane construction gives 105 residual information symbols in

@@ -24,6 +24,8 @@ python3 lean-backlog/tools/fano-shannon/generate_lean.py --check
 Omit `--check` to regenerate it. The generator is not part of the trusted
 proof: Lean checks the graph incidences, automorphisms, semantic inequalities
 and their exact integer combination. No LP solver is needed for this step.
+Generic purchases, paid recovery and averaging are shared with the grid certificate
+in [ShannonCertificate.lean](../../ShannonCertificate.lean); the Fano endpoints are unchanged.
 
 Run from the repository root, without disabling assertions:
 

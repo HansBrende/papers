@@ -1827,3 +1827,22 @@ import LeanMachine
 #print axioms LeanMachine.DisjointSums.card_eq_pinned_kernel_mul_record_image
 #print axioms LeanMachine.DisjointSums.card_pinned_kernel
 #print axioms LeanMachine.DisjointSums.card_le_pow_of_pinned_invariant_recovery
+
+-- Whole-row parity-template enclosures and incidence bounds.
+#print axioms LeanMachine.WholeRow.LaneCell
+#print axioms LeanMachine.WholeRow.helperBundle
+#print axioms LeanMachine.WholeRow.RecoversFromRows
+#print axioms LeanMachine.WholeRow.incidentCells
+#print axioms LeanMachine.WholeRow.overlapColumns
+#print axioms LeanMachine.WholeRow.internalBlocks
+#print axioms LeanMachine.WholeRow.incidentBlocks
+#print axioms LeanMachine.WholeRow.recordBlocks
+#print axioms LeanMachine.WholeRow.parity_record_card_eq
+#print axioms LeanMachine.WholeRow.parity_card_le_record
+#print axioms LeanMachine.WholeRow.internal_support_subset_rectangle
+#print axioms LeanMachine.WholeRow.card_incidentCells
+#print axioms LeanMachine.WholeRow.recordBlocks_card_bound
+#print axioms LeanMachine.WholeRow.parity_card_le_incidence
+#print axioms LeanMachine.WholeRow.overlapColumns_card_le
+#print axioms LeanMachine.WholeRow.incidence_budget_le
+#print axioms LeanMachine.WholeRow.parity_card_le_degrees

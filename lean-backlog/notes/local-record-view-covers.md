@@ -250,6 +250,27 @@ uncharged o(L) deletion on the original untrimmed relation. If components
 already have bounded numbers of time vertices, they supply fixed depth
 directly and the auxiliary Γ_D is unnecessary.
 
+**One density and growing components suffice.** The proof uses only one
+fixed ε₀ satisfying s(k+2)cε₀<1/2; choose fixed δ,η within that strict
+margin. Thus fragmentation at that one density is sufficient. Moreover,
+the component-output bound may be n(d)=o(log log d), rather than a constant.
+Keep D,B,M fixed as above and put Δ=max(2,B,M) and
+a=4c(B+1)(k+2)(k+6). Paper 5's printed finite packing estimate, at
+radius 2n−1 with n=max(1,n(d)), gives the short-pair fraction at most
+
+  [(Δ^(2n)−1)/(Δ−1)] · n(n+1)[a(4n−1)/3+3] / log₂ d.
+
+Indeed, its disjoint-path constant is A_j=aj+3 and the odd-length sum is
+Σ_(j=1)^n 2j[a(2j−1)+3]=n(n+1)[a(4n−1)/3+3]. The transport proof is
+finite for every length: its time grows linearly in that length, occupancy
+stays B+1, and no lower-dimension threshold depends on the radius. Hence
+the estimate is O(n³Δ^(2n)/log d), which tends to zero when
+n=o(log log d). The rest of the same-cut invoice is unchanged. More
+generally n³Δ^(2n)=o(log d) is sufficient, but Δ depends on the fixed
+depth and degree payments. This strengthening remains written: the
+existing Lean asymptotic wrapper fixes the radius, and the native
+transport premise itself is only partly formalized.
+
 The premise is on the time diagram, whereas the earlier row-separator
 theorem assumes hyperfiniteness of a source/demand row graph. Neither
 identification is made here. Paper 15's raw-coordinate patch theorem
@@ -313,3 +334,44 @@ Averaging over every unrevealed vertex instead would not prove it.
 The same local-capacity and target-coverage premises are still required;
 this count supplies neither small families nor a useful μ for general
 native diagrams. It opens no further experiment or front.
+
+## 10. A local cut restatement needs individual causal views
+
+For any set U of native steps, let P_U be its outside predecessors:
+v∉U with u→v for some u∈U in the native **backward** dependency DAG.
+They are incoming neighbours in the forward information-flow convention.
+Let J be the output labels appended in U, S=σ(J), and R_U the raw input
+addresses read anywhere in U. For each j∈J, retain its own raw cone
+c_U(j): the reads on paths starting at its output root and staying
+entirely inside U, including the length-zero path.
+
+The records on P_U and c_U(j) determine output j, by induction through
+the internal time vertices. Define cap_U(S) using the individual helpers
+c_U(j)∩S. Exterior conditioning as in Section 1 gives
+
+  s|P_U| ≥ |S|−cap_U(S) ≥ |S∖R_U|.
+
+For the second inequality, projection of any such storage code onto
+R_U∩S is injective: agreement there implies agreement on every helper
+view, hence on every target. Thus cap_U(S)≤|R_U∩S|. If a retained subset
+S′ has separated demand ports, the same record satisfies
+s|P_U|≥|S′|/2. An arbitrary U does not itself provide the fixed depth
+and paid degree premise for the native separation theorem.
+
+If instead every output is given **all** reads R_U, capacity is exactly
+|R_U∩S|: let those coordinates vary freely and fix the others. The
+capacity invoice then equals the ordinary unread-target count, with no
+extra credit. A target read somewhere in the patch is not necessarily
+a self-helper in its own causal view. Two targets with helpers {y},{x}
+and the parity message x⊕y illustrate strict credit for the individual
+views, although the union of reads contains both targets.
+
+[Paper 1's Cut Lemma](../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/locality.tex)
+and its [code cut-set bound](../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/codes.tex)
+use the unread-target count; Paper 4's M* imports that coarsened
+inequality. The finer statement above reuses Section 1 and Paper 5's
+index-code fibre bound. [Paper 18, Theorem Q](../../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/paper/sections/transfer.tex)
+also already proves a native capacity-deficit invoice for original entry
+relations, with its explicit simulator and erosion costs. The local
+restatement is therefore reuse, not a new capacity theorem or novelty
+claim about adding coding credit to native cuts.

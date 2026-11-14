@@ -67,8 +67,12 @@ The [involution adapter](../lean-machine/LeanMachine/InvolutionSums.lean)
 identifies pair differences with this kernel and proves the exact orbit count.
 The [singleton adapter](../lean-machine/LeanMachine/DisjointSumsPinned.lean)
 handles active shifts that vanish on prescribed coordinates, recording their
-raw values with exact finite accounting. Selecting the active pairs from an
-omitted-orbit list and the whole-row incidence/rate bounds remain separate work.
+raw values with exact finite accounting. The
+[whole-row adapter](../lean-machine/LeanMachine/WholeRow/ParityTemplate.lean)
+now proves the record enclosures, incidence count and finite bounded-degree
+parity-template bound, including rectangular arrays and arbitrary lanes.
+Selecting active involution orbits, the sharper fixed-cell correction and
+paid heavy-row/asymptotic bounds remain separate work.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

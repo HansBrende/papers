@@ -107,7 +107,10 @@ invoice is β(k+2)|Γ|≥(1−δ)L/2−o(L), while
 β|Γ|≤βεC(L+1)+ηL. Choosing (k+2)(βεC+η)<(1−δ)/2 excludes the class.
 This is a written composition, using partly formalized native separation;
 it is neither a whole-row class extraction nor a general native Crux.
-Ordinary time-vertex hyperfiniteness suffices. One work tape recovers a
+In fact one fixed ε₀ with β(k+2)Cε₀<1/2 suffices, even if the output
+bound is n(d)=o(log log d); the linked proof substitutes a growing radius
+into Paper 5's explicit finite packing estimate. This strengthening is
+also written. Ordinary time-vertex hyperfiniteness suffices. One work tape recovers a
 known exclusion by planarity; no new conclusion for arbitrary multi-tape
 motion or adaptive trace fibres is asserted.
 

@@ -5,9 +5,11 @@ Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 parity extension, compatibility extraction and recovery-to-record separation
 for ordinary and automorphism-weighted sums are Lean-verified, including finite
 counts, the full-invariance involution adapter, and singleton pinning for
-prescribed zero shifts. Whole-row incidence counts and rate bounds remain
-written; the generic pinning theorem takes the active blocks and pinned set
-as data rather than constructing them from an omitted-orbit list.
+prescribed zero shifts. The whole-row record enclosures, active-block
+incidence count and finite bounded-degree parity-template bound are also
+Lean-verified, with arbitrary finite lanes and rectangular row/column types.
+Selection from an omitted-orbit list, the sharper fixed-cell pairing
+correction, and the paid heavy-row/asymptotic bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -56,9 +58,10 @@ now in [`InvolutionSums.lean`](../../lean-machine/LeanMachine/InvolutionSums.lea
 `card_orbitConstant` proves q^((N+f)/2), and
 `card_eq_orbitConstant_mul_record` / `card_le_pow` prove exact counting and
 the bound q^((N+f)/2+|T|). The finite code bound allows empty C and trivial
-alphabets. Its views are arbitrary sets H(v); their whole-row bundles and
-the particular enclosure sets Q_c,Q₀ still need the geometric instantiation.
-The following written proof describes that application.
+alphabets. Its views are arbitrary sets H(v); Section 5 now supplies the
+general whole-row bundle/enclosure adapter. Combining it with these
+oriented involution blocks and the sharper fixed-cell count remains a
+separate specialization. The following written proof describes that application.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -142,8 +145,10 @@ generally per omitted single-parity block, regardless of its size.
 Global identities require finite active and pinned index types; the power
 bound explicitly assumes finite coordinates, active indices and alphabet.
 Empty codes and trivial additive alphabets are allowed. The generic
-adapter does not construct the active pairs from an involution, instantiate
-whole-row views, or prove the subsequent incidence and trimming estimates.
+adapter does not construct the active pairs from an involution. The
+whole-row enclosures and general active-block incidence estimate are now
+supplied by Section 5's adapter; the sharper fixed-cell correction in
+Section 2 and the heavy-row trimming still need their own endpoints.
 
 This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
 alone does not supply them: a linear constraint can exclude every individual shift while
@@ -252,8 +257,9 @@ linearity is assumed. `weighted_fiber_card`, `card_weighted_kernel` and
 `card_le_pow_of_weighted_invariant_recovery` explicitly assume finite
 coordinates, blocks and alphabet and give fibre size q^(N−m) and code bound
 q^(N−m+|T|). These remove the infinite-type degeneracy from finite applications.
-The involution conversion is formalized as above; pinned coordinates and the
-quantitative whole-row applications below remain written.
+The involution conversion and prescribed-coordinate pinning are formalized
+as above. The finite whole-row application is now formalized as described
+below; the heavy-row and asymptotic application remains written.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -287,6 +293,45 @@ With R=⌈√d⌉, the gain over the template exponent is at most a+o_w(N), unif
 This is stability under extension of a **specified parity template**, not a universal
 bound on its baseline rate, nor a normal form for arbitrary codes.
 
+**Whole-row enclosure and count adapter (Lean).**
+[WholeRow/ParityTemplate.lean](../../lean-machine/LeanMachine/WholeRow/ParityTemplate.lean)
+uses finite row and column types R,J and a finite lane type Λ. Its
+coordinates are R×J×Λ, with N=|R||J||Λ|. `RecoversFromRows` means that
+agreement on all lanes in rows ρ(c) determines every coordinate of column c;
+the code and the recovery need not be linear. This is an agreement-based
+statement, not a selected decoder or field representation.
+
+The input D consists of m_act **active** blocks, disjoint from the pinned
+set E, and the code is invariant under their weighted kernel shifts that
+vanish on E. `recordBlocks` is the exact union of all-incident active blocks
+and active blocks contained in some helper bundle. `parity_record_card_eq`
+and `parity_card_le_record` discharge both enclosures in the pinned theorem
+and give exact attained-record counting and q^(N−m_act+|T|).
+
+For each internal active block of size at least two,
+`internal_support_subset_rectangle` derives containment in M_c×J_c×Λ
+from recovery and invariance. It handles incident coordinates by their own
+row and nonincident coordinates by any other member of the block, using
+the existing compatibility theorem. Disjoint-support counting then proves
+`recordBlocks_card_bound`: for any lower size bound r≥2,
+
+  r|T| ≤ |Λ| [Σ_c |M_c| + Σ_c |M_c||J_c|].
+
+The local geometric count assumes a nonempty code and nontrivial alphabet.
+The cardinality endpoints handle empty codes and trivial alphabets as well.
+`parity_card_le_incidence` retains the displayed incidence sum and integer
+floor, and `parity_card_le_degrees` gives
+
+  |C| ≤ q^[N−m_act + floor(|Λ||J|(w+w²D)/r)]
+
+when forward degrees are at most w and reverse degrees at most D. These
+finite statements are uniform in the finite abelian alphabet and lane
+count, and strengthen the square-array formulation to rectangular arrays.
+The record union can be smaller than the sum used in this last estimate.
+The adapter takes active blocks/pins as data. Choosing them from a marked
+involution or deleting heavy rows, and the sharper fixed-cell cancellation
+in the pairing-specific formula, remain separate instantiations.
+
 ## Scope of the examples
 
 The grid's displayed shared-object construction has a pairing template. The theorem
@@ -298,9 +343,11 @@ Those examples need their own checks; being linear is not enough to contain a pa
 Abstract counting, local disjoint-parity extension, compatibility extraction
 and global separation/counting for ordinary and automorphism-weighted sums
 are Lean-verified, including finite cardinalities and the full-invariance
-involution conversion. Pinned-coordinate/omitted-block instantiation, the
-whole-row enclosures and incidence counts, and the paid/asymptotic bounds
-remain written and reviewed. Invariance is relative to a specified additive
+involution conversion, singleton pinning, whole-row enclosures and the
+finite general parity-template incidence and bounded-degree estimates.
+Omitted-orbit selection, the sharper pairing fixed-cell correction and
+paid heavy-row/asymptotic bounds remain written and reviewed. Invariance
+is relative to a specified additive
 group on the entry alphabet; for b-bit symbols bitwise XOR supplies one such
 group. No claim identifies invariance under different choices of group law.
 The argument uses subgroup invariance

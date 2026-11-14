@@ -205,3 +205,4 @@ import LeanMachine.DisjointSumsCompatibility
 import LeanMachine.DisjointSumsWeighted
 import LeanMachine.InvolutionSums
 import LeanMachine.DisjointSumsPinned
+import LeanMachine.WholeRow.ParityTemplate

@@ -2431,64 +2431,254 @@ not imply high rate. General 21.5 and the unrestricted whole-row wall remain
 open. Further work should remove this hypothesis or test that implication,
 not optimize the constants inside the proved subclass.
 
-## 22. What the fundamental premise is used for: aligned matchings; the two-token case as a graph (Fable, 13 November 2026)
+## 22. Alignment, bicircular presentations and a uniform constant deficit
 
-Status: **short written proofs, unreviewed**; 22.4 is an open question.
-Front D1; restrictions as in section 21 (linear, transversal; codegree one
-where stated). Nothing here removes one; 22.1 replaces the fundamental
-premise by a weaker one.
+Fable's graph proposal, audited and extended by Astra, 14 November 2026.
+Status: **reviewed written proofs and exact finite controls, not Lean-verified**.
+Front D1. The alignment repair in 22.1 retains a geometric premise.
+The separate theorem in 22.5–22.6 removes alignment, fundamentalness and
+codegree assumptions for **every two-token presentation**: at fixed forward
+window w its rate is at most 5/6+o(1), uniformly in the lane count. Its
+Hall-matching proof also gives a constant deficit for bounded support size
+with average support size bounded by a fixed μ<5/2. General transversal codes and the
+unrestricted whole-row question remain open.
 
-**22.1 (alignment is enough).** Call a token design *aligned* if it has a
-global matching μ (every token ω matched to a cell x_ω) such that in every
-block the slack cells can be matched onto the block's outside tokens (those
-whose matched cell is not in the block), each slack cell to a token it
-covers. Then the two bounds of section 21 hold as stated for fundamental
-presentations: (λ+2)K ≤ (λ+1)N + ℓ, and for λ = 1 also 2K ≤ N + L + N₃.
+**22.1 (alignment needs a row condition).** Call a presentation *weakly
+aligned* if a global matching of all tokens extends to a perfect matching
+of every square block P_r: each global pair lying inside P_r is retained.
+Equivalently, the block's slack cells can be matched along support edges
+to its tokens whose global mates lie outside P_r. Require additionally
+that every such local pair y→ω has row(y)≠row(x_ω). Call this *alignment
+across different rows*. Under this condition the bounds are
 
-*Proof.* The payment argument uses only that matching. A slack cell y in m
-blocks sends one edge per block, to a token it covers; that token lies in
-all m blocks, and its matched cell lies in at most λ of them when it is in
-another row, in none of them when it is far and its own column is among
-them. The weights and the count are unchanged. ∎
+  (λ+2)K ≤ (λ+1)N+ℓ−X_loop ≤ (λ+1)N+ℓ,
+  2K ≤ N+ℓ+T₃ ≤ N+L+N₃  when λ≤1.                     (22a)
 
-Fundamental presentations are aligned after normalisation. The four-pair
-code is not: in the block that recovers a₁ from b₁, a₂, b₂ the matched cell
-b₁ = z − y₁ has to be matched to y₁ and not to z.
+Here λ bounds common helper columns of distinct rows; the other quantities
+are those of 21.4 and 21.7. Fundamental presentations have this alignment
+after the normalization of 21.6.
 
-**22.2 (two tokens per cell: a graph).** If every cell covers at most two
-tokens, the design is a graph Γ on the tokens whose edges are the cells (a
-one-token cell is a loop of Γ), and the matroid is the bicircular matroid:
-the rank of a set S of cells is the number of tokens it touches minus the
-number of its acyclic components. A cell lies in the closure of S exactly
-when its tokens lie in components of S that contain a cycle. So:
+*Proof.* Token ω has e_ω+χ_ω≤e_ω+1 local edges. Every block containing a
+slack cell y contains all its tokens. Different rows and codegree λ give
+e_ω≥m(y)−λ−1 on each used edge. With a_y=max(0,m(y)−λ−1), the weights
+e_ω/(e_ω+1) therefore give E_tot≥Σ_y a_y as in 21.6. Substitute in the
+exact identity K−ℓ=Σ_y m(y)−E_tot−X_loop. This proves the first inequality,
+without assuming X_loop=0.
 
-- the whole-row condition is: every token touched by a non-helper cell of
-  column r lies in a component, containing a cycle, of the graph Γ_r formed
-  by the cells of the rows ρ(r);
-- the rate is (tokens)/(cells) when every component of Γ has a cycle; one
-  half is average degree four;
-- a block is a union of unicyclic graphs, and its local matching assigns to
-  each token the cell leading towards the cycle. Off the cycle that is forced.
+For a far nonloop mate x_ω=(c,r), put J=B_y. If r∈J, y's row helps r
+and has no common helper column with c, or there would be a length-three
+incidence path. If r∉J, different rows and λ≤1 exclude at most one
+column from the count. In both cases e_ω≥m(y)−1. Each far token has
+e_ω+1 local edges, and gives each weight 1/(e_ω+1); each slack cell
+receives at most one. Thus far tokens number at most N−K, proving (22a). ∎
 
-**22.3 (consequences).**
-- *Fundamental* means a loop of Γ at every token. *Aligned* means the matched
-  cell of each token leads towards the cycle in every block that contains
-  it, or lies on the cycle.
-- A failure of alignment in a block is an alternating path: a slack cell
-  assigned to ω₁, the matched cell of ω₁ assigned to ω₂, and so on, ending at
-  a token whose matched cell is outside the block. The slack cell is then
-  paired with an outside token it does not cover, which is why the payment
-  argument stops.
-- If no two rows share two columns, a cycle of Γ whose cells lie in two or
-  more rows can serve one column only; a cycle inside one row serves every
-  column that row helps, and then that row resolves those tokens alone.
-- Each token has at least two cells, and a token with exactly two has them
-  as mutual helpers.
+**Why weak alignment alone is insufficient for this proof.** Take d=3,
+ρ(r)={0}, y=(0,0) with support {a,b}, x_a=(0,1) with {a}, and x_b=(0,2)
+with {b}; all other supports are empty. Match a to x_a and b to x_b.
+Let P₁={y,x_b}, P₀=P₂={y,x_a}. These are valid weakly aligned squares,
+but m(y)=3 and e_a=0. The local pair y→a has both coordinates in row 0,
+and the claimed inequality e_a≥m(y)−1−1 fails. This is a proof
+counterexample, not a counterexample to the capacity bound: normalizing
+this already fundamental presentation repairs its alignment.
 
-**22.4 (question: the cost of alignment).** In a two-token design with far
-cells and no two rows sharing two columns, can alignment be reached by
-deleting O_w(d) tokens? If yes, such designs are at one half. If no, a
-family with extensive alignment cost is the candidate for a design above
-one half, and its conflicts must end at different outside tokens in
-different blocks: when they all pass through few tokens, as in the four-pair
-code, deleting those tokens aligns the design.
+**22.2 (the classical bicircular model).** With at most two tokens per
+coordinate, a two-token coordinate is a graph edge, a singleton is a
+graph loop, and empty support is a constant coordinate. Parallel edges
+are allowed. The matching rank of S is
+
+  rank(S) = |tokens touched by S| − |tree components of S|.
+
+The component count uses only touched token vertices. A tree has matching
+rank one less than its vertex count; a cyclic
+component has a spanning unicyclic subgraph matching all its vertices.
+Ranks add over components. For x outside S, adding x preserves rank
+exactly when all its endpoints lie in cyclic components of S; empty
+support is automatic. Coordinates already in S are always in its closure.
+These are classical bicircular-matroid facts:
+[Zaslavsky (1982), Theorem 1(a,c,g,j)](https://people.math.binghamton.edu/zaslav/Tpapers/bglf.qjm1982.pdf).
+
+Thus whole-row recovery requires every endpoint of each non-helper target
+in column r to lie in a cyclic component of the helper-row graph Γ_r.
+A square block is a disjoint union of unicyclic components. Its local
+token-to-edge matching is forced towards the cycle off that cycle; on
+each cycle it chooses a coherent orientation.
+
+**22.3 (precise graph consequences).** A fundamental *presentation* has
+a singleton at each token. Another presentation of the same matroid may
+have that property even when the displayed graph does not. Weak alignment
+requires each block's matching to extend the global assignments on its
+internal basis cells, including coherent cycle orientations. Merely lying
+on the cycle is insufficient: for a triangle ab,bc,ca, match a globally
+to ab, c to bc, and b to an outside singleton. The slack edge ca cannot
+match the outside token b.
+
+Overlaying local and global matchings gives alternating paths from slack
+cells to outside tokens. Their endpoints need not be adjacent in the
+support graph. A bad path for one local choice alone does not rule out
+another local matching. The four-pair control in 20.5 is a **doubled
+hub–leaf star**, with no singleton leaf loops. Whichever pair supplies
+the global mate of its hub token z, the helper block recovering its
+opposite coordinate has that mate as the leaf token's only occurrence.
+It cannot retain the global assignment to z. This presentation is not
+weakly aligned, and deleting z exposes a fundamental presentation.
+
+Under codegree one, any fixed token-graph cycle occupying at least two
+raw rows can be wholly contained in at most one helper union: choose
+two of those rows. A cycle within one row is available whenever that
+row helps, and resolves its own tokens; this does not resolve every other
+token touched by the row. Different cycles through a token may serve
+different columns.
+
+Hereafter a token's *occurrence degree* counts incident coordinates, so
+a singleton graph loop counts **once**. Degree-one tokens are possible,
+but their sole occurrence must be a host loop. A degree-two token makes
+either nonloop occurrence read the other's row. Mutual helping follows
+only if both occurrences are nonloops. For example ρ(0)=ρ(1)={0}, with
+the same sole token at (0,0) and (1,1), gives recovery only in the
+direction from the nonloop coordinate to the loop coordinate.
+
+**22.4 (the alignment question remains open).** Can two-token designs on
+codegree-one hosts be brought to alignment across different rows by
+deleting O_{w,w′}(db) tokens? Such a certificate, with bounded original
+forward and reverse degrees, gives half plus O_{w,w′}(db) by 22.1.
+In general the actual loop and near-cell masses must be paid. Large
+alignment cost alone does not give a code above half. The next theorem
+obtains a constant deficit without resolving this alignment question.
+
+**22.5 (finite bound from support incidences).** Let V be any
+finite scalar coordinate set with row and column partitions. For each
+column r specify helper rows, whose union of coordinates is U_r. Let
+τ(x) be token supports of size at most a, where a≥2 is an integer, and
+write I=Σ_x|τ(x)|. Assume the matching
+matroid satisfies
+
+  rank(U_r∪{x})=rank(U_r)  for every x in column r.
+
+Write N=|V|, K=rank(V), L for the number of coordinates in their own
+helper union, and N₃ for the number at incidence distance exactly three
+between their row and column. Then
+
+  6K ≤ 2I+N+(2a+2)L+(a−1)N₃.                            (22b*)
+
+In particular, for every two-token presentation,
+
+  6K ≤ 5N+6L+N₃.                                        (22b)
+
+No alignment, codegree, symmetry, component-size or row-relation degree cap
+is assumed.
+
+*Proof.* Prune unmatched tokens using 21.1, preserving every subset rank
+and the support-size bound while only decreasing I. Now all K tokens are
+matched globally. Let n₁,n₂ count tokens of occurrence degree one and two.
+Degree-one tokens force distinct host-loop coordinates, so n₁≤L.
+Counting incidences gives
+
+  3K ≤ I+2n₁+n₂.
+
+For each coordinate x let k_x be its number of degree-two tokens. Then
+2n₂=Σ_x k_x≤N+Σ_x(k_x−1)_+. We bound the last sum using square blocks,
+so this step does not require the graph interpretation.
+
+Consider a nonloop coordinate e containing distinct degree-two tokens
+u,v, with other occurrences p,q. Its recovery square must match u and v
+to p and q, so both coordinates are helpers and p≠q. If p is nonloop,
+its recovery square must contain e, the only remaining occurrence of u,
+and match e to u. Because the square contains every token of e, it must
+then match v to q. Therefore both e and q help p, giving the walk
+
+  row(e) — column(p) — row(q) — column(e).
+
+Since e is nonloop, its incidence distance is exactly three. Consequently
+if e is far (neither a host loop nor at distance three) and k_e≥2,
+the other occurrence of **every** degree-two token at e is a host loop.
+These k_e loop–token incidences cannot be charged by another far
+coordinate: each token has just one other occurrence. There are at most
+aL such incidences. Since k_e≤a gives k_e−1≤(a−1)k_e/a, the far
+contribution to Σ_x(k_x−1)_+ is at most (a−1)L. The loop and near
+contributions are at most (a−1)(L+N₃). Thus
+
+  2n₂ ≤ N+2(a−1)L+(a−1)N₃.
+
+Combining this with 6K≤2I+4n₁+2n₂ proves (22b*). For a=2, I≤2N
+gives (22b). Equivalently, in that case at most N₃+2L coordinates
+have two degree-two tokens. ∎
+
+**22.6 (forward window alone gives a uniform deficit).** On a d×d grid
+with d,b≥1, b scalar lanes per entry and |ρ(r)|≤w, every whole-row
+two-token presentation satisfies, for each integer R≥1,
+
+  K/(d²b) ≤ 5/6 + 2w/(R+1) + w/d
+                    + w(w−1)(R−1)/(6d).                 (22c)
+
+In particular, for every fixed w,
+
+  K/(d²b) ≤ 5/6 + O_w(d^(−1/2)),                         (22d)
+
+uniformly in b, in the relation, and in any field representing this
+coordinate matroid. There is **no reverse-degree assumption**.
+
+More generally, if maximum support size is at most a and I/N≤μ, then
+
+  K/N ≤ (1+2μ)/6 + aw/(R+1) + (a+1)w/(3d)
+                      + (a−1)w(w−1)(R−1)/(6d).          (22c*)
+
+For fixed a,w and μ<5/2, this gives the positive asymptotic deficit
+(5−2μ)/6. The mean support size may be measured after pruning unused
+tokens. This includes presentations with three or more tokens on some
+coordinates; bounded maximum arity remains a hypothesis of this corollary.
+
+*Proof.* Set N=d²b and prune unused tokens first. Let H contain rows
+whose reverse degree exceeds R. Since Σ_r|ρ(r)|≤wd,
+|H|≤wd/(R+1). Delete all tokens touched by coordinates of H. Each such
+row has db coordinates, each with at most a tokens, so the cost t
+is at most adb|H|≤awN/(R+1).
+
+By 21.8, restricting the global and local square matchings preserves
+recovery and leaves rank K−t. Every H-row coordinate now has empty
+support. Remove H from every helper set: retained local matched cells
+lie outside H, and targets in H are constant, so recovery still holds.
+Keep all N coordinates, including constants. The new host has forward
+degree at most w and reverse degree at most R. Thus its loop and near
+counts obey
+
+  L′≤wdb,  N₃′≤db·w(w−1)(R−1).
+
+For the second count, a length-three path chooses a helper of its target
+column, another column using that row, and a different helper of the
+second column. These choices bound every distance-three endpoint.
+The surviving support-incidence count is at most I. Apply (22b*) to
+K−t, divide by N, and add t/N to obtain (22c*). With a=2, μ≤2 this
+is (22c). Taking R=⌈√d⌉ proves (22d) and the general asymptotic claim. ∎
+
+**Paid extension to larger supports.** In any pruned whole-row token presentation,
+if deleting t tokens leaves every support of size at most two, then 21.8
+and (22d) give
+
+  K/N ≤ 5/6+t/N+O_w(d^(−1/2)),  N=d²b.                  (22e)
+
+The same finite error as in (22c) applies. Hence a family of rates tending
+to one at fixed forward window requires at least (1/6−o(1))N deletions
+for **every** such reduction.
+No cheap reduction is asserted, and an expensive reduction alone does
+not imply high rate. This is presentation-level rank accounting.
+
+**Scope and next step.** These are bounds for matching-matroid recovery,
+and therefore for linear whole-row codes with the stated transversal
+presentations. Arbitrary two-sparse coefficient matrices
+can have nongeneric cancellations and do not automatically satisfy this
+hypothesis. No restriction on alignment, row codegree, coupling or symmetry
+remains. The finite theorem permits arbitrary coordinate masses; the
+forward-only estimate uses the full balanced grid in its deletion cost.
+This is a common deficit for the entire two-token subclass, and for
+bounded-arity presentations of mean support size at most any fixed μ<5/2.
+It is not a half bound, an unrestricted transversal theorem, or a
+native-machine exclusion.
+
+The [exact controls](../tools/diagonal-calibration/README.md#two-token-presentations)
+check graph versus matching ranks, recovery, the loop charge and the
+high-reverse trimming step. They supplement the proof rather than replace
+it. The bounded two-token pass is complete, and its low-degree forcing
+step already extends to arbitrary supports. The next missing ingredient
+is a charge that remains useful at mean support size at least 5/2, or
+an argument without the transversal restriction. Improving constants
+inside the two-token class is not the next target.

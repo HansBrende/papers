@@ -127,3 +127,35 @@ cyclic-four control after revealing z (12 of 16), grouped twin coordinates
 It performs no host search, writes no files and uses no optimizer. These
 checks supplement the general written proofs; they are not Lean proofs or
 evidence for the unrestricted token conjecture.
+
+## Two-token presentations
+
+The reviewed written proof in [row spread §22](../../notes/row-spread-of-cones.md#22-alignment-bicircular-presentations-and-a-uniform-constant-deficit)
+gives 6K≤5N+6L+N₃ for every whole-row matching-matroid presentation with
+at most two tokens per scalar coordinate. Deleting tokens touched by
+high-reverse rows gives rate at most 5/6+O_w(d^(−1/2)) at any fixed
+forward window, uniformly in lanes. No alignment, codegree or symmetry
+assumption is used. The two-token matching-matroid premise remains.
+The same Hall-matching proof extends to maximum support size a and total
+incidence I: 6K≤2I+N+(2a+2)L+(a−1)N₃. For fixed a,w and I/N≤μ<5/2,
+it gives asymptotic rate at most (1+2μ)/6. The matching-matroid recovery
+condition remains essential; sparsity of an arbitrary coefficient matrix
+does not imply it.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/bicircular_controls.py
+```
+
+This standard-library-only command reuses the matching and distance tools
+from `token_blocks.py`. It checks graph rank against maximum matching on
+all subsets of the small active examples, including the 256 subsets of
+the cyclic-four doubled-star component. Six recovery controls check the
+loop/near charge and the high-reverse trimming step (rank 7 becomes 3
+after four tokens are deleted). Two further weak-alignment controls
+verify the same-row gap in the earlier proof, including one whose
+nonconstant coordinates are all nonloops. They refute the edge inference,
+not its claimed numerical capacity bound. Two support-three controls check
+the general Hall charge, including a far coordinate with three degree-two
+tokens; graph-rank formulas are not used on those presentations.
+No optimizer or design search
+is run, and no files are written. These are finite checks, not Lean proofs.

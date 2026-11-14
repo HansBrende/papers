@@ -1784,3 +1784,9 @@ import LeanMachine
 #print axioms LeanMachine.DisjointSums.encode_eq_of_compatibility
 #print axioms LeanMachine.DisjointSums.syndromeRecord
 #print axioms LeanMachine.DisjointSums.card_eq_kernel_mul_record_image
+
+-- DisjointSumsCompatibility.
+#print axioms LeanMachine.DisjointSums.support_subset_insert_of_recovery
+#print axioms LeanMachine.DisjointSums.mem_view_of_free
+#print axioms LeanMachine.DisjointSums.encode_eq_of_invariant_recovery
+#print axioms LeanMachine.DisjointSums.card_eq_kernel_mul_record_image_of_recovery

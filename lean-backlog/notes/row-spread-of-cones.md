@@ -2095,6 +2095,70 @@ verifies recovery, degrees, the absence of active mutual pairs and every
 displayed finite entropy/count value. It evaluates this explicit law
 exactly; it performs no host search or numerical entropy optimization.
 
+**19.8 (paid deficits and the limit of the coarse cover).** Written proof,
+independently reviewed; not Lean-verified. The correction (19l) holds at
+arbitrary helper width: give an empty-helper column last position zero,
+include all its cells in D_q, and replace S₃ by S_max, the sum of last
+positions. Retain the other definitions from 19.5 and 19.7. Put
+
+  Δ(S)=|S|−h(S),   L=|Inc|,   S_q=E_q∪Z_q,
+  O=Σ_q |E_q∩R_{P_q}|,       e=L+O.
+
+The sets E_q∪D_q partition the nonincident cells, E_q∩D_q=∅, and
+Σ_q|E_q|=S_max−L. Consequently the increment identity gives
+
+  W=S_max−e−Σ_q Δ(S_q)+Σ_q Δ(Z_q),
+  H ≤ e+Σ_q [Δ(S_q)−Δ(Z_q)] ≤ e+Σ_q Δ(S_q).              (19n)
+
+The last inequality is the proposed paid-slack bound, with its finite
+error retained. Importantly, the exact conditional increments subtract
+the deficits of the shared views Z_q. Charging those deficits in full
+is a further relaxation, not a feature of the retained identity.
+
+For an explicit error count, let n₊ be the number of nonempty-helper
+columns and t_q the number ending at q. In each such column the overlap
+with P_q consists of P_q∖ρ(c). Thus
+
+  e=n₊+Σ_q t_q|P_q|
+    ≤ R L−(R−1)n₊ ≤ [1+R(w−1)]d,                        (19o)
+
+when forward and reverse degrees are at most w,R≥1. This uses t_q≤R
+and Σ_q|P_q|≤L−n₊. With no helper incidences e=H=0.
+
+Each cell belongs to at most R+1 sets S_q: once through the disjoint
+E_q∪D_q pieces, and at most R times through partial-helper rows. For
+any cell-set family of multiplicity at most k, unit caps give
+Σ_jΔ(S_j)≤kΔ(V). Indeed, in a fixed cell order,
+Δ(S)=Σ_{v∈S}[1−h(v|S_{<v})]≤Σ_{v∈S}[1−h(v|V_{<v})];
+the latter summands are nonnegative and each is used at most k times.
+Together with (19n), this proves
+
+  (R+2)H ≤ (R+1)N+e.                                    (19p)
+
+This coarse reverse-degree bound is weaker than (20c), including its
+finite error. It does not identify the retained expression (19n) with
+the optimal order bound or rule out a sharper conditional-deficit
+estimate. At window one P_q is empty and multiplicity is at most one,
+recovering 2H≤N+L. Symmetric pairing attains it, with
+Δ(E_q∪D_q)=φ(q)−1.
+
+There is no window-two total order in which every row is a non-last
+helper exactly once: the greatest row is never a non-last helper.
+Already the three helper pairs {0,1},{1,2},{0,2} have incidence girth six
+and non-last counts 2,1,0 in every order. Paper 17's Proposition
+`prop:order`(b) instead uses greedy minimum-incidence vertex deletion;
+a cyclic orientation is not a total order. At exact width w with no
+incidence four-cycles, Σ_q|P_q|=(w−1)d, but the average multiplicity of
+the cell sets S_q is w−w/d−O/N, not exactly w. None of these counts
+supplies a new deficit independent of w.
+
+Finally, high rate already implies Σ_pΔ(R_p)≤N−H, hence small average
+row deficit. This does not control joint deficit:
+Δ(R_A)=Σ_{p∈A}Δ(R_p)+[Σ_{p∈A}h(R_p)−h(R_A)]. Symmetric pairing has
+zero deficit on every individual row and order-N joint dependence.
+Small marginal row deficits alone therefore do not control the shared
+conditional information in (19n).
+
 ## 20. Cell budgets, token closures and the Shannon/order test
 
 Fable's proposals, audited and extended by Astra, 14 November 2026.

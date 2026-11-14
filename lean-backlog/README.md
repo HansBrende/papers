@@ -47,15 +47,21 @@ No native extraction is implied.
 
 The [pairing/parity-template note](notes/pairing-coset-bound.md) now reuses
 [CosetRecords.lean](../lean-machine/LeanMachine/CosetRecords.lean) for its abstract
-exact count by attained records on subgroup-invariant sets. Its recovery
-geometry and rate bounds remain written proofs. The local
+exact count by attained records on subgroup-invariant sets. Its geometric
+rate bounds remain written proofs. The local
 [disjoint-sum extension criterion](../lean-machine/LeanMachine/DisjointSumsExtension.lean)
 is also verified for arbitrary target sums and additive-automorphism weights,
 without finite alphabet or finite coordinate assumptions.
 The [recovery-to-record adapter](../lean-machine/LeanMachine/DisjointSumsRecords.lean)
 now proves global separation and exact attained-record counting for ordinary
-sums under explicit view-cover/compatibility hypotheses. Extracting those
-hypotheses and the remaining geometric rate bounds is still separate work.
+sums under a chosen-view cover criterion. The
+[compatibility adapter](../lean-machine/LeanMachine/DisjointSumsCompatibility.lean)
+derives compatibility and the free-coordinate condition from recovery and
+kernel invariance. Its local lemmas allow infinitely many blocks; global
+separation and exact counting use finitely many blocks, arbitrary additive
+alphabets and coordinate types, and also allow empty codes and trivial
+alphabets. Weighted global and involution-orbit adapters and the geometric
+rate bounds remain separate work.
 
 ## What is here
 

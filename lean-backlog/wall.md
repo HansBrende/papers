@@ -306,8 +306,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      is written and reviewed, but gives no new capacity bound. The order-minus-correction
      form is valid; a low-rate directed-cycle control defeats universal positive coupling
      even without active mutual helpers, leaving high-rate/large-girth variants open.
-     *Astra banked:* the nonlinear matching theorem and ordinary-sum record separation/count
-     under explicit compatibility are Lean; extraction, weighted global and rate adapters remain.
+     *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
+     record separation/count are Lean; weighted global, involution and rate adapters remain.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
@@ -316,11 +316,11 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      and capacity 5 replay exactly. No all-q formula, bounded-factor limit or joint growing-host
      claim is proved. The programme is never worse than order and saves whole symbols where
      order does. No additional numerical search is commissioned.
-  8. *D0 route closed.* [Last-helper correction](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
-     (§19.7): the pointwise coupling premise fails on a directed three-cycle control. With the
-     slack kept, entropy is at most the sum of the local deficits of the sets E_q ∪ D_q ∪ R_Pq,
-     which overlap only in helper rows; the covering constant is one at window one and about w
-     in general, so this is the order bound in cover form (unreviewed). *In progress:* Astra,
-     compatibility extraction for the parity adapter. Fable, a gap map from the three new Lean
-     files to an end-to-end pairing theorem.
+  8. *D0 accounting pass stopped.* [Last-helper correction](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+     (§§19.7–19.8): the universal pointwise coupling fails on a directed three-cycle control.
+     The reviewed deficit cover has error at most [1+R(w−1)]d and gives a weaker bound than
+     §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
+     they are not proved equivalent to order, and no new capacity estimate follows.
+     Compatibility extraction is banked in Lean. Next: weighted global adapter after reuse
+     check; Fable's gap map to the end-to-end pairing theorem. No numerical search is opened.
 - Last re-evaluation (D0): 14 November 2026.

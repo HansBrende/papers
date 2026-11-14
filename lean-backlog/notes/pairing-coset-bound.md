@@ -2,9 +2,9 @@
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** written proofs, independently reviewed; abstract counting, local
-parity extension and recovery-to-record separation for ordinary sums are
-Lean-verified. Compatibility extraction, weighted global and involution
-adapters, incidence counts and rate bounds remain written.
+parity extension, compatibility extraction and recovery-to-record separation
+for ordinary sums are Lean-verified. Weighted global and involution adapters,
+incidence counts and rate bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -171,9 +171,25 @@ nonincident-coordinate compatibility premise, recording all fully viewed
 and all all-incident blocks. `card_eq_kernel_mul_record_image` then proves
 the exact product of kernel cardinality and attained-record cardinality.
 These results allow nonlinear or empty codes and need only a finite block
-index, not a finite alphabet or coordinate type. Compatibility is still an
-explicit hypothesis. Its extraction from recovery, conjugation of the global
-theorem by the weights θ_v, and the involution-orbit adapter remain written.
+index, not a finite alphabet or coordinate type.
+
+**Compatibility extraction (Lean, ordinary sums).**
+[`DisjointSumsCompatibility.lean`](../../lean-machine/LeanMachine/DisjointSumsCompatibility.lean)
+removes that explicit premise. On a nonempty code over a nontrivial additive
+alphabet, a kernel shift invisible to a recovery view cannot change the
+recovered coordinate. Two cancelling shifts inside one block therefore give
+`support_subset_insert_of_recovery`: a nonincident target's block lies in
+its view together with the target. A shift of a free coordinate gives
+`mem_view_of_free`: that coordinate must itself be in its recovery view.
+Neither local lemma requires a finite block index.
+
+For finitely many blocks, `encode_eq_of_invariant_recovery` uses these facts
+to separate all sums by any record containing every fully viewed and every
+all-incident block. `card_eq_kernel_mul_record_image_of_recovery` proves the
+exact kernel-times-attained-record count under those same enclosures. These
+global wrappers handle empty codes and trivial alphabets without extra
+premises. Conjugation by the weights θ_v and the involution-orbit adapter
+remain written; the ordinary-sum declarations do not yet formalize them.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -215,11 +231,10 @@ all-one word, whereas every full orbit-constant pairing subgroup contains that w
 The binary cyclic window-two difference code at d=3 likewise excludes the all-one word.
 Those examples need their own checks; being linear is not enough to contain a pairing code.
 
-Abstract counting, local disjoint-parity extension, and global separation
-for ordinary sums under explicit compatibility are Lean-verified.
-Compatibility extraction, the weighted global and involution-orbit adapters,
-incidence counts and the paid/asymptotic pairing and parity-block bounds
-remain written and reviewed.
+Abstract counting, local disjoint-parity extension, compatibility extraction
+and global separation/counting for ordinary sums are Lean-verified.
+The weighted global and involution-orbit adapters, incidence counts and the
+paid/asymptotic pairing and parity-block bounds remain written and reviewed.
 The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large
 intersection with a template. The native question still needs a premise that supplies

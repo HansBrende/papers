@@ -990,3 +990,113 @@ outside the uniform near-abelian regime. A logarithmic coupling requirement
 needs the separate class-count hypothesis above. Expansion is a candidate
 family, not a necessary property proved here. There is still no common
 whole-row deficit or native transposer exclusion from these results.
+
+## 14. Two-sided symmetric decoders are at one half; the family for the large-component case (Fable, 13 November 2026)
+
+Status: 14.1–14.3 and 14.5 have **short written proofs, unreviewed**. 14.4 is a
+**proof sketch** resting on a cited theorem not re-read here. Front D1. Unlike
+sections 12 and 13, the statements 14.1–14.4 allow **one-way helpers**. Linear
+codes only. No machine consequence by itself.
+
+Write a linear decoder as K = Σ_k (A_k ⊗ B_k)∘τ on F^d ⊗ F^d, that is
+K(X) = Σ_k A_k Xᵀ B_kᵀ, with any number of terms; the code is ker(I − K).
+A whole-row decoder X[c][r] = Σ_{i∈ρ(r)} Σ_x k(c,r;i,x)·X[i][x] has the terms
+E_{c,x} ⊗ E_{r,i}.
+
+**Proposition 14.1 (swapped blocks).** Let F^d = ⊕_j E_j and suppose
+K(E_i ⊗ E_j) ⊆ E_j ⊗ E_i for all i, j. Then
+
+  dim ker(I − K) ≤ d²/2 + ½·Σ_j (dim E_j)².
+
+This holds in particular when every A_k and every B_k preserves every E_j.
+With all E_j of dimension one it is the commuting case of
+[the twisted-swap note](twisted-swap.md), Theorem 4.
+
+*Proof.* For i ≠ j the sum E_i⊗E_j ⊕ E_j⊗E_i is K-invariant and K exchanges
+its two summands, so a fixed vector a + b there has b = Ka: the kernel has at
+most dim E_i·dim E_j dimensions, half of the summand. The diagonal summands
+E_j⊗E_j contribute at most their full dimension. ∎
+
+**Corollary 14.2 (group relations).** Let ρ(r) = rT on a group G of order d,
+H ≤ G, and assume F[H] is split semisimple with irreducible degrees n_σ.
+Suppose the coefficients are invariant under the swap-twisted action of H × H:
+
+  k(c, r; i, x) = k(h₂c, h₁r; h₁i, h₂x)  for h₁, h₂ ∈ H.
+
+(The helper row i moves with r, as it must, and the helper column x with c.)
+Then
+
+  dim ker(I − K) ≤ d²/2 + (d²/2)·Σ_σ n_σ⁴/|H|².
+
+For H = G these are the **constant-coefficient** decoders
+X[c][r] = Σ_{t∈T} Σ_{y∈G} φ(t, y)·X[rt][cy], with w·d free coefficients and
+unrestricted helper columns, and the excess is at most ½·Σ_π n_π⁴. For H
+abelian the excess is at most d²/(2|H|).
+
+*Proof.* The invariance says K∘(L(h₁)⊗L(h₂)) = (L(h₂)⊗L(h₁))∘K for the left
+translations. Take E_σ the σ-isotypic component of F[G] under left
+translation by H, of dimension (d/|H|)·n_σ². Then K maps E_σ⊗E_σ′ into
+E_σ′⊗E_σ. ∎
+
+**Consequence 14.3 (local rules).** Let (G_p, T) be a family whose row helper
+graphs have girth tending to infinity (so the T-labelled neighbourhoods of
+any two cells with far ports are isomorphic). A decoder whose coefficients at
+a cell are a function of the labelled radius-R neighbourhood of its ports
+agrees with a constant-coefficient decoder on all but O(d·w^{2R}) cells.
+Changing a decoder on z cells changes the dimension of the code by at most z.
+Hence such decoders have dimension at most d²/2 + ½Σ_π n_π⁴ + O(d·w^{2R}).
+On quasirandom families this is d²/2 + o(d²): **a gain there needs
+coefficients that depend on the sector c⁻¹r through non-local data.**
+
+**Proposition 14.5 (the method needs the symmetry).** Let M be the mutual
+graph of a w-regular incidence matrix with second singular value s₂ of A/w,
+and let 𝒦 be all decoders supported on M with free coefficients. If
+F^{d²} = A ⊕ B with P_A K P_A = 0 for every K ∈ 𝒦 (P_A the projection along
+B), then dim A ≤ d²·s₂/(1 + s₂). So no change of basis certifies more than
+rate 1/(1 + s₂) for the free class; this extends the deletion bound of
+[the controls note](two-token-and-oriented-controls.md), section 4, from
+coordinate subspaces to all subspaces.
+
+*Proof.* For a single edge, P_A e_y e_xᵀ P_A = 0 means e_y ∈ B or every vector
+of A vanishes at x. Let Q be the cells y with e_y ∉ B and P the cells where
+A does not vanish identically. Then dim A ≤ min(|P|, |Q|) and M has no edge
+between P and Q. The non-trivial eigenvalues of M/w² lie in [−s₂, s₂], so
+Tanner's bound gives |N(P)| ≥ |P|/(s₂² + (1 − s₂²)|P|/d²); with N(P) ∩ Q = ∅
+and |P| = |Q| = αd² this forces α ≤ s₂/(1 + s₂). ∎
+
+**Lemma 14.4 (amenable sources; sketch).** By the row-separator bound, every
+whole-row code on a uniformly hyperfinite family of row helper graphs has
+rate ½ + o(1); so a gain needs a non-hyperfinite family, for any ρ. If the
+marked groups (⟨T_i⟩, T_i) are all quotients of one finitely generated
+amenable group, their Cayley graphs form a hyperfinite family: every
+Benjamini–Schramm limit point is the Cayley graph of a quotient of that group,
+which is amenable, and a convergent sequence is hyperfinite exactly when its
+limit is (Schramm, *Hyperfinite graph limits*, 2008). This covers solvable
+groups of bounded derived length with w generators, whatever their commuting
+probability (for instance the affine groups of F_p and the groups p:3). In
+the group model the surviving families are those with a non-amenable local
+limit. Expansion is sufficient for that, not necessary.
+
+**The family.** G_p = SL₂(F_p), T = {1, A, B} with A = (1 2; 0 1) and
+B = (1 0; 2 1), w = 3.
+
+- A and B generate a free group in SL₂(ℤ), and a reduced closed walk of the
+  row helper graph is a word t₁⁻¹t₂t₃⁻¹t₄⋯ with consecutive letters distinct,
+  which is reduced in A, B. So the girth of the row helper graph is at least
+  of order log p and its local limit is the 3-regular tree. The family
+  expands (Selberg's bound; Bourgain–Gamburd).
+- k(G_p) = p + 4, so the commuting probability tends to zero; G_p is perfect
+  for p ≥ 5; the least non-trivial degree is (p − 1)/2.
+- What is already excluded on it: components meeting boundedly many sectors
+  ([bounded-sector coupling](bounded-sector-coupling.md)); constant
+  coefficients and local rules (14.2, 14.3: Σ_π n_π⁴ is of order p⁵ against
+  d² of order p⁶); coefficients invariant under H × H for the unipotent
+  subgroup or a torus (excess at most d²/(2p) and d²/(2(p ∓ 1))).
+- **Success criterion.** A linear whole-row code for (G_p, T), defined
+  uniformly in p, with dimension at least (½ + c)d² for a fixed c > 0 and all
+  large p, counted on the full array (the whole regular representation, one
+  shared decoder). At a single p a dimension is evidence only if it exceeds
+  both (d² + d|E_m|)/2, with |E_m| counted exactly for the largest m where
+  |E_m| < d/4, and d²/2 + ½Σ_π n_π⁴. For p ≤ 23 these allowances are within a
+  few per cent of each other and of pairing, so finite computation can
+  calibrate a proposed decoder but cannot decide; the decision is a proof.

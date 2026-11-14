@@ -53,6 +53,10 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   tape passes in linear time (front D7), and an exclusion could still hold through structure
   that whole-row codes ignore (the native crux, D9). A No closes the common-deficit route,
   not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
+- **Two-sided form** (front D10; *written, unreviewed*). The machine also transposes Aᵀ, so on a
+  fibre of the two advice values row r is a function of columns ρ(r) as well, with the same ρ and
+  twice the advice. If the audit confirms it, "whole-row" above may be read as "whole-row in both
+  directions" ([note](notes/two-sided-whole-row-codes.md)).
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 
@@ -118,16 +122,15 @@ Open questions, nearest the wall first:
 - **G1. Nonlinear forms** of the basis and spectral pairings.
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
   [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
-- **G4. Is the full Shannon value bounded away from d² as w grows?** Shannon can beat order at
-  positive density on fixed-window, growing-girth hosts (B3), even with a residual triangle-free
-  base (B4). No code restriction is used, but these families already have a constant order deficit.
-  What is missing is a *high-order base*: order rate tending to one while Shannon stays below one.
-  Projective planes remain the named candidate (conjectured residual rate two thirds; PG(2,3) has
-  130≤Sh≤140). A bounded residual c_Sh in Σ_v I(X_v; helpers)≤c_Sh·TC is sufficient; Fano has c_Sh=3
-  and the grid has 12/5≤c_ent≤c_Sh≤30/11. The [paid coarse-pattern bound](notes/paid-coarse-patterns.md)
-  handles imperfect quotients, but counting good columns in the best balanced Fano layout cannot
-  give a deficit uniform in w on random high-order hosts (X29). The quadrangle census hit the
-  agreed size cap before any LP; its range remains 90≤Sh_res≤118.
+- **G4. Is the full Shannon value bounded away from d² as w grows?** Shannon beats order at
+  positive density on fixed-window hosts of growing girth (B3), also from a triangle-free base (B4),
+  with no code restriction. These families already have a constant order deficit. Missing: a
+  *high-order base*, order rate tending to one with Shannon below one; equivalently c_Sh bounded in
+  Σ_v I(X_v; helpers) ≤ c_Sh·TC where order gives nothing (Fano 3; grid between 12/5 and 30/11).
+  Planes are the named candidate (conjectured two thirds; PG(2,3) has 130 ≤ Sh ≤ 140), but no
+  inequality is known (X30), counting good columns of a Fano layout cannot be uniform in w (X29),
+  and the quadrangle census exceeded the size cap (range 90 to 118 unchanged). Parked until a
+  named family comes with a precise inequality.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar-linear
@@ -158,6 +161,7 @@ a positive-density improvement of an upper bound, not a high-rate construction.
 | **D0** | *Standing*: brainstorm a new front, re-evaluate the wall, or tie an indirect front to it | Permanent | — |
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): the statement of Section 1 | Open for w ≥ 3. Main front; see "what is left" | [StatementsRowSpread.lean](StatementsRowSpread.lean); linear form `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
 | **D9** | *The native crux*: index codes for the cone systems of oblivious linear-time schedules need (ρ(D) − o(1))L bits, with ρ(D_ε) > ε for one ε | Open; follows from D1 by B1. Restricted native bounds only ([audit](notes/native-cone-property-audit.md)) | `Crux`, `crux_excludes` in the fourteenth paper's library |
+| **D10** | *Two-sided whole rows*: the statement of Section 1 for codes that recover column r from rows ρ(r) **and** row r from columns ρ(r) | Proposed 14 Nov. Transfer argument written, not audited. Known: rows without a symmetric incidence are redundant; pairing and triangles survive on symmetric relations; no new constant yet ([note](notes/two-sided-whole-row-codes.md)) | Not written |
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
@@ -209,6 +213,7 @@ a positive-density improvement of an upper bound, not a high-rate construction.
 | **X27** | Unit-speed native motion supplies literal unit-shift affine covariance after cheap advice | The fixed-state adjacent-pair transducer runs in 2N+O(1) steps but needs log_q M+z≥N/2−d for such replacement in the same coordinates ([§31.3](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap)). It is not a transposer and does commute with a two-position shift | A correctness-dependent premise or a broader paid normal form; periodic classes and nonlinear maps are not excluded |
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
+| **X30** | A constant deficit for projective planes from line pairs through one point | The cells involved are radial for that point, a fraction 1/(n+1) of all cells; and every row closure exceeds its rows by fewer than n·d cells, since a point set missing B contains fewer than n·d/|B| lines ([note §5a](notes/triangle-free-hosts.md)). The last steps of the Fano certificate do not transplant | An argument composing closures around all centres, or a certificate at order three with visible recursive structure |
 
 ## Maintenance
 
@@ -218,13 +223,10 @@ a positive-density improvement of an upper bound, not a high-rate construction.
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0: choose a high-order premise for G4.** The grid
-  unit succeeded (B4); the conditional quadrangle test stopped at its census, before any solve.
-  The macro unit proved a robust bound and its count-method limit (X29), not a new high-order
-  deficit. Bank these results and reassess before any larger computation. Distance: no code
-  restriction, but all positive gaps still use restricted hosts with existing order deficits.
-  Fable's current hand target is the projective-plane line-pair inequality; Astra will audit any
-  proposed charge against the paid certificates and the high-order controls. Admit another unit
-  only with a named family and a precise inequality or structural premise. No host sweep, cap
-  increase or constant tuning; a truncated value equal to order would not settle full Shannon.
+- **Current focus** (replace, do not append). **D10, first unit.** B2–B4 are banked and G4 is
+  parked. Distance of D10 from the wall: none if the transfer audit passes, since it weakens the
+  statement itself. Unit: (1) audit the two-fibre transfer against the Lean reduction of B1;
+  (2) exact two-sided values on the cyclic host with d = 5 and the basis host with d = 8, where
+  the one-sided value exceeds pairing. Stop rule: if the audit fails, close D10; if neither value
+  drops, record the two-sided form as a free strengthening and return to D0. No larger hosts.
 - Last re-evaluation (D0): 14 November 2026.

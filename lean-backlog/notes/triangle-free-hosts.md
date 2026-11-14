@@ -249,6 +249,21 @@ join to the entire residual host. A larger-plane proof is not forced to use
 many closures by this observation alone. The missing ingredient remains a
 useful bound on the cross-tuple information, coupled across the host.
 
+### 5a. Why line pairs through one point cannot give a constant (Fable, unreviewed)
+
+Fix o. A cell (a, m) is *radial* for o if o ∈ m. The cells shared by the closures of two lines
+through o, beyond the row of o, are radial for o, and there are (n+1)n² radial cells in all: a
+fraction 1/(n+1) of the n²(n²+n+1) cells. Every decomposition of the point set into unions of
+lines through o therefore gains at most about n³ of n⁴.
+
+More generally a single closure gains little at any density. If the point set S misses a set B,
+the lines inside S are the lines missing B, and by the expander mixing lemma for the incidence
+graph (degree n+1, second eigenvalue √n) there are fewer than n·d/|B| of them. Their columns add at
+most |B| cells each outside the rows of S, so every row closure exceeds its rows by fewer than n·d
+cells, about a fraction 1/n. A proof of a constant deficit for planes has to compose closures
+around all centres to a depth that grows with n. I have no such argument; the route is closed in
+the roadmap as X30.
+
 ## 6. Numerical leads (heuristic only)
 
 Fable's earlier alternating least-squares searches reported:

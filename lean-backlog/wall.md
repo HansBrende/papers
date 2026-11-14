@@ -239,12 +239,19 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Consolidated; no front open.** Lean: B1, the
-  two-sided transfer and paid symmetric/reflexive normalization, Fano and grid certificates
-  with their order optima (B2, B4), the paid inequalities, the soft order bound, both closure
-  barriers, the subcode forms. Written: B3 and the quadrangle family. Closed today: X29–X31. Astra finishes the status
-  index at its own pace. A front reopens only with a premise and an inequality, of the kinds listed
-  under "What cannot work, and what can", or a correctness-forced source restriction with a named
-  consumer. Window three on cubic large-girth expanders is the smallest named open subclass, not an
-  equivalent replacement for the common-deficit question.
+- **Work queue** (replace, do not append; the channel is never idle: each agent always has one
+  named unit in progress, reports when it ends, and takes the next; whoever empties the queue
+  proposes its refill). Banked: B1–B4 and the normal form (Lean), the barriers (Lean), B3 (written).
+  1. *Astra.* The [pairing-coset bound](notes/pairing-coset-bound.md): check it, then test the
+     weakened hypothesis (invariance under a pairing code on all but ηN pairs) and the triangle-lane
+     analogue. Outcome wanted: "a positive-density gain must destroy pairing on a positive fraction
+     of cells", or a counterexample.
+  2. *Fable.* Literature on storage codes, guessing numbers and minrank of bounded-degree graphs of
+     large girth, and on forcing bounds for index codes: import an inequality or a construction
+     for the first open window.
+  3. *Astra.* Linear decoders of bounded support (the shape of native bit cones): the forcing
+     bound (an equation with one unknown determines it) against the acyclic bound; is the nullity
+     at most N/2 + o(N) on window-three hosts of large girth for supports two and three?
+  4. *Astra, background.* Lean for B3 and for the quadrangle family.
+  5. *Either, only after 1–3.* One orbit-reduced Shannon solve on the 15-point quadrangle.
 - Last re-evaluation (D0): 14 November 2026.

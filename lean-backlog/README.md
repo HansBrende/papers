@@ -162,6 +162,17 @@ Native extraction and source audit:
   not the capacity theorem; run `lake env lean ../lean-backlog/SectorWalks.lean`
   from `lean-machine/`. The finite controls need only Python's standard
   library and have commands in the note.
+- [Symmetry and locality barriers](notes/symmetry-and-locality.md): reviewed
+  written all-field symmetry bounds (with a sharper cubic expression in
+  good characteristic), an exact universal zero-corner
+  characterization, and a local-rule normal form up to rank $O(d)$.
+  A common factor algebra of dimension $o(d^2)$ suffices for half rate;
+  fixed-radius local rules on growing finite groups are excluded over
+  every field. The amenable-source result includes nonlinear codes and all alphabets.
+  Exact SL₂ exceptional sets and ordinary-character thresholds accompany
+  the proofs, together with field qualifications and the sparse-Bruhat
+  exclusion. No new Lean or native exclusion is claimed. Reproduce with
+  the commands in the note.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

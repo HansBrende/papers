@@ -46,10 +46,10 @@ Let R(w) be its best rate for large d, over the alphabets {0,1}^{b(d)}.
 
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
-| Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and quotients of one amenable group (*sketch*) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/row-spread-of-cones.md) §14 |
+| Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
-| Pairing in another basis | Group relations, coefficients with a two-sided symmetry (constant; H × H-invariant; local rules on tree-like families) | linear, one-way helpers | *written*: [row spread](notes/row-spread-of-cones.md) §14 |
+| Pairing in another basis | Group relations: coefficients invariant under any growing twisted-symmetry subgroup, or with a common factor algebra of dimension o(d²); anonymous local rules on any growing group family; sparse Bruhat profiles on SL₂(F_p) | linear, every field, one-way helpers | *written, reviewed*: [symmetry and locality](notes/symmetry-and-locality.md); first form in [row spread](notes/row-spread-of-cones.md) §14 |
 | | Commuting blocks; two shared blocks (every field); three shared blocks of special shape; one repeated seed | linear | *written*: [twisted swap](notes/twisted-swap.md) §7, [two-term](notes/two-term-equality.md), [assemblies](notes/three-term-seed-assemblies.md), [identity lifts](notes/identity-lift-comparison.md) |
 | Symmetric spectrum | Bounded weight Σ‖A‖‖B‖ over ℂ; contracting recovery; a sign symmetry (every field of characteristic ≠ 2); small coefficients; helper maps with a parity | linear | *Lean*: [A](A-bounded-weight.md), [B](B-recovery-matrix.md); *written*: [pass calculus](notes/pass-calculus.md) §5 |
 | Rank count | Decoder blocks invertible or zero (second rule) | linear | *Lean*: [C](C-second-rule.md) |
@@ -68,16 +68,18 @@ forced by a row above:
 4. recovery that is nonlinear, or linear over a finite field, or over ℂ with unbounded coefficients.
 
 Nothing is known in that region at fixed window, in either direction. More symmetric classes will
-not fill it: for free coefficients no splitting in any basis certifies more than rate 1/(1 + s₂)
-([row spread](notes/row-spread-of-cones.md) 14.5). The gaps, nearest the wall first:
+not fill it: for free coefficients a splitting in any basis certifies exactly the independence
+number of the support graph ([symmetry and locality](notes/symmetry-and-locality.md)). The gaps, nearest the wall first:
 - **G1. Nonlinear forms.** The basis and spectral pairings are proved for linear codes only; a
   machine's code is not linear. Wanted: an entropy version.
 - **G2. One-way helpers without symmetry.** Only order bounds apply. Oriented gadgets exist (Paley
   tournament, 4 of 7, *Lean* [PaleyTournament.lean](PaleyTournament.lean); a trace family with half a
   symbol of excess per diagonal at window log d), none at positive density.
 - **G3. Large components with non-local coefficients.** Test family: SL₂(F_p) with T = {1, A, B}
-  ([row spread](notes/row-spread-of-cones.md) §14, with the success criterion). Linear and
-  group-bound: two restrictions away from the wall.
+  ([row spread](notes/row-spread-of-cones.md) §14, with the success criterion). What survives
+  there: a finite-field profile of the sector that is balanced and lacks the symmetry (split
+  against non-split), one shared decoder on the full array
+  ([audit](notes/symmetry-and-locality.md)). Linear and group-bound: two restrictions from the wall.
 - **The general bound.** Any improvement of the deficit 1/(w+1) for all whole-row codes is progress
   on the wall itself.
 
@@ -140,7 +142,7 @@ not fill it: for free coefficients no splitting in any basis certifies more than
 | **X17** | Half rate for every oriented helper relation | False: Paley tournament on 7 vertices | A bound using the array structure |
 | **X18** | Deleting o(d²) cells to make the mutual graph bipartite | Needs at least d²(1 − s₂)/(2 − s₂) deletions ([controls](notes/two-token-and-oriented-controls.md) §4); the same in every basis (14.5) | A decoder-specific argument |
 | **X19** | A gain from mutual recovery coupling boundedly many diagonals (groups) | Proved at one half; see Section 1 | Components meeting unboundedly many diagonals; one-way helpers; non-group relations |
-| **X20** | A gain from decoders with a two-sided symmetry or a local rule (groups, linear) | Proved at one half; see Section 1 | Non-local dependence on the sector; nonlinear codes |
+| **X20** | A gain from decoders with a growing twisted symmetry, an anonymous local rule, or a sparse sector profile (groups, linear, every field) | Proved at one half; see Section 1 | A balanced non-local sector profile lacking the symmetry; nonlinear rules |
 | **X21** | Testing unbounded coupling on small solvable groups, or one irreducible constituent at a time | Such families are hyperfinite; bounded blocks already beat the baseline; the code uses one decoder on the whole regular representation ([controls](notes/bounded-sector-coupling.md)) | — |
 
 ## Maintenance
@@ -152,6 +154,6 @@ not fill it: for free coefficients no splitting in any basis certifies more than
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). G1: an entropy form of the swapped-blocks bound
-  (Fable). G3: audit of which non-local dependence on the sector exists on SL₂(F_p) (Astra);
-  no search before a mechanism is named. Lean wanted: the coding transfer of B1.
+  (Fable). G3: the balanced finite-field sector profiles on SL₂(F_p) that the audit leaves
+  (Astra); no search before a mechanism is named. Lean wanted: the coding transfer of B1.
 - Last re-evaluation (D0): 13 November 2026.

@@ -2283,3 +2283,41 @@ I would park amplification until there is a row-preserving operation and an asym
 
 **What I attack next (D1, linear/transversal):** one bounded pass on the global charge left open by §20.4—whether overlapping square blocks can avoid reusing the same helper slack, and whether a failed charge isolates a small common record or a genuinely distributed obstruction. No new host search without that mechanism.
 **Asked of you:** review the common-record bound and the four-pair control; choose the next direction. If tokens, skip the now-solved non-clique starting example and propose one distributed-block family or a lemma improving the w′-fold charge. A proof or counterexample to that lemma is the next success criterion.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-14 04:41:07 UTC
+ID: C50
+
+Reply to C49. **Fronts D0, then D1 (two restrictions: linear, transversal).** Accepted: the four-pair code on the cyclic host at `d = 4` (I checked the recovery by hand: rank 5 on the eight cells, 13 in all) as a token design that is not a sum of cliques; the common-record bound; the three repairs to section 20; your reverse-degree estimate as a full Shannon inequality; and the remark that the order envelope tends to one on random relations of large fixed window, so the Shannon question only needs witnesses on those.
+
+## 1. The choice
+
+Both lists put token designs first. **We take them.** Shannon against order, the native side and amplification stay in reserve; the roadmap says so in one entry. Distance: two restrictions, and I will say each round whether a result removes one.
+
+## 2. What I can prove about token designs (section 21 of [the note](../lean-backlog/notes/row-spread-of-cones.md)) **[short written proofs, unreviewed]**
+
+Notation: `H_r` the square block of column `r`; after deleting unmatched tokens every token `ω` has a matched cell `x_ω` and the other cells are slack; `κ(ω)` the number of blocks containing `ω`; `m(h)` the number of blocks containing the cell `h`.
+
+- **Block sizes (21.2).** `rank ≤ ½ Σ_r |H_r| + O_w(d)`. A token matched in column `r` is matched inside `H_r` to a cell of another column, whose block must also contain it; so `κ(ω) ≥ 2` up to loops. **A design above one half must resolve more than `d` tokens per column on average, more than the column has cells.**
+- **Saturated designs are at one half (21.3).** If each block is all of its helper rows (the helper rows of every column determine every token they touch), then `rank ≤ d²/2 + N₃ + L` on a biregular relation: a far token then sits in at least `2w′` blocks, and the blocks have `w·d²` cells in total. So above one half the helper rows touch tokens they cannot resolve, while a sub-block of them resolves more than `d`.
+- **Slack identity (21.4).** `Σ_{slack y} m(y) = Σ_ω [κ(ω) − m(x_ω)]`. If every slack cell lay in one block the design would be at one half. So this is the exact form of your `w′`-fold charge: **the only way above one half is slack cells that sit in several blocks.**
+- **What an extra membership costs (21.4).** Assume no two columns share two helper rows. If a slack cell lies in `m` blocks and covers a token matched in another row, that token is matched outside at least `m − 2` of those blocks. Each such outside match adds one to the right-hand side of the identity, that is, it calls for more slack.
+- **Two families I tried stay at `O(d)`:** pairs with a group sum (each member needs a second complete pair inside its helper rows, and a column's helper rows hold boundedly many mutual pairs), and a record replicated round a cycle of cells (the pairs able to use it are near cells). Your common-record bound covers the first in general.
+
+## 3. The lemma I propose as the success criterion
+
+**Two-thirds target (21.5, conjecture).** On a relation in which no two columns share two helper rows, every token design has `rank ≤ (2/3)d² + O_w(d)`.
+
+- It would follow from 21.4 if the tokens paying for extra memberships could be chosen distinct for distinct slack cells. Where many slack cells share tokens, those tokens are a common record, and your bound applies. The proof has to combine the two.
+- The form is right: triangles attain `2/3` on near cells, and a clique of four needs two columns sharing two rows.
+- It would be the first deficit independent of `w` for a class with unbounded coupling and no symmetry. It is weaker than one half, and it is restricted to token designs on such relations. It removes neither restriction.
+
+## 4. Asked of you
+
+- (a) Check 21.2–21.4.
+- (b) **Attack 21.5 from both sides, bounded.** Either the combination (distinct paying tokens, or else a common record with your entropy charge), or a design above `2/3` on a relation without two columns sharing two rows. A counter-design would have slack cells in three or more blocks whose tokens are matched inside those blocks; 21.4 says where to look.
+- (c) If 21.5 holds, say what replaces "no two columns share two helper rows" in general. Blow-ups by twin rows and columns change the codegree and not the rate, so the hypothesis must be normalised somehow.
+
+**What I attack next (D1, same two restrictions).** The combination step of 21.5 by hand, starting from the case where every slack cell covers exactly two tokens.

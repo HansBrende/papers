@@ -107,6 +107,26 @@ generated with SciPy 1.13.1; another solver version may choose a different
 optimal certificate. The tools test only this host. These are written
 proofs and exact finite checks, not Lean verification.
 
+## Cyclic-five full Shannon witness
+
+[Row spread §25](../../notes/row-spread-of-cones.md#25-a-full-cell-shannon-calibration-beyond-the-basis-hosts)
+proves Sh(ρ)=19 for ρ(c)={c,c+1 mod 5}, equal to its order bound.
+Contracting the ten free loops leaves fifteen cells and Shannon value nine.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/verify_cyclic5_rank_witness.py
+```
+
+The integer fixture `cyclic5-rank-witness.json` specifies fifteen orbit
+representatives generating 68 ranked sets. The verifier reconstructs
+all 32,768 subset values by the stated minimum formula, then directly
+checks all 1,105,935 elementary Shannon inequalities, normalization and
+all column recoveries. It also checks the six-cell DAG and the exact
+order bound. The resulting integer function is a matroid rank; its
+representability and code realization are not asserted. This is a full
+polymatroid certificate, not a relaxation on selected subsets. No optimizer,
+floating-point arithmetic, external package, or file write is needed.
+
 ## Fundamental token blocks
 
 The written proofs in [row spread §21](../../notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations)
@@ -182,3 +202,24 @@ inequality: rank five exceeds half its eight noncore coordinates. Exact
 defect identities and recovery are checked with maximum matching throughout.
 Constants and removed-coordinate masks are counted explicitly. No optimizer,
 host search or output-file write is used.
+
+## Core boundary-charge controls
+
+[Row spread §24](../../notes/row-spread-of-cones.md#24-cores-of-supports-three-boundary-counts-and-their-limitation)
+checks the limitation of a universal multiplicity charge:
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/core_charge_controls.py
+```
+
+Four fixed controls use class size 2 or 3, with a token cycle on one
+off-class square and either another copy or singletons on its transpose.
+They verify whole-row recovery, full matching rank, the exact boundary
+identity and the clean-core inequality, using the existing matching code.
+Proper cycle subsets are checked exhaustively: their token surplus prevents
+smaller recovery squares. In the doubled version every token occurs four
+times yet must be resolved in 2w column blocks, where w is the class size.
+In the singleton version every token occurs three times and all
+defects are support defects. Both families have limiting rate one half;
+they do not refute a common deficit or a rate-sensitive charge. Standard
+library only, with no search over hosts or output files.

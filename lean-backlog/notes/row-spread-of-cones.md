@@ -2831,36 +2831,197 @@ especially at larger support sizes, or an argument without the transversal
 restriction. No such higher-degree bound or general machine exclusion
 has been proved here.
 
-## 24. Cores of supports three: how often a defect must be used (Fable, 14 November 2026)
+## 24. Cores of supports three: boundary counts and their limitation
 
-Status: **short written proof, unreviewed**; a bookkeeping inequality, not a
-deficit independent of the window. Front D1 (linear, transversal), in the
-terminal cores of section 23 with supports of size at most three.
+Fable's boundary count, audited and extended by Astra, 14 November 2026.
+Status: **written proofs and exact finite controls, not Lean-verified**.
+Front D1 (linear, transversal). These statements do not give a new
+window-independent deficit for cores of support size three.
 
-For a cell x put σ_x = 3 − |τ(x)| and for a token ω put δ_ω = deg(ω) − 3;
-both are nonnegative in a core, and Σ_x σ_x + Σ_ω δ_ω = 3(N − K). Let m(x) be
-the number of blocks containing x and κ(ω) the number of blocks whose tokens
-include ω.
+Work with a pruned presentation on N retained coordinates, of rank K,
+maximum support size three and minimum token occurrence three. Write
+F=N−K, σ_x=3−|τ(x)| and δ_ω=deg(ω)−3. All are nonnegative, and
+Σ_x σ_x+Σ_ω δ_ω=3F. Choose one square block (P_r,Ω_r) in each helper
+union that resolves every non-helper target in column r, as in 20.3.
+Let m(x)=#{r:x∈P_r}, κ(ω)=#{r:ω∈Ω_r}, and let L be the number of
+retained host-loop coordinates. Constants remain in the coordinate count.
 
-**24.1.** Σ_ω κ(ω)·δ_ω + Σ_x (m(x) + 1)·σ_x ≥ 3(N − L).
+**24.1 (weighted boundary inequality).** Put I_loop=Σ_{host loops x}|τ(x)|.
+Then
 
-*Proof.* By the boundary count of section 23, the incidences from the tokens
-of a block to cells outside it number Σ_{ω in block} δ_ω + Σ_{x in block} σ_x.
-The non-helper cells of the block's column are outside it and have all their
-tokens in it, which gives at least Σ_{x in column} (3 − σ_x). Sum over the
-columns. ∎
+  W := Σ_ω κ(ω)δ_ω + Σ_x (m(x)+1)σ_x
+       ≥ 3N−I_loop ≥ 3(N−L).                            (24a)
 
-**What it says.** Dividing by 3(N − K): the average number of blocks in which
-a defect is used, weighted by the defects, is at least (N − L)/(N − K). A
-support defect is used at most w′ + 1 times. A token defect is used κ(ω)
-times, and κ(ω) ≤ w′·deg(ω). Hence:
+In a clean core from 23.3–23.4 the loop supports are empty, so W≥3N.
 
-- if no token lies in more than κ blocks, N − K ≥ (N − L)/max(κ, w′ + 1);
-- deleting the tokens of degree above D costs at most 3N/D tokens and leaves
-  κ ≤ w′·D, so the bound obtained this way is of order 1/(w′·D): it depends on
-  the window, like the order bound;
-- **a core of rate close to one must contain tokens of degree at least four
-  that are resolved in about N/(N − K) different blocks each.** Whether the
-  geometry bounds that number independently of w is the open step.
+*Proof.* The incidences from Ω_r to coordinates outside P_r number exactly
 
-I found no design with that property and no bound on κ.
+  Σ_{ω∈Ω_r} deg(ω) − Σ_{x∈P_r}|τ(x)|
+    = Σ_{ω∈Ω_r}δ_ω + Σ_{x∈P_r}σ_x,
+
+since |Ω_r|=|P_r| and τ(P_r)=Ω_r. Every **nonloop** target of column r
+is outside P_r and has all its tokens in Ω_r. Summing counts at least
+Σ_{nonloops x}|τ(x)|. Add Σ_x σ_x to obtain 3N−I_loop. Host-loop targets
+are exempt from the square condition and cannot be included in that
+boundary lower bound. ∎
+
+**24.2 (what the inequality implies).** Suppose reverse window is at most
+w′. Then m(x)≤w′ and κ(ω)≤w′deg(ω): each block resolving ω contains
+an occurrence of ω in its helper rows. If every κ(ω)≤κ₀, (24a) gives
+
+  F ≥ (N−I_loop/3)/max(κ₀,w′+1).                       (24b)
+
+For F>0 the defect-weighted average multiplicity is at least
+R=(N−I_loop/3)/F. **Only if R>w′+1** does this force some positive token
+defect δ_ω>0 with κ(ω)≥R. Otherwise support defects can pay the displayed
+lower bound. This is an existence assertion, not a lower bound on every
+high-degree token.
+
+Deleting the t tokens of degree greater than an integer D≥3 preserves
+recovery and costs t ranks. If w′≥1, applying (24b) afterward yields only
+
+  F ≥ (N−L)/(w′D)−t.
+
+The coarse estimate t≤3N/(D+1) makes this net bound nonpositive. Paying
+from the original defect instead gives t(D−2)≤Σδ≤3F, and hence
+
+  F ≥ (D−2)(N−L)/(D(D+1)w′).                           (24c)
+
+In a clean core N replaces N−L. For example D=4 gives (N−L)/(10w′).
+This is weaker than the reverse-window Shannon bound (20c), which gives
+F≥(N−L)/(w′+1). Truncation therefore repairs the accounting but supplies
+no improvement over the existing rate bound. In a clean core the loop
+coordinates are constant; deleting them in (20c) gives the stronger
+comparison F≥N/(w′+1).
+
+**24.3 (bounded occurrence does not bound reuse).** For any integers
+w,m≥2 set d=mw and partition the indices into m classes of size w. A
+column reads exactly the rows of its own class. For each unordered pair
+of distinct classes A,B, take w² new tokens arranged in a simple cycle.
+Place one copy of its w² two-token edges on A×B and another on B×A,
+in any cyclic enumerations of those coordinates. Make all diagonal
+class blocks constant. This is a pruned whole-row presentation with
+
+  N=d², L=dw, K=(N−L)/2, deg(ω)=4, κ(ω)≥2w.            (24d)
+
+Every active coordinate is far. Canonical square choices have κ(ω)=2w
+and m(x)=w on active coordinates, and therefore
+
+  Σκδ=2wK,   Σδ=K,
+  W=(2w+1)(N−L)+3L,
+  Σκδ/(N−K)=2w(m−1)/(m+1).                            (24e)
+
+*Proof.* The incidence graph is a disjoint union of complete bipartite
+graphs on corresponding classes, so off-class cells have disconnected
+row and column endpoints. Each token occurs twice in each cycle copy.
+One copy matches all its tokens, proving the rank count. The helper rows
+of any column in A contain the entire A×B copy, which resolves all its
+targets in B×A; use the opposite copy for a column in B.
+
+A nonempty proper edge subset of a simple cycle touches strictly more
+tokens than edges. Within one helper union there is only one copy of
+each relevant cycle, and different cycles have disjoint token sets.
+Their imbalances cannot cancel. Thus a square resolving any target
+token of this component must contain the whole helper cycle. Each of
+the 2w columns in A∪B has such targets, forcing κ(ω)≥2w regardless of
+block choices. Taking just the required cycles gives equality and the
+stated m(x). Substitution proves (24e). ∎
+
+Replacing one cycle copy by one singleton occurrence of each token is
+also a valid whole-row presentation: either copy resolves the full token
+set. Its rank is unchanged, all active coordinates remain far, and every
+token now has degree three. Thus δ vanishes and support defects alone
+pay (24a). The finite controls check both versions.
+
+The doubled-cycle family rules out a universal bound of Σκδ by a constant
+times Σδ or N−K, independently of w, even after excluding occurrence
+degrees above four. At each fixed w its rate tends to **one half** as
+m grows. It is already within the class bounded in 23.4, not a new
+high-rate construction or a counterexample to a common deficit. A
+rate-sensitive argument could still work. The bounded boundary-charge
+pass found no such argument and stops here; arbitrary higher-support
+cores remain open.
+
+## 25. A full-cell Shannon calibration beyond the basis hosts
+
+Astra, 14 November 2026. Status: **written argument with an exact finite
+computer-checked certificate, not Lean-verified**. Fronts D0/G4. The
+higher-support charge in section 24 supplied no new rate bound. This
+single calibration removes the transversal and linearity premises from
+the upper-bound question; it does not settle the asymptotic wall.
+
+**25.1.** On the cyclic five-element index set, let ρ(c)={c,c+1}.
+Then its full-cell Shannon value, defined in (19e), is
+
+  Sh(ρ)=19=σ(ρ),                                       (25a)
+
+where σ is the exact order bound. No code of size q¹⁹ is asserted.
+
+*Proof of the upper bound.* If p₀,…,p₄ are the positions 1,…,5 in a
+row order, then
+
+  Σ_c max(p_c,p_{c+1}) = 15 + ½Σ_c |p_c−p_{c+1}| ≥ 19.
+
+The two paths around the cycle between the positions 1 and 5 each have
+variation at least four. The natural order attains equality. Thus the
+whole-row order proposition of
+[Paper 17](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/symmetry.tex)
+gives σ=19. Its six-cell DAG is
+
+  {(2,0),(3,0),(3,1),(4,0),(4,1),(4,2)}.
+
+The chain-rule argument in 19.4 gives h(V)≤19 for every feasible h.
+
+*Exact witness for the lower bound.* The ten loop cells can be removed
+exactly: Sh(ρ)=10+Sh_residual. For the upper direction contract their
+joint entropy, which is at most ten. For the lower direction adjoin ten
+independent unit coordinates to any residual witness. A loop target is
+already in its helper rows, so this preserves all original recoveries.
+
+Label the fifteen remaining cells by j=3c+k−2 at (c+k,c), where
+c=0,…,4, k∈{2,3,4}, and arithmetic on coordinates is modulo five.
+A subset is encoded by the integer whose bit j indicates membership.
+The [compact witness](../tools/diagonal-calibration/cyclic5-rank-witness.json)
+supplies fifteen pairs (subset mask, assigned rank). Apply the ten maps
+
+  (r,c) ↦ (r+a,c+a),   (r,c) ↦ (1−r+a,−c+a),  a∈ℤ/5,
+
+to obtain a family ℱ of 68 subsets with consistent assigned ranks q_F.
+Define on **every** residual subset S
+
+  h(S)=min_{F∈ℱ} [q_F+|S∖F|].                          (25b)
+
+This formula is not assumed to be submodular merely because it is a
+minimum. The [standalone verifier](../tools/diagonal-calibration/verify_cyclic5_rank_witness.py)
+reconstructs all 32,768 values using integers and checks normalization,
+all 15 singleton caps, all 245,760 one-element monotonicity inequalities,
+all 860,160 elemental submodularity inequalities, and all five column
+recovery equalities. These elemental inequalities imply full monotonicity
+and submodularity by telescoping. The computed total is h(V_residual)=9.
+This proves the feasible lower bound 10+9=19. The same checks show that
+the integral witness is a matroid rank function and that ℱ is exactly its
+set of cyclic flats; neither assertion is needed as a shortcut for the
+entropy checks. ∎
+
+The witness was found by one full-cone LP solve, using recovery closure
+and the displayed symmetries to reduce the variables. Its published
+verification uses no optimizer, floating-point arithmetic or truncated
+subset family. It reproduces the certificate in under a second on the
+development machine; runtime is not part of the proof.
+
+**Scope and next use.** Shannon/order equality on this host is not
+equality for every whole-row host, and the witness has no demonstrated
+linear or entropic realization. Together with 19.4 it gives
+Sh_b(ρ)=19b for scalar lanes, not an achievability theorem. Fano's
+scalar-linear value 39 over F₂ and F₃ is a different kind of result:
+its known three-bit construction implies Sh(Fano)≥119/3, while order
+gives at most 41. Token-matching counts cannot be imposed on arbitrary
+feasible polymatroids without proving their additional premises.
+
+The next useful step would be a full-cell extension rule that produces
+feasible polymatroids on growing hosts, or an inequality showing why such
+a rule fails. For a Shannon barrier to a common deficit, windows must
+remain fixed before dimension grows and the attainable rates must tend
+to one as the window grows. The finite witness supplies neither. This
+calibration ends the one-host experiment; no larger LP search is justified
+by equality at one more instance.

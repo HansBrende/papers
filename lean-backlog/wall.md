@@ -218,18 +218,12 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Chosen after the D0 comparison (both lists agree):
-  token designs**, the generic linear codes on the host, as a problem about matchings (D1, two
-  restrictions: linear, transversal; [row spread](notes/row-spread-of-cones.md) §§20–21).
-  The two-thirds target adds a third restriction, host codegree one. It is proved for
-  **fundamental** presentations (a fourth restriction), and after a small token payment;
-  on ordinary grids with both raw degrees bounded the same proof gives half plus O(db).
-  Exact twin quotients retain arbitrary scalar masses; half rate there needs L+N₃=o(N), and
-  two-thirds needs L=o(N). Saturated-source bounds now allow nonlinear encoders
-  but retain their source-resolution and balancing premises. No unrestricted token bound yet.
-  **Next unit must address the fundamental restriction**: extend the payment to general
-  overlapping blocks or identify a high-rate mechanism with unavoidable extensive exposure
-  cost. Do not optimize this subclass's constants or infer a cheap common record from Hall
-  failure alone. A single finite gain cannot disprove an unspecified asymptotic error term.
-  In reserve, not active: full Shannon versus order; native paid recovery (D9/D7); amplification.
+- **Current focus** (replace, do not append). **Token designs** (generic linear codes on the host;
+  D1, two restrictions: linear, transversal). Proved by Astra
+  ([row spread](notes/row-spread-of-cones.md) §21, *written, reviewed*): for **fundamental**
+  presentations on hosts where two rows share at most one column, K ≤ N/2 + O_{w,w′}(db), and
+  3K ≤ 2N + ℓ with no degree bound; no symmetry, coupling unbounded. The premise can be weakened
+  to an *aligned* matching (§22). Open, and the next target: the cost of alignment for general
+  token designs, first when every cell covers at most two tokens (a graph on the tokens, §22).
+  In reserve, not active: full Shannon versus order; native paid recovery; amplification.
 - Last re-evaluation (D0): 14 November 2026.

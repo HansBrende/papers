@@ -2430,3 +2430,65 @@ every such deletion certificate to have linear cost; large cost alone does
 not imply high rate. General 21.5 and the unrestricted whole-row wall remain
 open. Further work should remove this hypothesis or test that implication,
 not optimize the constants inside the proved subclass.
+
+## 22. What the fundamental premise is used for: aligned matchings; the two-token case as a graph (Fable, 13 November 2026)
+
+Status: **short written proofs, unreviewed**; 22.4 is an open question.
+Front D1; restrictions as in section 21 (linear, transversal; codegree one
+where stated). Nothing here removes one; 22.1 replaces the fundamental
+premise by a weaker one.
+
+**22.1 (alignment is enough).** Call a token design *aligned* if it has a
+global matching μ (every token ω matched to a cell x_ω) such that in every
+block the slack cells can be matched onto the block's outside tokens (those
+whose matched cell is not in the block), each slack cell to a token it
+covers. Then the two bounds of section 21 hold as stated for fundamental
+presentations: (λ+2)K ≤ (λ+1)N + ℓ, and for λ = 1 also 2K ≤ N + L + N₃.
+
+*Proof.* The payment argument uses only that matching. A slack cell y in m
+blocks sends one edge per block, to a token it covers; that token lies in
+all m blocks, and its matched cell lies in at most λ of them when it is in
+another row, in none of them when it is far and its own column is among
+them. The weights and the count are unchanged. ∎
+
+Fundamental presentations are aligned after normalisation. The four-pair
+code is not: in the block that recovers a₁ from b₁, a₂, b₂ the matched cell
+b₁ = z − y₁ has to be matched to y₁ and not to z.
+
+**22.2 (two tokens per cell: a graph).** If every cell covers at most two
+tokens, the design is a graph Γ on the tokens whose edges are the cells (a
+one-token cell is a loop of Γ), and the matroid is the bicircular matroid:
+the rank of a set S of cells is the number of tokens it touches minus the
+number of its acyclic components. A cell lies in the closure of S exactly
+when its tokens lie in components of S that contain a cycle. So:
+
+- the whole-row condition is: every token touched by a non-helper cell of
+  column r lies in a component, containing a cycle, of the graph Γ_r formed
+  by the cells of the rows ρ(r);
+- the rate is (tokens)/(cells) when every component of Γ has a cycle; one
+  half is average degree four;
+- a block is a union of unicyclic graphs, and its local matching assigns to
+  each token the cell leading towards the cycle. Off the cycle that is forced.
+
+**22.3 (consequences).**
+- *Fundamental* means a loop of Γ at every token. *Aligned* means the matched
+  cell of each token leads towards the cycle in every block that contains
+  it, or lies on the cycle.
+- A failure of alignment in a block is an alternating path: a slack cell
+  assigned to ω₁, the matched cell of ω₁ assigned to ω₂, and so on, ending at
+  a token whose matched cell is outside the block. The slack cell is then
+  paired with an outside token it does not cover, which is why the payment
+  argument stops.
+- If no two rows share two columns, a cycle of Γ whose cells lie in two or
+  more rows can serve one column only; a cycle inside one row serves every
+  column that row helps, and then that row resolves those tokens alone.
+- Each token has at least two cells, and a token with exactly two has them
+  as mutual helpers.
+
+**22.4 (question: the cost of alignment).** In a two-token design with far
+cells and no two rows sharing two columns, can alignment be reached by
+deleting O_w(d) tokens? If yes, such designs are at one half. If no, a
+family with extensive alignment cost is the candidate for a design above
+one half, and its conflicts must end at different outside tokens in
+different blocks: when they all pass through few tokens, as in the four-pair
+code, deleting those tokens aligns the design.

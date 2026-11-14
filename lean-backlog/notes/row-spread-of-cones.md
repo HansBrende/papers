@@ -1936,3 +1936,47 @@ active. No verified unrestricted whole-row-host Shannon gap follows from
 these references or this placement. The next test must keep the full
 cell constraints and the asymptotic density, rather than enlarge a solved
 finite calibration or discard the grid intersections.
+
+## 20. Three natural polymatroid candidates on the cells, and why each stops (Fable, 13 November 2026)
+
+Status: **short written arguments, unreviewed**. Front D1, the full Shannon
+question of section 19. No candidate above one half is produced.
+
+Write Sh(ρ) for the largest h(all cells) over polymatroids on the cells with
+singleton cap one and h(C_r ∪ R_{ρ(r)}) = h(R_{ρ(r)}).
+
+**20.1 (budget extension).** For any monotone submodular g on sets of cells,
+h(S) = min_{T⊆S} [g(T) + |S ∖ T|] is a polymatroid with singleton cap one. A
+row-level polymatroid a on sets of rows extends this way through
+g(T) = a(rows touched by T), giving h(S) = min_A [a(A) + |S ∖ R_A|]. It is
+always a valid polymatroid, and it never satisfies a column constraint with
+content: the cells of column r outside the bought rows cost one each.
+
+**20.2 (line budgets are not submodular).** Letting the budget buy columns as
+well, h(S) = min_{A,J} [u(A, J) + |S ∖ (R_A ∪ C_J)|] for a polymatroid u on
+rows and columns with u(ρ(r) ∪ {r}) = u(ρ(r)), satisfies the column
+constraints formally. It is not submodular in general: a cell covered by a
+row in one minimiser and by a column in the other is not covered by the
+intersection of the two line sets. This is the gluing failure of the coarse
+row/column data of section 19, seen from the cells.
+
+**20.3 (token candidates are generic linear codes; they are not confined to one half).** Take g a
+coverage function: each cell x covers a set τ(x) of tokens and g(T) = |τ(T)|. Then h is the rank
+function of the transversal matroid of the cell–token incidence, linear over large fields: the
+cells are generic combinations of free token variables and the rank is the largest matching of
+cells to tokens. A cell lies in the closure of its helper rows exactly when its tokens lie in
+the tokens of a Hall-tight set of cells there. So the whole-row condition reads: **for each
+column r there are a token set Ω_r and as many cells in the rows ρ(r) involving only tokens of
+Ω_r and matchable to all of them (a square block), and every other cell of column r involves
+only tokens of Ω_r.** Pairing and every clique code are of this kind (a triangle is two tokens
+on three cells), so the class reaches at least what cliques reach. Counting unmatched cells
+through the blocks gives only rank ≤ (w′d² + Loops)/(w′ + 1), an order-type bound. Whether a
+token design exceeds d²/2 + O(d) at fixed window is open; it is a problem about matchings.
+(An earlier version of this paragraph claimed one half for the class. That was wrong.)
+
+**What a candidate must be.** A full-cell polymatroid above one half at fixed
+window is either a token design as in 20.3 (then it is a linear code), or
+is induced by a budget that is not a coverage function and whose column
+constraints are not inherited from row or line data. None is known.
+On the hosts where Sh has been computed (the basis hosts at d = 4, 8, 16) it
+equals both the capacity and d² minus the largest induced acyclic set.

@@ -210,11 +210,11 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). D1, no restriction: does the full cell-polymatroid
-  relaxation have a common deficit? [§19.4](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
-  states the quantified question; lane scaling is exact. The requested d=8 calibration is already
-  Shannon-exact at 46. Coarse row/column variables can lose the grid intersections even at window
-  one, so a proposed high-rate witness must extend to all cell subsets. Retaining actual exception
-  entropies is still open; only their count relaxation is order-dominated. No new finite LP or
-  gadget search without a separating mechanism; the tower pass stays closed.
+- **Current focus** (replace, do not append). **Re-evaluation in progress (D0).** Five rounds at
+  D1 with no restriction (host form, signed synergy, conditional recovery, the full Shannon
+  question) produced exact reformulations and three negatives, and no bound beyond the order
+  bound ([row spread](notes/row-spread-of-cones.md) §§17–20). Open: whether sup over w of the
+  Shannon value Sh(ρ)/d² is below one. Each agent lists the three directions it judges most likely
+  to breach, with distance from the wall and what a success or failure would tell us; the next
+  target is chosen from those lists. No search before a mechanism.
 - Last re-evaluation (D0): 14 November 2026.

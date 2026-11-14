@@ -91,21 +91,16 @@ The unrestricted capacity question remains open. For free support coefficients t
 zero-corner projection bound is exactly the independence number, in every basis
 ([symmetry and locality](notes/symmetry-and-locality.md)); this does not rule out all future
 symmetry or decoder-specific arguments. The gaps, nearest the wall first:
-- **G0. Is sup_w R(w) = 1 already?** Paper 15's full field kernels have rate at least
-  1 − e^{−λm}; its binary fibres have rate at least 1 − (log₂q)e^{−λm}, with fixed seed field q.
-  Presentability of the growing coupled family at a window depending only on m remains open.
-  The displayed support fails column labels omitting any tensor factor at canonical width;
-  the full field kernel fails every decoder on tensor-cylinder columns. Arbitrary mixed
-  partitions and alternative binary-fibre decoders survive. A bounded-degree mutual support
-  with bounded forward window must be locally bipartite at almost all vertices, even at
-  radius of order √log d ([row spread](notes/row-spread-of-cones.md) §16); the tower already
-  satisfies the fixed-radius requirement, so this gives no exclusion. The first
-  helper-column intersection test always passes for some balanced columns of any
-  bounded-degree loopless support at canonical width; it cannot decide the tower alone
-  ([grid note](notes/grid-labellings-and-amplified-codes.md) §7). A positive result needs the
-  dimension/lane adapter in the [grid note](notes/grid-labellings-and-amplified-codes.md) §6.
-  It would refute a common positive deficit, not every window-dependent or native exclusion.
-  A negative result for this one tower matters insofar as its mechanism generalizes.
+- **G0. Is sup_w R(w) = 1 already?** Paper 15's field kernels have rate at least 1 − e^{−λm} at
+  degree bounded in m; whether the growing coupled family has a whole-row presentation at a
+  window depending only on m is open. A yes refutes a common deficit; a no matters only as far
+  as its mechanism generalises. Known ([grid note](notes/grid-labellings-and-amplified-codes.md)
+  §§6–7, [row spread](notes/row-spread-of-cones.md) §§16–17, *written*): layouts whose columns omit a
+  tensor factor fail; pairwise column tests always pass for some mixed layout (X23); the missing
+  obligation is one transversal row partition confining each column's helpers to w rows.
+  **No local test can decide it**: random swap lifts are presentable and have the same local
+  statistics as random relations, which are not. For the same reason a deficit proof cannot be a
+  statement about neighbourhoods; it must use the global exchange of rows and columns.
 - **G1. Nonlinear forms.** The basis and spectral pairings are proved for linear codes only; a
   machine's code need not be linear. Wanted: an entropy version.
 - **G2. One-way helpers without symmetry.** No common deficit is known. Oriented gadgets exist (Paley
@@ -190,12 +185,9 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). D1/G0: a common transversal row partition
-  compatible with the column partition. Astra's bounded tower pass fixes a code family and
-  its displayed support (two restrictions); its intersection test is exhausted by X23.
-  No presentation or arbitrary-layout exclusion of that tower is proved. Fable: a directed
-  presentability constraint beyond the acyclic bound, with no mutual or linear restriction;
-  the previous dual support count reproduced the order bound. Reassess the next structural
-  criterion together before another search. B1's conditional transfer is complete in Lean.
-  G3 remains parked.
+- **Current focus** (replace, do not append). D1 in its host form: the cell (c, r) reads all of
+  the rows ρ(r) ([row spread](notes/row-spread-of-cones.md) 17.2). Astra: an exact feasibility
+  criterion for the row partition of the tower, stopping if it is only a reformulation (two
+  restrictions: this family, its displayed support). Fable: a global constraint on codes of the
+  host beyond the order bound (no restriction, or linear only). No search before a mechanism.
 - Last re-evaluation (D0): 14 November 2026.

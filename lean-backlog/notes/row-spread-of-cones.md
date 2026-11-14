@@ -1363,3 +1363,54 @@ and their helper rows reproduces the order certificate
 $\sum_\ell(d-w-|\rho(r_1,\ldots,r_\ell)|)_+$. This records the outcome
 of that particular counting argument, not a limitation on every method
 using the dual space.
+
+## 17. Swap lifts: no local test decides presentability (Fable, 13 November 2026)
+
+Status: 17.1 has a **short written proof, unreviewed** (the local-limit step
+is the standard exploration argument, not written out). 17.2 is a
+reformulation. Front D1, gap G0. One-way helpers allowed throughout.
+
+**Swap lifts.** Let B be a bipartite graph on [d] ⊔ [d] with w rows at each
+column and w′ columns at each row. For every edge (i, r) of B choose a
+bijection π_{r,i} from [d] to [d], and let the cell (c, r) read the cell
+(i, π_{r,i}(c)) for each i ∈ ρ(r). Every cell has out-degree w and in-degree
+w′, and the relation is whole-row at window w by construction: column r is
+mapped bijectively onto each of its helper rows.
+
+**Proposition 17.1.** With the bijections uniform and independent, the swap
+lift is locally tree-like: for fixed t, all but o(d²) cells have a
+neighbourhood of radius t that is the (w, w′)-biregular directed tree. A
+uniformly random digraph with out-degree w and in-degree w′ (a union of
+random perfect matchings from out-ports to in-ports) has the same local limit
+and, by the count of the
+[grid note](grid-labellings-and-amplified-codes.md), section 7, is with
+probability tending to one not presentable at any window below
+d^{1−2/Δ−ε}.
+
+*Proof of the first part.* Explore the ball of a cell. Each new cell is
+(i, π_{r,i}(c)) or a preimage (π_{r,i}⁻¹(x), r); given what has been
+revealed, the new coordinate is uniform on at least d − (w+w′)^t values, so a
+coincidence within radius t has probability at most (w+w′)^{2t}/(d − (w+w′)^t). ∎
+
+**Consequence.** Presentable and non-presentable bounded-degree relations
+have the same local statistics. No quantity that is a function of the
+distribution of bounded-radius neighbourhoods can decide a layout question:
+odd-walk counts (16.3 and its forward form), girth, paired separation,
+degrees. Row consistency is a global property of the relation, of the kind
+"V is a product [d] × [d] and every arc exchanges the factors up to B".
+The same holds on the other side: the abstract codes above one half are
+allowed by every local hypothesis, so a deficit theorem for presentable
+relations cannot be a statement about neighbourhoods either.
+
+**17.2 (the host, linear form).** By 16.1 every whole-row decoder for ρ is a
+sub-relation of one host: the cell (c, r) reads all of the rows ρ(r). For
+linear codes write x_r for column r and y_i for row i of X. A decoder is a
+family of d × d matrices Φ_{r,i}, one for each edge (i, r) of B, and the code
+is
+
+  x_r = Σ_{i∈ρ(r)} Φ_{r,i} y_i  for all r,
+
+that is ker(I − Φτ) with Φ = Σ_{(i,r)∈B} E_{r,i} ⊗ Φ_{r,i}: sparse on B in one
+tensor factor, unconstrained in the other, and τ the exchange of the factors.
+Bounded-degree decoders have sparse Φ_{r,i}; swap lifts have permutation
+matrices. The linear wall is the maximum of dim ker(I − Φτ) over such Φ.

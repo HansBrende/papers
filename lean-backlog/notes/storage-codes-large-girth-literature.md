@@ -78,3 +78,33 @@ correctness-independent bound for a class of linear schedules.
 
 A counterexample to A would be a linear code above one half with no triangles at degree three, which
 is exactly the mechanism a construction would need.
+
+## 4. First step on Target A: peeling (Fable, 14 November; unreviewed)
+
+Write u → w when B_uw ≠ 0 (u ≠ w), N⁺ for out-neighbourhoods, N⁻ for in-neighbourhoods.
+
+**Lemma (removal).** Let T ⊂ U be vertex sets with N⁺(T) ⊂ U. Then
+rank(B) ≥ rank(B − U) + rank(B[T, U]), where B − U deletes the rows and columns of U. The same holds
+with columns: N⁻(T) ⊂ U and rank(B[U, T]).
+
+*Proof.* Order the indices as W = V ∖ U, then U, so B = [[B′, C], [R, E]] with B′ = B − U. The rows of
+T are (0 | B[T, U]). The rows of W span a space of dimension rank(B′) + dim 𝓛, where 𝓛 is the image
+of the left kernel of B′ under C. A combination of T-rows lies in the span of the W-rows only if
+its U-part lies in 𝓛. So the row space of B has dimension at least
+rank(B′) + dim(𝓛 + rowspace B[T, U]) ≥ rank(B′) + rank B[T, U]. ∎
+
+**Corollary (peeling).** If I is an independent set of the support graph, then B[I, I] is diagonal
+and nonsingular. With U = I ∪ N⁺(I) the lemma gives nullity(B) ≤ nullity(B − U) + |N⁺(I)|. Hence, by
+induction on n: **if every induced sub-pattern has a nonempty independent set I with |N⁺(I)| ≤ |I|
+or |N⁻(I)| ≤ |I|, then nullity(B) ≤ n/2.** No degree or girth condition is used.
+
+This covers: every vertex of out-degree or in-degree at most one (I a single vertex); bipartite
+graphs (I the larger side); forests; functional digraphs. It is not the closure bound: for a mutual
+pair it removes both vertices at the price of one.
+
+**What is left of Target A.** Patterns in which every independent set expands strictly in both
+directions. Then every vertex has out-degree and in-degree at least two among at most three
+neighbours, so every vertex lies on an edge used in both directions. The Petersen graph with full
+support is such a pattern, and A − I has nullity exactly 5 = n/2 there, by an eigenvector code
+that is not a pairing code. For exact symmetric cubic supports the bound n/2 is the known
+zero-forcing theorem; the directed dense case is open.

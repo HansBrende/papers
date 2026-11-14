@@ -253,7 +253,10 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
      support graph is triangle-free of maximum degree three has nullity at most n/2 (forcing: an
      equation with one unknown determines it; not covered by the closure barriers). B: the same
      for nonlinear storage codes. C: cells in place of vertices, decoder supports of size at most
-     three. A proof of A, or a counterexample, is the next deliverable.
+     three. A proof of A, or a counterexample, is the next deliverable. Done so far (Fable,
+     unreviewed): a removal lemma and peeling reduce A to patterns in which every independent set
+     expands strictly in both directions (all in- and out-degrees at least two); the Petersen
+     pattern attains n/2 there.
   4. *Astra, background.* Lean for B3 and for the quadrangle family.
   5. *Either, only after 1–3.* One orbit-reduced Shannon solve on the 15-point quadrangle.
 - Last re-evaluation (D0): 14 November 2026.

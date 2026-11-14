@@ -315,6 +315,12 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      eight small LP cases replay numerically; the binary-pentagon translation-rank minimum 8
      and capacity 5 replay exactly. No all-q formula, bounded-factor limit or joint growing-host
      claim is proved. The programme is never worse than order and saves whole symbols where
-     order does. *Next:* Astra, compatibility extraction for the parity adapter. Fable, D0 with
-     the ordered-coupling control; no additional numerical search is commissioned.
+     order does. No additional numerical search is commissioned.
+  8. *D0 route closed.* [Last-helper correction](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
+     (§19.7): the pointwise coupling premise fails on a directed three-cycle control. With the
+     slack kept, entropy is at most the sum of the local deficits of the sets E_q ∪ D_q ∪ R_Pq,
+     which overlap only in helper rows; the covering constant is one at window one and about w
+     in general, so this is the order bound in cover form (unreviewed). *In progress:* Astra,
+     compatibility extraction for the parity adapter. Fable, a gap map from the three new Lean
+     files to an end-to-end pairing theorem.
 - Last re-evaluation (D0): 14 November 2026.

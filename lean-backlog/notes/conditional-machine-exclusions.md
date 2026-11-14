@@ -3,6 +3,9 @@
 Hans Brende and GPT-6 Astra, 14 November 2026.
 **Status:** consolidation of existing results, with the additional hypotheses
 stated explicitly. This is not a new unconditional machine exclusion.
+The [ingredient ledger](whole-row-ingredient-ledger.md) separately records
+which native data B1 retains or forgets; it does not supply the additional
+class premises in this table.
 
 ## The common accounting
 

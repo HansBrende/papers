@@ -1790,3 +1790,12 @@ import LeanMachine
 #print axioms LeanMachine.DisjointSums.mem_view_of_free
 #print axioms LeanMachine.DisjointSums.encode_eq_of_invariant_recovery
 #print axioms LeanMachine.DisjointSums.card_eq_kernel_mul_record_image_of_recovery
+
+-- DisjointSumsWeighted.
+#print axioms LeanMachine.DisjointSums.weightedEncode
+#print axioms LeanMachine.DisjointSums.weightedEncode_apply
+#print axioms LeanMachine.DisjointSums.weighted_support_subset_insert_of_recovery
+#print axioms LeanMachine.DisjointSums.weighted_mem_view_of_free
+#print axioms LeanMachine.DisjointSums.weighted_encode_eq_of_invariant_recovery
+#print axioms LeanMachine.DisjointSums.weightedSyndromeRecord
+#print axioms LeanMachine.DisjointSums.card_eq_weighted_kernel_mul_record_image_of_recovery

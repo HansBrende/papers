@@ -60,8 +60,16 @@ derives compatibility and the free-coordinate condition from recovery and
 kernel invariance. Its local lemmas allow infinitely many blocks; global
 separation and exact counting use finitely many blocks, arbitrary additive
 alphabets and coordinate types, and also allow empty codes and trivial
-alphabets. Weighted global and involution-orbit adapters and the geometric
+alphabets. The [weighted adapter](../lean-machine/LeanMachine/DisjointSumsWeighted.lean)
+now extends these results to coordinatewise additive-automorphism weights
+by a change of variables. Involution-orbit conversion and the geometric
 rate bounds remain separate work.
+
+The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
+the whole-row relaxation forgets: native geometry, common execution,
+records, bit cones and uniformity. It separates the existing all-fibre
+transfer from the unproved converse to arbitrary network coding. It is a
+source audit and written derivation, not a new machine exclusion.
 
 ## What is here
 

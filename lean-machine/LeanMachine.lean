@@ -202,3 +202,4 @@ import LeanMachine.CosetRecords
 import LeanMachine.DisjointSumsExtension
 import LeanMachine.DisjointSumsRecords
 import LeanMachine.DisjointSumsCompatibility
+import LeanMachine.DisjointSumsWeighted

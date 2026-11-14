@@ -307,7 +307,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      form is valid; a low-rate directed-cycle control defeats universal positive coupling
      even without active mutual helpers, leaving high-rate/large-girth variants open.
      *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
-     record separation/count are Lean; weighted global, involution and rate adapters remain.
+     record separation/count, including automorphism weights, are Lean; involution and rate
+     adapters remain.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
@@ -321,6 +322,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      The reviewed deficit cover has error at most [1+R(w−1)]d and gives a weaker bound than
      §20.4. The retained conditional-deficit increments subtract the shared-view deficits;
      they are not proved equivalent to order, and no new capacity estimate follows.
-     Compatibility extraction is banked in Lean. Next: weighted global adapter after reuse
-     check; Fable's gap map to the end-to-end pairing theorem. No numerical search is opened.
+     Compatibility extraction and the weighted global adapter are banked in Lean. Next:
+     involution conversion and Fable's gap map. The [ingredient ledger](notes/whole-row-ingredient-ledger.md)
+     audits the proposed machine/code ladder: all fibres already occur in B1; causal provenance,
+     not their bare existence, is extra. No numerical search is opened.
 - Last re-evaluation (D0): 14 November 2026.

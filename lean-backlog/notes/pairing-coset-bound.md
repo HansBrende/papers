@@ -3,8 +3,8 @@
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** written proofs, independently reviewed; abstract counting, local
 parity extension, compatibility extraction and recovery-to-record separation
-for ordinary sums are Lean-verified. Weighted global and involution adapters,
-incidence counts and rate bounds remain written.
+for ordinary and automorphism-weighted sums are Lean-verified. The involution
+adapter, incidence counts and rate bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -47,8 +47,8 @@ of two elements of C imply their difference lies in P. The record need only
 separate cosets **on C**; its ambient fibres can be larger. The code need not
 be linear or nonempty, and the record type need not be finite. The proof
 reuses Mathlib's subgroup saturation count. The local parity-extension step
-is formalized as described in Section 5; its involution-orbit adapter and
-the recovery-based separation argument in the next paragraph remain written.
+is formalized as described in Section 5; the involution-orbit instantiation
+of the separation argument in the next paragraph remains written.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -188,8 +188,23 @@ to separate all sums by any record containing every fully viewed and every
 all-incident block. `card_eq_kernel_mul_record_image_of_recovery` proves the
 exact kernel-times-attained-record count under those same enclosures. These
 global wrappers handle empty codes and trivial alphabets without extra
-premises. Conjugation by the weights θ_v and the involution-orbit adapter
-remain written; the ordinary-sum declarations do not yet formalize them.
+premises.
+
+**Weighted global adapter (Lean).**
+[`DisjointSumsWeighted.lean`](../../lean-machine/LeanMachine/DisjointSumsWeighted.lean)
+uses Mathlib's `AddEquiv.piCongrRight` to apply θ_v at coordinate v.
+This bijection preserves equality on every helper view. Transporting the
+code through it reduces weighted-kernel invariance and recovery to the
+ordinary-sum theorems. `weighted_support_subset_insert_of_recovery` and
+`weighted_mem_view_of_free` retain the local nonempty/nontrivial premises
+and allow infinitely many blocks. `weighted_encode_eq_of_invariant_recovery`
+separates all weighted syndromes by the same fully-viewed/all-incident
+record, and `card_eq_weighted_kernel_mul_record_image_of_recovery` gives
+the exact weighted-kernel-times-attained-record count. These global
+statements need finitely many blocks, but allow empty codes, trivial
+alphabets and infinite coordinate or alphabet types. No field or scalar
+linearity is assumed. The involution-orbit conversion and the quantitative
+applications below remain written.
 
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
@@ -232,8 +247,8 @@ The binary cyclic window-two difference code at d=3 likewise excludes the all-on
 Those examples need their own checks; being linear is not enough to contain a pairing code.
 
 Abstract counting, local disjoint-parity extension, compatibility extraction
-and global separation/counting for ordinary sums are Lean-verified.
-The weighted global and involution-orbit adapters, incidence counts and the
+and global separation/counting for ordinary and automorphism-weighted sums
+are Lean-verified. The involution-orbit adapter, incidence counts and the
 paid/asymptotic pairing and parity-block bounds remain written and reviewed.
 The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large

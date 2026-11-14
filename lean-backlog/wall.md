@@ -207,7 +207,7 @@ No known code family has a fixed-window gain above one half beyond O(d).
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
 | **X30** | A constant plane deficit using only row-closure equalities from pencils at o(n) centres | Make all radial cells at k centres constant and the rest independent: these equalities admit entropy ≥N−kn²(n+1). Separately every row closure adds <nd cells. This does not prove a necessary growing proof depth or exclude arbitrary Shannon certificates ([note §5a](notes/triangle-free-hosts.md)) | Additional recovery/budget identities or information from Ω(n) centres; the general plane conjecture stays open |
-| **X31** | Transported whole-row closure counting as a common-deficit proof; localisation without a general capacity consumer | If the host has no empty r×r rectangle, m transported grids need a seed ≥d²−(m+1)d(r−1)+(r−1)². Random-matching symmetric/reflexive hosts make every such invoice arbitrarily close to full rate, even with arbitrary copies/permutations. This is a method bound, not a Shannon/capacity lower bound. The proposed chained-clique obstruction to paid localisation was invalid; random-decoder selection does turn small conditional error into an exact subcode, but unrestricted mutual capacity remains open ([§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Additional Shannon identities, or a proved native property lost when bit cones are enlarged to whole rows; localisation also needs a compatible general consumer |
+| **X31** | Transported closure with additive message bills as a stronger coding bound | For m helper graphs, assign each recovered coordinate to its firing rule: N−seed≤Σα_j, where α_j is maximum induced acyclic size. For transported copies the intersection invoice is ≥N−α, exactly the original acyclic bound. This applies to native bit cones too; it does not prevent transports helping discover such a set. The earlier no-empty-rectangle theorem retains its m-dependent refinement. Paid localisation still lacks an unrestricted mutual-capacity consumer ([native audit](notes/transported-closure-native-audit.md), [§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Extra Shannon or functional identities, a genuinely smaller joint-message bill, or a new native large-acyclic-set extraction; not another closure-only copy |
 
 ## Maintenance
 
@@ -217,13 +217,12 @@ No known code family has a fixed-window gain above one half beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D9, one audit unit.** B2–B4 are banked, G4 is
-  parked, D10 is a normal form with its transfer in Lean, and closure-only schemes are excluded on
-  mixing hosts (X31). Chosen premise (Astra's): keep the actual bit cones, before whole-row
-  enlargement, and seek one coordinate transport Φ and a generating set S of the doubled cone system
-  with 2B + |S| < N; `exists_indexCode` then contradicts correctness. Distance from the wall: zero.
-  Unit: a proof-level audit of the existing native controls at cone level. It must name a property
-  that row enlargement loses and that correctness supplies, or report that none exists. No solver,
-  no new host. Fallback if nothing is named: consolidate; the reserve premise is the two-decoder
-  form of the covariant linear problem on a quasirandom group (D8 with D10).
+- **Current focus** (replace, do not append). **D0: consolidate after the bounded D9 audit.**
+  Outcome B: no new correctness-supplied certificate. More strongly, the assigned-rule theorem
+  shows that 2B+seed<N would already supply a one-copy acyclic set larger than B, so doubling
+  adds no coding-bound power (X31). The historical controls do not themselves give a cheap
+  transpose-demand counterexample. B1–B4 and the Lean two-sided adapter remain banked.
+  Fable will present the reserve two-decoder covariant-linear premise once, with its exact
+  consumer and missing hypothesis; it is not an automatically resumed algebra search.
+  No new experiment until the next premise is chosen.
 - Last re-evaluation (D0): 14 November 2026.

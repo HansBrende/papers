@@ -383,6 +383,11 @@ and arbitrary coordinate permutations. This replaces the earlier unproved
 percolation heuristic. It says nothing against submodularity across closure
 intersections, extra code identities, or other tools beyond closure generation.
 
+A subsequent [assigned-rule theorem](transported-closure-native-audit.md#1-assign-each-recovered-coordinate-to-the-rule-that-supplied-it)
+shows, for every helper graph, that transported closure counting cannot improve its
+optimal original acyclic-set bound. The rectangle argument above additionally gives
+its stated m-dependent quantitative bound on the same witnesses.
+
 ### 7.3 Odd mutual walks and the proposed clique obstruction
 
 On a symmetric relation G, the **full, loop-allowing** mutual relation on cells

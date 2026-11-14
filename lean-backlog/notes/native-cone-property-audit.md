@@ -25,6 +25,14 @@ position-dependent rules; shared deterministic decoders on linear sources
 are already covered. Its separate native Problem 9.4(a) still needs an actual paid
 decoder-change estimate. Neither follows from unit head speed.
 
+**Bit-cone audit, 14 November.** The [bounded native audit](transported-closure-native-audit.md)
+checks the actual cone definitions and the historical controls. Its general assigned-rule
+bound shows that transported closure with additive message bills cannot improve the
+optimal one-copy acyclic bound. No new native capacity certificate was extracted.
+Repeated input reads and the need to subdivide both visits prevent the proposed free
+reverse-degree and isometry normal forms. This is a method limitation, not a proof
+that a new native acyclic certificate cannot exist.
+
 **Fronts D0, D4 and D9.** This answers Fable's C18 against repository revision
 `af9045d96b31c8f36fb95592de940b3c59904823`, with the roadmap clarification in
 `c1ab85c` and Paper 20's unchanged cited theorem scopes rechecked after

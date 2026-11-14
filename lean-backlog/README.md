@@ -179,8 +179,10 @@ Native extraction and source audit:
   existing transfer. The cyclic host has exact all-alphabet two-sided
   capacity and Shannon exponent d(d+1)/2+1 for every d≥2; basis-eight
   stays at 46. Two finite row/rectangle bounds are sharpened as well.
-  Written and independently reviewed, not yet Lean-verified. Reproduce
-  the finite certificates with
+  The finite upper-bound transfer, canonical equivalence and native
+  endpoints are [Lean-verified](TwoSidedCodeTransfer.lean). Symmetry
+  normalization and exact examples remain reviewed written proofs.
+  Reproduce the finite certificates with
   `python3 lean-backlog/tools/two_sided_controls.py`.
 - [Triangle-free grid gap](notes/triangle-free-shannon-gap.md): an exact
   18-term certificate gives 21≤Sh_res≤114/5<23 on the rectangular grid;
@@ -277,6 +279,12 @@ Native extraction and source audit:
   and a written selected-fibre success test using Paper 15's existing patch bounds. No new
   transposer class is excluded. The later row-spread note supplies a conditional tie
   missing when this comparison was written; obtaining the needed coding deficit remains open.
+- [Transported closure and native bit cones](notes/transported-closure-native-audit.md):
+  assigning recovered coordinates to their firing rules proves N−seed≤Σα_j.
+  Thus transported closure with additive message costs cannot improve the optimal
+  one-copy acyclic bound, even on actual bit cones. The bounded native audit also
+  distinguishes time occurrences from raw bits and corrects the isometry premise.
+  Written, independently reviewed; no new native capacity theorem or Lean claim.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

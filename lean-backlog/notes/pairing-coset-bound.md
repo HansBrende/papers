@@ -1,54 +1,173 @@
-# Codes built on top of a pairing code gain only O(d)
+# Extending a pairing or parity-block template costs only a vanishing rate
 
-Status: written proof by Claude Fable, 14 November 2026. Not reviewed, not Lean-verified. No
-novelty claim. Front D1; it restricts constructions (D7).
+Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
+**Status:** written proofs, independently reviewed; not Lean-verified. Fable proposed the
+pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
+partial-invariance and forward-window-only forms below. No literature novelty claim.
+Front D1: a restriction on constructions, not a bound for every whole-row code.
 
-## Statement
+## 1. Pairing shifts and the exact record
 
-Host: helper sets ρ(c) of size at most w; every row lies in at most D helper sets. Alphabet: an
-abelian group of order q. N = d².
+Let the cells be V=[d]×[d], N=d², and let column c be recovered from the bundle
+B_c=ρ(c)×[d]. Write M_c=ρ(c), J_c=⋃_{r∈M_c}ρ⁻¹(r), and
+L=∑_c|ρ(c)| for the number of incident cells (p,c) with p∈ρ(c).
+The alphabet is a finite abelian group of order q≥2, and C is a nonempty,
+possibly nonlinear whole-row code. Empty codes satisfy the cardinality bounds trivially.
 
-Let ι be an involution of the cell set such that, for every non-incident cell v = (p,c), the cell
-ιv lies in a helper row of c. Put P_ι = {S : S∘ι = S}. It is a whole-row code (each non-incident
-cell is copied from its partner), with log_q |P_ι| = (N + f)/2, f the number of fixed cells.
-The symmetric matrices are the case ρ(c) = {c}, ι = transposition.
+Fix any involution ι of V. Its orbit-constant subgroup is
+P_ι={S:S∘ι=S}, with log_q|P_ι|=(N+f)/2, where f is its number of fixed cells.
+Assume C+P_ι=C. For linear C, this means P_ι⊆C.
 
-**Theorem.** Let C be a whole-row code, not necessarily linear, with C + P_ι = C. Then
+**Compatibility is a consequence, not an additional hypothesis.** If a nonincident v has
+ιv outside its helper bundle, a nonzero shift of its orbit changes v while fixing every
+helper, contradicting recovery. Thus ιv lies in the bundle. A fixed cell must be incident.
+In particular P_ι is itself a whole-row code under this full-invariance hypothesis.
 
-log_q |C| ≤ log_q |P_ι| + (w² + w)·D·d.
+For every two-cell orbit choose one orientation and record the difference
+A_X(v)=X(v)−X(ιv). Let Q_c be the two-cell orbits contained entirely in B_c,
+and let Q₀ be the two-cell orbits both of whose cells are incident. Set
 
-So a code that is a union of cosets of a full pairing code exceeds that pairing code by O(d)
-symbols at fixed window and reverse degree. For linear C the hypothesis is P_ι ⊂ C.
+T=Q₀∪⋃_c Q_c.
 
-## Proof
+**Exact quotient bound.** The differences on T determine every orbit difference occurring
+in C. More precisely, if Z_T(C) is their attained image, then
 
-For X ∈ C put A_X[v] = X[v] − X[ιv]. Adding S ∈ P_ι does not change A_X.
+|C|=|P_ι|·|Z_T(C)| ≤ |P_ι| q^|T|.
 
-Fix a column c and let Inside(c) be the set of cells u in the helper rows of c whose partner ιu is
-also in those rows.
+**Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
+S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
+was recorded. If an orbit meets B_c once, extend the prescribed value to its partner;
+choose zero on untouched orbits. Then S∈P_ι, so X+S∈C, and X+S agrees with Y on B_c.
+Recovery gives agreement on column c. For a nonincident target v in that column,
+its partner also lies in B_c; hence the difference at v agrees. An orbit with one
+nonincident cell is now determined, and the remaining two-cell orbits were recorded
+in Q₀. Fixed-cell differences are zero. Finally, each full difference fibre is a coset
+of P_ι; invariance fills that coset. ∎
 
-*Claim.* For X, Y ∈ C, if A_X = A_Y on Inside(c), then A_X = A_Y on column c.
+**Why the incident exception is necessary.** At d=2, take ρ(c)={c}, let ι swap the two
+diagonal cells and also the two off-diagonal cells, and take C to be all symmetric matrices.
+Then C+P_ι=C and every Q_c is empty, but the diagonal difference is free. Q₀ records it.
+Thus the original claim that the internal differences determine the difference on an
+entire column was false; the theorem survives after this repair.
 
-Define S on the helper rows of c by S[u] = Y[u] − X[u]. On a pair inside the bundle this is
-ι-symmetric because A_X = A_Y there. On a cell whose partner is outside the bundle, copy the value
-to the partner. Put S = 0 on all remaining pairs. Then S ∈ P_ι, so X + S ∈ C, and X + S agrees
-with Y on the helper rows of c. By recovery they agree on column c. For a non-incident v in column
-c the partner ιv is in a helper row, so A_{X+S}[v] = A_Y[v], and A_{X+S} = A_X. Incident cells of
-column c lie in the bundle and are covered directly. ∎
+## 2. Sharper finite bound
 
-*Counting.* A non-incident u = (q,m) in the bundle has its partner in a row q′ ∈ ρ(m). It is inside
-only if q′ ∈ ρ(c) as well, so m is one of at most D columns helped by q′: at most w·D·w such cells.
-The bundle contains at most wD incident cells. So |Inside(c)| ≤ (w² + w)D.
+Every cell of an orbit in Q_c belongs to M_c×J_c. For a nonincident cell, its partner's
+row witnesses membership of its column in J_c. For an incident cell, its own row does.
+Consequently 2|Q_c|≤|M_c||J_c|. All f fixed cells are incident, so 2|Q₀|≤L−f. Therefore
 
-By the claim A_X is determined by its values on the union of the sets Inside(c), at most
-(w² + w)D·d cells. Two codewords with the same A differ by an element of P_ι. ∎
+2 log_q|C| ≤ N+L+∑_c |M_c||J_c|.
 
-## Remarks
+If every forward degree is at most w and every reverse degree at most D, this gives
 
-- It explains the pattern of the known gadgets at fixed window: the grid code is the pairing code
-  plus one shared antisymmetric object, and the window-two difference code has excess d − 1.
-- For a linear code C of dimension above (N + f)/2 + (w² + w)Dd it follows that C contains no full
-  pairing code, for any pairing ι. A gain of positive density has to destroy pairing, not extend it.
-- The same proof works lane by lane for a direct sum of pairing codes on lanes.
-- Open: the same conclusion when C is invariant under a pairing code on all but ηN pairs, with the
-  loss bounded by a multiple of ηN; and the analogue for codes invariant under a triangle lane code.
+log_q|C| ≤ N/2 + (w+w²D)d/2.
+
+The exact union T can be much smaller than this sum. Relative to P_ι, the finite gain is
+at most (L−f+∑|M_c||J_c|)/2. This sharpens the original coefficient (w²+w)Dd.
+For d>0, full invariance forces an incidence and hence w,D≥1; the d=0 case is immediate.
+
+## 3. Missing individual pairing shifts
+
+Suppose the shifts on b two-cell orbits are unavailable, but C is invariant under
+independent orbit-constant shifts on every other orbit, **including every fixed cell**.
+Let P_active be this smaller subgroup. Compatibility is forced only on active orbits.
+The full orbit-constant P_ι is an algebraic reference; it need not be a recovery code
+on the inactive orbits.
+
+Record all 2b inactive coordinates, and the differences on the active version of T.
+The previous matching argument applies: the inactive coordinates already agree, and
+only active shifts are used. The number of gauge choices is q^((N+f)/2−b), so the net
+additional price is **one symbol per omitted pair**, not two. In particular,
+
+2 log_q|C| ≤ N+2b+L+∑_c |M_c||J_c|.
+
+The active-fixed-cell assumption matters if full compatibility is dropped. If inactive
+nonincident fixed cells are also permitted, add their number to the right side.
+
+This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
+alone does not supply them: a linear constraint can exclude every individual shift while
+leaving a large intersection. No extraction of this invariance from machine correctness
+is claimed.
+
+## 4. No reverse-degree assumption is needed asymptotically
+
+Keep forward width at most w and the partial-invariance hypothesis of Section 3.
+For any integer R≥0 let H be the rows of reverse degree greater than R. Double counting gives
+(R+1)|H|≤wd. Mark every active two-cell orbit meeting H×[d]; at most d|H| pairs are newly
+marked. Deactivate the fixed cells in those rows as well. Let E contain all inactive or
+newly marked orbits, and put M'_c=ρ(c)∖H. The trimmed reverse degrees are at most R.
+
+Record the raw values on E and the active orbit differences on the internal pairs of
+the trimmed bundles, together with the active all-incident pairs. Agreement on E includes
+every heavy helper row. We can therefore match the remaining helper values by active
+shifts and invoke the **original** recovery rules. No separate charge for conditioning
+on the heavy rows is necessary.
+
+If b' pairs have been deactivated, the remaining gauge exponent plus |E| is
+(N+f)/2+b', even when some fixed cells are deactivated. Every original fixed cell was
+incident, so the all-incident-pair count still pays at most (L−f)/2. Hence
+
+log_q|C| ≤ N/2+b + wN/(R+1) + (w+w²R)d/2.
+
+Choose R=⌈√d⌉. Uniformly over alphabets, helper relations and involutions, at each fixed w,
+
+log_q|C|/d² ≤ 1/2+b/d²+O_w(d^−1/2).
+
+**Consequence.** A positive asymptotic gain over one half requires missing individual
+pairing shifts on a positive fraction of the two-cell orbits. Full or all-but-o(d²)
+pairing invariance cannot produce such a gain, even with unrestricted reverse degrees.
+This excludes a construction class; it does not prove the common deficit for arbitrary codes.
+
+## 5. Triangle lanes and general single-parity blocks
+
+The same gauge argument applies to disjoint single-parity blocks. Here V=[d]×[d]×[b₀],
+N=b₀d², the helper bundle is B_c=ρ(c)×[d]×[b₀], and C is a nonempty whole-row code
+on these coordinates. Take disjoint blocks B₁,…,B_m of size at least k≥2. On each block impose
+∑_{v∈B_j} θ_v(X(v))=0, where each θ_v is an automorphism of the abelian alphabet.
+Coordinates outside these blocks are free. Let P be this product subgroup; log_q|P|=N−m.
+Pair differences use weights +1,−1; triangle lane codes use three +1 weights.
+
+Suppose C is invariant under the parity kernels of all but a blocks and under shifts
+of every free coordinate. With omitted blocks, P is an algebraic reference and need not
+itself be a recovery code. For an active block and a nonincident v in it, recovery forces
+B_j∖{v}⊆B_col(v): otherwise a two-coordinate compensating parity shift changes v while
+fixing its helpers. Free coordinates must be incident.
+
+Record raw values on the omitted blocks and one syndrome per active block which is
+all-incident or contained in a helper bundle. Call the latter union T. To match values
+on a helper bundle, a block not wholly contained in it has an unobserved coordinate
+that can absorb the parity discrepancy. A contained block needs precisely its recorded
+syndrome. Recovery then determines every active syndrome with a nonincident coordinate;
+the remaining ones were recorded. Thus
+
+log_q|C| ≤ (N−m)+a+|T|,
+
+and, with reverse degree at most D,
+
+k|T| ≤ b₀∑_c|M_c||J_c|+b₀∑_c|ρ(c)| ≤ b₀d(w²D+w).
+
+Omitting one parity-block kernel costs one symbol, regardless of block size. There is
+also a forward-width-only version. Retain the raw record on the a omitted blocks and
+mark every retained block touching a heavy row; at most wb₀d²/(R+1) blocks are marked.
+Freeze those newly marked blocks and the free coordinates in heavy rows.
+Their raw-coordinate price cancels their lost gauge exponents except
+for one symbol per marked block. Apply the preceding bound on the trimmed relation:
+
+log_q|C| ≤ (N−m)+a + wN/(R+1) + b₀d(w+w²R)/k.
+
+With R=⌈√d⌉, the gain over the template exponent is at most a+o_w(N), uniformly in b₀ and q.
+This is stability under extension of a **specified parity template**, not a universal
+bound on its baseline rate, nor a normal form for arbitrary codes.
+
+## Scope of the examples
+
+The grid's displayed shared-object construction has a pairing template. The theorem
+does **not** explain every known O(d) gain: a binary sum-zero triangle excludes its
+all-one word, whereas every full orbit-constant pairing subgroup contains that word.
+The binary cyclic window-two difference code at d=3 likewise excludes the all-one word.
+Those examples need their own checks; being linear is not enough to contain a pairing code.
+
+All results here remain written and reviewed. The argument uses subgroup invariance
+of the code, not merely sparsity of a decoder, local graph statistics, or a large
+intersection with a template. The native question still needs a premise that supplies
+one of these hypotheses, or a different capacity argument.

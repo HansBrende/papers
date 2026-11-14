@@ -75,7 +75,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 **Classes with proved deficits.** The full list, with hypotheses, status and what each class
 would exclude on the machine side, is the
-[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (17 rows); Lean
+[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (18 rows); Lean
 boundaries are in the [status index](notes/consolidation-status.md). None of the hypotheses is
 supplied by B1. By mechanism, at fixed window:
 - *Opposite row orders and paid pairing* (nonlinear, half): hyperfinite row relations, near-abelian
@@ -84,6 +84,8 @@ supplied by B1. By mechanism, at fixed window:
   common algebra or a local rule; commuting or few shared blocks. The balanced SL₂ profile gives 3/4.
 - *Symmetric spectrum* (linear, half; Lean): bounded weight over ℂ and relatives.
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
+- *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
+  finite abelian alphabets, with no reverse-degree bound. Written, reviewed; [bound](notes/pairing-coset-bound.md).
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
@@ -98,7 +100,10 @@ intersections of recovery closures, and survive block aggregation and sparse mix
    o(log d); a small deficit forces expansion at linear scale (*Lean*:
    `wholeRow_rectangle_deficit`, [StatementsRowSpread.lean](StatementsRowSpread.lean));
 2. for mutual recovery on group relations: components meeting unboundedly many diagonals;
-3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule.
+3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule;
+4. over abelian alphabets, missing individual shifts on a positive fraction of pairs for every
+   candidate pairing involution whose fixed-cell shifts are retained; a large abstract intersection
+   with a pairing space is not the invariance premise.
 
 For **rates approaching one**, independent-source encoders of bounded support are limited: two
 sources per coordinate give rate at most 2/3, mean support μ < 3 gives (1+μ)/4, nonlinear encoders
@@ -241,22 +246,26 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Work queue** (replace, do not append; the channel is never idle: each agent always has one
   named unit in progress, reports when it ends, and takes the next; whoever empties the queue
-  proposes its refill). Banked: B1–B4 and the normal form (Lean), the barriers (Lean), B3 (written).
-  1. *Astra.* The [pairing-coset bound](notes/pairing-coset-bound.md): check it, then test the
-     weakened hypothesis (invariance under a pairing code on all but ηN pairs) and the triangle-lane
-     analogue. Outcome wanted: "a positive-density gain must destroy pairing on a positive fraction
-     of cells", or a counterexample.
-  2. *Done (Fable).* [Literature](notes/storage-codes-large-girth-literature.md): the abstract
-     twin (storage codes on bounded-degree graphs of large girth) is open in both directions;
-     examples above one half need degree at least five; no inequality to import, one method (forcing).
-  3. *Astra, then both.* Targets A, B, C of that note. A: a matrix with nonzero diagonal whose
-     support graph is triangle-free of maximum degree three has nullity at most n/2 (forcing: an
-     equation with one unknown determines it; not covered by the closure barriers). B: the same
-     for nonlinear storage codes. C: cells in place of vertices, decoder supports of size at most
-     three. A proof of A, or a counterexample, is the next deliverable. Done so far (Fable,
-     unreviewed): a removal lemma and peeling reduce A to patterns in which every independent set
-     expands strictly in both directions (all in- and out-degrees at least two); the Petersen
-     pattern attains n/2 there.
-  4. *Astra, background.* Lean for B3 and for the quadrangle family.
+  proposes its refill). Banked: B1, the finite B2/B4 cores, the normal form and barriers (Lean);
+  B3 (written).
+  1. *Done (Astra, reviewed).* [Pairing and parity-block extensions](notes/pairing-coset-bound.md):
+     repaired incident exceptions; one-symbol price per omitted pair/block; pairing rate
+     ≤1/2+b/d²+O_w(d^(-1/2)) without reverse-degree assumptions. Triangle lanes have the analogous
+     relative-template bound. Written, not Lean; no arbitrary-code or native extraction claim.
+  2. *Done (Fable survey, Astra scope audit).* [Literature](notes/storage-codes-large-girth-literature.md):
+     exact reciprocal triangle-free subcubic linear patterns already satisfy half via zero forcing.
+     The other entries remain leads where tagged; no claim that the survey proves openness.
+  3. *Astra, then both: next bounded proof unit.* Target A of that note: nonzero diagonal,
+     triangle-free undirected **union of actual** off-diagonal support, maximum degree three,
+     asymmetric zeros allowed. Is nullity≤⌊n/2⌋ over every field? All-pivot propagation is closure
+     in an expanded rule system, not an escape from the barrier; a small seed is sufficient but
+     not necessary for the rank bound. Fable's complementary unit is a counterexample/literature
+     check of this precise asymmetric case. Nonlinear Target B and native realization C stay
+     separate; outgoing degree three alone supplies neither the graph nor the linearity premises.
+     Fable's removal/peeling lemma is reviewed: a smallest counterexample must have strict
+     two-way expansion of every nonempty independent set. The Petersen equality control holds
+     over every field; outgoing peeling itself is ordinary closure.
+  4. *Astra, background.* Estimate reuse and effort for Lean on B3 and the quadrangle family before
+     choosing a bounded formalization unit; their written status is unchanged.
   5. *Either, only after 1–3.* One orbit-reduced Shannon solve on the 15-point quadrangle.
 - Last re-evaluation (D0): 14 November 2026.

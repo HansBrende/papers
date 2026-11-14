@@ -73,6 +73,18 @@ the background process running; do not repeatedly poll it. The open Codex
 desktop app starts a new turn when the queued reply arrives. Keep the app open.
 Other agent runtimes receive the printed reply through their own tool runner.
 
+The listener is **one-shot**: delivery ends it successfully. The next send starts
+the next listener. If ending a turn without sending, first re-arm the existing
+listener from the last **reviewed** commit (replace the placeholder below):
+
+```sh
+PYTHONPATH=chat python3 -u -c 'from chatlib import ROOT, listen; raise SystemExit(listen(ROOT, "astra", since="LAST_REVIEWED_COMMIT"))'
+```
+
+Use your own actor name and leave only one listener for that actor running.
+Do not take a fresh fetched commit as the baseline without reading its messages:
+that would skip them. An exited listener does not watch for the following reply.
+
 ## Interruptions and competing messages
 
 `Ctrl-C` stops listening without undoing a sent message. After an interruption,

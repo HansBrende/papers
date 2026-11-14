@@ -3560,49 +3560,154 @@ property of that geometry or paid computation. Moreover an unspecified
 finite mean-support bound would not suffice for (28h): it must lie
 below three by a fixed margin, or supply another core-deficit premise.
 
-## 31. A property of tape motion that gives one half: shift covariance along a row (Fable, 14 November 2026)
+## 31. Shift covariance: existing bounds and the native gap
 
-Status: 31.1 and 31.2 have **short written proofs, unreviewed**; 31.3 lists
-what is not covered. Fronts D2 (one-class relations, paper 17, Problem
-9.4(b)) and D1 in its host form (section 17): x_r = Σ_{i∈ρ(r)} Φ_{r,i} y_i with
-x_r the columns and y_i the rows of X. Linear codes.
+Fable and Astra, 14 November 2026. Fronts D0/D2/D4. The algebra in the
+original proposal is correct, but the commuting and cut-shift cases are
+already covered by Paper 17. The claim that unit-speed tape motion supplies
+their premises is withdrawn. Statements below distinguish those existing
+results from the written native countercontrol; no new machine exclusion
+or novelty claim is made.
 
-**31.1 (commuting blocks).** If the blocks Φ_{r,i}, over all edges (i, r) of
-the row relation, commute pairwise, then the code has dimension at most
-d(d+1)/2. There is no condition on the relation ρ or on the window.
+**31.1 (commuting blocks; existing flag theorem).** In the host equation
+x_r=Σ_i Φ_{r,i}y_i, where x_r is column r and y_i is row i as a column
+vector, pairwise commuting blocks give dim C≤d(d+1)/2 over every field,
+with no restriction on helper rows or window. This is explicitly
+[Paper 17, Corollary “One triangularizable side”](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/order.tex),
+a written corollary of its formal flag bound FL.
 
-*Proof.* Over the algebraic closure take G with every G⁻¹Φ_{r,i}G upper
-triangular, Λ_{r,i}. Put X̃ = G⁻¹XG^{−T}; this is a linear bijection of the
-arrays. The equations become: row χ of X̃ is a linear function of the columns
-χ′ ≥ χ of X̃. Reveal the entries X̃[ψ][χ′] with ψ ≤ χ′. Going down from the
-last index, the columns χ′ ≥ χ are then known (their entries in later rows
-have been deduced), so row χ is determined. ∎
+For clarity, extend the field to its algebraic closure, preserving the
+dimension of the linear code, and choose G making Λ_{r,i}=G⁻¹Φ_{r,i}G
+upper triangular. Put Z=G⁻¹XG^{−T} and (A_{χψ})_{ri}=(Λ_{r,i})_{χψ}.
+The transformed equations are exactly
 
-When the blocks are diagonalisable this says more: in the coordinates X̃ the
-code is a whole-row code of window one, whatever the window of ρ was. It is
-the commuting case of the [twisted-swap note](twisted-swap.md), Theorem 4,
-in host form.
+  row_χ(Z)ᵀ = Σ_{ψ≥χ} G⁻¹ A_{χψ} G col_ψ(Z).
 
-**31.2 (aligned one-class relations).** Let the column index be cyclic and
-suppose X[c][r] = Σ_m α_m(r)·X[i_m(r)][c + j_m(r)] with helper rows, offsets
-and coefficients depending on r only. Then every block is a polynomial in
-the cyclic shift, the blocks commute, and the code has dimension at most
-d(d+1)/2: one half, for every window, every choice of helper rows and
-offsets, expanding or not.
+Reveal Z[a,b] for a≤b. Descending in χ, every column ψ≥χ is known, so
+the equation determines row χ. This is an injective projection onto
+d(d+1)/2 entries. When the blocks are simultaneously diagonal, Zᵀ
+(rather than Z in the original convention) is a window-one whole-row
+code. Twisted-swap Theorem 4, with its arbitrary U_g and nondegeneracy
+premises, is not the corresponding citation.
 
-**Why this is a property of machines.** A head moves one cell per step. While
-one output row is written, the cells read for position c + 1 are the cells
-read for position c moved by one. If the same rule is applied at every
-position of the row, the decoder of that row commutes with the shift along
-the tape. Bounded read-degree, cheap encoding circuits and local statistics
-do not have this property; the cycle codes of section 30 do not have it.
+Commutation can be weakened to two compatible flags: P⁻¹Φ_{r,i}Q all
+upper triangular, with independent P and Q. Compatible partial flags
+with block sizes s_j give dim C≤(d²+Σ_j s_j²)/2 by the same descending
+block argument. These strengthenings are also already instances of FL.
 
-**31.3 (what is not covered).** (i) *Row boundaries.* A stretch of d cells
-read at an arbitrary phase covers the end of one input row and the start of
-the next; the block is then a shift cut by an interval projection, and such
-blocks do not commute. If all phases are at most σ the cut affects O(wσd)
-cells and the bound holds up to that; for spread phases it does not apply.
-(ii) *Rules that vary with the position* within the row. (iii) *Depth:* the
-work tapes compose several such maps with different time changes.
-(iv) *Nonlinear rules.* Each is a hypothesis on head motion or on the
-transition rule that can be stated for an actual trace.
+**31.2 (cyclic and physical shifts; existing half bounds).** A cyclic rule
+
+  X[c,r]=Σ_m α_m(r) X[i_m(r),c+j_m(r) mod d]
+
+has commuting shift-polynomial blocks. Its exact pairing bound is also
+formalized directly by Paper 17's
+`IsClassUniformCode.two_mul_finrank_le_of_const`. Offsets, helper rows
+and coefficients may depend on r, but not on c.
+
+Physical row boundaries do not invalidate the conclusion for a linear
+rule with that position independence. A stream starting at address id+s,
+0≤s<d, contributes at running position c
+
+  α(r)(1_{c+s<d} X[i,c+s] + 1_{c+s≥d} X[i+1,c+s−d]).
+
+Writing (T_e y)[c]=y[c+e] when the index is in range, and zero otherwise,
+this is α(r)(T_s y_i+T_{s−d} y_{i+1}); omit the zero second term at s=0,
+and zero-pad source rows outside the array (or keep all streams inside it).
+Thus even phases varying with stream and r give the one-class line rule
+
+  X[c,r]=Σ_i Σ_{j=0}^{d−1} A_i[r][j−c] X[i,j].
+
+[Paper 17, the line form of TP](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/paper/sections/symmetry.tex)
+gives dim C≤d(d+1)/2 for this entire Toeplitz span, despite its
+noncommutativity. Its formal coefficient adapter is
+`isLineUniformCode_of_coeff`, and its bound is
+`IsLineUniformCode.two_mul_finrank_le` in
+[Line.lean](../../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/lean/SwapRigidity/Line.lean).
+No phase-size assumption or alignment payment is needed for this model.
+
+The specialization of that proof is short. Let T shift each source row
+left with zero padding and C′=C∩T⁻¹C. Then dim C′≥2 dim C−d². If the
+first column of X∈C′ is zero, comparison of the rules for TX at c and X
+at c+1 gives X[c+1,r]=X[c,r+1], where X[c,d]=0. Following anti-diagonals
+to the zero first column or zero right boundary gives X=0. Hence the
+first-column projection on C′ is injective, dim C′≤d, and the bound follows.
+
+There is a further existing distinction: the **source** must be a linear
+subspace for this intersection argument, but the shared decoders need not
+be linear. [Capacity and Composition of Shared Transposition Decoders](../../Capacity-and-Composition-of-Shared-Transposition-Decoders/paper/sections/appendix-set-capacity.tex),
+Theorem “Deterministic line rules on linear sources”, formalizes the line
+extension as `IsDeterministicLineCode.two_mul_finrank_le`; its deterministic
+translate lemma does the same on a cycle. Those results do not apply to
+arbitrary advice fibres, or even arbitrary affine sources, without further
+premises. Nonlinearity of the decoder alone is therefore not a new case
+when the code is a subspace.
+
+Two other meanings of “one phase” are also settled. With one global
+phase σ(c)=c+s mod d, all helpers of row c lie in source column σ(c).
+Permuting source columns by σ makes each row a function of its own
+column. The upper-triangle reconstruction proves |C|≤q^{d(d+1)/2} for
+**arbitrary nonlinear codes over any finite alphabet**. With instead one
+fixed interval mask and arbitrary cyclic shifts, coefficients constant
+on its two pieces form the broader two-class TP family, bounded by
+d²/2+d. The algebra generated by a shift and a mask can be much larger
+than either direct decoder span; its size does not produce a counterexample.
+
+**31.3 (a native control, and the cost of literal covariance).** Unit speed
+in time does not mean unit stride between appends. For even input length N,
+a four-phase oblivious transducer visits positions
+
+  2k, 2k+1, 2k, 2k+1
+
+and appends only on the second and third visits, then advances to 2k+2.
+It outputs adjacent pairs in reverse order in 2N+O(1) steps, with fixed
+alphabet, fixed states and no work tape. A parked work tape may be added.
+There are no data-dependent moves. For N=d², even d≥4, the read position
+within a row is c xor 1, not c plus one common offset, including far from
+the row ends. This is a transduction control, **not a transposer**.
+
+The failure cannot be repaired cheaply by replacing this map with an
+affine unit-shift-equivariant map in the same coordinates. Here is a
+written proof, not a new Lean formalization. On F^d set
+(Sv)_c=v_{c+1 mod d} and (Pv)_c=v_{c xor 1}. The kernel of PS−SP consists
+exactly of vectors constant on the even positions and constant on the
+odd positions: its equations are v_{c+2}=v_c, in every characteristic.
+Thus rank(PS−SP)=d−2. On d rows put F₀=I_d⊗P and R=I_d⊗S. Any linear
+map A commuting with R satisfies
+
+  d(d−2)=rank[F₀,R]=rank[F₀−A,R]≤2 rank(F₀−A).        (31a)
+
+Over F_q, suppose an arbitrary advice function with M possible values
+selects affine maps Ax+v with AR=RA. If each selected map agrees with F₀
+on its entire fibre except at at most z output coordinates fixed for
+that advice value, that fibre is contained in an affine solution set
+of codimension at least d(d−2)/2−z. Covering all q^N inputs gives
+
+  log_q M + z ≥ d(d−2)/2 = N/2−d.                    (31b)
+
+The advice need not be linear. The ignored coordinates may vary between
+advice values, but not within one value without further accounting.
+This only rules out cheap **literal unit-shift affine replacement** for
+this computation. The pair swap commutes with S², so coarsening, periodic
+classes, other bases or flag arguments are not ruled out. Neither are
+nonlinear replacement decoders or correctness-dependent normal forms.
+
+**31.4 (the remaining target).** B1 supplies bounded helper-row spread,
+not a stride, a common coefficient pattern, or a cheap decoder-change
+invoice. Its cuts fix records; their values can still select different
+functions at different positions. Work-return paths also compose maps
+with distinct time changes. None of this is removed by unit head speed.
+
+Paper 17's actual Problem 9.4(b) is **cyclic**. Its open cases drop the
+linear-subspace source premise or allow functions varying with c, or both.
+Its shared-decoder bound on linear sources is explicitly settled there.
+Physical carries alone are not its missing case. Problem 9.4(a), separately,
+asks for a paid transfer to real
+cone decoders. Its existing affine entry-change bound is useful only
+after proving a count on the actual selected fibre. A fixed transition
+table or cheap revealed word does not itself prove that count.
+
+The proposed shift/projection-algebra search therefore stops without
+an experiment. A next D2 attempt must specify an unresolved source/recovery
+class (and keep its native tie conditional), or prove a genuinely new
+native extraction premise with its payment. These corrections do not
+weaken B1 or the sparse-generator theorems in section 28.

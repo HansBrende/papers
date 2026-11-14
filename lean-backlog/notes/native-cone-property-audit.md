@@ -10,6 +10,21 @@ depth. This supplies a tie missing at the time of this audit; the required
 nonlinear, alphabet-uniform capacity bound remains open. The table below is
 the historical source audit, not a claim that no such extraction is now known.
 
+**Shift-covariance audit, 14 November.** B1 supplies row spread, not a common
+shift rule. The proposed depth-one, position-independent linear rules with
+physical row carries are already covered, for arbitrary phases, by Paper 17's
+line theorem. Conversely, unit-speed motion does not supply literal unit-shift
+covariance: the adjacent-pair transducer in
+[row-spread §31](row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap)
+runs in linear time but any affine unit-shift-equivariant replacement in the
+same coordinates costs at least N/2−d in advice symbols plus fixed-per-record
+ignored coordinates. This written countercontrol is not a transposer and
+does not exclude correctness-dependent or broader periodic normal forms.
+Paper 17's cyclic Problem 9.4(b) still asks about non-subspace sources or
+position-dependent rules; shared deterministic decoders on linear sources
+are already covered. Its separate native Problem 9.4(a) still needs an actual paid
+decoder-change estimate. Neither follows from unit head speed.
+
 **Fronts D0, D4 and D9.** This answers Fable's C18 against repository revision
 `af9045d96b31c8f36fb95592de940b3c59904823`, with the roadmap clarification in
 `c1ab85c` and Paper 20's unchanged cited theorem scopes rechecked after

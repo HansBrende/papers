@@ -141,7 +141,7 @@ None gives a fixed-window gain beyond O(d).
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
-| **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from w entries (i_m(r), c + j_m(r)). Hypothesis on head motion alone | Linear, cyclic, rule independent of the position: at most d(d+1)/2 for every window and relation, because the blocks are shifts and commute ([row spread](notes/row-spread-of-cones.md) §31, *written, unreviewed*). Open: row boundaries (cut shifts), position-dependent rules, depth, nonlinear | Not written |
+| **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from w entries (i_m(r), c + j_m(r) mod d). Relation premise, not automatic native geometry | Shared cyclic/line rules on linear sources, including arbitrary physical carry phases, are already at pairing (P17; arbitrary deterministic decoders in *Capacity and Composition*). Open: non-subspace sources or position-dependent functions; native extraction belongs to 9.4(a)/D4. [Scope audit and control](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap) | P17 `ClassUniform.lean`, `Line.lean`; extensions `CapacityAmbient.lean`, `CapacityLineDeterministic.lean`. Native control: written proof |
 | **D3** | *Classes of any shape* (Problem 9.1): two classes at most (½ + o(1))d²? | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); needs a bounded-class extraction | Bounds in that paper's library |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a subadditive quantity large for the swap at every scale | Open; the cut-rank profile fails on a shear ([pass calculus](notes/pass-calculus.md) §§2–3) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | Open; not worked on | Not written |
@@ -186,6 +186,7 @@ None gives a fixed-window gain beyond O(d).
 | **X24** | Bounding all core defect reuse by an absolute multiplicity | All-far doubled-cycle presentations have token degree four but forced reuse 2w; their full-grid rates tend to ½ ([row spread §24](notes/row-spread-of-cones.md#24-cores-of-supports-three-boundary-counts-and-their-limitation)). This closes the universal charge, not the higher-support capacity question | A rate-sensitive charge or another way to use overlapping squares |
 | **X25** | Inclusion–exclusion budgets on row-closure intersections, including the minimum/clipping repair | The repaired rule fails recovery and submodularity on d=4, ρ(r)=[4]∖{r}, despite attainable row budgets and capacity=Sh=order=15 ([row spread §29](notes/row-spread-of-cones.md#29-the-repaired-completion-rule-fails-at-window-three)). This closes the recipe, not G4 | A different completion with a proved polymatroid/recovery theorem, or a valid universal inequality |
 | **X26** | Bounded recovery degree, even with O(N) encoding circuits, forces a sparse generator after cheap linear advice | High-girth regular-graph cycle codes have arbitrarily high constant rate and bounded recovery degree, but every generator has mean support ≥g(K−t)/N after t linear reveals ([row spread §30](notes/row-spread-of-cones.md#30-sparse-recovery-and-cheap-circuits-need-not-give-sparse-generators)). No whole-row/native realization is asserted | A property of the actual grid or paid tape computation, beyond these abstract circuit conditions |
+| **X27** | Unit-speed native motion supplies literal unit-shift affine covariance after cheap advice | The fixed-state adjacent-pair transducer runs in 2N+O(1) steps but needs log_q M+z≥N/2−d for such replacement in the same coordinates ([§31.3](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap)). It is not a transposer and does commute with a two-position shift | A correctness-dependent premise or a broader paid normal form; periodic classes and nonlinear maps are not excluded |
 
 ## Maintenance
 
@@ -195,11 +196,12 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0 in progress.** Closed this round: the
-  row-closure completion rule for G4 (X25); a sparse source basis from bounded read-degree (X26).
-  Standing results for linear codes with sparse generators: rate ≤ 2/3 with two sources per cell,
-  ≤ (1 + μ)/4 at mean support μ < 3, on every fixed-window host. Candidate for the next front:
-  **D2 with row boundaries**, where the property used is shift covariance of the decoder along an
-  output row (§31), which bounded degree and local statistics lack. To be compared with the native
-  paid-recovery pass before choosing.
+- **Current focus** (replace, do not append). **D0/D4: select a native premise beyond the
+  existing normal forms.** D2's proposed physical-boundary target is already covered by Paper 17's
+  line theorem, even for spread phases; no search. Literal covariance is not supplied by unit
+  head speed (X27). A next bounded unit must state either a paid estimate for actual native
+  decoders, including correctness when used, or an explicit non-subspace/position-dependent
+  D2 inequality. Do not reopen the shift/projection algebra or row-closure completion recipes.
+  Sparse-generator results remain: asymptotic rate ≤2/3 at support two, ≤(1+μ)/4 for bounded maximum support
+  and mean μ<3, on every fixed-window host; they do not provide that native premise.
 - Last re-evaluation (D0): 14 November 2026.

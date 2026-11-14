@@ -110,11 +110,10 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
-  written and reviewed; abstract counting, weighted compatibility/record separation,
-  finite counts, full-invariance involution conversion and singleton pinning are Lean.
-  Whole-row record enclosures and finite active-parity incidence/degree bounds are Lean.
-  Paid heavy-row deletion and the active-template uniform vanishing-excess theorem are Lean.
-  Original omitted-involution-orbit selection and the sharper fixed-cell correction remain written.
+  is Lean-verified through omitted-orbit selection, exact permitted shifts, fixed-cell
+  cancellation and the uniform rate ½+b/N+1/n for d≥n(w+2w³n).
+  Original fixed-cell shifts must be retained initially. The general active-parity
+  template and its paid heavy-row theorem are also Lean. No native invariance extraction.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -302,7 +301,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
   1. *Done (Astra, reviewed).* [Pairing and parity-block extensions](notes/pairing-coset-bound.md):
      repaired incident exceptions; one-symbol price per omitted pair/block; pairing rate
      ≤1/2+b/d²+O_w(d^(-1/2)) without reverse-degree assumptions. Triangle lanes have the analogous
-     relative-template bound. Written, not Lean; no arbitrary-code or native extraction claim.
+     relative-template bound. Lean through the finite uniform endpoints; no arbitrary-code
+     or native extraction claim. The optional inactive-fixed-cell variant remains written.
   2. *Reuse audit complete.* [Literature/correction](notes/storage-codes-large-girth-literature.md):
      original A is Paper 4 Theorem S; full weighted nonlinear B is Paper 7 N3; the soft memo
      already gives coefficient-one errors. Petersen and five-cycle certificates also already
@@ -331,7 +331,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      *Astra banked:* the nonlinear matching theorem, compatibility extraction and ordinary-sum
      record separation/count, finite weighted counts, involution conversion and singleton
      pinning, conditional whole-row enclosures, incidence bounds and paid heavy-row/uniform-rate
-     adapters are Lean; the original omitted-involution/fixed-cell specialization remains.
+     adapters and the omitted-involution/fixed-cell specialization are Lean, through
+     the uniform half-rate-plus-omitted-density endpoint.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
      estimate. The quadrangle estimate was dropped: a further finite bound has no named
      consumer beyond the existing triangle-free gap. No larger search is commissioned.
@@ -347,8 +348,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      they are not proved equivalent to order, and no new capacity estimate follows.
      Compatibility, finite weighted counts, involution conversion and singleton pinning
      and whole-row enclosure/incidence bounds are banked in Lean. The paid heavy-row adapter
-     now removes the reverse cap with a uniform rate theorem. Next: the original
-     omitted-involution selection and sharper fixed-cell specialization. The
+     removes the reverse cap with a uniform rate theorem; omitted-involution selection
+     and the fixed-cell specialization are complete in Lean. No new front has a premise
+     with a consumer. The
      [local-view audit](notes/local-record-view-covers.md#7-a-native-consumer-for-output-weighted-hyperfiniteness)
      gives a written exclusion at one cut density ε₀<1/[2s(k+2)c], allowing
      o(log log d) outputs per time component: union with Paper 14's

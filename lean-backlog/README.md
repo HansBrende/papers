@@ -47,8 +47,8 @@ No native extraction is implied.
 
 The [pairing/parity-template note](notes/pairing-coset-bound.md) now reuses
 [CosetRecords.lean](../lean-machine/LeanMachine/CosetRecords.lean) for its abstract
-exact count by attained records on subgroup-invariant sets. Its geometric
-rate bounds remain written proofs. The local
+exact count by attained records on subgroup-invariant sets. Its main geometric
+and uniform rate bounds are now Lean-verified. The local
 [disjoint-sum extension criterion](../lean-machine/LeanMachine/DisjointSumsExtension.lean)
 is also verified for arbitrary target sums and additive-automorphism weights,
 without finite alphabet or finite coordinate assumptions.
@@ -75,8 +75,15 @@ rectangular arrays and arbitrary lanes. The
 [heavy-row adapter](../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
 constructs the deletion, charges one symbol per discarded block, removes the
 reverse-degree premise and proves a uniform vanishing excess over the
-active-template baseline. Selecting active involution orbits and the
-sharper fixed-cell correction remain separate work.
+active-template baseline. The
+[omitted-pair construction](../lean-machine/LeanMachine/InvolutionOmissions.lean)
+identifies the exact allowed subgroup, and the
+[pairing specialization](../lean-machine/LeanMachine/WholeRow/Pairing.lean)
+cancels the fixed-cell term even after trimming. At side length
+d≥n(w+2w³n), its rate is at most 1/2+b/N+1/n, with b omitted pairs,
+uniformly over finite abelian alphabets and lane counts. All original
+fixed-cell shifts are retained initially. No native correctness-to-invariance
+extraction is claimed.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

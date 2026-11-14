@@ -9,9 +9,9 @@ prescribed zero shifts. The whole-row record enclosures, active-block
 incidence count and finite bounded-degree parity-template bound are also
 Lean-verified, with arbitrary finite lanes and rectangular row/column types.
 Paid heavy-row deletion and a uniform vanishing-excess theorem for active
-parity templates are Lean-verified as well. Selection from an omitted
-involution-orbit list and the sharper fixed-cell pairing correction remain
-separate written specializations.
+parity templates are Lean-verified as well. The omitted-involution-orbit
+selection, exact active subgroup, fixed-cell correction and uniform
+half-rate-plus-omitted-pair-density theorem are now Lean-verified.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -60,10 +60,11 @@ now in [`InvolutionSums.lean`](../../lean-machine/LeanMachine/InvolutionSums.lea
 `card_orbitConstant` proves q^((N+f)/2), and
 `card_eq_orbitConstant_mul_record` / `card_le_pow` prove exact counting and
 the bound q^((N+f)/2+|T|). The finite code bound allows empty C and trivial
-alphabets. Its views are arbitrary sets H(v); Section 5 now supplies the
-general whole-row bundle/enclosure adapter. Combining it with these
-oriented involution blocks and the sharper fixed-cell count remains a
-separate specialization. The following written proof describes that application.
+alphabets. Its views are arbitrary sets H(v); Section 5 supplies the
+general whole-row bundle/enclosure adapter. The combined application is
+[`WholeRow/Pairing.lean`](../../lean-machine/LeanMachine/WholeRow/Pairing.lean),
+including the fixed-cell correction and omitted pairs described below.
+The following proof explains the argument checked there.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -112,10 +113,12 @@ additional price is **one symbol per omitted pair**, not two. In particular,
 
 2 log_q|C| ≤ N+2b+L+∑_c |M_c||J_c|.
 
-The active-fixed-cell assumption matters if full compatibility is dropped. If inactive
-nonincident fixed cells are also permitted, add their number to the right side.
+The active-fixed-cell assumption matters if full compatibility is dropped.
+Written variant only: if inactive nonincident fixed cells are also permitted,
+add their number to the right side. The involution endpoints below retain
+all original fixed-cell shifts initially.
 
-**Formalization boundary and reuse.** The full-kernel hypothesis is stronger
+**Formalization and reuse.** The full-kernel hypothesis is stronger
 than the active-shift hypothesis here; omitted pairs are not only a numerical
 bill. But compatibility need not be proved again. Keep only the active pair
 blocks, and add a singleton zero-sum block {e} at each inactive coordinate e.
@@ -147,11 +150,28 @@ generally per omitted single-parity block, regardless of its size.
 Global identities require finite active and pinned index types; the power
 bound explicitly assumes finite coordinates, active indices and alphabet.
 Empty codes and trivial additive alphabets are allowed. The generic
-adapter does not construct the active pairs from an involution. The
-whole-row enclosures and general active-block incidence estimate are now
-supplied by Section 5's adapter; the sharper fixed-cell correction in
-Section 2 still needs its own endpoint. The general active-template
-heavy-row theorem is now formalized below.
+adapter is instantiated by
+[InvolutionOmissions.lean](../../lean-machine/LeanMachine/InvolutionOmissions.lean):
+`activeBlocks` selects the complement of an arbitrary finite omitted-orbit
+list O, and `omittedCells` pins its 2|O| coordinates.
+`pinned_active_kernel_eq` identifies its kernel exactly with
+`activeShifts`, the orbit-constant shifts vanishing on those coordinates;
+`card_activeShifts` proves q^((N+f)/2−|O|). With O empty the subgroup is
+the full orbit-constant subgroup. No omitted shift is restored, and fixed
+coordinates are never omitted by this construction.
+
+[WholeRow/Pairing.lean](../../lean-machine/LeanMachine/WholeRow/Pairing.lean)
+uses ordinary whole-row recovery on the original relation and invariance
+under the specified subgroup `activeShifts`; extra invariance is allowed.
+`pairing_record_card_eq` is the exact
+active-subgroup times attained-record identity; `pairing_fixed_incident`
+derives that every original fixed cell is incident. The reserved-coordinate
+count in [WholeRow/ParityReserved.lean](../../lean-machine/LeanMachine/WholeRow/ParityReserved.lean)
+keeps those cells separate from all pair blocks. Thus
+`pairing_card_sq_le_incidence` proves the squared cardinality form of the
+displayed bound, and `pairing_card_sq_le_degrees` proves its bounded-degree
+version. These strengthen the square-array statement to finite rectangular
+arrays with any number of lanes.
 
 This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
 alone does not supply them: a linear constraint can exclude every individual shift while
@@ -186,6 +206,31 @@ log_q|C|/d² ≤ 1/2+b/d²+O_w(d^−1/2).
 pairing shifts on a positive fraction of the two-cell orbits. Full or all-but-o(d²)
 pairing invariance cannot produce such a gain, even with unrestricted reverse degrees.
 This excludes a construction class; it does not prove the common deficit for arbitrary codes.
+
+**Finite uniform endpoint (Lean).** For row and column types R,J, lane
+type Λ, N=|R||J||Λ| and b=|O|, `pairing_card_sq_le_after_trim` charges
+exactly one symbol per active pair touching the recorded rows. It reserves
+**all original fixed cells against the original incidence set**, while
+internal records use the trimmed helper relation. This cancels f even
+when trimming pins some fixed cells. With forward width w alone,
+`pairing_card_sq_le_forward` gives, for every natural t,
+
+  |C|² ≤ q^[N+2b + 2|Λ||J| floor(w|J|/(t+1)) + |Λ||J|(w+w²t)].
+
+For |R|=|J|=d and any integer n≥1, choose t=2wn. If
+
+  d ≥ n(w+w²(2wn)),
+
+`pairing_card_pow_le_half` proves
+
+  |C|^(2n) ≤ q^[n(N+2b)+2N].
+
+For nonempty C, q≥2 and N>0 this is
+log_q|C|/N≤1/2+b/N+1/n. The dimension threshold is independent of the
+alphabet, lane count, involution and omitted list. The finite cardinality
+statements also handle empty codes, trivial alphabets and empty coordinate
+types. They require all original fixed-cell shifts to be active before
+trimming; they require neither code linearity nor a reverse-degree bound.
 
 ## 5. Triangle lanes and general single-parity blocks
 
@@ -336,9 +381,8 @@ finite statements are uniform in the finite abelian alphabet and lane
 count, and strengthen the square-array formulation to rectangular arrays.
 The record union can be smaller than the sum used in this last estimate.
 The finite adapter takes active blocks/pins as data. Deleting heavy rows is
-now handled by the following construction; choosing the original active
-blocks from an omitted involution-orbit list and the sharper fixed-cell
-pairing correction remain separate specializations.
+handled by the following construction; Sections 3–4 give the completed
+involution specialization with its sharper fixed-cell correction.
 
 
 **Paid heavy-row adapter and uniform rate (Lean).**
@@ -404,7 +448,9 @@ involution conversion, singleton pinning, whole-row enclosures and the
 finite general parity-template incidence and bounded-degree estimates,
 paid heavy-row deletion, the forward-width-only bound and its uniform
 vanishing-excess consequence. Omitted-involution-orbit selection and the
-sharper pairing fixed-cell correction remain written specializations. Invariance
+sharper pairing fixed-cell correction are Lean-verified through the finite
+uniform half-rate endpoint. The optional variant allowing initially inactive
+nonincident fixed cells remains written. Invariance
 is relative to a specified additive
 group on the entry alphabet; for b-bit symbols bitwise XOR supplies one such
 group. No claim identifies invariance under different choices of group law.

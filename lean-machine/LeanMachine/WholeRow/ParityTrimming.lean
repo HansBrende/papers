@@ -169,6 +169,8 @@ private theorem forward_error_mul_le (b d w r n : ℕ) (hr : 2 ≤ r)
 
 include hstable hfree in
 /-- Uniform vanishing excess over the active-template baseline on square-size arrays.
+The baseline is `1 - m/N`, with `m` the active blocks disjoint from the pins;
+it is not automatically the pairing half-rate.
 For precision `1/n`, one explicit dimension threshold suffices for every alphabet,
 lane count, template and helper relation of forward width `w`. No reverse cap remains. -/
 theorem parity_card_pow_le_baseline [Fintype A]

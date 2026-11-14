@@ -1868,3 +1868,31 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.parity_card_le_delete_rows
 #print axioms LeanMachine.WholeRow.parity_card_le_forward
 #print axioms LeanMachine.WholeRow.parity_card_pow_le_baseline
+
+-- Omitted involution orbits, fixed-cell reserves and sharp pairing bounds.
+#print axioms LeanMachine.InvolutionSums.support_card
+#print axioms LeanMachine.InvolutionSums.fixed_not_mem_support
+#print axioms LeanMachine.InvolutionSums.fixedCells
+#print axioms LeanMachine.InvolutionSums.mem_fixedCells
+#print axioms LeanMachine.InvolutionSums.fixedCells_card
+#print axioms LeanMachine.InvolutionSums.omittedCells
+#print axioms LeanMachine.InvolutionSums.activeBlocks
+#print axioms LeanMachine.InvolutionSums.omitted_free
+#print axioms LeanMachine.InvolutionSums.omittedCells_card
+#print axioms LeanMachine.InvolutionSums.fixed_not_omitted
+#print axioms LeanMachine.InvolutionSums.active_card_partition
+#print axioms LeanMachine.InvolutionSums.activeShifts
+#print axioms LeanMachine.InvolutionSums.activeShifts_empty
+#print axioms LeanMachine.InvolutionSums.active_kernel_iff
+#print axioms LeanMachine.InvolutionSums.pinned_active_kernel_eq
+#print axioms LeanMachine.InvolutionSums.card_activeShifts
+#print axioms LeanMachine.WholeRow.mixed_incidence_budget_le
+#print axioms LeanMachine.WholeRow.recordBlocks_card_bound_reserved
+#print axioms LeanMachine.WholeRow.parity_card_sq_le_reserved
+#print axioms LeanMachine.WholeRow.pairing_fixed_incident
+#print axioms LeanMachine.WholeRow.pairing_record_card_eq
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_after_trim
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_incidence
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_degrees
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_forward
+#print axioms LeanMachine.WholeRow.pairing_card_pow_le_half

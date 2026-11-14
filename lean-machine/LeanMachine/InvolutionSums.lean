@@ -63,6 +63,37 @@ def weights [AddCommGroup A] (m : V → V) (v : V) : A ≃+ A := by
   classical
   exact if v ∈ representatives m then AddEquiv.refl A else AddEquiv.neg A
 
+/-- Every nontrivial orbit block has exactly two coordinates. -/
+theorem support_card (m : V → V) (hm : Function.Involutive m)
+    (p : representatives m) : ((blocks m hm).support p).card = 2 := by
+  classical
+  simp [blocks, Ne.symm (chosen_ne m p.property)]
+
+/-- Fixed coordinates are outside every pair block. -/
+theorem fixed_not_mem_support (m : V → V) (hm : Function.Involutive m)
+    {v : V} (hv : m v = v) (p : representatives m) : v ∉ (blocks m hm).support p := by
+  classical
+  intro h
+  rcases (by simpa only [blocks, mem_insert, mem_singleton] using h) with rfl | rfl
+  · exact chosen_ne m p.property hv
+  · exact chosen_ne m p.property (by simpa only [hm p.val] using hv.symm)
+
+/-- Fixed coordinates as a finite set. -/
+def fixedCells (m : V → V) : Finset V := by
+  classical
+  exact univ.filter (fun v => m v = v)
+
+@[simp] theorem mem_fixedCells (m : V → V) (v : V) :
+    v ∈ fixedCells m ↔ m v = v := by
+  classical
+  simp [fixedCells]
+
+/-- The finite fixed-coordinate count agrees with the subtype count. -/
+theorem fixedCells_card (m : V → V) :
+    (fixedCells m).card = Nat.card {v // m v = v} := by
+  classical
+  simp [fixedCells, Nat.card_eq_fintype_card, Fintype.card_subtype]
+
 /-- The weighted block value is the oriented difference. -/
 theorem encode_apply [AddCommGroup A] (m : V → V) (hm : Function.Involutive m)
     (x : V → A) (v : representatives m) :

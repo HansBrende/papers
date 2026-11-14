@@ -208,3 +208,6 @@ import LeanMachine.DisjointSumsPinned
 import LeanMachine.WholeRow.ParityTemplate
 import LeanMachine.DisjointSumsDeletion
 import LeanMachine.WholeRow.ParityTrimming
+import LeanMachine.InvolutionOmissions
+import LeanMachine.WholeRow.ParityReserved
+import LeanMachine.WholeRow.Pairing

@@ -993,110 +993,103 @@ whole-row deficit or native transposer exclusion from these results.
 
 ## 14. Two-sided symmetric decoders are at one half; the family for the large-component case (Fable, 13 November 2026)
 
-Status: 14.1–14.3 and 14.5 have **short written proofs, unreviewed**. 14.4 is a
-**proof sketch** resting on a cited theorem not re-read here. Front D1. Unlike
-sections 12 and 13, the statements 14.1–14.4 allow **one-way helpers**. Linear
-codes only. No machine consequence by itself.
+**Reviewed and strengthened by Astra, 14 November.** Full written proofs,
+field qualifications and exact certificates are in
+[symmetry and locality barriers](symmetry-and-locality.md). These results
+are not Lean-formalized. Front D1; no new native exclusion.
 
-Write a linear decoder as K = Σ_k (A_k ⊗ B_k)∘τ on F^d ⊗ F^d, that is
-K(X) = Σ_k A_k Xᵀ B_kᵀ, with any number of terms; the code is ker(I − K).
-A whole-row decoder X[c][r] = Σ_{i∈ρ(r)} Σ_x k(c,r;i,x)·X[i][x] has the terms
-E_{c,x} ⊗ E_{r,i}.
+**14.1 (swapped blocks).** Over every field, if a linear decoder exchanges
+$E_i\otimes E_j$ and $E_j\otimes E_i$, then
 
-**Proposition 14.1 (swapped blocks).** Let F^d = ⊕_j E_j and suppose
-K(E_i ⊗ E_j) ⊆ E_j ⊗ E_i for all i, j. Then
+$$\dim\operatorname{Fix}K\le d^2/2+\tfrac12\sum_i(\dim E_i)^2.$$
 
-  dim ker(I − K) ≤ d²/2 + ½·Σ_j (dim E_j)².
+A given code is contained in the fixed space, not necessarily equal to it.
+The original paired-block proof stands.
 
-This holds in particular when every A_k and every B_k preserves every E_j.
-With all E_j of dimension one it is the commuting case of
-[the twisted-swap note](twisted-swap.md), Theorem 4.
+**14.2 (cubic strengthening).** Suppose $H\le G$, $|G|=d$, $|H|=h$,
+$\operatorname{char}F\nmid h$, and the coefficients obey
 
-*Proof.* For i ≠ j the sum E_i⊗E_j ⊕ E_j⊗E_i is K-invariant and K exchanges
-its two summands, so a fixed vector a + b there has b = Ka: the kernel has at
-most dim E_i·dim E_j dimensions, half of the summand. The diagonal summands
-E_j⊗E_j contribute at most their full dimension. ∎
+$$k(c,r;i,x)=k(h_2c,h_1r;h_1i,h_2x).$$
 
-**Corollary 14.2 (group relations).** Let ρ(r) = rT on a group G of order d,
-H ≤ G, and assume F[H] is split semisimple with irreducible degrees n_σ.
-Suppose the coefficients are invariant under the swap-twisted action of H × H:
+If $n_\sigma$ are the irreducible degrees over a splitting extension, then
 
-  k(c, r; i, x) = k(h₂c, h₁r; h₁i, h₂x)  for h₁, h₂ ∈ H.
+$$\dim\operatorname{Fix}K
+ \le d^2/2+\frac{d^2}{2h^2}\sum_\sigma n_\sigma^3
+ \le d^2/2+\frac{d^2}{2\sqrt h}.$$
 
-(The helper row i moves with r, as it must, and the helper column x with c.)
-Then
+The cubic expression replaces the original fourth moment in good
+characteristic. The uniform $d^2/(2\sqrt h)$ error holds over **every
+field**, including characteristics dividing $h$: the commutant has
+dimension $d^2/h$, and an invariant composition flag gives the general
+bound $(d^2+d\sqrt{\dim\mathcal A})/2$ when
+$\tau K\in\mathcal A\otimes\mathcal A$.
+On an equal-type block in the semisimple case,
+$K=\operatorname{flip}_{V_\sigma}\otimes D_\sigma$; its exact fixed
+dimension is $n_\sigma\dim\ker(I-D_\sigma)+
+\binom{n_\sigma}{2}\dim\ker(I-D_\sigma^2)$. This strengthens the diagonal
+block estimate and requires no characteristic-two eigenspace split.
+For $H=G$ the rules are the constant templates
+$X[c,r]=\sum_{t\in T,y\in G}\phi(t,y)X[rt,cy]$, with unrestricted helper
+columns. Growing twisted symmetry suffices over every field, without
+quasirandomness. The cubic expression is sharp in the split semisimple
+case among unrestricted twisted intertwiners, not asserted attainable
+with a specified sparse helper set.
 
-  dim ker(I − K) ≤ d²/2 + (d²/2)·Σ_σ n_σ⁴/|H|².
+**14.3 (local rules, repaired).** The earlier assertion of equality with a
+constant template outside $O(d)$ output cells was false: the radius-one
+rule $K(X)_{c,r}=X_{r,r}$ is a counterexample. Under the precise anonymous,
+coloured, edge-labelled **four-port** locality definition in §3 of the
+linked note, the stronger useful replacement is
 
-For H = G these are the **constant-coefficient** decoders
-X[c][r] = Σ_{t∈T} Σ_{y∈G} φ(t, y)·X[rt][cy], with w·d free coefficients and
-unrestricted helper columns, and the excess is at most ½·Σ_π n_π⁴. For H
-abelian the excess is at most d²/(2|H|).
+$$K=K_0+L+E,\qquad \operatorname{rank}L\le d,\qquad
+ \operatorname{rank}E\le d\sum_{j=0}^{4R+3}w^j,$$
 
-*Proof.* The invariance says K∘(L(h₁)⊗L(h₂)) = (L(h₂)⊗L(h₁))∘K for the left
-translations. Take E_σ the σ-isotypic component of F[G] under left
-translation by H, of dimension (d/|H|)·n_σ². Then K maps E_σ⊗E_σ′ into
-E_σ′⊗E_σ. ∎
+where $K_0$ is constant-template. No girth or coefficient-size hypothesis
+is needed for this normal form. The all-field symmetry bound gives rate
+$1/2+1/(2\sqrt d)+O_{w,R}(1/d)$ on every growing finite-group family,
+not only SL₂.
 
-**Consequence 14.3 (local rules).** Let (G_p, T) be a family whose row helper
-graphs have girth tending to infinity (so the T-labelled neighbourhoods of
-any two cells with far ports are isomorphic). A decoder whose coefficients at
-a cell are a function of the labelled radius-R neighbourhood of its ports
-agrees with a constant-coefficient decoder on all but O(d·w^{2R}) cells.
-Changing a decoder on z cells changes the dimension of the code by at most z.
-Hence such decoders have dimension at most d²/2 + ½Σ_π n_π⁴ + O(d·w^{2R}).
-On quasirandom families this is d²/2 + o(d²): **a gain there needs
-coefficients that depend on the sector c⁻¹r through non-local data.**
+**14.4 (amenable sources, all alphabets).** A fixed marked finitely
+generated amenable source group gives uniformly hyperfinite quotient
+Cayley graphs. The row-separator bound therefore gives $1/2+o(1)$ for
+**every** whole-row code, nonlinear codes included and uniformly over
+finite alphabets. The source must preserve the chosen generators.
+The proof uses Elek–Szabó Proposition 4.1 and marked compactness;
+Schramm's theorem alone does not supply the amenability implication.
+Fixed generator budget and bounded derived length satisfy the hypothesis.
+A positive limiting gain requires failure of hyperfiniteness, not
+necessarily expansion.
 
-**Proposition 14.5 (the method needs the symmetry).** Let M be the mutual
-graph of a w-regular incidence matrix with second singular value s₂ of A/w,
-and let 𝒦 be all decoders supported on M with free coefficients. If
-F^{d²} = A ⊕ B with P_A K P_A = 0 for every K ∈ 𝒦 (P_A the projection along
-B), then dim A ≤ d²·s₂/(1 + s₂). So no change of basis certifies more than
-rate 1/(1 + s₂) for the free class; this extends the deletion bound of
-[the controls note](two-token-and-oriented-controls.md), section 4, from
-coordinate subspaces to all subspaces.
+**14.5 (exact universal zero-corner limit).** For any allowed support
+relation $R$, over every field, the maximum rank of an idempotent $P$
+with $PKP=0$ for **every** freely supported $K$ equals the independence
+number of $R$ (loops excluded). Indeed, for the nonzero-row set $U$ and
+nonzero-column set $V$ of $P$, $U\cap V$ is independent and
+$P=P I_{U\cap V}P$. Coordinate independent-set projections attain the bound.
+For the regular mutual graph this gives
+$\operatorname{rank}P\le d^2s_2/(1+s_2)$.
+It concerns a universal free-coefficient certificate, not cancellations
+in one decoder. The earlier bipartizing-deletion bound is a different
+optimization.
 
-*Proof.* For a single edge, P_A e_y e_xᵀ P_A = 0 means e_y ∈ B or every vector
-of A vanishes at x. Let Q be the cells y with e_y ∉ B and P the cells where
-A does not vanish identically. Then dim A ≤ min(|P|, |Q|) and M has no edge
-between P and Q. The non-trivial eigenvalues of M/w² lie in [−s₂, s₂], so
-Tanner's bound gives |N(P)| ≥ |P|/(s₂² + (1 − s₂²)|P|/d²); with N(P) ∩ Q = ∅
-and |P| = |Q| = αd² this forces α ≤ s₂/(1 + s₂). ∎
+**The family and the surviving target.** Let
+$G_p=\mathrm{SL}_2(\mathbb F_p)$, $p\ge5$ prime, and
+$T=\{I,A,B\}$ for the upper and lower unipotents with off-diagonal entry 2.
+The incidence family expands and has girth $\Omega(\log p)$.
+Its ordinary degrees and all requested exact $E_1,E_2$ counts are in §5
+of the linked note. The group has centre $\{\pm I\}$; it is not simple.
 
-**Lemma 14.4 (amenable sources; sketch).** By the row-separator bound, every
-whole-row code on a uniformly hyperfinite family of row helper graphs has
-rate ½ + o(1); so a gain needs a non-hyperfinite family, for any ρ. If the
-marked groups (⟨T_i⟩, T_i) are all quotients of one finitely generated
-amenable group, their Cayley graphs form a hyperfinite family: every
-Benjamini–Schramm limit point is the Cayley graph of a quotient of that group,
-which is amenable, and a convergent sequence is hyperfinite exactly when its
-limit is (Schramm, *Hyperfinite graph limits*, 2008). This covers solvable
-groups of bounded derived length with w generators, whatever their commuting
-probability (for instance the affine groups of F_p and the groups p:3). In
-the group model the surviving families are those with a non-amenable local
-limit. Expansion is sufficient for that, not necessary.
+The cubic character formula needs good characteristic; the uniform
+commutant bound does not. Actual constant or growing-subgroup-twisted
+rules are therefore at half plus $o(1)$ over every field. For Borel
+symmetry on SL₂, the older $C_p$ or $C_{p-1}$ argument already sufficed. A profile of
+$\mathcal B(c^{-1}r)\mathcal B$ is not that symmetry, but is excluded
+separately: it differs from a constant template on only $d^2/(p+1)$ cells.
 
-**The family.** G_p = SL₂(F_p), T = {1, A, B} with A = (1 2; 0 1) and
-B = (1 0; 2 1), w = 3.
-
-- A and B generate a free group in SL₂(ℤ), and a reduced closed walk of the
-  row helper graph is a word t₁⁻¹t₂t₃⁻¹t₄⋯ with consecutive letters distinct,
-  which is reduced in A, B. So the girth of the row helper graph is at least
-  of order log p and its local limit is the 3-regular tree. The family
-  expands (Selberg's bound; Bourgain–Gamburd).
-- k(G_p) = p + 4, so the commuting probability tends to zero; G_p is perfect
-  for p ≥ 5; the least non-trivial degree is (p − 1)/2.
-- What is already excluded on it: components meeting boundedly many sectors
-  ([bounded-sector coupling](bounded-sector-coupling.md)); constant
-  coefficients and local rules (14.2, 14.3: Σ_π n_π⁴ is of order p⁵ against
-  d² of order p⁶); coefficients invariant under H × H for the unipotent
-  subgroup or a torus (excess at most d²/(2p) and d²/(2(p ∓ 1))).
-- **Success criterion.** A linear whole-row code for (G_p, T), defined
-  uniformly in p, with dimension at least (½ + c)d² for a fixed c > 0 and all
-  large p, counted on the full array (the whole regular representation, one
-  shared decoder). At a single p a dimension is evidence only if it exceeds
-  both (d² + d|E_m|)/2, with |E_m| counted exactly for the largest m where
-  |E_m| < d/4, and d²/2 + ½Σ_π n_π⁴. For p ≤ 23 these allowances are within a
-  few per cent of each other and of pairing, so finite computation can
-  calibrate a proposed decoder but cannot decide; the decision is a proof.
+A split/nonsplit discriminant profile has two positive-density pieces
+and survives these particular exclusions. Its bounded complex
+**mutual-only** version is already excluded by Paper 4, Theorem A and
+the gauge extension. A remaining bounded target is the finite-field
+version, with one shared decoder and dimension counted on the full array.
+No finite example above half, or above the applicable architecture
+baselines, has been found in this audit. No optimizer was run.

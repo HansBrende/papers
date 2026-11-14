@@ -225,14 +225,29 @@ outside these classes; per-representation or isolated-gadget excess alone
 is insufficient. General one-way helpers and unrestricted mutual coupling
 remain open. Directed diagonal capacity on F_p^k is exactly d/p on each
 good sector; the p^r exceptional term is retained when p varies.
-C36 (Fable, written, unreviewed): decoders with a two-sided symmetry are at one half,
-one-way helpers included (X20): on a group relation, constant coefficients give excess at
-most ½Σn_π⁴, and on a family with tree-like neighbourhoods every locally defined decoder is
-of that kind up to O(d) cells. Families that are quotients of one amenable group are at one
-half for all whole-row codes (sketch), so a gain needs a non-amenable local limit. The family
-chosen for the large-component case is SL₂(F_p) with T = {1, A, B}, A and B the Sanov
-generators; a gain there needs coefficients that depend on the sector through non-local data.
-The success criterion is in section 14 of the row-spread note.
+C36–C37 (reviewed written proofs): the twisted-symmetry bound improves to
+a cubic irreducible-degree sum in good characteristic; a composition
+filtration removes the characteristic restriction from the uniform
+bound. Every growing actual twisted-symmetry subgroup forces half rate
+over every field. More generally a common factor algebra of dimension
+$o(d^2)$ suffices. Precisely defined anonymous four-port local rules are
+constant templates up to rank $O(d)$, without a girth assumption; hence
+they are at half rate on every growing finite-group family, all fields.
+The old agreement-on-most-rows claim is false. Universal zero-corner
+projections achieve exactly the support graph's independence number,
+over every field. Fixed marked amenable sources give half rate for all
+whole-row codes and all finite alphabets, not only linear codes.
+See [the audit and exact SL₂ calibration](notes/symmetry-and-locality.md).
+On SL₂(Fp), the old abelian-subgroup argument already excluded actual
+Borel symmetry over every field; the new uniform theorem applies to
+every growing subgroup, including in bad characteristic. A Bruhat profile of
+c⁻¹r is not that symmetry, but differs from a constant template on only
+d²/(p+1) output cells and is excluded by rank perturbation. Balanced
+split/nonsplit profiles escape those particular arguments; their bounded
+complex mutual-only versions are already excluded by Paper 4, including
+its gauge extension. The bounded remaining target is a finite-field
+profile with one shared decoder on the full array. No gain is claimed;
+there was no optimization search. Nonlinear rules remain open.
 The general separator target is parked without an extraction mechanism, not refuted:
 that such an extraction would prove exclusion is not an impossibility-of-method argument.
 The input-attachment control includes some expanders, but does not prove that arbitrary
@@ -280,7 +295,7 @@ direct front.
 | **X17** | Half rate for every oriented helper relation (no mutual pairs) | False: the known seven-vertex Paley tournament carries the Hamming code of binary dimension four; the nonlinear upper bound is q⁴. [Lean and source](notes/two-token-and-oriented-controls.md#2-oriented-helpers-can-exceed-half-the-exact-paley-control). | Any directed bound must use whole-row/grid structure. This small known gadget supplies no full-grid amplification. |
 | **X18** | Deleting o(d²) cells to make the full mutual two-token graph induced-bipartite on a uniform singular-gap incidence family | [Spectral bound](notes/two-token-and-oriented-controls.md#4-a-quantitative-obstruction-to-deleting-coordinates): at least d²(1−s₂)/(2−s₂) deletions. A high-rate hypothesis also prices fixed-coordinate reveals. | A decoder may ignore available edges; other advice or coding arguments remain open. This does not refute half-rate capacity, and does not place all native relations in the singular-gap class. |
 | **X19** | Positive limiting excess when each mutual-recovery component meets boundedly many sector labels, on finite-group relations of fixed window | [Reviewed bounded-coupling theorem](notes/bounded-sector-coupling.md): half+O_{w,m}(1/log d) for every group and alphabet, nonlinear recovery and correlations allowed. Components may split sectors; paid shared advice is charged. An elementary voltage reduction uses the prior diagonal theorem, with no Neumann dependency. The sharper finite bound uses w^{4m−2}R₂ and permits logarithmic m under a separate class-count hypothesis. | A fixed gain ε forces at least (2ε−o(1))d² cells in components meeting >m sectors for every fixed m. Unrestricted one-way helpers and non-group relations remain open. No time lower bound is asserted. |
-| **X20** | A gain from decoders with a two-sided symmetry on a group relation: constant coefficients, coefficients invariant under H × H for a subgroup with Σn_σ⁴ small against the square of its order, or coefficients given by a local rule on a family with tree-like neighbourhoods; one-way helpers allowed | [Swapped blocks](notes/row-spread-of-cones.md#14-two-sided-symmetric-decoders-are-at-one-half-the-family-for-the-large-component-case-fable-13-november-2026): the decoder exchanges the isotypic blocks (σ₁,σ₂) and (σ₂,σ₁), so the excess is at most the diagonal blocks, (d²/2)Σn_σ⁴ divided by the square of the order of H. Linear codes; written, unreviewed. The same method cannot treat free coefficients (14.5). | Coefficients depending on the sector through non-local data; nonlinear codes; a group with an irreducible degree of order √d outside the amenable and near-abelian classes |
+| **X20** | Growing twisted symmetry; precise fixed-radius anonymous four-port local rules on growing finite-group families; sparse Bruhat profiles on SL₂ | [Reviewed all-field symmetry/locality bounds](notes/symmetry-and-locality.md): composition filtrations give half rate for any common factor algebra of dimension $o(d²)$, a cubic character expression sharpens the semisimple case, and local/sparse profiles are controlled by rank perturbation. Linear; no coefficient or characteristic restriction for the uniform bounds. Universal free-coefficient zero corners give exactly independent sets. | Balanced nonlocal sector profiles that lack this symmetry; finite-field mutual rules outside the common-algebra class; complex rules outside the existing tightness/gauge hypotheses; nonlinear decoders. |
 
 ## Maintenance
 

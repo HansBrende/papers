@@ -54,6 +54,13 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   only one explicit window and retains the sharper `169ε/64` threshold. The native
   finite theorem allows arbitrary traces and initial cuts, with `d≥4`, `b≥1`, and the
   stated time/depth bounds. No capacity conjecture or unconditional exclusion is proved.
+- [`TwoSidedCodeTransfer.lean`](TwoSidedCodeTransfer.lean) defines arbitrary nonlinear
+  two-sided codes and proves their finite upper bounds transfer to one-sided codes at
+  half the deficit, for every nonempty finite alphabet. It verifies the canonical
+  common-deficit equivalence and reuses the native crux/exclusion endpoints, including
+  the direct `169ε/32` threshold. The capacity hypothesis remains open. The
+  [two-sided note](notes/two-sided-whole-row-codes.md) distinguishes these formal results
+  from its written symmetry normalization, finite examples and closure-method bounds.
 - The proof chain reuses actual native definitions:
   [interval amortization](WindowAmortization.lean),
   [native visits and labels](WindowLabels.lean),

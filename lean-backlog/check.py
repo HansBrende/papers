@@ -19,6 +19,7 @@ MODULES = [
     "StatementsRowSpread", "ConeCodeTransfer", "WindowAmortization", "WindowLabels",
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
     "WindowWorkCounting", "WindowBudgets", "WindowRowCover", "WindowSpread", "RowSpreadCrux",
+    "TwoSidedCodeTransfer",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 

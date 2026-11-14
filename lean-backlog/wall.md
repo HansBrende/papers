@@ -53,13 +53,14 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   tape passes in linear time (front D7), and an exclusion could still hold through structure
   that whole-row codes ignore (the native crux, D9). A No closes the common-deficit route,
   not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
-- **Two-sided form** (D10; *written, independently reviewed, not Lean*). Requiring row r to be a
+- **Two-sided form** (D10; *finite upper-bound transfer and native consequences Lean*). Requiring row r to be a
   function of columns ρ(r) as well gives an **equivalent common-deficit question**, up to factor two:
   some translated intersection C∩(z+Cᵀ) is two-sided and has size ≥|C|²/q^(d²). A two-sided deficit
   δ₂ therefore gives the one-sided deficit and native Crux δ₂/2. Two-sided half rate would suffice,
   giving one-sided rate at most 3/4. Paid degree normalization also makes symmetric, reflexive
   helper relations sufficient for a common bound. This compares actual codes, not Shannon optima
-  ([proof and exact calibrations](notes/two-sided-whole-row-codes.md)).
+  ([Lean adapter](TwoSidedCodeTransfer.lean); [written symmetry proof and exact
+  calibrations](notes/two-sided-whole-row-codes.md)).
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 
@@ -153,7 +154,7 @@ No known code family has a fixed-window gain above one half beyond O(d).
 | **D0** | *Standing*: brainstorm a new front, re-evaluate the wall, or tie an indirect front to it | Permanent | — |
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): the statement of Section 1 | Open for w ≥ 3. Main front; see "what is left" | [StatementsRowSpread.lean](StatementsRowSpread.lean); linear form `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
 | **D9** | *The native crux*: index codes for the cone systems of oblivious linear-time schedules need (ρ(D) − o(1))L bits, with ρ(D_ε) > ε for one ε | Open; follows from D1 by B1. Restricted native bounds only ([audit](notes/native-cone-property-audit.md)) | `Crux`, `crux_excludes` in the fourteenth paper's library |
-| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)) | *Written, reviewed, not Lean*. Reuses B1 at δ₂/2; direct invoice δ₂>(169/32)ε |
+| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)) | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Symmetry normalization and examples: *written, reviewed* |
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
@@ -206,7 +207,7 @@ No known code family has a fixed-window gain above one half beyond O(d).
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
 | **X30** | A constant plane deficit using only row-closure equalities from pencils at o(n) centres | Make all radial cells at k centres constant and the rest independent: these equalities admit entropy ≥N−kn²(n+1). Separately every row closure adds <nd cells. This does not prove a necessary growing proof depth or exclude arbitrary Shannon certificates ([note §5a](notes/triangle-free-hosts.md)) | Additional recovery/budget identities or information from Ω(n) centres; the general plane conjecture stays open |
-| **X31** | A window-independent deficit from further translated intersections, or from localising a two-sided cell to its mutual block by bundle counting | Transported copies percolate only when their number is of order w, giving 1 − O(1/w) again; chained half-cliques force a localisation constant at least the clique size, and at w+1 it is the order bound ([two-sided note §7](notes/two-sided-whole-row-codes.md)) | A localisation proof restricted to cells far from the diagonal; a use of expansion rather than of closure |
+| **X31** | Transported whole-row closure counting as a common-deficit proof; localisation without a general capacity consumer | If the host has no empty r×r rectangle, m transported grids need a seed ≥d²−(m+1)d(r−1)+(r−1)². Random-matching symmetric/reflexive hosts make every such invoice arbitrarily close to full rate, even with arbitrary copies/permutations. This is a method bound, not a Shannon/capacity lower bound. The proposed chained-clique obstruction to paid localisation was invalid; random-decoder selection does turn small conditional error into an exact subcode, but unrestricted mutual capacity remains open ([§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Additional Shannon identities, or a proved native property lost when bit cones are enlarged to whole rows; localisation also needs a compatible general consumer |
 
 ## Maintenance
 
@@ -218,9 +219,11 @@ No known code family has a fixed-window gain above one half beyond O(d).
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
 - **Current focus** (replace, do not append). **D0, with one bounded Lean unit.** B2–B4 are
   banked, G4 is parked, and D10 has delivered a normal form: symmetric, reflexive, two-sided codes
-  suffice, at a factor two. Its localisation gate was not passed (X31). Astra: the single Lean
-  adapter that states the two-sided form and reuses the B1 reduction at half the deficit; nothing
-  further. Fable: a written re-evaluation of what is left in the normal form (expanding symmetric
-  relations, far cells, mutual graph of large odd girth) and the choice of the next premise.
-  No experiment until a premise is named with its consumer.
+  suffice, at a factor two. The bounded Lean adapter is complete. X31 now has a rigorous
+  closure-method obstruction; its locality gate still lacks a general mutual-capacity consumer.
+  Fable and Astra are choosing the next premise. Astra proposes one native D9 gate: use the
+  actual bit cones, before whole-row enlargement, and seek a generating set S for two transported
+  copies with 2B+|S|<N, where B is the common index-message length. The two-message fibre count
+  would directly contradict correctness. This is a proposal, not a proved native property;
+  first audit the existing native controls, with no new solver or broader search until agreed.
 - Last re-evaluation (D0): 14 November 2026.

@@ -1,9 +1,11 @@
 # Two-sided whole-row codes and the one-sided deficit
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
-**Status: independently reviewed written proofs, not Lean-verified.**
-The transfer reuses the existing Lean theorem after a new, still unformalized
-finite adapter. No literature novelty claim. Front D10 of the [roadmap](../wall.md).
+**Status:** the finite upper-bound adapter, common-deficit equivalence and native
+consequences are Lean-verified in [TwoSidedCodeTransfer](../TwoSidedCodeTransfer.lean).
+The symmetry normalization, exact examples and Section 7 are reviewed written
+proofs; their formalization is not claimed. No literature novelty claim.
+Front D10 of the [roadmap](../wall.md).
 
 Fix a helper map ρ on [d] and a finite alphabet Q of size q≥2. A set C of
 d×d arrays over Q is **two-sided** if column r is determined by rows ρ(r), and row r is determined
@@ -103,11 +105,34 @@ The geometric guards remain d≥4, b≥1, C≥1, ε>0, the stated time/depth
 bounds and a complete output prefix. The overlap term −be² may sharpen
 a finite bill but is unnecessary for this implication.
 
-**Formalization boundary.** [ConeCodeTransfer](../ConeCodeTransfer.lean)
-and [RowSpreadCrux](../RowSpreadCrux.lean) are Lean-verified. The new
-two-sided predicate and Section 1's adapter are not yet formalized.
-The existing real fibre-counting lemma can be reused on C×C and
-(x,y)↦x−yᵀ; no new native-machine development is needed.
+**Formalization boundary.** [TwoSidedCodeTransfer](../TwoSidedCodeTransfer.lean)
+proves the coordinate definition equivalent to recovery on C and Cᵀ. Its
+`wholeRow_card_sq_le_of_twoSided` proves the relation-specific finite form:
+if every two-sided code D has |D|≤A, then |C|²≤q^(d²)A for every one-sided C.
+It allows q≥1, empty C, d=0 and arbitrary real A. The exponent adapter needs
+no sign assumption. This formalizes the upper-bound consequence of Section 1;
+the separate existence of a large translated intersection is proved in writing above.
+
+`commonDeficit_iff_twoSided` verifies the equivalence along the canonical growing
+alphabets. The uniform all-alphabet implication is also proved. The native endpoints
+`uniformTwoSidedWholeRowRateCanonicalBits_crux`,
+`uniformTwoSidedWholeRowRate_cruxOn`,
+`uniformTwoSidedWholeRowRateCanonicalBits_excludes` and
+`twoSidedWholeRow_window_bound_excludes` reuse
+[RowSpreadCrux](../RowSpreadCrux.lean) at half the deficit. The alternative direct
+pair-message invoice above and the paid symmetry proof below remain written proofs.
+All checked declarations depend only on Lean's standard axioms. No capacity bound
+or unconditional machine exclusion is asserted.
+
+Check with the repository's pinned dependencies:
+
+```sh
+cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
+lake env python3 ../../lean-backlog/check.py TwoSidedCodeTransfer
+```
+
+The original row-spread modules must already have been checked; running the same
+command without the module argument checks that full chain.
 
 ### Symmetric helper relations suffice after a small payment
 
@@ -270,56 +295,152 @@ The “two-sided rules” in Paper 17 concern linear offsets on a line and
 are different. The elementary translated-intersection counting identity
 itself is not claimed as a new general combinatorial theorem.
 
-## 7. The intersection lemma in general, odd walks, and the localisation gate (Fable, 14 November; unreviewed)
+## 7. Transported recovery, its closure limit, and a localisation consumer
 
-**7.1 Transported intersections.** Let C be any code on N coordinates over a cyclic alphabet of
-size q, with recovery rules "the cells T are determined by the cells H". Let Φ₁, …, Φ_k be
-arbitrary bijections of the coordinate set. Then for some z₁, …, z_k the code
-D = C ∩ ⋂ᵢ (zᵢ + Φᵢ(C)) has |D| ≥ |C|^{k+1}/q^{kN}, and it obeys every rule of C together with
-every transported rule "Φᵢ(T) is determined by Φᵢ(H)". (Count tuples in C^{k+1} by their
-differences.) So, with gen the least size of a generating set of the combined closure system,
+Written by Fable and Astra, reviewed 14 November; not Lean-verified.
 
-log_q |C| ≤ (kN + gen)/(k + 1).
+### 7.1 Transported intersections
 
-Transposition is one Φ. Independent relabellings of rows and of columns are others, and they are
-also symmetries of the transposition problem, so native fibres have them too.
+Let C be any code on N coordinates over an alphabet of size q≥2. Identify
+the alphabet with a cyclic group. For arbitrary coordinate permutations
+Φ₁,…,Φ_{m−1}, where m≥1, some translated intersection
 
-*Calibrations.* (i) Window one, ρ(c) = {c}: take Φ = transposition followed by a relabelling for
-which "row r is determined by row r+1". One row generates everything, gen = d, and the bound is
-d(d+1)/2, the exact value. (ii) Disjoint triangles: a second triangle system can be chosen so that
-a third of the cells generate the rest; the bound is 2N/3, exact. (iii) Cyclic intervals
-ρ(c) = [c, c+w): a shifted transposed copy cascades from 2w−1 rows; the bound is d²/2 + O(wd).
+D = C ∩ ⋂ᵢ(zᵢ+Φᵢ(C))
 
-*Limit.* A transported column rule outputs full lines of its own grid, which are thin in the rows
-of that grid and freely placeable in the others. If m rows contain at most λm columns (λ < 1 on
-expanding hosts, about 1/(w−1) for tree-like clusters), the number of new complete rows per round
-is multiplied by kλ with k+1 grids. Percolation needs k + 1 of order w, and the bound is then
-of order 1 − 1/w again. **So transported intersections give normal forms and exact values on
-Følner-type hosts, and no window-independent deficit on expanders.**
+has |D|≥|C|^m/q^((m−1)N). Count tuples of m codewords by their m−1
+differences from the first. The intersection obeys all original and transported
+recovery rules; coordinatewise translations preserve functional determination.
+Consequently, if s coordinates generate the combined recovery closure, then
 
-**7.2 Odd walks in the mutual graph.** On a symmetric relation G the mutual graph on cells is
-(p,c) ~ (q,m) iff q ∈ N(c) and m ∈ N(p). A closed walk of odd length ℓ through (p,c) exists iff
-G has a walk of length ℓ from p to c. So a cell with dist_G(p,c) > L lies on no odd cycle of
-length ≤ L, for every symmetric host; if G is bipartite, cells with both indices on one side lie
-on no odd cycle at all. This is the sector-walk statement without a group.
+log_q|C| ≤ ((m−1)N+s)/m.
 
-**7.3 The localisation gate is not passed.** The target was Σ_v H(X_v | block of v, Z) ≤ K·Δ for
-a record Z of small entropy and K independent of the window.
+This concerns an intersection selected from C, not additional invariances of C
+or of an unchanged native fibre.
 
-- It needs the record: the cyclic code X = S + tA is local only given t.
-- *Chained half-cliques.* Let Q₀, …, Q_{L−1} be mutual k-cliques of cells with every row of Q_{i+1}
-  adjacent to every column of Q_i, and impose one check on each Q_i ∪ Q_{i+1} (indices mod L,
-  L ≥ 3). Each cell is recovered row-wise from one check and column-wise from the other; the code
-  has rate 1 − 1/k, and a cell is determined by its block only up to the sum over its clique,
-  which is carried along the chain. So K ≥ k whenever such chains cover the cells, and the
-  record costs N/(kL).
-- With K ≥ w + 1 the inequality follows from the order bound. So a useful statement has to be
-  restricted to cells far from the diagonal, where mutual cliques are pairs, and I have no proof
-  there: Shearer over the bundles is vacuous, and 7.1 does not help.
+**Cyclic intervals.** If ρ(r)={r,…,r+w−1} modulo d, one transported copy suffices
+with s≤d·min(d,2w−1), for 1≤w≤d. Use Φ(i,j)=(j+2w−1,i). The transported
+rule recovers row r+2w−1 from columns r,…,r+w−1. Seed the first 2w−1 rows
+(or all rows if fewer exist). If rows 0,…,L are known, the original rules
+recover columns 0,…,L−w+1; the transported rule at r=L−2w+2 then gives
+row L+1. Continue without wrapping until all rows are known. Thus
 
-**7.4 What would consume it.** Given localisation at far cells, a code of rate 1 − ε is within
-K·ε·d² + H(Z) of a mutual-only storage code on the far part of the mutual graph, which by 7.2 has
-odd girth tending to infinity. Consumers we have: bounded-weight linear codes over ℂ (item A,
-Lean), hyperfinite G, groups with bounded sector coupling. For general mutual-only codes on these
-graphs the half bound is the old open problem (I2, D8), and its abstract analogue is false
-(papers 13, 15). So localisation would remove one-way help but not the remaining hypotheses.
+log_q|C| ≤ (d²+d·min(d,2w−1))/2.
+
+For w=1 this gives the exact pairing value. At w=2 the sharper exact one-sided
+and two-sided results cited earlier retain their separate content.
+
+**Triangle correction.** Two partitions into disjoint triples form a cubic
+bipartite incidence multigraph, with cells as edges. If it has c components,
+the combined triangle-recovery closure needs exactly N/3+c seeds. A spanning
+forest leaves that many non-tree edges; knowing them allows leaf elimination.
+For the lower bound, orient the bipartite incidence matrix: the common sum-zero
+code has dimension N/3+c over every field. In particular a connected arrangement
+gives 2N/3+1/2 through the intersection invoice, not exactly 2N/3. The original
+triangle code itself still has rate 2/3. The earlier exact calibration omitted
+this additive term.
+
+### 7.2 A uniform limit of transported closure counting
+
+**Proposition.** Suppose a d×d helper incidence graph has no empty r×r rectangle,
+where 1≤r≤d. Put m arbitrarily permuted copies of its whole-column recovery
+rules on the same N=d² cells. Every generating seed S for their combined closure
+satisfies
+
+|S| ≥ N−(m+1)d(r−1)+(r−1)².
+
+**Proof.** If a grid already has d−r+1 complete rows in S, then
+|S|≥d(d−r+1), which is stronger. Otherwise add recovered cells one at a time,
+and stop the first time any grid has d−r+1 complete rows. Before that instant
+every grid has at least r incomplete rows. In each grid at most r−1 columns
+can have all their helper rows complete: r such columns and r incomplete rows
+would give an empty rectangle. Readiness is monotone, so all cells recovered
+up to and including the stopping step belong to at most m(r−1) ready columns,
+one group of at most r−1 in each grid. Their union has at most md(r−1) cells.
+For the sharper count, restrict to the d−r+1 complete rows in the first grid
+that reaches the threshold. Its own used columns cover at most (d−r+1)(r−1)
+cells there; the other grids cover at most (m−1)d(r−1). Subtract these from
+d(d−r+1) to obtain the displayed bound. ∎
+
+Thus every m-copy intersection bound obtained **only from these closure rules**
+is at least
+
+N−(1+1/m)d(r−1)+(r−1)²/m,
+
+and at least (1−1/m)N since seed size is nonnegative. For m copies of a two-sided
+code there are 2m grids, giving instead N−(2+1/m)d(r−1)+(r−1)²/m,
+hence at least N−3d(r−1). These are lower bounds on what this proof method can certify,
+not lower bounds on actual capacity or on the full Shannon optimum.
+
+**Fixed-window witnesses.** For each fixed ε∈(0,1), let r=⌈εd⌉. A union of t
+independent uniform perfect matchings misses a specified r×r rectangle with
+probability at most exp(−tr²/d). There are at most 4^d rectangles, so for fixed
+t with tε²>2 ln 2 some such graph has no empty r×r rectangle for every sufficiently
+large d. Add its transpose and diagonal: the relation is symmetric and reflexive,
+its window is at most 2t+1, and the rectangle property persists. Since ε can be
+arbitrarily small, transported closure counting cannot establish a common
+positive deficit even on these normalized hosts, allowing arbitrarily many copies
+and arbitrary coordinate permutations. This replaces the earlier unproved
+percolation heuristic. It says nothing against submodularity across closure
+intersections, extra code identities, or other tools beyond closure generation.
+
+### 7.3 Odd mutual walks and the proposed clique obstruction
+
+On a symmetric relation G, the **full, loop-allowing** mutual relation on cells
+is (p,c)∼(q,m) iff q∈N(c) and m∈N(p). A closed walk of odd length ℓ through
+(p,c) exists exactly when G has a length-ℓ walk from p to c. Each step moves two
+tokens along G and exchanges their roles. After odd ℓ, closing the cell walk
+requires one G-walk from p to c and another from c to p; reverse the first to
+obtain the second.
+
+The equivalence need not survive deleting incident cells or loops. The direction
+needed for an upper-bound argument does survive: an odd closed walk in any
+induced far-cell relation implies the corresponding G-walk. Thus cells at distance
+more than L lie on no odd cycle of length at most L. If G is bipartite, cells with
+both indices on the same side lie on no odd closed walk.
+
+The proposed chained-clique example does **not**, as stated, rule out a paid
+localisation estimate. Equating the sums of L disjoint k-cliques gives L−1
+independent checks and rate 1−1/k+1/(kL); adjacent sum-zero checks instead have
+rank depending on parity and characteristic. Moreover, revealing the one common
+clique sum makes each cell recoverable from its other clique coordinates. Such
+examples may obstruct an unconditioned estimate, but do not force a large constant
+when a suitably charged record Z is permitted. No general localisation obstruction
+is proved by this example.
+
+### 7.4 Conditional entropy gives an exact subcode
+
+The proposed localisation premise is
+
+Σ_v H(X_v | X_{H_v},Z) ≤ K·Δ,
+
+where H_v is the desired helper set (for example the mutual block), Δ=N−H(X),
+and all entropies use base q. Here is its precise consumer.
+
+**Subcode selection lemma.** For any finite random array X and helper sets H_v,
+there is an exact storage code D contained in supp(X) such that
+
+log_q|D| ≥ H(X)−Σ_v H(X_v | X_{H_v}).
+
+For each v and each helper pattern h, independently choose a decoder value
+with distribution P(X_v | X_{H_v}=h). A source word x satisfies all chosen decoders
+with probability a_x=∏_v P(X_v=x_v | X_{H_v}=x_{H_v}). Therefore the expected
+number of accepted words is Σ_x a_x. With p_x=P(X=x), the log-sum inequality gives
+
+log_q Σ_x a_x ≥ Σ_x p_x log_q(a_x/p_x)
+             = H(X)−Σ_v H(X_v | X_{H_v}).
+
+Some decoder choice has at least this many accepted words, which form D. ∎
+
+With a finite record Z, choose a fibre maximizing the difference of these
+conditional quantities. The same proof gives a subcode of one fibre with
+
+log_q|D| ≥ H(X)−H(Z)−Σ_v H(X_v | X_{H_v},Z).
+
+This is an existential large subcode, not an advice scheme recovering every
+original source word. If near coordinates are deleted, freeze them first and
+include their entropy in the payment. The lemma preserves the specified helper
+relation but need not preserve linearity, coefficient bounds or decoder symmetries.
+Thus the general mutual-only capacity question remains open: the bounded-weight
+complex theorem is not an automatic consumer, and hyperfiniteness or bounded
+sector components must be independently established when those theorems are used.
+Localisation alone does not settle the native crux.

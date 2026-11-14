@@ -52,7 +52,8 @@ not an approximate row-order statistic. For a full whole-row host, Paper 17's
 Proposition “The order bound for whole rows” proves α=d²−σ(ρ), so there it is
 exactly the published row-order bound. The earlier
 [empty-rectangle bound](two-sided-whole-row-codes.md#72-a-uniform-limit-of-transported-closure-counting)
-retains its sharper quantitative dependence on m for those hosts.
+retains its sharper quantitative dependence on m for those hosts; that
+finite bound and its invoice are also [Lean-verified](../RectangleBarrier.lean).
 
 **Several helper options per coordinate.** The same argument extends to a
 monotone system of displayed functional-dependency rules. If g_j is the minimum

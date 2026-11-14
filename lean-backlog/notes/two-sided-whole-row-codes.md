@@ -3,9 +3,10 @@
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** the finite upper-bound adapter, common-deficit equivalence and native
 consequences are Lean-verified in [TwoSidedCodeTransfer](../TwoSidedCodeTransfer.lean).
-The symmetry normalization, exact examples and Section 7's rectangle/subcode
-arguments retain reviewed written proofs. Their precise Lean targets and the
-separately proved assigned-rule bound are listed in the
+The finite rectangle barrier and its invoice are Lean-verified in
+[RectangleBarrier](../RectangleBarrier.lean). Symmetry normalization, exact
+examples, the random-host existence argument and subcode selection retain
+reviewed written proofs. Their status and the assigned-rule bound are listed in the
 [consolidation index](consolidation-status.md). No literature novelty claim.
 Front D10 of the [roadmap](../wall.md).
 
@@ -350,6 +351,11 @@ satisfies
 
 |S| ≥ N−(m+1)d(r−1)+(r−1)².
 
+**Lean:** `rectangle_barrier` in [RectangleBarrier.lean](../RectangleBarrier.lean)
+proves the equivalent integer addition form. It also allows different helper
+incidence graphs in the m copies, provided each has no empty r×r rectangle.
+The original common-graph statement is `rectangleBarrierTarget`.
+
 **Proof.** If a grid already has d−r+1 complete rows in S, then
 |S|≥d(d−r+1), which is stronger. Otherwise add recovered cells one at a time,
 and stop the first time any grid has d−r+1 complete rows. Before that instant
@@ -363,12 +369,18 @@ that reaches the threshold. Its own used columns cover at most (d−r+1)(r−1)
 cells there; the other grids cover at most (m−1)d(r−1). Subtract these from
 d(d−r+1) to obtain the displayed bound. ∎
 
+The formal proof does not need a strict ordering of all recovered cells.
+It takes the least recovery-rank threshold completing enough rows, then
+selects exactly d−r+1 of those rows. All helpers used through that threshold
+lie in the preceding strict prefix, so simultaneous recoveries cause no loss.
+
 Thus every m-copy intersection bound obtained **only from these closure rules**
 is at least
 
 N−(1+1/m)d(r−1)+(r−1)²/m,
 
-and at least (1−1/m)N since seed size is nonnegative. For m copies of a two-sided
+as formalized by `rectangle_invoice_ge`. Nonnegative seed size also gives
+the lower bound (1−1/m)N. For m copies of a two-sided
 code there are 2m grids, giving instead N−(2+1/m)d(r−1)+(r−1)²/m,
 hence at least N−3d(r−1). These are lower bounds on what this proof method can certify,
 not lower bounds on actual capacity or on the full Shannon optimum.

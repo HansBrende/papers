@@ -1,9 +1,10 @@
 # Hosts without mutual triangles, and the soft form of the order bound
 
 Claude Fable, with corrections and independent proof review by GPT-6 Astra,
-14 November 2026. **Status:** Sections 1 and 3–5 are reviewed written arguments;
+14 November 2026. **Status:** Sections 1, 4–5 and 7 are reviewed written arguments;
 Section 2 records exact finite counts; Section 6 is numerical and heuristic.
-None is Lean-verified. No literature novelty claim is made.
+Section 3's soft order inequality is [Lean-verified](../EntropyConsolidation.lean);
+its applications retain their stated separate status. No literature novelty claim is made.
 Tools: [host-probe](../tools/host-probe/).
 
 An incidence host has points as rows, lines as columns, and all points of a line
@@ -311,33 +312,106 @@ requires an exact verified recovery/rank certificate; failure to find one
 proves no upper bound. The current grid range is 21≤Sh_res≤114/5, with the
 same lower/upper range for its capacity exponent; neither optimum is known.
 
-## 7. Grid lanes on the parabolic quadrangle of every order (Fable, 14 November; unreviewed)
+## 7. Grid lanes on every classical parabolic quadrangle
 
-This extends the [two-lane code on GQ(2,2)](quadrangle-grid-control.md) to the family and replaces
-my conjecture "c = 2 on generalised quadrangles", which that code refutes.
+Fable, 14 November 2026; reviewed by Astra. **Status: written proof, not
+Lean-verified.** This extends the [two-lane code on GQ(2,2)](quadrangle-grid-control.md)
+and refutes the finite-order constant 2 for the entire classical family.
+Here s is a prime power, s≥2. The host is specifically Q(4,s), not an
+arbitrary generalized quadrangle of order (s,s).
 
-**The m × m grid code.** Points (i, j) ∈ [m]², lines R_k and C_k, 2m²(m−1) non-incident cells. With
-A_j[i,k] = X[(i,j), R_k] and B_i[j,k] = X[(i,j), C_k] put, for the smaller index first,
-A_j[i,k] = S_j[i,k], A_j[k,i] = S_j[i,k] − D[i,k], B_i[j,k] = T_i[j,k], B_i[k,j] = T_i[j,k] − D[j,k].
-The helper rows of R_k contain row k of every A_j and all of B_k, which reveals every D[j,k′]; the
-same with A and B exchanged for C_k. Free symbols: (2m+1)·m(m−1)/2. Rate on the non-incident cells:
-(2m+1)/(4m) = 1/2 + 1/(4m).
+### 7.1 The grid code at every size
 
-**Grids in Q(4,s).** Rows = points and columns = lines of the parabolic quadric in PG(4,s), a
-generalised quadrangle of order (s,s). Let p be a point off a line ℓ and π the plane they span. Of
-the s+1 hyperplanes through π none is elliptic (it contains ℓ), and a tangent hyperplane T_x
-contains ℓ only for x ∈ ℓ and contains p only for the one x ∈ ℓ collinear with p. So exactly one is
-tangent and **s are hyperbolic**: every non-incident cell lies in exactly s full (s+1) × (s+1)
-grids, each containing all points of ℓ.
+Let m≥2. On the m×m point grid use the two families of m lines R_k and C_k.
+Its residual array has 2m²(m−1) cells. For each unordered pair i<k,
+choose independent symbols S_j[i,k], T_j[i,k] for every j, and one shared
+symbol D[i,k], in a finite abelian group A. Write
+A_j[i,k]=X[(i,j),R_k] and B_i[j,k]=X[(i,j),C_k]. Set
 
-**Proposition.** Over an alphabet with s lanes, assign the lanes of each non-incident cell to the s
-grids through it and put an independent copy of the grid code on each grid. This is a whole-row
-code on the Q(4,s) host of rate 1/2 + 1/(4(s+1)) on the non-incident cells. Hence
+$$A_j[i,k]=S_j[i,k],\qquad A_j[k,i]=S_j[i,k]-D[i,k],$$
+$$B_j[i,k]=T_j[i,k],\qquad B_j[k,i]=T_j[i,k]-D[i,k].$$
 
-c_ent(Q(4,s)) ≥ 4(s+1)/(2s+1) = 12/5, 16/7, 20/9, …,
+The helper rows of R_k contain row k of every A_j and all of B_k.
+Opposite-entry differences in B_k reveal every D[i,j], so the transposed
+entry of A_j recovers each target in column R_k. The proof for C_k exchanges
+A and B. The S and T symbols are designated entries, and all D symbols are
+entry differences; hence the encoder is injective over every A. It has
 
-which tends to 2. (Recovery of a cell in a grid uses only cells in the rows of the points of its
-line and in grid columns, in the lane of that grid.)
+$$K_m=(2m+1)m(m-1)/2$$
 
-The surviving form of the conjecture is asymptotic: c_Sh(Q(4,s)) → 2. I have no inequality for it,
-and the lower bound shows that any proof must lose a term of order 1/s at each finite order.
+independent symbols and residual rate (2m+1)/(4m). Each coordinate is uniform
+when the sources are uniform, since it contains a private S or T with coefficient 1.
+
+### 7.2 Exactly s grids through each nonincident cell
+
+Use the parabolic quadric in PG(4,s), whose point-line geometry has order
+(s,s). A hyperbolic hyperplane section is an (s+1)×(s+1) grid, and its
+lines are full lines of the quadrangle. These standard models are described
+in Verena Möhler's [*SL(2,q)-Unitals* (2020), §4.1, pp.32–33](https://publikationen.bibliothek.kit.edu/1000117988/66106872).
+
+Fix a point p off a line ℓ. The plane π=⟨p,ℓ⟩ lies in s+1 hyperplanes.
+Exactly one is tangent and the other s are hyperbolic. The following
+coordinate check covers both odd and even characteristic.
+
+Let x be the unique point of ℓ collinear with p, and choose y∈ℓ different
+from x. The singular vectors for p and y have nonzero polar pairing;
+scale them to a hyperbolic pair. Its orthogonal complement contains x,
+which extends to another hyperbolic pair. In the resulting coordinates,
+for some λ≠0, the quadratic form and the marked objects are
+
+$$Q(x_1,x_2,x_3,x_4,x_5)=x_1x_2+x_3x_4+\lambda x_5^2,\qquad
+\ell=\langle e_1,e_3\rangle,\qquad p=e_2,\qquad \pi:\ x_4=x_5=0.$$
+
+The pencil through π consists of x_5=0 and x_4=t x_5 for t∈F_s. The first
+restriction is x_1x_2+x_3x_4 and is hyperbolic. For t≠0 the restriction is
+x_1x_2+x_5(t x_3+λx_5), again hyperbolic by an invertible change of coordinates.
+At t=0 it is x_1x_2+λx_5² with free x_3, a tangent cone with vertex x=e_3.
+Thus the count is exactly s, without assuming a nondegenerate polar
+form in characteristic two. The even-characteristic pencil count also
+appears in Schillewaert and Van de Voorde,
+[*Characterising elliptic and hyperbolic hyperplanes of the parabolic quadric* (2021), Lemma 1.8](https://arxiv.org/html/2111.09443v1).
+
+Each of these grids contains p and all points of ℓ, so it contains the
+residual cell (p,ℓ). Conversely every hyperplane-section grid containing
+that cell belongs to this pencil. Different sections give different grids,
+since a hyperbolic grid spans its hyperplane.
+
+### 7.3 Uniform lane cover and the soft constant
+
+Put d=(s+1)(s²+1). The host has N=s²(s+1)d residual cells. Assign the s
+lanes of each cell to its s incident grids, and use independent copies of
+the grid code with m=s+1 on all grids. Recovery uses only actual helper
+rows. Each grid's source tuple is recovered from its lanes, so the combined
+encoder is injective. This works for every base alphabet size a≥2, using
+A=Z/aZ; the entry alphabet has size a^s and need not be related to F_s.
+These s lanes use at least s bits per entry, which exceeds the canonical
+logarithmic width for sufficiently large s.
+
+Double-counting residual cell–grid incidences gives exactly
+
+$$g=\frac{s^2(s^2+1)}2$$
+
+grids. Thus there are a^(g K_{s+1}) codewords, where
+
+$$gK_{s+1}=\frac{s^3d(2s+3)}4,\qquad
+\frac{\log_{a^s}|C|}{N}=\frac12+\frac1{4(s+1)}.$$
+
+The displayed source count is an integer because it is the product of
+the integer grid count and K_{s+1}. All residual entries are uniform on
+A^s under independent uniform sources. Consequently the ratio of helper
+information to total correlation is
+
+$$c_{\rm ent}(Q(4,s))\ge\frac{4(s+1)}{2s+1}
+=2+\frac2{2s+1},\qquad c_{\rm Sh}\ge c_{\rm ent}.$$
+
+At s=2 this is 12/5 and reproduces the ten-grid construction. Adding s
+independent A-symbols at each of the (s+1)d incident cells gives the
+corresponding full-host code, with rate
+
+$$\frac12+\frac{s^2+2s+2}{4(s+1)(s^2+1)}.$$
+
+The proposed upper statement remains **conjectural**:
+c_Sh(Q(4,s))→2 through prime powers. No upper inequality is supplied here.
+The lower bound forces an excess of order 1/s at finite orders; it does
+not prove convergence to 2. The construction has window s+1 growing
+with d, so it does not give an asymptotic gain at fixed window.

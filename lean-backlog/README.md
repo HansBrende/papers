@@ -215,6 +215,11 @@ Native extraction and source audit:
   alphabet cardinality. In particular its residual soft constant is at
   least 12/5, refuting the proposed value 2. Written and exactly checked,
   not Lean; no claim about the asymptotic fixed-window question.
+  The [classical-family extension](notes/triangle-free-hosts.md#7-grid-lanes-on-every-classical-parabolic-quadrangle)
+  uses s grids per residual cell of Q(4,s), for every prime power s≥2,
+  and gives residual rate 1/2+1/[4(s+1)] with s lanes. Its soft-constant
+  lower bound is 2+2/(2s+1). This is a reviewed written proof; window and
+  alphabet width grow along this family.
 - [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
   Lean-verified whole-row embedding of the existing Clebsch code puts ten
   bits on sixteen far cells with all near cells fixed. This refutes the
@@ -305,7 +310,9 @@ Native extraction and source audit:
   one-copy acyclic bound, even on actual bit cones. The bounded native audit also
   distinguishes time occurrences from raw bits and corrects the isometry premise.
   Its finite assigned-rule and invoice bounds are now proved in
-  [ClosureBarriers.lean](ClosureBarriers.lean). The native audit and multi-option
+  [ClosureBarriers.lean](ClosureBarriers.lean). The sharper empty-rectangle
+  barrier and invoice are [Lean-verified](RectangleBarrier.lean) as well,
+  allowing different helper relations in the copies. The native audit and multi-option
   extension remain written; no new native capacity theorem is asserted.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof

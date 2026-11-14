@@ -9,7 +9,7 @@ is still open.
 | Item | Lean coverage | What remains |
 |---|---|---|
 | Assigned-rule theorem | [ClosureBarriers.lean](../ClosureBarriers.lean): `assigned_rule_card_le`, `card_le_seed_add`, `transported_invoice_ge`. Arbitrary finite helper graphs, loops included, arbitrary coordinate transports and positive copy count. | The separate multiple-helper-option extension remains a written proof. |
-| No-empty-rectangle barrier | `RectangleBarrierTarget` in the same file is an exact, typechecked **proposition target**. It includes arbitrary bijective layouts and the square correction term. | Its proof is written only. The proposition definition asserts no theorem. |
+| No-empty-rectangle barrier | [RectangleBarrier.lean](../RectangleBarrier.lean): `rectangle_barrier` proves `d²+(r−1)²≤|S|+(m+1)d(r−1)` for explicit finite recovery witnesses and arbitrary bijective layouts. The copies may have different helper relations, each with no empty r×r rectangle. `rectangleBarrierTarget` proves the original common-relation statement; `rectangle_invoice_ge` proves its real invoice form. Equal recovery ranks and m growing with d are allowed. | The probabilistic construction of fixed-window relations with this rectangle property remains written. The finite barrier and invoice have no unproved step. |
 | Soft order bound | [EntropyConsolidation.lean](../EntropyConsolidation.lean): `acyclic_conditional_le`, `soft_order`, `soft_order_of_acyclic`, `soft_order_entropy`. The polymatroid statement assumes no exact recovery or singleton caps; loops outside the acyclic set are allowed. | No missing step in these declarations. The conditional-entropy interpretation uses the same polymatroid inequality. |
 | Entropy-to-exact-subcode selection | `SubcodeSelectionTarget` and `ConditionalSubcodeSelectionTarget` in the same file typecheck with actual finite probability laws, positive-support containment, nonempty subcodes and arbitrary correlated records. | Both are **unproved proposition targets**. They are not statements about arbitrary polymatroids and do not preserve linearity or decoder symmetry. |
 | Fano paid inequalities and code bound | [FanoCertificate.lean](../FanoCertificate.lean): `paid_fano` proves `3h(V)≤2Σh({v})+Σ[h(N_v∪{v})−h(N_v)]` on the actual 28-cell residual graph. [FanoFull.lean](../FanoFull.lean): `paid_full` retains the joint incident-cell price and conditional singleton prices; `full_upper_of_cap` proves `3h(V)≤119a` under singleton caps a. `wholeRow_card_cube` proves `|C|³≤|A|¹¹⁹` for every finite nonempty alphabet and arbitrary nonlinear code on the full host. | The separate joint-column-error coefficient 41/84 remains written/exactly checked outside Lean. |
@@ -43,7 +43,7 @@ Build from the existing pinned environment:
 ```sh
 cd High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean
 lake env python3 ../../lean-backlog/check.py \
-  ClosureBarriers EntropyConsolidation FanoCertificate \
+  ClosureBarriers RectangleBarrier EntropyConsolidation FanoCertificate \
   FanoFull FanoOrder FanoAttainment
 ```
 

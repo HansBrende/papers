@@ -13,8 +13,8 @@ or have smaller recovery rank. Its assigned coordinates are an acyclic set
 for that copy. The real invoice corollary concerns proof certificates, not
 actual code capacity or the full Shannon relaxation.
 
-`RectangleBarrierTarget` is only an exact proposition recording the separate
-written empty-rectangle theorem. No proof of that target is claimed here.
+`RectangleBarrierTarget` records the empty-rectangle theorem; its proof is in
+the companion module `RectangleBarrier`.
 -/
 
 namespace LeanBacklog.ClosureBarriers
@@ -142,9 +142,9 @@ def gridHelpers [Fintype V] [DecidableEq V] {d : ℕ}
     (ρ : Fin d → Finset (Fin d)) (layout : V ≃ Fin d × Fin d) (x : V) : Finset V :=
   univ.filter fun y => (layout y).1 ∈ ρ (layout x).2
 
-/-- **Statement only, not proved here.** The separate written rectangle
-barrier for arbitrary transported grid layouts. The addition form is the
-exact integer inequality and does not use truncated subtraction of areas. -/
+/-- The rectangle barrier for arbitrary transported grid layouts, proved in
+`RectangleBarrier.rectangleBarrierTarget`. The addition form is the exact
+integer inequality and does not use truncated subtraction of areas. -/
 def RectangleBarrierTarget (V : Type u) [Fintype V] [DecidableEq V] : Prop :=
   ∀ (d m r : ℕ), 0 < m → 1 ≤ r → r ≤ d →
     ∀ (ρ : Fin d → Finset (Fin d)), NoEmptyRectangle ρ r →

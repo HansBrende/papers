@@ -136,6 +136,8 @@ Open questions, nearest the wall first:
   (X29). The [quadrangle grid code](notes/quadrangle-grid-control.md) raises GQ(2,2)'s residual
   lower bound to105 (order118) and refutes c_Sh=2 by c_ent≥12/5. Parked until a named family
   comes with a precise inequality.
+  For classical Q(4,s), the [reviewed grid-family construction](notes/triangle-free-hosts.md#7-grid-lanes-on-every-classical-parabolic-quadrangle)
+  gives c_ent≥2+2/(2s+1); convergence of c_Sh to2 remains conjectural.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact values on full hosts: Fano
@@ -217,7 +219,7 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
 | **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 | **X29** | A common deficit from counting columns that fit the best balanced Fano layout | The bound Sh≤d²−4dG/21 holds, but random fixed-forward-window hosts can have order rate arbitrarily close to one and G/d arbitrarily small in every layout as w grows ([proof](notes/paid-coarse-patterns.md)). This is a limit of this count relaxation, not a lower bound on Shannon value or capacity | Control actual conditional errors, combine different inequalities, or find a different high-order incidence identity |
 | **X30** | A constant plane deficit using only row-closure equalities from pencils at o(n) centres | Make all radial cells at k centres constant and the rest independent: these equalities admit entropy ≥N−kn²(n+1). Separately every row closure adds <nd cells. This does not prove a necessary growing proof depth or exclude arbitrary Shannon certificates ([note §5a](notes/triangle-free-hosts.md)) | Additional recovery/budget identities or information from Ω(n) centres; the general plane conjecture stays open |
-| **X31** | Transported closure with additive message bills as a stronger coding bound | For m helper graphs, N−seed≤Σα_j. The transported-copy invoice is at least N−α, the original acyclic bound, and can be worse. **Assigned-rule and invoice bounds Lean:** [ClosureBarriers.lean](ClosureBarriers.lean). This includes native bit cones without preventing transports helping discover an acyclic set. The written rectangle theorem retains its m-dependent refinement; paid localisation still lacks an unrestricted mutual-capacity consumer ([audit](notes/transported-closure-native-audit.md), [§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Extra entropy/functional identities, a smaller joint-message bill, a native large-acyclic-set extraction, or a correctness-dependent source/decoder restriction; not another closure-only copy |
+| **X31** | Transported closure with additive message bills as a stronger coding bound | For m helper graphs, N−seed≤Σα_j. The transported-copy invoice is at least N−α, the original acyclic bound, and can be worse. **Lean:** [assigned-rule/invoice](ClosureBarriers.lean) and the [m-dependent rectangle refinement](RectangleBarrier.lean), now for different helper relations too. This includes native bit cones without preventing transports helping discover an acyclic set. Paid localisation still lacks an unrestricted mutual-capacity consumer ([audit](notes/transported-closure-native-audit.md), [§7](notes/two-sided-whole-row-codes.md#7-transported-recovery-its-closure-limit-and-a-localisation-consumer)) | Extra entropy/functional identities, a smaller joint-message bill, a native large-acyclic-set extraction, or a correctness-dependent source/decoder restriction; not another closure-only copy |
 
 ## Maintenance
 
@@ -227,14 +229,15 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Consolidated; no front open.** Banked: B1–B4,
-  the two-sided transfer, the assigned-rule theorem, the soft order bound and the paid Fano
-  inequality (all Lean); the symmetric normal form, amplification, the grid gap and the rectangle
-  barrier (written). Closed today: X29–X31. No premise with an inequality exists for a high-order
+- **Current focus** (replace, do not append). **Consolidated; no front open.** Banked: B1–B4.
+  Lean: the two-sided transfer, assigned-rule theorem, soft order bound, full Fano result and
+  finite rectangle barrier. Written: symmetric normal form, amplification, grid gap and the
+  classical quadrangle code family. Closed today: X29–X31. No premise with an inequality exists for a high-order
   family: balanced helper-containment refinements inherit the fixed base's order deficit;
   Bernoulli incidence at fixed positive density has unbounded mutual cliques and hence no
   uniform soft constant (this alone is not a capacity-to-one proof). Planes still have the
-  conjectural residual constant3; the quadrangle constant2 is false already at order(2,2).
+  conjectural residual constant3; the classical quadrangle constant is strictly above2 at
+  every finite order, and its proposed limit2 remains open.
   Astra: the remaining Lean statements of the status index, at its own pace. Fable: the report. A front
   reopens only with a premise of kinds (i)–(iii) of "What cannot work, and what can", or a
   correctness-forced source restriction with a named consumer, and an inequality attached.

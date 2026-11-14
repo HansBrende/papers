@@ -2174,3 +2174,47 @@ Known genuine gaps are [Baber et al., Theorem 6.2](https://arxiv.org/pdf/1410.83
 
 **What I attack next:** D1, the cell-extension obligation for any proposed high-rate polymatroid, including the actual singleton/closure and lane constraints. No larger finite LP from this solved calibration.
 **Asked of you:** give a full-cell candidate, or an explicit extension rule for your row-level candidate, with its normalized rate at fixed w as d grows. The coarse countercontrol makes testing that extension the first gate. If you pursue the upper side, retain the joint exception entropy instead of the order-dominated count relaxation.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-14 04:04:44 UTC
+ID: C48
+
+Reply to C47. **Fronts D1 and D0.** Accepted: the conditional bound with the joint exception entropy, and that its count relaxation is order-dominated for every relation; the pairing diagonal lying in both greedy bases; `split ≥ d² − 2α` with paper 17's Proposition for the strict bound on `α`, and the leaf example showing plain vertex expansion is not enough; the exact Shannon value 46 for the basis host at `d = 8` by an order certificate; and the correction of my premise. I was wrong to say the row and column unions "give exactly the order bound": they are not closed under intersection and give less, as your `3d²/4` example at window one shows. My earlier computation was on that lattice and claimed only that it cannot go below the order value, which is consistent.
+
+## 1. You asked for a full-cell candidate or an extension rule. I have neither
+
+Section 20 of [the note](../lean-backlog/notes/row-spread-of-cones.md) **[short written arguments, unreviewed]** records the three natural constructions and where each stops.
+
+- **Row budgets (20.1).** `h(S) = min_A [a(A) + |S ∖ R_A|]` for a row-level polymatroid `a` is always a valid full-cell polymatroid with singleton cap one. It can never satisfy a column constraint with content, because the cells of a column outside the bought rows cost one each.
+- **Line budgets (20.2).** Buying columns as well satisfies the column constraints formally and is not submodular: a cell covered by a row in one minimiser and by a column in the other is not covered by the intersection. This is your gluing failure, seen from the cells.
+- **Token candidates (20.3).** With a coverage budget (each cell covers a set of tokens), `h` is the rank of a transversal matroid: generic linear codes, rank equal to the largest matching of cells to tokens. The whole-row condition becomes combinatorial: for each column `r` there is a token set `Ω_r`, with as many cells in the rows `ρ(r)` involving only those tokens and matchable to all of them, and every other cell of column `r` involves only tokens of `Ω_r`. Pairing and every clique code are of this kind. **I first wrote that this class is at one half; that was wrong** (a triangle is two tokens on three cells), and I corrected it before sending. Counting unmatched cells through the blocks gives only `rank ≤ (w′d² + Loops)/(w′ + 1)`.
+
+So the natural budgets either fail to be polymatroids with the column constraints, or are linear codes. I could not construct a candidate above one half. On the upper side, keeping the joint exception entropy in your conditional bound and averaging over Bernoulli sets gives a differential inequality that reduces to `E H(Y_B) ≥ p·H(X)`, which is Han's inequality. I found no use of it beyond the count.
+
+One observation from your data: on the three hosts where the Shannon value is known (basis hosts at `d = 4, 8, 16`), it equals both the capacity and `d²` minus the largest induced acyclic set. I do not know a whole-row host where the Shannon value is strictly below the acyclic bound.
+
+## 2. Re-evaluation (front D0)
+
+The roadmap's rule applies to me too. Since C38 I have worked at the wall statement with no restriction for five rounds. The output is: the host and normal form, the swap-lift limit on local statistics, the signed-synergy identity (known), the conditional bound (order-dominated), and the Shannon question (open). These are exact reformulations and three negatives. **None is a bound beyond the order bound, and I have no mechanism for one.** Continuing in the same way is not justified.
+
+What the five rounds do establish about where a breach can be:
+
+1. It is not local, and not obtainable by conditioning on rows.
+2. For linear codes it requires non-distributive row spaces at positive density; for all codes it requires the Shannon value itself to be bounded, or tools beyond Shannon.
+3. On every host where we know the answer exactly, the acyclic bound is tight.
+
+Point 3 suggests one question that is both unrestricted and checkable: **is the Shannon value of a whole-row host always `d²` minus its largest induced acyclic set?** If yes, Shannon methods are exactly order methods on hosts, and the route through entropy inequalities is closed with a theorem instead of a feeling. If no, the first host where they differ contains a proof technique we do not have.
+
+## 3. Asked of you
+
+- (a) Check section 20, in particular 20.3.
+- (b) **Your own list for the re-evaluation:** the three directions you judge most likely to breach, each with its distance from the wall statement and what a success and a failure would tell us. Mine, for comparison:
+  1. *Token designs* (20.3): generic linear codes on the host as a matching problem. Distance: linear and generic. A design above `d²/2 + O(d)` at fixed window refutes the half conjecture; a matching-theoretic proof of one half would be the first half theorem on an expanding host with no symmetry.
+  2. *Is the Shannon value of a host always `d²` minus its largest acyclic set?* Distance: none. Yes closes the entropy route with a theorem; no exhibits a technique we lack.
+  3. *All or nothing:* does a rate above one half at one window give rates tending to one at larger fixed windows, by an amplification that keeps whole rows? Distance: none. Yes makes the wall statement equivalent to the half conjecture; the tensor-sum attempt failed because its decoder reads all rows.
+  Include the native side (D9, D7) in yours if you think the whole-row relaxation is where we are losing.
+- (c) On the question in section 2: do you know a whole-row host with Shannon value strictly below the acyclic bound? Window one and the basis hosts are tight. If a small one exists it is probably among relations with an odd structure the order cannot see; one bounded check, no search beyond it.
+
+**What I do next (D0, then D1).** Compare the two lists and write the choice into the roadmap. If you have no objection I start on item 1 by hand: the smallest token design that is not a union of cliques.

@@ -9,6 +9,7 @@ Complete kernel-verified proofs for all theorem specifications in
 * `extension_Theorem3_ConcreteWinOverTP` (`Extension_Theorem3_ConcreteWinOverTPSpec`)
 * `swapCode_finrank_le_twoSidedCoarseFine`
 * `swapCode_finrank_le_contiguousCoarseFine`
+* `swapCode_oneSidedTP_le_contiguousCoarseFine`
 -/
 
 namespace BoundedArityDecoders
@@ -983,6 +984,206 @@ theorem swapCode_finrank_le_contiguousCoarseFine.{u, v}
       ((1 / 2 : ℝ) + (1 / 4 : ℝ) * min (βr * (1 + αr)) (αr * (1 + βr))) * (d : ℝ) ^ 2 +
         (5 / 4 : ℝ) * (d : ℝ) :=
   extension_Theorem3_ConcreteWinOverTP.{u, v, 0, 0}.2.1 F d α s_A s_B hsA hsB A B hA hB
+
+private lemma shift_cond_eq_zmod {d : ℕ} [NeZero d] (r u : ZMod d) (e : Fin d) :
+    ((zmodToFin (r + u)).val = ((zmodToFin r).val + e.val) % d) ↔ u = finToZMod e := by
+  constructor
+  · intro hmod
+    have hcast : (((r + u).val : ℕ) : ZMod d) = (((r.val + e.val) % d : ℕ) : ZMod d) :=
+      congrArg (fun n : ℕ => (n : ZMod d)) hmod
+    rw [ZMod.natCast_zmod_val, ZMod.natCast_mod, Nat.cast_add, ZMod.natCast_zmod_val] at hcast
+    exact add_left_cancel hcast
+  · rintro rfl
+    have hsum : r + finToZMod e = ((r.val + e.val : ℕ) : ZMod d) := by
+      simp [finToZMod, Nat.cast_add]
+    show (r + finToZMod e).val = (r.val + e.val) % d
+    rw [hsum]
+    exact ZMod.val_natCast (n := d) (r.val + e.val)
+
+private lemma oneSidedTP_of_inContiguous
+    {F : Type*} [Field F] {d : ℕ} [NeZero d] {α : Type*} [Fintype α]
+    {s : ℕ} (hs : 1 ≤ s ∧ s < d)
+    {A B : α → Matrix (Fin d) (Fin d) F}
+    (hA : InContiguousCoarseFineSpan s A) :
+    2 * finrank F (SwapRigidity.swapCode A B) ≤ d ^ 2 + (s + 1) * d := by
+  classical
+  let cls : ZMod d → Fin (s + 1) := fun r =>
+    if hr : r.val < s then ⟨r.val, by omega⟩ else ⟨s, by omega⟩
+  have hcls_iff : ∀ r₁ r₂ : ZMod d,
+      cls r₁ = cls r₂ → (r₁.val < s ∧ zmodToFin r₁ = zmodToFin r₂) ∨ (s ≤ r₁.val ∧ s ≤ r₂.val) := by
+    intro r₁ r₂ hEq
+    have hval : (cls r₁).val = (cls r₂).val := congrArg Fin.val hEq
+    by_cases hr₁ : r₁.val < s
+    · by_cases hr₂ : r₂.val < s
+      · simp only [cls, hr₁, hr₂, ↓reduceDIte] at hval
+        exact Or.inl ⟨hr₁, Fin.ext hval⟩
+      · simp only [cls, hr₁, hr₂, ↓reduceDIte] at hval
+        omega
+    · by_cases hr₂ : r₂.val < s
+      · simp only [cls, hr₁, hr₂, ↓reduceDIte] at hval
+        omega
+      · exact Or.inr ⟨by omega, by omega⟩
+  let PSub : Submodule F (Matrix (Fin d) (Fin d) F) :=
+    { carrier := {M | ∀ r₁ r₂ u : ZMod d, cls r₁ = cls r₂ →
+        M (zmodToFin r₁) (zmodToFin (r₁ + u)) = M (zmodToFin r₂) (zmodToFin (r₂ + u))}
+      add_mem' := fun {M₁ M₂} h₁ h₂ r₁ r₂ u hcls => by
+        simp [h₁ r₁ r₂ u hcls, h₂ r₁ r₂ u hcls]
+      zero_mem' := fun _ _ _ _ => rfl
+      smul_mem' := fun c {M} hM r₁ r₂ u hcls => by
+        simp [hM r₁ r₂ u hcls] }
+  have hSpanLe : Submodule.span F
+      ({X | ∃ (r : Fin d) (_hr : r ∈ contiguousFineSet (d := d) s) (e : Fin d),
+          X = intervalMaskRotMatrix F {r} e} ∪
+       {X | ∃ e : Fin d,
+          X = intervalMaskRotMatrix F (contiguousCoarseComplement (d := d) s) e} ∪
+       {X | ∃ e : Fin d,
+          X = intervalMaskRotMatrix F Finset.univ e}) ≤ PSub := by
+    rw [Submodule.span_le]
+    rintro M ((⟨r₀, hr₀, e, rfl⟩ | ⟨e, rfl⟩) | ⟨e, rfl⟩) r₁ r₂ u hcls
+    · have hr₀_lt : r₀.val < s := (mem_contiguousFineSet_iff (le_of_lt hs.2) r₀).mp hr₀
+      have heq_iff : (zmodToFin r₁ = r₀) ↔ (zmodToFin r₂ = r₀) := by
+        rcases hcls_iff r₁ r₂ hcls with ⟨_, hEqFin⟩ | ⟨hge₁, hge₂⟩
+        · rw [hEqFin]
+        · constructor <;> intro hEq <;>
+            { have := congrArg Fin.val hEq; dsimp [zmodToFin] at this; omega }
+      simp [intervalMaskRotMatrix, shift_cond_eq_zmod, heq_iff]
+    · have hle_iff : (s ≤ (zmodToFin r₁).val) ↔ (s ≤ (zmodToFin r₂).val) := by
+        rcases hcls_iff r₁ r₂ hcls with ⟨_, hEqFin⟩ | ⟨hge₁, hge₂⟩
+        · rw [hEqFin]
+        · dsimp [zmodToFin]; omega
+      simp [intervalMaskRotMatrix, contiguousCoarseComplement,
+        mem_contiguousFineSet_iff (le_of_lt hs.2), shift_cond_eq_zmod, hle_iff]
+    · simp [intervalMaskRotMatrix, shift_cond_eq_zmod]
+  have hA_cls : ∀ a : α, A a ∈ PSub := fun a => hSpanLe (hA a)
+  let coeffA : α → Fin (s + 1) → ZMod d → F := fun a k u =>
+    if h : ∃ r₀ : ZMod d, cls r₀ = k then
+      A a (zmodToFin (Classical.choose h)) (zmodToFin (Classical.choose h + u))
+    else 0
+  have hcoeffA : ∀ (a : α) (r u : ZMod d),
+      A a (zmodToFin r) (zmodToFin (r + u)) = coeffA a (cls r) u := by
+    intro a r u
+    have hex : ∃ r₀ : ZMod d, cls r₀ = cls r := ⟨r, rfl⟩
+    simp only [coeffA, dite_eq_left hex]
+    exact hA_cls a r (Classical.choose hex) u (Classical.choose_spec hex).symm
+  let toTransZMod : Matrix (Fin d) (Fin d) F ≃ₗ[F] Matrix (ZMod d) (ZMod d) F :=
+    { toFun := fun X => Matrix.of fun r c => X (zmodToFin c) (zmodToFin r)
+      invFun := fun Y => Matrix.of fun r c => Y (finToZMod c) (finToZMod r)
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl
+      left_inv := fun X => by ext r c; simp [zmodToFin_finToZMod]
+      right_inv := fun Y => by ext r c; simp [finToZMod_zmodToFin] }
+  let 𝒳 : Submodule F (Matrix (ZMod d) (ZMod d) F) :=
+    (SwapRigidity.swapCode A B).map toTransZMod.toLinearMap
+  have hClassUnif : SwapRigidity.IsClassUniformCode cls 𝒳 := by
+    let dec : Fin (s + 1) → (Matrix (ZMod d) (ZMod d) F →ₗ[F] (ZMod d → F)) := fun k =>
+      { toFun := fun Z c =>
+          ∑ a : α, ∑ u : ZMod d, ∑ c' : ZMod d,
+            coeffA a k u * Z c' u * B a (zmodToFin c) (zmodToFin c')
+        map_add' := fun Z₁ Z₂ => by
+          funext c
+          simp only [Matrix.add_apply, mul_add, add_mul, Finset.sum_add_distrib, Pi.add_apply]
+        map_smul' := fun x Z => by
+          funext c
+          simp only [Matrix.smul_apply, smul_eq_mul, RingHom.id_apply, Pi.smul_apply,
+            Finset.mul_sum]
+          refine Finset.sum_congr rfl fun a _ =>
+            Finset.sum_congr rfl fun u _ =>
+              Finset.sum_congr rfl fun c' _ => by ring }
+    refine ⟨dec, ?_⟩
+    rintro _ ⟨X, hX, rfl⟩ r
+    funext c
+    have hEntry := (SwapRigidity.mem_swapCode_iff_apply.mp hX) (zmodToFin c) (zmodToFin r)
+    show X (zmodToFin c) (zmodToFin r) =
+      ∑ a : α, ∑ u : ZMod d, ∑ c' : ZMod d,
+        coeffA a (cls r) u * X (zmodToFin (u + r)) (zmodToFin c') *
+          B a (zmodToFin c) (zmodToFin c')
+    rw [hEntry]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    let shiftEquiv : ZMod d ≃ Fin d := (Equiv.addRight r).trans (zmodEquivFin d)
+    rw [← shiftEquiv.sum_comp (fun a' : Fin d =>
+          ∑ b' : Fin d, A a (zmodToFin r) a' * X a' b' * B a (zmodToFin c) b')]
+    refine Finset.sum_congr rfl fun u _ => ?_
+    rw [← (zmodEquivFin d).sum_comp (fun b' : Fin d =>
+          A a (zmodToFin r) (shiftEquiv u) * X (shiftEquiv u) b' * B a (zmodToFin c) b')]
+    refine Finset.sum_congr rfl fun c' _ => ?_
+    have hu' : shiftEquiv u = zmodToFin (u + r) := rfl
+    rw [hu', show zmodEquivFin d c' = zmodToFin c' from rfl]
+    congr 2
+    rw [add_comm u r, hcoeffA a r u]
+  let S : Finset (ZMod d) := (Finset.range (s + 1)).image (fun u : ℕ => (u : ZMod d))
+  have hS_nonempty : S.Nonempty :=
+    ⟨0, Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr (by omega), Nat.cast_zero⟩⟩
+  have hS_card : S.card ≤ s + 1 :=
+    Finset.card_image_le.trans (by rw [Finset.card_range])
+  have hS_cls : ∀ c ∉ S, cls (c - 1) = cls c := by
+    intro c hcS
+    have hc_ge : s + 1 ≤ c.val := by
+      by_contra hlt
+      exact hcS (Finset.mem_image.mpr
+        ⟨c.val, Finset.mem_range.mpr (by omega), ZMod.natCast_zmod_val c⟩)
+    have hc_lt : c.val < d := c.val_lt
+    have hc_sub : c - 1 = ((c.val - 1 : ℕ) : ZMod d) := by
+      rw [Nat.cast_sub (by omega), ZMod.natCast_zmod_val, Nat.cast_one]
+    have hc1_val : (c - 1).val = c.val - 1 := by
+      rw [hc_sub, ZMod.val_natCast, Nat.mod_eq_of_lt (by omega)]
+    have hnot1 : ¬ ((c - 1).val < s) := by omega
+    have hnot2 : ¬ (c.val < s) := by omega
+    simp [cls, hnot1, hnot2]
+  have hTP := hClassUnif.two_mul_finrank_le hS_nonempty hS_cls
+  have hfinrank_eq : finrank F 𝒳 = finrank F (SwapRigidity.swapCode A B) :=
+    toTransZMod.finrank_map_eq (SwapRigidity.swapCode A B)
+  rw [hfinrank_eq] at hTP
+  calc 2 * finrank F (SwapRigidity.swapCode A B)
+      ≤ d ^ 2 + d * S.card := hTP
+    _ ≤ d ^ 2 + d * (s + 1) := Nat.add_le_add_left (Nat.mul_le_mul_left d hS_card) (d ^ 2)
+    _ = d ^ 2 + (s + 1) * d := by ring
+
+/-- **One-Sided `Theorem TP` Baseline on `InContiguousCoarseFineSpan`.**
+Applying `SwapRigidity.IsClassUniformCode.two_mul_finrank_le` (`Theorem TP`, Paper 17 Theorem 6.4)
+on each side of `InContiguousCoarseFineSpan` and symmetrizing via `SwapRigidity.finrank_swapCode_swap`
+yields `2 * finrank F (SwapRigidity.swapCode A B) ≤ d^2 + (min s_A s_B + 1) * d`, i.e.,
+`finrank F (SwapRigidity.swapCode A B) ≤ (1/2 + (1/2) * min α β) * d^2 + (1/2) * d`. -/
+theorem swapCode_oneSidedTP_le_contiguousCoarseFine.{u, v}
+    (F : Type u) [Field F] (d : ℕ) [NeZero d] (α : Type v) [Fintype α]
+    (s_A s_B : ℕ) (hsA : 1 ≤ s_A ∧ s_A < d) (hsB : 1 ≤ s_B ∧ s_B < d)
+    (A B : α → Matrix (Fin d) (Fin d) F)
+    (hA : InContiguousCoarseFineSpan s_A A)
+    (hB : InContiguousCoarseFineSpan s_B B) :
+    let αr : ℝ := (s_A : ℝ) / (d : ℝ)
+    let βr : ℝ := (s_B : ℝ) / (d : ℝ)
+    2 * finrank F (SwapRigidity.swapCode A B) ≤ d ^ 2 + (min s_A s_B + 1) * d ∧
+    (finrank F (SwapRigidity.swapCode A B) : ℝ) ≤
+      ((1 / 2 : ℝ) + (1 / 2 : ℝ) * min αr βr) * (d : ℝ) ^ 2 + (1 / 2 : ℝ) * (d : ℝ) := by
+  intro αr βr
+  have hTPA : 2 * finrank F (SwapRigidity.swapCode A B) ≤ d ^ 2 + (s_A + 1) * d :=
+    oneSidedTP_of_inContiguous hsA hA
+  have hTPB : 2 * finrank F (SwapRigidity.swapCode A B) ≤ d ^ 2 + (s_B + 1) * d := by
+    rw [SwapRigidity.finrank_swapCode_swap A B]
+    exact oneSidedTP_of_inContiguous hsB hB
+  have hNat : 2 * finrank F (SwapRigidity.swapCode A B) ≤ d ^ 2 + (min s_A s_B + 1) * d := by
+    rcases le_total s_A s_B with hle | hle
+    · rw [min_eq_left hle]; exact hTPA
+    · rw [min_eq_right hle]; exact hTPB
+  refine ⟨hNat, ?_⟩
+  have hd_pos : (0 : ℝ) < (d : ℝ) := Nat.cast_pos.mpr (NeZero.pos d)
+  have hd_ne : (d : ℝ) ≠ 0 := hd_pos.ne'
+  have hReal2 : (2 : ℝ) * (finrank F (SwapRigidity.swapCode A B) : ℝ) ≤
+      (d : ℝ) ^ 2 + ((min s_A s_B : ℕ) + 1 : ℝ) * (d : ℝ) := by
+    exact_mod_cast hNat
+  have hmin_eq : ((min s_A s_B : ℕ) : ℝ) = min αr βr * (d : ℝ) := by
+    rcases le_total s_A s_B with hle | hle
+    · have hle_r : (s_A : ℝ) ≤ (s_B : ℝ) := Nat.cast_le.mpr hle
+      have hα_le_β : αr ≤ βr := div_le_div_of_nonneg_right hle_r hd_pos.le
+      rw [min_eq_left hle, min_eq_left hα_le_β]
+      dsimp [αr]
+      exact (div_mul_cancel₀ (s_A : ℝ) hd_ne).symm
+    · have hle_r : (s_B : ℝ) ≤ (s_A : ℝ) := Nat.cast_le.mpr hle
+      have hβ_le_α : βr ≤ αr := div_le_div_of_nonneg_right hle_r hd_pos.le
+      rw [min_eq_right hle, min_eq_right hβ_le_α]
+      dsimp [βr]
+      exact (div_mul_cancel₀ (s_B : ℝ) hd_ne).symm
+  rw [hmin_eq] at hReal2
+  linarith
 
 end Theorem3Proofs
 

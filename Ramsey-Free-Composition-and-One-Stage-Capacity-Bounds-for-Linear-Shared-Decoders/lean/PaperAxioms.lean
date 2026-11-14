@@ -28,11 +28,14 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.lemma_AffineCubeCommonMessageGrowth
 #print axioms BoundedArityDecoders.theorem2A_TwoStageRamseyFreeCutoff
 -- AffineCubeConsequences.lean
+#print axioms BoundedArityDecoders.behrendThreeAPFreePartition_exists
 #print axioms BoundedArityDecoders.control_D13_GeneralFieldAndProgressionBridge
 #print axioms BoundedArityDecoders.control_D4_AllWidthsAndBinaryFields
 #print axioms BoundedArityDecoders.denseSubset_AffineCubeCommonMessageBound
 #print axioms BoundedArityDecoders.singleSubset_CauchySchwarzAffineCubeExtraction
 #print axioms BoundedArityDecoders.theorem2A_GrowingClassesNonFactorization
+#print axioms BoundedArityDecoders.theorem2A_LittleO_FixedM2
+#print axioms BoundedArityDecoders.theorem2A_LogLog_FixedM1
 -- BoundedAritySetCapacityProofs.lean
 #print axioms BoundedArityDecoders.mem_shiftedFootprint_self_iff
 #print axioms BoundedArityDecoders.selfReferentialAndCleanCount
@@ -96,6 +99,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.extension_Theorem3_TwoSidedCoarseFine
 #print axioms BoundedArityDecoders.swapCode_finrank_le_contiguousCoarseFine
 #print axioms BoundedArityDecoders.swapCode_finrank_le_twoSidedCoarseFine
+#print axioms BoundedArityDecoders.swapCode_oneSidedTP_le_contiguousCoarseFine
 -- MachineSweepConsequences.lean
 #print axioms BoundedArityDecoders.evalConeTree_cellSupport
 #print axioms BoundedArityDecoders.evalConeTree_entryCellSupport_card_le
@@ -130,6 +134,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.tmMatrix_gridLinear_bridges
 -- SumsetRankConsequences.lean
 #print axioms BoundedArityDecoders.control_D12_BandRowSpaceChannelEquiv
+#print axioms BoundedArityDecoders.control_D12_TwoClassBandRowSpaceEquiv
 #print axioms BoundedArityDecoders.control_D12_UnconditionalExists
 #print axioms BoundedArityDecoders.d12AddChar_injective_and_primitive
 #print axioms BoundedArityDecoders.exists_primitive_twelfth_root_complex
@@ -197,6 +202,8 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.alternatingSharpDecoder
 #print axioms BoundedArityDecoders.antiDiagLinear
 #print axioms BoundedArityDecoders.antiDiagTensorEquiv
+#print axioms BoundedArityDecoders.behrendClassCount
+#print axioms BoundedArityDecoders.behrendPartition
 #print axioms BoundedArityDecoders.boundaryControl_DeficitVanishesAtDeltaEqD
 #print axioms BoundedArityDecoders.charBandEval
 #print axioms BoundedArityDecoders.cleanEntries
@@ -211,6 +218,7 @@ import BoundedArityDecoders.SwapCodeAnswersProofs
 #print axioms BoundedArityDecoders.cyclicChannelShift
 #print axioms BoundedArityDecoders.cyclicRunCount
 #print axioms BoundedArityDecoders.cyclicRunEndpointCount
+#print axioms BoundedArityDecoders.d12TwoClassPartition
 #print axioms BoundedArityDecoders.encodeTMMatrixToGrid
 #print axioms BoundedArityDecoders.evalConeTree
 #print axioms BoundedArityDecoders.existsRecoverableSubsetBound

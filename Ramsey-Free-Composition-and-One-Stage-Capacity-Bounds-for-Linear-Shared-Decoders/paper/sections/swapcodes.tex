@@ -278,7 +278,7 @@ and if $S$ is scattered with $\dot{m}(S) = \Theta(d)$, such as the even residues
 can exceed $d^2$):
 
 \begin{corollary}[Leading-coefficient win over one-sided Theorem~TP and $\frac{11}{16}d^2 + d$ benchmark]\label{cor:two-sided-win}
-\partformal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_ConcreteWinOverTP,swapCode_finrank_le_contiguousCoarseFine}{applying \cite[Theorem~6.4]{SeventeenthPaper2026} to \lean{InContiguousCoarseFineSpan} to obtain the one-sided baseline $(d^2 + (\min(s_A, s_B) + 1)d)/2$ (part~(a) in Lean is the real-coefficient inequality).}
+\formal{ExtensionTwoSidedProfileProofs.lean}{extension_Theorem3_ConcreteWinOverTP,swapCode_finrank_le_contiguousCoarseFine,swapCode_oneSidedTP_le_contiguousCoarseFine}
 \begin{enumerate}[label=(\alph*)]
 \item For all real $\alpha, \beta \in (0, 1)$,
   \[
@@ -289,8 +289,12 @@ can exceed $d^2$):
 \item For every field $F$, every finite index type $\alpha_0$, every $d \ge 2$, every
   $1 \le s_A, s_B < d$ ($\alpha := s_A / d$, $\beta := s_B / d$), and all
   $A, B : \alpha_0 \to \Mat_{d\times d}(F)$ satisfying
-  \lean{InContiguousCoarseFineSpan} $(s_A, A)$ and \lean{InContiguousCoarseFineSpan} $(s_B, B)$, both
-  sides satisfy \lean{HasCoarseFineIntervalDecomposition} with $c_A = c_B = m_A = m_B = 1$, and
+  \lean{InContiguousCoarseFineSpan} $(s_A, A)$ and \lean{InContiguousCoarseFineSpan} $(s_B, B)$,
+  one-sided Theorem~TP (\cite[Theorem~6.4]{SeventeenthPaper2026}) gives
+  $2\dim_F \leanname{SwapRigidity.swapCode}(A, B) \le d^2 + (\min(s_A, s_B) + 1)d$ (i.e.\
+  $\dim_F \leanname{SwapRigidity.swapCode}(A, B) \le (\frac{1}{2} + \frac{1}{2}\min(\alpha, \beta))d^2 +
+  \frac{1}{2}d$), whereas both sides satisfy \lean{HasCoarseFineIntervalDecomposition} with
+  $c_A = c_B = m_A = m_B = 1$ and
   \[
     \dim_F \leanname{SwapRigidity.swapCode}(A, B)
     \;\le\;
@@ -307,8 +311,9 @@ can exceed $d^2$):
   which is strictly less than $\frac{3}{4}\,d^2$ for all even $d = 2k \ge 18$ ($k \ge 9$).
 \end{enumerate}
 \end{corollary}
-\begin{outline}[Outline of the formal proof and proof of the one-sided baseline]
-For the one-sided baseline (proved in text), on any $A$ in \lean{InContiguousCoarseFineSpan}$(s_A)$,
+\begin{outline}
+For the one-sided baseline (\lean{swapCode_oneSidedTP_le_contiguousCoarseFine}), on any $A$ in
+\lean{InContiguousCoarseFineSpan}$(s_A)$,
 every $A_a$ acts on each of the $s_A + 1$ cyclic intervals $\{0\}, \dots, \{s_A - 1\},
 \{s_A, \dots, d - 1\}$ as a fixed linear combination of rotations, so $\sum_a A_a X B_a^{\T} = X^{\T}$
 places $X^{\T}$ in an $(s_A + 1)$-interval class-uniform code of dimension at most

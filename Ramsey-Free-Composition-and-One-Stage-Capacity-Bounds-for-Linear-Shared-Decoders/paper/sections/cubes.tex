@@ -102,7 +102,7 @@ gives the dimension bound.
 
 \begin{theorem}[Theorem 2A: Ramsey-free two-stage exact factorization cutoff]\label{thm:2a}
 \formal{AffineCubeCompositionProofs.lean}{theorem2A_TwoStageRamseyFreeCutoff}
-\partformal{AffineCubeConsequences.lean}{theorem2A_GrowingClassesNonFactorization}{the asymptotic $o\bigl(d^{1/2^{M_2}}\bigr)$ and $(1 - \eps)\log_2\log_2 d$ specializations of the pointwise inequality and the translate-covering step turning Behrend's $3$-AP-free set \cite{Behrend1946} into a $2^{O(\sqrt{\log d})}$-class partition of $\Z_d$.}
+\formal{AffineCubeConsequences.lean}{theorem2A_GrowingClassesNonFactorization,theorem2A_LittleO_FixedM2,theorem2A_LogLog_FixedM1,behrendThreeAPFreePartition_exists}
 Let $F$ be any field, let $d, b, M_1, M_2 \ge 1$, and let $p_1 : \Z_d \to \mathrm{Fin}\,M_1$ and
 $p_2 : \Z_d \to \mathrm{Fin}\,M_2$. If two $F$-linear class-uniform maps $K_1, K_2$ on
 $\Mat_{d\times d}(F^b)$ satisfy $K_2 \circ K_1 = \tau$, then
@@ -117,7 +117,7 @@ $M_1 \ge 2$ and $\eps \in (0, 1)$ are fixed and $M_2(d) \le (1 - \eps)\log_2\log
 sufficiently large $d$ no exact two-stage linear factorization $K_2 \circ K_1 = \tau$ on
 $\Mat_{d\times d}(F^b)$ exists over any field $F$.
 \end{theorem}
-\begin{outline}[Outline of the formal proof and proof of the remaining claims]
+\begin{outline}
 Assume for contradiction that $\max(8M_1 M_2^2, (2M_1)^{2^{M_2}}) < d$ and $K_2 \circ K_1 = \tau$.
 By \Cref{lem:cs-cube}(b), some $p_1$-class contains an affine $M_2$-cube with steps
 $1 \le s_t \le \lfloor d/(2M_2^2)\rfloor$. On the $q$-channel common-message module
@@ -129,18 +129,19 @@ Applying \Cref{lem:affine-cube} with $k = M_2$ gives
   (M_2 + 1) bd \;\le\; b M_2 d + \sum_{t=0}^{M_2 - 1} b M_2 \lfloor d/(2 M_2^2)\rfloor
   \;\le\; b M_2 d + \frac{1}{2} bd,
 \]
-contradicting $bd > 0$. For the asymptotic clauses (proved in text), if $M_2 \ge 2$ is fixed and
+contradicting $bd > 0$. For the asymptotic clauses, if $M_2 \ge 2$ is fixed and
 $M_1(d) = o(d^{1/2^{M_2}})$, then $(2M_1(d))^{2^{M_2}} = o(d)$ and $8M_1(d)M_2^2 = o(d^{1/4}) = o(d)$;
 if $M_1 \ge 2$ is fixed and $M_2(d) \le (1 - \eps)\log_2\log_2 d$, then $2^{M_2(d)} \le (\log_2 d)^{1-\eps}$,
 so $\log_2((2M_1)^{2^{M_2(d)}}) \le (\log_2(2M_1))(\log_2 d)^{1-\eps} = o(\log_2 d)$ while
 $8M_1 M_2(d)^2 = O\bigl((\log\log d)^2\bigr) = o(d)$. Finally, for
-$d \ge 4$ and $N = \lfloor d/2\rfloor$, Behrend \cite{Behrend1946} constructs an integer $3$-AP-free
-set $B \subseteq \{0, \dots, N-1\}$ of size $\abs{B} \ge N\exp(-c\sqrt{\log N})$. Because
+$d \ge 4$ and $N = \lfloor d/2\rfloor$, Behrend's bound \cite{Behrend1946}
+(\leanname{Behrend.roth_lower_bound} in Mathlib \cite{Mathlib2026}) supplies an integer $3$-AP-free
+set $B \subseteq \{0, \dots, N-1\}$ of size $\abs{B} \ge N\exp(-4\sqrt{\log N})$. Because
 $0 \le x + z, 2y < d$ for all $x, y, z \in B$, $B$ (and hence every cyclic translate $t + B \subseteq
 \Z_d$) is $3$-AP-free modulo $d$; greedily choosing translates $t_i + B$ covering at least a
 $\abs{B}/d$ fraction of the remaining uncovered residues covers $\Z_d$ in at most
-$\lceil (d/\abs{B})\log d\rceil + 1 = 2^{O(\sqrt{\log d})}$ translates, and taking disjoint
-remainders $(t_i + B) \setminus \bigcup_{j < i}(t_j + B)$ partitions $\Z_d$ into
+$\lceil (d/\abs{B})\log d\rceil + 1 \le 2^{16\sqrt{\log d}}$ translates (\lean{behrendClassCount}), and
+assigning each residue to its first covering translate (\lean{behrendPartition}) partitions $\Z_d$ into
 $2^{O(\sqrt{\log d})}$ $3$-AP-free classes.
 \end{outline}
 

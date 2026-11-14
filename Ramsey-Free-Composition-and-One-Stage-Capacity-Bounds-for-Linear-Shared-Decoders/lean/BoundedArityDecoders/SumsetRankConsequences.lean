@@ -16,11 +16,12 @@ Kernel-verified refinements and direct consequences of Theorem 2B
 3. **Single-Class Second Stage (`M₂ = 1`, `Ω(b d log d)`) & Explicit Constants**:
    Clean `M₂ = 1` specialization (`theorem2B_OneSecondStage_OmegaLog`) and explicit quantitative
    formulas `theorem2BExplicitConst` and `theorem2BExplicitThreshold` (`theorem2B_ExplicitConstant`).
-4. **Unconditional `d = 12` Primitive Root Witness & `bandRowSpace` Channel Equivalence**:
+4. **Unconditional `d = 12` Primitive Root Witness & `bandRowSpace` Channel Equivalences**:
    Unconditional primitive 12th root `zeta12 ∈ ℂ` (`exists_primitive_twelfth_root_complex`),
    unconditional 24-dimensional realization (`control_D12_UnconditionalExists`), and explicit
-   shift-intertwining `LinearEquiv` with `ColumnAmbient (bandRowSpace ...)` establishing the
-   single-class relaxation barrier (`control_D12_BandRowSpaceChannelEquiv`).
+   shift-intertwining `LinearEquiv`s with `ColumnAmbient (bandRowSpace ...)` at both
+   `(b, M₂, k) = (2, 1, 2)` (`control_D12_BandRowSpaceChannelEquiv`) and
+   `(b, M₂, k) = (1, 2, 2)` (`control_D12_TwoClassBandRowSpaceEquiv`, where `24 = b * k * d`).
 -/
 
 namespace BoundedArityDecoders
@@ -870,6 +871,158 @@ theorem control_D12_BandRowSpaceChannelEquiv :
       (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H) c
         (d12BandRowSpaceEquiv.symm y))) = a₀ + (d12AddChar c) • a₁
     rw [hintertwine, d12BandRowSpaceEquiv.apply_symm_apply, hy_eval c hc]
+    rfl
+
+/-- Half-cycle 2-class partition `[0,…,5] ↦ 0`, `[6,…,11] ↦ 1` on `ZMod 12`. -/
+def d12TwoClassPartition (c : ZMod 12) : Fin 2 :=
+  if c.val < 6 then 0 else 1
+
+/-- Explicit shift-intertwining `ℂ`-linear equivalence between
+`ColumnAmbient (bandRowSpace (b := 1) d12AddChar d12TwoClassPartition 2)` (`b = 1, M₂ = 2, k = 2`,
+where `q = b * M₂ * k = 4` and `b * k * d = 24`) and `ZMod 12 → Fin 4 → ℂ`. -/
+noncomputable def d12TwoClassBandRowSpaceEquiv :
+    SharedDecoders.ColumnAmbient
+      (SharedDecoders.bandRowSpace (b := 1) d12AddChar d12TwoClassPartition 2) ≃ₗ[ℂ]
+      (ZMod 12 → Fin 4 → ℂ) := by
+  let PMap := SharedDecoders.bandPatternMap (b := 1) d12AddChar d12TwoClassPartition 2
+  have hPMap_inj : Function.Injective PMap := by
+    rw [injective_iff_map_eq_zero]
+    intro a ha
+    have hinj := d12AddChar_injective_and_primitive.1
+    funext m ν l
+    have hl : l = 0 := Subsingleton.elim l 0
+    subst hl
+    fin_cases m
+    · have h0 := congrFun (congrFun ha 0) 0
+      have h1 := congrFun (congrFun ha 1) 0
+      change (∑ ν' : Fin 2, d12AddChar ((ν'.val : ZMod 12) * 0) *
+        a (d12TwoClassPartition 0) ν' 0) = 0 at h0
+      change (∑ ν' : Fin 2, d12AddChar ((ν'.val : ZMod 12) * 1) *
+        a (d12TwoClassPartition 1) ν' 0) = 0 at h1
+      have hp0 : d12TwoClassPartition 0 = 0 := by decide
+      have hp1 : d12TwoClassPartition 1 = 0 := by decide
+      rw [hp0] at h0
+      rw [hp1] at h1
+      simp only [Fin.sum_univ_two, Fin.val_zero, Fin.val_one, Nat.cast_zero, Nat.cast_one,
+        zero_mul, one_mul, mul_one, d12AddChar.map_zero_eq_one] at h0 h1
+      have hne01 : d12AddChar 1 - 1 ≠ 0 := by
+        rw [sub_ne_zero]
+        intro hEq
+        rw [← d12AddChar.map_zero_eq_one] at hEq
+        exact absurd (hinj hEq) (by decide)
+      have hdiff : (d12AddChar 1 - 1) * a 0 1 0 = 0 := by linear_combination h1 - h0
+      have ha1 : a 0 1 0 = 0 := (mul_eq_zero.mp hdiff).resolve_left hne01
+      have ha0 : a 0 0 0 = 0 := by linear_combination h0 - ha1
+      fin_cases ν
+      · exact ha0
+      · exact ha1
+    · have h6 := congrFun (congrFun ha 6) 0
+      have h7 := congrFun (congrFun ha 7) 0
+      change (∑ ν' : Fin 2, d12AddChar ((ν'.val : ZMod 12) * 6) *
+        a (d12TwoClassPartition 6) ν' 0) = 0 at h6
+      change (∑ ν' : Fin 2, d12AddChar ((ν'.val : ZMod 12) * 7) *
+        a (d12TwoClassPartition 7) ν' 0) = 0 at h7
+      have hp6 : d12TwoClassPartition 6 = 1 := by decide
+      have hp7 : d12TwoClassPartition 7 = 1 := by decide
+      rw [hp6] at h6
+      rw [hp7] at h7
+      simp only [Fin.sum_univ_two, Fin.val_zero, Fin.val_one, Nat.cast_zero, Nat.cast_one,
+        zero_mul, one_mul, d12AddChar.map_zero_eq_one] at h6 h7
+      have hne67 : d12AddChar 7 - d12AddChar 6 ≠ 0 := by
+        rw [sub_ne_zero]
+        intro hEq
+        exact absurd (hinj hEq) (by decide)
+      have hdiff : (d12AddChar 7 - d12AddChar 6) * a 1 1 0 = 0 := by linear_combination h7 - h6
+      have ha1 : a 1 1 0 = 0 := (mul_eq_zero.mp hdiff).resolve_left hne67
+      have ha0 : a 1 0 0 = 0 := by linear_combination h6 - d12AddChar 6 * ha1
+      fin_cases ν
+      · exact ha0
+      · exact ha1
+  let eRange : (Fin 2 → Fin 2 → Fin 1 → ℂ) ≃ₗ[ℂ]
+      SharedDecoders.bandRowSpace (b := 1) d12AddChar d12TwoClassPartition 2 :=
+    LinearEquiv.ofInjective PMap hPMap_inj
+  let eFin4 : (Fin 2 → Fin 2 → Fin 1 → ℂ) ≃ₗ[ℂ] (Fin 4 → ℂ) :=
+    { toFun := fun g ch => g ⟨ch.val / 2, by omega⟩ ⟨ch.val % 2, by omega⟩ 0
+      invFun := fun v m ν _ => v ⟨2 * m.val + ν.val, by omega⟩
+      left_inv := fun g => by
+        funext m ν l
+        have hl : l = 0 := Subsingleton.elim l 0; subst hl
+        fin_cases m <;> fin_cases ν <;> rfl
+      right_inv := fun v => by
+        funext ch
+        fin_cases ch <;> rfl
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  let φ := eRange.symm.trans eFin4
+  exact
+    { toFun := fun x u => φ (x () u)
+      invFun := fun y _ u => φ.symm (y u)
+      left_inv := fun x => by funext u c; exact φ.symm_apply_apply (x u c)
+      right_inv := fun y => by funext c; exact φ.apply_symm_apply (y c)
+      map_add' := fun x y => by funext c; exact map_add φ (x () c) (y () c)
+      map_smul' := fun r x => by funext c; exact map_smul φ r (x () c) }
+
+/-- **Explicit `(b = 1, M₂ = 2, k = 2)` `bandRowSpace` 4-Channel Equivalence.**
+At `b = 1, M₂ = 2, k = 2` (`b * M₂ * k = 4`, `b * k * d = 24`), `bandRowSpace` on
+`d12TwoClassPartition` has exact dimension `4`, and `d12TwoClassBandRowSpaceEquiv` intertwines
+`SharedDecoders.channelRotation` with `cyclicChannelShift ℂ 12 4`, transporting the
+`24 = b * k * d`-dimensional shift-covariant band subspace onto `J12`. -/
+theorem control_D12_TwoClassBandRowSpaceEquiv :
+    let H₂ := SharedDecoders.bandRowSpace (b := 1) d12AddChar d12TwoClassPartition 2
+    let J12 : Finset (ZMod 12) := {0, 1, 3, 4, 7, 9}
+    finrank ℂ H₂ = 4 ∧
+    (∀ (c : ZMod 12) (x : SharedDecoders.ColumnAmbient H₂),
+      d12TwoClassBandRowSpaceEquiv
+        (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c x) =
+        cyclicChannelShift ℂ 12 4 c (d12TwoClassBandRowSpaceEquiv x)) ∧
+    ∃ (W_band : Submodule ℂ (SharedDecoders.ColumnAmbient H₂))
+      (L_band : SharedDecoders.ColumnAmbient H₂ →ₗ[ℂ] (Fin 12 → ℂ)),
+      finrank ℂ W_band = 1 * 2 * 12 ∧
+      (∀ w ∈ W_band,
+        (∀ c ∈ J12, L_band (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c w) = 0) →
+          w = 0) ∧
+      ∀ a₀ a₁ : Fin 12 → ℂ,
+        ∃ w ∈ W_band, ∀ c ∈ J12,
+          L_band (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c w) =
+            a₀ + (d12AddChar c) • a₁ := by
+  intro H₂ J12
+  have hdimH₂ : finrank ℂ H₂ = 4 := by
+    have hAmbient : finrank ℂ (SharedDecoders.ColumnAmbient H₂) = 48 := by
+      rw [d12TwoClassBandRowSpaceEquiv.finrank_eq]
+      simp [Module.finrank_pi_fintype, ZMod.card]
+    have hProd : finrank ℂ (SharedDecoders.ColumnAmbient H₂) = 12 * finrank ℂ H₂ := by
+      simp [SharedDecoders.ColumnAmbient, Module.finrank_pi_fintype, ZMod.card]
+    omega
+  have hintertwine : ∀ (c : ZMod 12) (x : SharedDecoders.ColumnAmbient H₂),
+      d12TwoClassBandRowSpaceEquiv
+        (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c x) =
+        cyclicChannelShift ℂ 12 4 c (d12TwoClassBandRowSpaceEquiv x) := fun _ _ => rfl
+  obtain ⟨_, W, L, hdimW, hinjW, hrealW⟩ := control_D12_UnconditionalExists
+  let W_band : Submodule ℂ (SharedDecoders.ColumnAmbient H₂) :=
+    W.map d12TwoClassBandRowSpaceEquiv.symm.toLinearMap
+  let L_band : SharedDecoders.ColumnAmbient H₂ →ₗ[ℂ] (Fin 12 → ℂ) :=
+    L.comp d12TwoClassBandRowSpaceEquiv.toLinearMap
+  have hdim_band : finrank ℂ W_band = 1 * 2 * 12 := by
+    rw [d12TwoClassBandRowSpaceEquiv.symm.finrank_map_eq W, hdimW]
+  refine ⟨hdimH₂, hintertwine, W_band, L_band, hdim_band, ?_, ?_⟩
+  · rintro w ⟨y, hyW, rfl⟩ hz
+    have hy0 : y = 0 := by
+      apply hinjW y hyW
+      intro c hc
+      have hzc := hz c hc
+      change L (d12TwoClassBandRowSpaceEquiv
+        (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c
+          (d12TwoClassBandRowSpaceEquiv.symm y))) = 0 at hzc
+      rwa [hintertwine, d12TwoClassBandRowSpaceEquiv.apply_symm_apply] at hzc
+    simp [hy0]
+  · intro a₀ a₁
+    obtain ⟨y, hyW, hy_eval⟩ := hrealW a₀ a₁
+    refine ⟨d12TwoClassBandRowSpaceEquiv.symm y, ⟨y, hyW, rfl⟩, ?_⟩
+    intro c hc
+    change L (d12TwoClassBandRowSpaceEquiv
+      (SharedDecoders.channelRotation (F := ℂ) (I := Unit) (A := H₂) c
+        (d12TwoClassBandRowSpaceEquiv.symm y))) = a₀ + (d12AddChar c) • a₁
+    rw [hintertwine, d12TwoClassBandRowSpaceEquiv.apply_symm_apply, hy_eval c hc]
     rfl
 
 end BoundedArityDecoders

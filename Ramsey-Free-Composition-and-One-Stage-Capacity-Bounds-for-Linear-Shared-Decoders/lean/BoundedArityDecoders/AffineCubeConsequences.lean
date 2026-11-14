@@ -1,4 +1,7 @@
 import BoundedArityDecoders.AffineCubeCompositionProofs
+import Mathlib.Combinatorics.Additive.AP.Three.Behrend
+import Mathlib.Analysis.Asymptotics.Defs
+import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 /-!
 # Consequences & Controls — Part II.A: Single-Subset Cube Extraction, General-Field `d = 13`
@@ -8,10 +11,14 @@ This module establishes the structural consequences and general-field controls a
 Theorem 2A (`BoundedArityDecoders.AffineCubeCompositionProofs`):
 
 1. `singleSubset_CauchySchwarzAffineCubeExtraction`, `denseSubset_AffineCubeCommonMessageBound`,
-   and `theorem2A_GrowingClassesNonFactorization`: single-subset Cauchy–Schwarz `k`-cube
-   extraction inside any dense subset `J ⊆ ZMod d` (`d ≤ M_eff * J.card`, even when `J.card < d / 2`
-   or `ThreeAPFreeMod J`), dense-subset common-message bounds, single-dense-class impossibility,
-   and growing-class non-factorization `M₁(d), M₂(d)`.
+   `theorem2A_GrowingClassesNonFactorization`, `theorem2A_LittleO_FixedM2`,
+   `theorem2A_LogLog_FixedM1`, and `behrendThreeAPFreePartition_exists`: single-subset
+   Cauchy–Schwarz `k`-cube extraction inside any dense subset `J ⊆ ZMod d` (`d ≤ M_eff * J.card`,
+   even when `J.card < d / 2` or `ThreeAPFreeMod J`), dense-subset common-message bounds,
+   single-dense-class impossibility, growing-class non-factorization `M₁(d), M₂(d)`, the
+   `M₁(d) = o(d^{1/2^{M₂}})` and `M₂(d) ≤ (1 - ε) log₂ log₂ d` asymptotic specializations, and
+   greedy translate-covering of `ZMod d` by Behrend's `3`-AP-free set into `2^{O(√(log d))}`
+   `3`-AP-free classes.
 2. `control_D13_GeneralFieldAndProgressionBridge`: exact cyclic shift kernel dimension `2` over
    every field, Paper 19 `commonMessage_finrank_le` sharpness (`D = 14`) on every 2-point
    progression over every field, and the `D = 9` affine 2-cube witness on `J = {0, 1, 4, 5}` over
@@ -615,6 +622,705 @@ theorem theorem2A_GrowingClassesNonFactorization :
       have : (2 * M₁) ^ (2 ^ 1) = 4 * M₁ ^ 2 := by ring
       rwa [this]
     exact Nat.not_le_of_gt hlt hle
+
+/-- **Asymptotic Fixed-`M₂` Little-`o` Specialization of Theorem 2A.**
+For any fixed `M₂ ≥ 2` and any schedule `M₁ : ℕ → ℕ` with `M₁(d) ≥ 1` eventually and
+`M₁(d) = o(d^{1 / 2^{M₂}})`, eventually `max (8 * M₁(d) * M₂^2) ((2 * M₁(d))^{2^{M₂}}) < d`, so
+no exact two-stage linear factorization `K₂ ∘ K₁ = swapLinear F` exists over any field `F` at any
+width `b ≥ 1`. -/
+theorem theorem2A_LittleO_FixedM2.{u}
+    (M₂ : ℕ) (hM₂ : 2 ≤ M₂) (M₁ : ℕ → ℕ)
+    (hM₁_pos : ∀ᶠ d in Filter.atTop, 1 ≤ M₁ d)
+    (hLittleO : Asymptotics.IsLittleO Filter.atTop
+      (fun d : ℕ => (M₁ d : ℝ))
+      (fun d : ℕ => (d : ℝ) ^ ((1 : ℝ) / (2 ^ M₂ : ℝ)))) :
+    ∀ᶠ d in Filter.atTop,
+      max (8 * M₁ d * M₂ ^ 2) ((2 * M₁ d) ^ (2 ^ M₂)) < d ∧
+      ∀ (F : Type u) [Field F] (b : ℕ), 1 ≤ b →
+        ∀ [NeZero d] (p₁ : ZMod d → Fin (M₁ d)) (p₂ : ZMod d → Fin M₂),
+          ¬ ∃ K₁ K₂ : State d (Fin b → F) →ₗ[F] State d (Fin b → F),
+              ClassUniform p₁ K₁ ∧ ClassUniform p₂ K₂ ∧ K₂.comp K₁ = swapLinear F := by
+  let K : ℕ := 2 ^ M₂
+  have hK_ge4 : 4 ≤ K := by
+    calc 4 = 2 ^ 2 := by norm_num
+      _ ≤ 2 ^ M₂ := Nat.pow_le_pow_right (by omega) hM₂
+  have hK_pos_r : (0 : ℝ) < (K : ℝ) := by exact_mod_cast (show 0 < K by omega)
+  let α : ℝ := (1 : ℝ) / (K : ℝ)
+  have hα_le1 : α ≤ 1 := div_le_one_of_le₀ (by exact_mod_cast (show 1 ≤ K by omega)) hK_pos_r.le
+  let c₁ : ℝ := min (1 / 4) (1 / (16 * (M₂ : ℝ) ^ 2))
+  have hc₁_pos : 0 < c₁ := by
+    have hM₂_pos : (0 : ℝ) < (M₂ : ℝ) := by exact_mod_cast (show 0 < M₂ by omega)
+    dsimp [c₁]
+    exact lt_min (by norm_num) (by positivity)
+  have hBound := hLittleO.bound hc₁_pos
+  have hAtTop2 : ∀ᶠ d : ℕ in Filter.atTop, 2 ≤ d := Filter.eventually_ge_atTop 2
+  filter_upwards [hBound, hM₁_pos, hAtTop2] with d hd_bnd hM₁_d hd2
+  have hd_pos : (0 : ℝ) < (d : ℝ) := by exact_mod_cast (show 0 < d by omega)
+  have hd_ge1 : (1 : ℝ) ≤ (d : ℝ) := by exact_mod_cast (show 1 ≤ d by omega)
+  have hdα_nonneg : 0 ≤ (d : ℝ) ^ α := Real.rpow_nonneg hd_pos.le α
+  have hM₁_le : (M₁ d : ℝ) ≤ c₁ * (d : ℝ) ^ α := by
+    rw [Real.norm_of_nonneg (Nat.cast_nonneg _),
+      Real.norm_of_nonneg (Real.rpow_nonneg hd_pos.le _)] at hd_bnd
+    have hcastK : (K : ℝ) = (2 ^ M₂ : ℝ) := by dsimp [K]; push_cast; rfl
+    simpa only [α, hcastK] using hd_bnd
+  have hlt1 : 8 * M₁ d * M₂ ^ 2 < d := by
+    have hc₁_le2 : c₁ ≤ 1 / (16 * (M₂ : ℝ) ^ 2) := min_le_right _ _
+    have hdα_le_d : (d : ℝ) ^ α ≤ (d : ℝ) := by
+      calc (d : ℝ) ^ α ≤ (d : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hd_ge1 hα_le1
+        _ = (d : ℝ) := Real.rpow_one (d : ℝ)
+    have hM₂_ne : (M₂ : ℝ) ^ 2 ≠ 0 := by
+      have : (0 : ℝ) < (M₂ : ℝ) := by exact_mod_cast (show 0 < M₂ by omega)
+      positivity
+    have h8_real : ((8 * M₁ d * M₂ ^ 2 : ℕ) : ℝ) < (d : ℝ) := by
+      push_cast
+      have h1 : (M₁ d : ℝ) ≤ (1 / (16 * (M₂ : ℝ) ^ 2)) * (d : ℝ) :=
+        hM₁_le.trans (mul_le_mul hc₁_le2 hdα_le_d hdα_nonneg (by positivity))
+      have h2 : 8 * (M₁ d : ℝ) * (M₂ : ℝ) ^ 2 ≤
+          8 * ((1 / (16 * (M₂ : ℝ) ^ 2)) * (d : ℝ)) * (M₂ : ℝ) ^ 2 := by
+        nlinarith [sq_nonneg (M₂ : ℝ)]
+      have h3 : 8 * ((1 / (16 * (M₂ : ℝ) ^ 2)) * (d : ℝ)) * (M₂ : ℝ) ^ 2 = (1 / 2 : ℝ) * (d : ℝ) := by
+        field_simp [hM₂_ne]
+        ring
+      linarith
+    exact Nat.cast_lt.mp h8_real
+  have hlt2 : (2 * M₁ d) ^ (2 ^ M₂) < d := by
+    have hc₁_le1 : c₁ ≤ 1 / 4 := min_le_left _ _
+    have h2M_le : (2 * (M₁ d : ℝ)) ≤ (1 / 2 : ℝ) * (d : ℝ) ^ α := by
+      have h := mul_le_mul_of_nonneg_right hc₁_le1 hdα_nonneg
+      linarith
+    have hpow_le : (2 * (M₁ d : ℝ)) ^ K ≤ ((1 / 2 : ℝ) * (d : ℝ) ^ α) ^ K :=
+      pow_le_pow_left₀ (by positivity) h2M_le K
+    have hdαK : ((d : ℝ) ^ α) ^ K = (d : ℝ) := by
+      rw [← Real.rpow_natCast ((d : ℝ) ^ α) K, ← Real.rpow_mul hd_pos.le]
+      have hmul : α * (K : ℝ) = 1 := one_div_mul_cancel hK_pos_r.ne'
+      rw [hmul, Real.rpow_one]
+    have hhalfK : (1 / 2 : ℝ) ^ K ≤ 1 / 2 := by
+      calc (1 / 2 : ℝ) ^ K ≤ (1 / 2 : ℝ) ^ 1 :=
+            pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+        _ = 1 / 2 := pow_one _
+    have hpow_rhs : ((1 / 2 : ℝ) * (d : ℝ) ^ α) ^ K = (1 / 2 : ℝ) ^ K * (d : ℝ) := by
+      rw [mul_pow, hdαK]
+    rw [hpow_rhs] at hpow_le
+    have hpow_real : (((2 * M₁ d) ^ K : ℕ) : ℝ) < (d : ℝ) := by
+      have hcast_lhs : (((2 * M₁ d) ^ K : ℕ) : ℝ) = (2 * (M₁ d : ℝ)) ^ K := by push_cast; rfl
+      rw [hcast_lhs]
+      nlinarith
+    exact Nat.cast_lt.mp hpow_real
+  have hmax : max (8 * M₁ d * M₂ ^ 2) ((2 * M₁ d) ^ (2 ^ M₂)) < d :=
+    max_lt hlt1 hlt2
+  refine ⟨hmax, ?_⟩
+  intro F _ b hb _ p₁ p₂ ⟨K₁, K₂, h₁u, h₂u, hcomp⟩
+  exact Nat.not_le_of_gt hmax
+    (theorem2A_TwoStageRamseyFreeCutoff F d b (M₁ d) M₂ p₁ p₂ K₁ K₂ hb hM₁_d (by omega) h₁u h₂u hcomp)
+
+/-- **Asymptotic Fixed-`M₁` Doubly-Logarithmic Specialization of Theorem 2A.**
+For any fixed `M₁ ≥ 2`, any `ε ∈ (0, 1)`, and any schedule `M₂ : ℕ → ℕ` eventually satisfying
+`1 ≤ M₂(d)` and `M₂(d) ≤ (1 - ε) * log₂ (log₂ d)`, eventually
+`max (8 * M₁ * M₂(d)^2) ((2 * M₁)^{2^{M₂(d)}}) < d`, ruling out any exact two-stage linear
+factorization `K₂ ∘ K₁ = swapLinear F` over any field `F` at any width `b ≥ 1`. -/
+theorem theorem2A_LogLog_FixedM1.{u}
+    (M₁ : ℕ) (hM₁ : 2 ≤ M₁) (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1)
+    (M₂ : ℕ → ℕ)
+    (hM₂ : ∀ᶠ d in Filter.atTop,
+      1 ≤ M₂ d ∧ (M₂ d : ℝ) ≤ (1 - ε) * Real.logb 2 (Real.logb 2 (d : ℝ))) :
+    ∀ᶠ d in Filter.atTop,
+      max (8 * M₁ * (M₂ d) ^ 2) ((2 * M₁) ^ (2 ^ M₂ d)) < d ∧
+      ∀ (F : Type u) [Field F] (b : ℕ), 1 ≤ b →
+        ∀ [NeZero d] (p₁ : ZMod d → Fin M₁) (p₂ : ZMod d → Fin (M₂ d)),
+          ¬ ∃ K₁ K₂ : State d (Fin b → F) →ₗ[F] State d (Fin b → F),
+              ClassUniform p₁ K₁ ∧ ClassUniform p₂ K₂ ∧ K₂.comp K₁ = swapLinear F := by
+  let B₀ : ℝ := Real.logb 2 (2 * (M₁ : ℝ))
+  have h2M₁_gt1 : (1 : ℝ) < 2 * (M₁ : ℝ) := by
+    have : (2 : ℝ) ≤ (M₁ : ℝ) := by exact_mod_cast hM₁
+    linarith
+  have hB₀_pos : 0 < B₀ := Real.logb_pos one_lt_two h2M₁_gt1
+  let L₀ : ℝ := max 4 (B₀ ^ (1 / ε) + 1)
+  let d₀ : ℕ := max (max 16 ((2048 * M₁) ^ 2 + 1)) (Nat.ceil ((2 : ℝ) ^ L₀) + 1)
+  filter_upwards [hM₂, Filter.eventually_ge_atTop d₀] with d ⟨hM₂_pos, hM₂_ub⟩ hd_ge
+  have hd_gt_rpow : (2 : ℝ) ^ L₀ < (d : ℝ) := by
+    have hnat : Nat.ceil ((2 : ℝ) ^ L₀) + 1 ≤ d :=
+      le_trans (le_max_right _ _) hd_ge
+    have hlt_nat : (Nat.ceil ((2 : ℝ) ^ L₀) : ℝ) < (d : ℝ) := by exact_mod_cast (show Nat.ceil ((2 : ℝ) ^ L₀) < d by omega)
+    exact lt_of_le_of_lt (Nat.le_ceil _) hlt_nat
+  have hd_pos : (0 : ℝ) < (d : ℝ) := lt_trans (Real.rpow_pos_of_pos zero_lt_two L₀) hd_gt_rpow
+  let L₂ : ℝ := Real.logb 2 (d : ℝ)
+  have hL₀_lt_L₂ : L₀ < L₂ := (Real.lt_logb_iff_rpow_lt one_lt_two hd_pos).mpr hd_gt_rpow
+  have hL₂_gt4 : 4 < L₂ := lt_of_le_of_lt (le_max_left _ _) hL₀_lt_L₂
+  have hL₂_pos : 0 < L₂ := by linarith
+  have hlogL₂_pos : 0 < Real.logb 2 L₂ := Real.logb_pos one_lt_two (by linarith)
+  have hlt2 : (2 * M₁) ^ (2 ^ M₂ d) < d := by
+    have h2pow_le : ((2 ^ M₂ d : ℕ) : ℝ) ≤ L₂ ^ (1 - ε) := by
+      have hcast : ((2 ^ M₂ d : ℕ) : ℝ) = (2 : ℝ) ^ (M₂ d : ℝ) := by
+        push_cast; rw [Real.rpow_natCast]
+      rw [hcast]
+      calc (2 : ℝ) ^ (M₂ d : ℝ)
+          ≤ (2 : ℝ) ^ ((1 - ε) * Real.logb 2 L₂) :=
+            Real.rpow_le_rpow_of_exponent_le one_le_two hM₂_ub
+        _ = ((2 : ℝ) ^ Real.logb 2 L₂) ^ (1 - ε) := by
+            rw [mul_comm, Real.rpow_mul zero_le_two]
+        _ = L₂ ^ (1 - ε) := by
+            rw [Real.rpow_logb zero_lt_two (by norm_num) hL₂_pos]
+    have hB₀_lt : B₀ < L₂ ^ ε := by
+      have hbase_lt : B₀ ^ (1 / ε) < L₂ := by
+        have : B₀ ^ (1 / ε) + 1 ≤ L₀ := le_max_right _ _
+        linarith
+      have hrpow := Real.rpow_lt_rpow (Real.rpow_nonneg hB₀_pos.le _) hbase_lt hε0
+      rwa [← Real.rpow_mul hB₀_pos.le, one_div_mul_cancel hε0.ne', Real.rpow_one] at hrpow
+    have hprod_lt : ((2 ^ M₂ d : ℕ) : ℝ) * B₀ < L₂ := by
+      have hL₂_1mε_pos : 0 < L₂ ^ (1 - ε) := Real.rpow_pos_of_pos hL₂_pos (1 - ε)
+      calc ((2 ^ M₂ d : ℕ) : ℝ) * B₀
+          ≤ L₂ ^ (1 - ε) * B₀ := mul_le_mul_of_nonneg_right h2pow_le hB₀_pos.le
+        _ < L₂ ^ (1 - ε) * L₂ ^ ε := mul_lt_mul_of_pos_left hB₀_lt hL₂_1mε_pos
+        _ = L₂ ^ ((1 - ε) + ε) := (Real.rpow_add hL₂_pos (1 - ε) ε).symm
+        _ = L₂ := by rw [sub_add_cancel, Real.rpow_one]
+    have hlogb_pow : Real.logb 2 (((2 * M₁ : ℕ) : ℝ) ^ (2 ^ M₂ d)) < Real.logb 2 (d : ℝ) := by
+      rw [Real.logb_pow]
+      simpa [B₀, L₂] using hprod_lt
+    have hpow_pos : (0 : ℝ) < ((2 * M₁ : ℕ) : ℝ) ^ (2 ^ M₂ d) := by
+      have : (0 : ℝ) < ((2 * M₁ : ℕ) : ℝ) := by positivity
+      positivity
+    have hreal_lt : (((2 * M₁) ^ (2 ^ M₂ d) : ℕ) : ℝ) < (d : ℝ) := by
+      push_cast
+      exact (Real.logb_lt_logb_iff one_lt_two (by simpa using hpow_pos) hd_pos).mp
+        (by simpa using hlogb_pow)
+    exact Nat.cast_lt.mp hreal_lt
+  have hlt1 : 8 * M₁ * (M₂ d) ^ 2 < d := by
+    have hlog2_gt_half : (1 / 2 : ℝ) < Real.log 2 := by linarith [Real.log_two_gt_d9]
+    have hlog2_pos : 0 < Real.log 2 := by linarith
+    have hlog_lt_pos : ∀ x : ℝ, 0 < x → Real.log x < x := by
+      intro x hx
+      have h1 : Real.log x + 1 ≤ x := by
+        simpa [Real.exp_log hx] using Real.add_one_le_exp (Real.log x)
+      linarith
+    have hlogbL₂_lt : Real.logb 2 L₂ < 2 * L₂ := by
+      rw [Real.logb, div_lt_iff₀ hlog2_pos]
+      have hlog_lt : Real.log L₂ < L₂ := hlog_lt_pos L₂ hL₂_pos
+      nlinarith
+    let q : ℝ := (d : ℝ) ^ (1 / 4 : ℝ)
+    have hq_pos : 0 < q := Real.rpow_pos_of_pos hd_pos (1 / 4 : ℝ)
+    have hd_eq_q4 : (d : ℝ) = q ^ (4 : ℝ) := by
+      dsimp [q]
+      rw [← Real.rpow_mul hd_pos.le]
+      norm_num
+    have hL₂_lt_8q : L₂ < 8 * q := by
+      dsimp [L₂]
+      rw [Real.logb, div_lt_iff₀ hlog2_pos, hd_eq_q4, Real.log_rpow hq_pos]
+      have hlogq : Real.log q < q := hlog_lt_pos q hq_pos
+      nlinarith
+    have hM₂_lt_16q : (M₂ d : ℝ) < 16 * q := by
+      have h1mε_lt : (1 - ε) * Real.logb 2 L₂ < Real.logb 2 L₂ := by nlinarith
+      linarith
+    have hM₂_sq_lt : (M₂ d : ℝ) ^ 2 < 256 * (d : ℝ) ^ (1 / 2 : ℝ) := by
+      have hM₂_nn : 0 ≤ (M₂ d : ℝ) := Nat.cast_nonneg _
+      have hsq : (M₂ d : ℝ) ^ 2 < (16 * q) ^ 2 := by nlinarith
+      have hq2 : q ^ 2 = (d : ℝ) ^ (1 / 2 : ℝ) := by
+        dsimp [q]
+        rw [← Real.rpow_natCast ((d : ℝ) ^ (1 / 4 : ℝ)) 2, ← Real.rpow_mul hd_pos.le]
+        norm_num
+      nlinarith
+    let r : ℝ := (d : ℝ) ^ (1 / 2 : ℝ)
+    have hr_pos : 0 < r := Real.rpow_pos_of_pos hd_pos (1 / 2 : ℝ)
+    have hr_sq : r ^ 2 = (d : ℝ) := by
+      dsimp [r]
+      rw [← Real.rpow_natCast ((d : ℝ) ^ (1 / 2 : ℝ)) 2, ← Real.rpow_mul hd_pos.le]
+      norm_num
+    have hd_gt_M₁sq : (2048 * (M₁ : ℝ)) ^ 2 < (d : ℝ) := by
+      have hnat : (2048 * M₁) ^ 2 + 1 ≤ d :=
+        le_trans (le_max_right _ _) (le_trans (le_max_left _ _) hd_ge)
+      have hlt_nat : (2048 * M₁) ^ 2 < d := by omega
+      exact_mod_cast hlt_nat
+    have h2048_lt_r : 2048 * (M₁ : ℝ) < r := by
+      have hM₁_nn : 0 ≤ 2048 * (M₁ : ℝ) := by positivity
+      nlinarith
+    have h8_real : ((8 * M₁ * (M₂ d) ^ 2 : ℕ) : ℝ) < (d : ℝ) := by
+      push_cast
+      have hM₁_pos_r : (0 : ℝ) < (M₁ : ℝ) := by exact_mod_cast (show 0 < M₁ by omega)
+      have hstep1 : 8 * (M₁ : ℝ) * (M₂ d : ℝ) ^ 2 < 8 * (M₁ : ℝ) * (256 * r) := by
+        exact mul_lt_mul_of_pos_left hM₂_sq_lt (by positivity)
+      have hstep2 : (2048 * (M₁ : ℝ)) * r < r * r := mul_lt_mul_of_pos_right h2048_lt_r hr_pos
+      nlinarith
+    exact Nat.cast_lt.mp h8_real
+  have hmax : max (8 * M₁ * (M₂ d) ^ 2) ((2 * M₁) ^ (2 ^ M₂ d)) < d :=
+    max_lt hlt1 hlt2
+  refine ⟨hmax, ?_⟩
+  intro F _ b hb _ p₁ p₂ ⟨K₁, K₂, h₁u, h₂u, hcomp⟩
+  exact Nat.not_le_of_gt hmax
+    (theorem2A_TwoStageRamseyFreeCutoff F d b M₁ (M₂ d) p₁ p₂ K₁ K₂ hb (by omega) hM₂_pos h₁u h₂u hcomp)
+
+/-! #### Behrend `3`-AP-Free Translate-Covering Partition of `ZMod d` -/
+
+/-- Integer range cap `N(d) = 1` (`d < 4`) or `⌊d / 2⌋` (`d ≥ 4`) used to lift a `3`-AP-free subset
+of `{0, …, N(d) - 1}` into `ZMod d` without wrap-around (`2 * x < d` for all `x < N(d)`). -/
+def behrendNatCap (d : ℕ) : ℕ :=
+  if d < 4 then 1 else d / 2
+
+/-- Explicit class count `M₁(d) = ⌈(d / rothNumberNat N(d)) * log d⌉ + 1` (`≥ 1`) of the greedy
+translate-covering partition of `ZMod d` by Behrend's `3`-AP-free set. -/
+noncomputable def behrendClassCount (d : ℕ) : ℕ :=
+  if d = 0 then 1
+  else Nat.ceil (((d : ℝ) / (rothNumberNat (behrendNatCap d) : ℝ)) * Real.log (d : ℝ)) + 1
+
+private lemma rothNumberNat_behrendNatCap_pos (d : ℕ) :
+    1 ≤ rothNumberNat (behrendNatCap d) := by
+  have hcap : 1 ≤ behrendNatCap d := by
+    dsimp [behrendNatCap]
+    split_ifs <;> omega
+  have h0 : ThreeAPFree (({0} : Finset ℕ) : Set ℕ) := by
+    simp
+  exact h0.le_rothNumberNat ({0} : Finset ℕ)
+    (fun x hx => by simp at hx; omega) (by simp)
+
+private noncomputable def behrendBaseFinset (d : ℕ) [NeZero d] : Finset (ZMod d) :=
+  (Classical.choose (rothNumberNat_spec (behrendNatCap d))).image (fun x : ℕ => (x : ZMod d))
+
+private lemma behrendBaseFinset_card_and_apFree (d : ℕ) [NeZero d] :
+    (behrendBaseFinset d).card = rothNumberNat (behrendNatCap d) ∧
+    ThreeAPFreeMod (behrendBaseFinset d) := by
+  have hd_pos : 0 < d := NeZero.pos d
+  let spec := Classical.choose_spec (rothNumberNat_spec (behrendNatCap d))
+  let B_nat := Classical.choose (rothNumberNat_spec (behrendNatCap d))
+  have hB_sub : B_nat ⊆ Finset.range (behrendNatCap d) := spec.1
+  have hB_card : B_nat.card = rothNumberNat (behrendNatCap d) := spec.2.1
+  have hB_ap : ThreeAPFree (B_nat : Set ℕ) := spec.2.2
+  have h2x_lt : ∀ x ∈ B_nat, 2 * x < d := by
+    intro x hx
+    have hlt := Finset.mem_range.mp (hB_sub hx)
+    dsimp [behrendNatCap] at hlt
+    split_ifs at hlt with hd4 <;> omega
+  have hinj : Set.InjOn (fun x : ℕ => (x : ZMod d)) (B_nat : Set ℕ) := by
+    intro x hx y hy hEq
+    have hx_lt : x < d := by have := h2x_lt x hx; omega
+    have hy_lt : y < d := by have := h2x_lt y hy; omega
+    have hval := congrArg ZMod.val hEq
+    rwa [ZMod.val_cast_of_lt hx_lt, ZMod.val_cast_of_lt hy_lt] at hval
+  refine ⟨?_, ?_⟩
+  · dsimp [behrendBaseFinset]
+    rw [Finset.card_image_of_injOn hinj, hB_card]
+  · intro a s hs_ne ⟨ha0, ha1, ha2⟩
+    dsimp [behrendBaseFinset] at ha0 ha1 ha2
+    obtain ⟨x, hx, hxa⟩ := Finset.mem_image.mp ha0
+    obtain ⟨y, hy, hya⟩ := Finset.mem_image.mp ha1
+    obtain ⟨z, hz, hza⟩ := Finset.mem_image.mp ha2
+    have hmod_eq : ((x + z : ℕ) : ZMod d) = ((y + y : ℕ) : ZMod d) := by
+      push_cast
+      rw [hxa, hza, hya]
+      ring
+    have hxz_lt : x + z < d := by
+      have := h2x_lt x hx; have := h2x_lt z hz; omega
+    have hyy_lt : y + y < d := by
+      have := h2x_lt y hy; omega
+    have hnat_eq : x + z = y + y := by
+      have hval := congrArg ZMod.val hmod_eq
+      rwa [ZMod.val_cast_of_lt hxz_lt, ZMod.val_cast_of_lt hyy_lt] at hval
+    have hxy : x = y := hB_ap hx hy hz hnat_eq
+    have ha_eq : a = a + s :=
+      hxa.symm.trans ((congrArg (fun n : ℕ => (n : ZMod d)) hxy).trans hya)
+    exact hs_ne (by linear_combination -ha_eq)
+
+private lemma threeAPFreeMod_translate {d : ℕ} {B : Finset (ZMod d)}
+    (hB : ThreeAPFreeMod B) (t : ZMod d) :
+    ThreeAPFreeMod (B.image (fun b => t + b)) := by
+  intro a s hs_ne ⟨ha0, ha1, ha2⟩
+  obtain ⟨b₀, hb₀, rfl⟩ := Finset.mem_image.mp ha0
+  obtain ⟨b₁, hb₁, hb₁_eq⟩ := Finset.mem_image.mp ha1
+  obtain ⟨b₂, hb₂, hb₂_eq⟩ := Finset.mem_image.mp ha2
+  have hb₁' : b₁ = b₀ + s := add_left_cancel (by linear_combination hb₁_eq)
+  have hb₂' : b₂ = b₀ + (s + s) := add_left_cancel (by linear_combination hb₂_eq)
+  subst hb₁'; subst hb₂'
+  exact hB b₀ s hs_ne ⟨hb₀, hb₁, hb₂⟩
+
+private lemma threeAPFreeMod_subset {d : ℕ} {C D : Finset (ZMod d)}
+    (hCD : C ⊆ D) (hD : ThreeAPFreeMod D) : ThreeAPFreeMod C :=
+  fun a s hs ⟨h0, h1, h2⟩ => hD a s hs ⟨hCD h0, hCD h1, hCD h2⟩
+
+private lemma exists_translate_inter_ge {d : ℕ} [NeZero d]
+    (U B : Finset (ZMod d)) :
+    ∃ t : ZMod d, U.card * B.card ≤ d * (U ∩ B.image (fun b => t + b)).card := by
+  have hmem_iff : ∀ (t x : ZMod d),
+      x ∈ B.image (fun b => t + b) ↔ x - t ∈ B := by
+    intro t x
+    rw [Finset.mem_image]
+    constructor
+    · rintro ⟨b, hb, rfl⟩
+      simpa using hb
+    · intro hxt
+      exact ⟨x - t, hxt, by ring⟩
+  have hcard_eq : ∀ t : ZMod d,
+      (U ∩ B.image (fun b => t + b)).card =
+        ∑ x ∈ U, (if x - t ∈ B then (1 : ℕ) else 0) := by
+    intro t
+    have hinter : U ∩ B.image (fun b => t + b) = U.filter (fun x => x - t ∈ B) := by
+      ext x
+      simp only [Finset.mem_inter, Finset.mem_filter]
+      exact and_congr_right fun _ => hmem_iff t x
+    rw [hinter, Finset.card_filter]
+  have hsum : ∑ t : ZMod d, (U ∩ B.image (fun b => t + b)).card = U.card * B.card := by
+    simp_rw [hcard_eq]
+    rw [Finset.sum_comm]
+    have hinner : ∀ x : ZMod d,
+        (∑ t : ZMod d, (if x - t ∈ B then (1 : ℕ) else 0)) = B.card := by
+      intro x
+      have heq := Fintype.sum_equiv (Equiv.subLeft x)
+        (fun t : ZMod d => if x - t ∈ B then (1 : ℕ) else 0)
+        (fun b : ZMod d => if b ∈ B then (1 : ℕ) else 0)
+        (fun _ => rfl)
+      rw [heq]
+      simp
+    simp [hinner]
+  by_contra! hlt
+  have huniv_ne : (Finset.univ : Finset (ZMod d)).Nonempty := ⟨0, Finset.mem_univ 0⟩
+  have hsum_lt :
+      ∑ t ∈ (Finset.univ : Finset (ZMod d)), d * (U ∩ B.image (fun b => t + b)).card <
+        ∑ _t ∈ (Finset.univ : Finset (ZMod d)), U.card * B.card :=
+    Finset.sum_lt_sum_of_nonempty huniv_ne (fun t _ => hlt t)
+  rw [← Finset.mul_sum, hsum] at hsum_lt
+  simp [ZMod.card] at hsum_lt
+
+private noncomputable def greedyCoverPair (d : ℕ) [NeZero d] :
+    ℕ → Finset (ZMod d) × ZMod d
+  | 0 =>
+      let U₀ : Finset (ZMod d) := Finset.univ
+      (U₀, Classical.choose (exists_translate_inter_ge U₀ (behrendBaseFinset d)))
+  | i + 1 =>
+      let prev := greedyCoverPair d i
+      let U_next := prev.1 \ (behrendBaseFinset d).image (fun b => prev.2 + b)
+      (U_next, Classical.choose (exists_translate_inter_ge U_next (behrendBaseFinset d)))
+
+private lemma greedyCoverPair_step_le (d : ℕ) [NeZero d] (i : ℕ) :
+    d * (greedyCoverPair d (i + 1)).1.card ≤
+      (greedyCoverPair d i).1.card * (d - (behrendBaseFinset d).card) := by
+  let U := (greedyCoverPair d i).1
+  let t := (greedyCoverPair d i).2
+  let B := behrendBaseFinset d
+  let T := B.image (fun b => t + b)
+  have ht : U.card * B.card ≤ d * (U ∩ T).card := by
+    cases i with
+    | zero => exact Classical.choose_spec (exists_translate_inter_ge Finset.univ B)
+    | succ j => exact Classical.choose_spec (exists_translate_inter_ge _ B)
+  have hsdiff : (greedyCoverPair d (i + 1)).1 = U \ T := rfl
+  rw [hsdiff]
+  have hcard_split : (U \ T).card + (U ∩ T).card = U.card :=
+    Finset.card_sdiff_add_card_inter U T
+  have hB_le_d : B.card ≤ d := by
+    calc B.card ≤ (Finset.univ : Finset (ZMod d)).card := Finset.card_le_univ B
+      _ = d := ZMod.card d
+  have hmul_split : d * (U \ T).card + d * (U ∩ T).card = d * U.card := by
+    rw [← Nat.mul_add, hcard_split]
+  have hsub_id : U.card * (d - B.card) + U.card * B.card = d * U.card := by
+    rw [← Nat.mul_add, Nat.sub_add_cancel hB_le_d, mul_comm]
+  change d * (U \ T).card ≤ U.card * (d - B.card)
+  omega
+
+private lemma greedyCoverPair_empty_at_behrendClassCount (d : ℕ) [NeZero d] :
+    (greedyCoverPair d (behrendClassCount d)).1 = ∅ := by
+  have hd_pos : 0 < d := NeZero.pos d
+  have hd_ne0 : d ≠ 0 := hd_pos.ne'
+  let B := behrendBaseFinset d
+  have hB_card_eq : B.card = rothNumberNat (behrendNatCap d) :=
+    (behrendBaseFinset_card_and_apFree d).1
+  have hB_pos : 1 ≤ B.card := by
+    rw [hB_card_eq]; exact rothNumberNat_behrendNatCap_pos d
+  have hB_le_d : B.card ≤ d :=
+    (Finset.card_le_univ B).trans (by rw [ZMod.card])
+  by_cases hd1 : d = 1
+  · subst hd1
+    have hM1 : behrendClassCount 1 = 1 := by
+      simp [behrendClassCount]
+    rw [hM1]
+    have hstep0 := greedyCoverPair_step_le 1 0
+    have hB1 : B.card = 1 := by omega
+    rw [hB1, Nat.sub_self, mul_zero, one_mul] at hstep0
+    exact Finset.card_eq_zero.mp (Nat.eq_zero_of_le_zero hstep0)
+  · have hd2 : 2 ≤ d := by omega
+    have hd_pos_r : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd_pos
+    have hB_pos_r : (0 : ℝ) < (B.card : ℝ) := by exact_mod_cast (show 0 < B.card by omega)
+    let p : ℝ := (B.card : ℝ) / (d : ℝ)
+    have hp_le1 : p ≤ 1 := div_le_one_of_le₀ (by exact_mod_cast hB_le_d) hd_pos_r.le
+    have hind : ∀ i : ℕ,
+        ((greedyCoverPair d i).1.card : ℝ) ≤ (d : ℝ) * Real.exp (- (i : ℝ) * p) := by
+      intro i
+      induction i with
+      | zero =>
+          have h0 : (greedyCoverPair d 0).1 = Finset.univ := rfl
+          simp [h0, ZMod.card]
+      | succ j ih =>
+          have hstep_nat := greedyCoverPair_step_le d j
+          have hstep_r : (d : ℝ) * ((greedyCoverPair d (j + 1)).1.card : ℝ) ≤
+              ((greedyCoverPair d j).1.card : ℝ) * ((d : ℝ) - (B.card : ℝ)) := by
+            have hcast : ((d - (behrendBaseFinset d).card : ℕ) : ℝ) = (d : ℝ) - (B.card : ℝ) :=
+              Nat.cast_sub hB_le_d
+            rw [← hcast]
+            exact_mod_cast hstep_nat
+          have hdiv : ((greedyCoverPair d (j + 1)).1.card : ℝ) ≤
+              ((greedyCoverPair d j).1.card : ℝ) * (1 - p) := by
+            have h1mp : ((d : ℝ) - (B.card : ℝ)) / (d : ℝ) = 1 - p := by
+              dsimp [p]; rw [sub_div, div_self hd_pos_r.ne']
+            rw [← h1mp, ← mul_div_assoc]
+            exact (le_div_iff₀ hd_pos_r).mpr (by linarith)
+          have h1mp_nn : 0 ≤ 1 - p := by linarith
+          have h1mp_exp : 1 - p ≤ Real.exp (-p) := by
+            linarith [Real.add_one_le_exp (-p)]
+          calc ((greedyCoverPair d (j + 1)).1.card : ℝ)
+              ≤ ((greedyCoverPair d j).1.card : ℝ) * (1 - p) := hdiv
+            _ ≤ ((d : ℝ) * Real.exp (- (j : ℝ) * p)) * (1 - p) :=
+                mul_le_mul_of_nonneg_right ih h1mp_nn
+            _ ≤ ((d : ℝ) * Real.exp (- (j : ℝ) * p)) * Real.exp (-p) :=
+                mul_le_mul_of_nonneg_left h1mp_exp (by positivity)
+            _ = (d : ℝ) * (Real.exp (- (j : ℝ) * p) * Real.exp (-p)) := by ring
+            _ = (d : ℝ) * Real.exp (- ((j + 1 : ℕ) : ℝ) * p) := by
+                rw [← Real.exp_add]
+                push_cast
+                ring_nf
+    let M := behrendClassCount d
+    have hM_def : M = Nat.ceil (((d : ℝ) / (B.card : ℝ)) * Real.log (d : ℝ)) + 1 := by
+      simp [M, behrendClassCount, hd_ne0, hB_card_eq]
+    have hM_gt : ((d : ℝ) / (B.card : ℝ)) * Real.log (d : ℝ) < (M : ℝ) := by
+      rw [hM_def]
+      push_cast
+      linarith [Nat.le_ceil (((d : ℝ) / (B.card : ℝ)) * Real.log (d : ℝ))]
+    have hMp_gt : Real.log (d : ℝ) < (M : ℝ) * p := by
+      have hp_pos : 0 < p := div_pos hB_pos_r hd_pos_r
+      have hmul := mul_lt_mul_of_pos_right hM_gt hp_pos
+      have hcancel : (((d : ℝ) / (B.card : ℝ)) * Real.log (d : ℝ)) * p = Real.log (d : ℝ) := by
+        dsimp [p]
+        field_simp [hd_pos_r.ne', hB_pos_r.ne']
+      rwa [hcancel] at hmul
+    have hexp_lt : Real.exp (- (M : ℝ) * p) < (d : ℝ)⁻¹ := by
+      have hlt : - (M : ℝ) * p < - Real.log (d : ℝ) := by linarith
+      calc Real.exp (- (M : ℝ) * p)
+          < Real.exp (- Real.log (d : ℝ)) := Real.exp_lt_exp.mpr hlt
+        _ = (Real.exp (Real.log (d : ℝ)))⁻¹ := Real.exp_neg _
+        _ = (d : ℝ)⁻¹ := by rw [Real.exp_log hd_pos_r]
+    have hcard_lt1 : ((greedyCoverPair d M).1.card : ℝ) < 1 := by
+      calc ((greedyCoverPair d M).1.card : ℝ)
+          ≤ (d : ℝ) * Real.exp (- (M : ℝ) * p) := hind M
+        _ < (d : ℝ) * (d : ℝ)⁻¹ := mul_lt_mul_of_pos_left hexp_lt hd_pos_r
+        _ = 1 := mul_inv_cancel₀ hd_pos_r.ne'
+    have hcard_eq0 : (greedyCoverPair d M).1.card = 0 := by
+      have hlt_nat : (greedyCoverPair d M).1.card < 1 := by exact_mod_cast hcard_lt1
+      omega
+    exact Finset.card_eq_zero.mp hcard_eq0
+
+private lemma exists_greedyCover_lt (d : ℕ) [NeZero d] (c : ZMod d) :
+    ∃ i : ℕ, i < behrendClassCount d ∧
+      c ∈ (behrendBaseFinset d).image (fun b => (greedyCoverPair d i).2 + b) := by
+  by_contra! hnone
+  have hmem_all : ∀ i ≤ behrendClassCount d, c ∈ (greedyCoverPair d i).1 := by
+    intro i hi
+    induction i with
+    | zero => exact Finset.mem_univ c
+    | succ j ih =>
+        have hj_lt : j < behrendClassCount d := Nat.lt_of_succ_le hi
+        have hmem_j : c ∈ (greedyCoverPair d j).1 := ih (le_of_lt hj_lt)
+        exact Finset.mem_sdiff.mpr ⟨hmem_j, hnone j hj_lt⟩
+  have hc_mem := hmem_all (behrendClassCount d) le_rfl
+  rw [greedyCoverPair_empty_at_behrendClassCount d] at hc_mem
+  exact Finset.notMem_empty c hc_mem
+
+/-- Explicit partition `p₁ : ZMod d → Fin (behrendClassCount d)` assigning each residue `c : ZMod d`
+to the first greedy translate `t_i + B` covering `c`. -/
+noncomputable def behrendPartition (d : ℕ) [NeZero d] (c : ZMod d) :
+    Fin (behrendClassCount d) := by
+  classical
+  exact ⟨Nat.find (exists_greedyCover_lt d c), (Nat.find_spec (exists_greedyCover_lt d c)).1⟩
+
+private lemma behrendPartition_mem_translate (d : ℕ) [NeZero d] (c : ZMod d) :
+    c ∈ (behrendBaseFinset d).image
+      (fun b => (greedyCoverPair d (behrendPartition d c).val).2 + b) := by
+  classical
+  exact (Nat.find_spec (exists_greedyCover_lt d c)).2
+
+/-- **Behrend `3`-AP-Free `2^{O(√(log d))}` Class Partition & Non-Factorization.**
+1. For every `d ≥ 1`, every fiber `{c : ZMod d | behrendPartition d c = m}` is `3`-AP-free modulo
+   `d` (`ThreeAPFreeMod`);
+2. For every `d ≥ 4`, `behrendClassCount d ≤ 2^{16 √(log d)}`;
+3. For every fixed `M₂ ≥ 2`, `behrendClassCount d = o(d^{1 / 2^{M₂}})`, and hence for all
+   sufficiently large `d`, no exact two-stage linear factorization
+   `K₂ ∘ K₁ = swapLinear F` exists on `behrendPartition d` and **any** `p₂ : ZMod d → Fin M₂` over
+   any field `F` at any width `b ≥ 1`. -/
+theorem behrendThreeAPFreePartition_exists.{u} :
+    (∀ (d : ℕ) [NeZero d] (m : Fin (behrendClassCount d)),
+      ThreeAPFreeMod ((Finset.univ : Finset (ZMod d)).filter (fun c => behrendPartition d c = m))) ∧
+    (∀ d : ℕ, 4 ≤ d →
+      1 ≤ behrendClassCount d ∧
+      (behrendClassCount d : ℝ) ≤ (2 : ℝ) ^ (16 * Real.sqrt (Real.log (d : ℝ)))) ∧
+    (∀ M₂ : ℕ, 2 ≤ M₂ →
+      Asymptotics.IsLittleO Filter.atTop
+        (fun d : ℕ => (behrendClassCount d : ℝ))
+        (fun d : ℕ => (d : ℝ) ^ ((1 : ℝ) / (2 ^ M₂ : ℝ))) ∧
+      ∀ᶠ d in Filter.atTop,
+        max (8 * behrendClassCount d * M₂ ^ 2) ((2 * behrendClassCount d) ^ (2 ^ M₂)) < d ∧
+        ∀ (F : Type u) [Field F] (b : ℕ), 1 ≤ b →
+          ∀ [NeZero d] (p₂ : ZMod d → Fin M₂),
+            ¬ ∃ K₁ K₂ : State d (Fin b → F) →ₗ[F] State d (Fin b → F),
+                ClassUniform (behrendPartition d) K₁ ∧ ClassUniform p₂ K₂ ∧
+                K₂.comp K₁ = swapLinear F) := by
+  have hPosAll : ∀ d : ℕ, 1 ≤ behrendClassCount d := by
+    intro d
+    dsimp [behrendClassCount]
+    split_ifs <;> omega
+  have hGrowth : ∀ d : ℕ, 4 ≤ d →
+      (behrendClassCount d : ℝ) ≤ Real.exp (8 * Real.sqrt (Real.log (d : ℝ))) := by
+    intro d hd4
+    have hd_ne0 : d ≠ 0 := by omega
+    let N : ℕ := d / 2
+    have hcap_eq : behrendNatCap d = N := by simp [behrendNatCap, show ¬ (d < 4) by omega, N]
+    have hN_ge2 : 2 ≤ N := by dsimp [N]; omega
+    have h3N_ge : d ≤ 3 * N := by dsimp [N]; omega
+    have hd_pos_r : (0 : ℝ) < (d : ℝ) := by exact_mod_cast (show 0 < d by omega)
+    have hN_pos_r : (0 : ℝ) < (N : ℝ) := by exact_mod_cast (show 0 < N by omega)
+    have hN_le_d : (N : ℝ) ≤ (d : ℝ) := by exact_mod_cast (Nat.div_le_self d 2)
+    have hBehrend := Behrend.roth_lower_bound (N := N)
+    let u : ℝ := Real.sqrt (Real.log (d : ℝ))
+    have hlogd_gt1 : 1 < Real.log (d : ℝ) := by
+      rw [Real.lt_log_iff_exp_lt hd_pos_r]
+      have hd4_r : (4 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd4
+      linarith [Real.exp_one_lt_d9]
+    have hu_sq : u ^ 2 = Real.log (d : ℝ) := Real.sq_sqrt (by linarith)
+    have hu_gt1 : 1 < u := by
+      have hu_nn : 0 ≤ u := Real.sqrt_nonneg _
+      nlinarith
+    have hsqrt_le : Real.sqrt (Real.log (N : ℝ)) ≤ u :=
+      Real.sqrt_le_sqrt (Real.log_le_log hN_pos_r hN_le_d)
+    have hexp_ge : Real.exp (-4 * u) ≤ Real.exp (-4 * Real.sqrt (Real.log (N : ℝ))) :=
+      Real.exp_le_exp.mpr (by linarith)
+    have hd3_le_N : (d : ℝ) / 3 ≤ (N : ℝ) := by
+      have : (d : ℝ) ≤ 3 * (N : ℝ) := by exact_mod_cast h3N_ge
+      linarith
+    have hroth_ge : ((d : ℝ) / 3) * Real.exp (-4 * u) ≤ (rothNumberNat N : ℝ) := by
+      calc ((d : ℝ) / 3) * Real.exp (-4 * u)
+          ≤ (N : ℝ) * Real.exp (-4 * Real.sqrt (Real.log (N : ℝ))) :=
+            mul_le_mul hd3_le_N hexp_ge (by positivity) hN_pos_r.le
+        _ ≤ (rothNumberNat N : ℝ) := hBehrend
+    have hroth_pos : (0 : ℝ) < (rothNumberNat N : ℝ) := by
+      exact_mod_cast (show 0 < rothNumberNat N from by
+        have := rothNumberNat_behrendNatCap_pos d; rw [hcap_eq] at this; omega)
+    have hratio_le : (d : ℝ) / (rothNumberNat N : ℝ) ≤ 3 * Real.exp (4 * u) := by
+      rw [div_le_iff₀ hroth_pos]
+      have hmul := mul_le_mul_of_nonneg_left hroth_ge (show (0 : ℝ) ≤ 3 * Real.exp (4 * u) by positivity)
+      have hcancel : 3 * Real.exp (4 * u) * (((d : ℝ) / 3) * Real.exp (-4 * u)) = (d : ℝ) := by
+        calc 3 * Real.exp (4 * u) * (((d : ℝ) / 3) * Real.exp (-4 * u))
+            = (d : ℝ) * (Real.exp (4 * u) * Real.exp (-4 * u)) := by ring
+          _ = (d : ℝ) * Real.exp (4 * u + -4 * u) := by rw [← Real.exp_add]
+          _ = (d : ℝ) := by simp
+      linarith
+    have hlog_le_4exp : Real.log (d : ℝ) ≤ 4 * Real.exp u := by
+      have hu2_le : u / 2 ≤ Real.exp (u / 2) := by
+        linarith [Real.add_one_le_exp (u / 2)]
+      have hsq_le : (u / 2) ^ 2 ≤ (Real.exp (u / 2)) ^ 2 :=
+        pow_le_pow_left₀ (by linarith) hu2_le 2
+      have hexp_sq : (Real.exp (u / 2)) ^ 2 = Real.exp u := by
+        rw [sq, ← Real.exp_add]; ring_nf
+      rw [← hu_sq]
+      linarith
+    let X : ℝ := ((d : ℝ) / (rothNumberNat N : ℝ)) * Real.log (d : ℝ)
+    have hX_nn : 0 ≤ X := by positivity
+    have hX_le : X ≤ 12 * Real.exp (5 * u) := by
+      calc X ≤ (3 * Real.exp (4 * u)) * (4 * Real.exp u) :=
+            mul_le_mul hratio_le hlog_le_4exp (by linarith) (by positivity)
+        _ = 12 * (Real.exp (4 * u) * Real.exp u) := by ring
+        _ = 12 * Real.exp (5 * u) := by rw [← Real.exp_add]; ring_nf
+    have hM_eq : behrendClassCount d = Nat.ceil X + 1 := by
+      simp [behrendClassCount, hd_ne0, hcap_eq, X]
+    have hceil_lt : (Nat.ceil X : ℝ) < X + 1 := Nat.ceil_lt_add_one hX_nn
+    have hexp5_ge1 : (1 : ℝ) ≤ Real.exp (5 * u) :=
+      Real.one_le_exp (by linarith)
+    have hM_le_14 : (behrendClassCount d : ℝ) ≤ 14 * Real.exp (5 * u) := by
+      rw [hM_eq]
+      push_cast
+      linarith
+    have h14_lt_exp3 : (14 : ℝ) < Real.exp 3 := by
+      have h52 : (5 / 2 : ℝ) < Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+      have hpow : (5 / 2 : ℝ) ^ 3 < (Real.exp 1) ^ 3 :=
+        pow_lt_pow_left₀ h52 (by norm_num) (by decide)
+      have hexp3 : (Real.exp 1) ^ 3 = Real.exp 3 := by
+        rw [← Real.exp_nat_mul]; norm_num
+      linarith
+    calc (behrendClassCount d : ℝ)
+        ≤ 14 * Real.exp (5 * u) := hM_le_14
+      _ ≤ Real.exp 3 * Real.exp (5 * u) :=
+          mul_le_mul_of_nonneg_right h14_lt_exp3.le (by positivity)
+      _ = Real.exp (3 + 5 * u) := (Real.exp_add 3 (5 * u)).symm
+      _ ≤ Real.exp (8 * u) := Real.exp_le_exp.mpr (by linarith)
+  refine ⟨?_, ?_, ?_⟩
+  · intro d _ m
+    classical
+    have hsub : ((Finset.univ : Finset (ZMod d)).filter (fun c => behrendPartition d c = m)) ⊆
+        (behrendBaseFinset d).image (fun b => (greedyCoverPair d m.val).2 + b) := by
+      intro c hc
+      have hEq : behrendPartition d c = m := (Finset.mem_filter.mp hc).2
+      have hmem := behrendPartition_mem_translate d c
+      rwa [hEq] at hmem
+    exact threeAPFreeMod_subset hsub
+      (threeAPFreeMod_translate (behrendBaseFinset_card_and_apFree d).2 _)
+  · intro d hd4
+    refine ⟨hPosAll d, ?_⟩
+    let u : ℝ := Real.sqrt (Real.log (d : ℝ))
+    have hu_nn : 0 ≤ u := Real.sqrt_nonneg _
+    have hlog2_gt_half : (1 / 2 : ℝ) < Real.log 2 := by linarith [Real.log_two_gt_d9]
+    calc (behrendClassCount d : ℝ)
+        ≤ Real.exp (8 * u) := hGrowth d hd4
+      _ ≤ Real.exp (Real.log 2 * (16 * u)) :=
+          Real.exp_le_exp.mpr (by nlinarith)
+      _ = (2 : ℝ) ^ (16 * u) := (Real.rpow_def_of_pos zero_lt_two (16 * u)).symm
+  · intro M₂ hM₂
+    let α : ℝ := (1 : ℝ) / (2 ^ M₂ : ℝ)
+    have hα_pos : 0 < α := by positivity
+    have hLittleO : Asymptotics.IsLittleO Filter.atTop
+        (fun d : ℕ => (behrendClassCount d : ℝ))
+        (fun d : ℕ => (d : ℝ) ^ α) := by
+      refine Asymptotics.IsLittleO.of_bound fun c hc => ?_
+      let Lc : ℝ := max 0 (- Real.log c)
+      let u₀ : ℝ := max 1 ((8 + Lc) / α)
+      let d₀ : ℕ := max 4 (Nat.ceil (Real.exp (u₀ ^ 2)) + 1)
+      filter_upwards [Filter.eventually_ge_atTop d₀] with d hd_ge
+      have hd4 : 4 ≤ d := le_trans (le_max_left _ _) hd_ge
+      have hd_pos_r : (0 : ℝ) < (d : ℝ) := by exact_mod_cast (show 0 < d by omega)
+      have hd_gt_exp : Real.exp (u₀ ^ 2) < (d : ℝ) := by
+        have hnat : Nat.ceil (Real.exp (u₀ ^ 2)) + 1 ≤ d := le_trans (le_max_right _ _) hd_ge
+        have hlt : (Nat.ceil (Real.exp (u₀ ^ 2)) : ℝ) < (d : ℝ) := by
+          exact_mod_cast (show Nat.ceil (Real.exp (u₀ ^ 2)) < d by omega)
+        exact lt_of_le_of_lt (Nat.le_ceil _) hlt
+      let u : ℝ := Real.sqrt (Real.log (d : ℝ))
+      have hlogd_pos : 0 ≤ Real.log (d : ℝ) := Real.log_nonneg (by exact_mod_cast (show 1 ≤ d by omega))
+      have hu_sq : u ^ 2 = Real.log (d : ℝ) := Real.sq_sqrt hlogd_pos
+      have hu₀_sq_lt : u₀ ^ 2 < u ^ 2 := by
+        rw [hu_sq]
+        have := Real.log_lt_log (Real.exp_pos _) hd_gt_exp
+        rwa [Real.log_exp] at this
+      have hu₀_ge1 : 1 ≤ u₀ := le_max_left _ _
+      have hu_nn : 0 ≤ u := Real.sqrt_nonneg _
+      have hu₀_lt_u : u₀ < u := by nlinarith
+      have hu_gt1 : 1 < u := lt_of_le_of_lt hu₀_ge1 hu₀_lt_u
+      have hαu_gt : 8 + Lc < α * u := by
+        have hdiv_le : (8 + Lc) / α ≤ u₀ := le_max_right _ _
+        have hdiv_lt : (8 + Lc) / α < u := lt_of_le_of_lt hdiv_le hu₀_lt_u
+        rw [div_lt_iff₀ hα_pos] at hdiv_lt
+        linarith
+      have hLc_nn : 0 ≤ Lc := le_max_left _ _
+      have hLc_ge : - Real.log c ≤ Lc := le_max_right _ _
+      have hexp_arg_le : 8 * u ≤ Real.log c + α * Real.log (d : ℝ) := by
+        rw [← hu_sq]
+        have hmul_u : (8 + Lc) * u < (α * u) * u := mul_lt_mul_of_pos_right hαu_gt (by linarith)
+        have hLc_le_uLc : Lc ≤ Lc * u := by nlinarith
+        linarith
+      have hnormM : ‖(behrendClassCount d : ℝ)‖ = (behrendClassCount d : ℝ) :=
+        Real.norm_of_nonneg (Nat.cast_nonneg _)
+      have hnormD : ‖(d : ℝ) ^ α‖ = (d : ℝ) ^ α :=
+        Real.norm_of_nonneg (Real.rpow_nonneg hd_pos_r.le α)
+      rw [hnormM, hnormD]
+      calc (behrendClassCount d : ℝ)
+          ≤ Real.exp (8 * u) := hGrowth d hd4
+        _ ≤ Real.exp (Real.log c + α * Real.log (d : ℝ)) := Real.exp_le_exp.mpr hexp_arg_le
+        _ = Real.exp (Real.log c) * Real.exp (Real.log (d : ℝ) * α) := by
+            rw [Real.exp_add, mul_comm α]
+        _ = c * (d : ℝ) ^ α := by
+            rw [Real.exp_log hc, ← Real.rpow_def_of_pos hd_pos_r α]
+    refine ⟨hLittleO, ?_⟩
+    have hMain := theorem2A_LittleO_FixedM2.{u} M₂ hM₂ behrendClassCount
+      (Filter.Eventually.of_forall hPosAll) hLittleO
+    filter_upwards [hMain] with d hd
+    exact ⟨hd.1, fun F _ b hb _ p₂ => hd.2 F b hb (behrendPartition d) p₂⟩
 
 end SingleSubsetAndGrowingClasses
 

@@ -148,11 +148,12 @@ outside characteristics~$2$ and~$3$.
   $b(d - 177)$, which \Cref{thm:2b} ($c(2,1) = \frac{1}{144\log 32}$) beats only for
   $d \gtrsim 10^{216}$ (and the formalized threshold at $(2,1)$ satisfies
   $D_0(2,1) = 32^{36} + 2 \approx 1.53 \times 10^{54}$). \Cref{ex:d12-band} constructs an explicit
-  $24$-dimensional shift-covariant $4$-channel band witness ($q = 4$; formalized at $b = 2, M_2 = 1$
-  where $bkd = 48$) over $\C$ at $d = 12, k = 2$: under the text-only parameter reading
-  $(b, M_2) = (1, 2)$ ($24 = bkd$), a single half-density band without any annihilating-polynomial
-  step admits $bkd$-dimensional solutions ($r \ge 0$), showing in that reading that the
-  annihilating-polynomial steps in \Cref{thm:sumset-rank} cannot all be dropped.
+  $24$-dimensional shift-covariant $4$-channel band witness ($q = 4$, bridged shift-equivariantly to
+  \leanname{SharedDecoders.bandRowSpace} at both $(b, M_2) = (2, 1)$ where $bkd = 48$ and
+  $(b, M_2) = (1, 2)$ where $bkd = 24$) over $\C$ at $d = 12, k = 2$: at $(b, M_2) = (1, 2)$, a single
+  half-density band without any annihilating-polynomial step admits $bkd$-dimensional solutions
+  ($r \ge 0$), showing that the annihilating-polynomial steps in \Cref{thm:sumset-rank} cannot all be
+  dropped.
 
 \item \textbf{Run-extension bounds for one-stage linear shared decoders (\Cref{sec:linear-capacity}).}
   In \cite[Theorem~3.4]{SharedDecoders2026}, iterating
@@ -265,13 +266,12 @@ outside characteristics~$2$ and~$3$.
 
 \subsection{Formalization conventions}\label{sec:conventions}
 
-Every numbered theorem, lemma, proposition, corollary, and example in this paper has a kernel-verified
-Lean~4 counterpart (version \texttt{v4.34.1} with Mathlib \cite{Mathlib2026}) across the
-\texttt{BoundedArityDecoders} package and the shared \texttt{LeanMachine.ShuffleShear} modules in
+Every numbered theorem, lemma, proposition, corollary, and example in this paper is completely
+formalized (\verb|\formal|) in Lean~4 (version \texttt{v4.34.1} with Mathlib \cite{Mathlib2026}) across
+the \texttt{BoundedArityDecoders} package and the shared \texttt{LeanMachine.ShuffleShear} modules in
 \texttt{lean-machine}, depending solely on Lean's three standard axioms (\texttt{propext},
 \texttt{Classical.choice}, and \texttt{Quot.sound}), with zero \texttt{sorry}, \texttt{admit},
 \texttt{native\_decide}, or custom axioms. Each numbered result carries a \textsf{Lean:} status line
-citing proved \texttt{theorem} declarations, followed by an outline of the proof; where a companion
-asymptotic formulation, external-theorem specialization, or parameter re-reading is proved in the text
-only, the status line marks the result \emph{partially formalized} and states the text-only gap
-explicitly (summarized in \Cref{sec:formalization}).
+citing proved \texttt{theorem} declarations, followed by an outline of the formal proof; outside
+numbered theorem statements, remarks and prose comparisons with other papers are proved in the text (or
+checked by script) unless a Lean declaration is named (summarized in \Cref{sec:formalization}).

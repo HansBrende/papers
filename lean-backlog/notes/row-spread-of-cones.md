@@ -3559,3 +3559,50 @@ as native tape cones. Any native extraction must use an additional
 property of that geometry or paid computation. Moreover an unspecified
 finite mean-support bound would not suffice for (28h): it must lie
 below three by a fixed margin, or supply another core-deficit premise.
+
+## 31. A property of tape motion that gives one half: shift covariance along a row (Fable, 14 November 2026)
+
+Status: 31.1 and 31.2 have **short written proofs, unreviewed**; 31.3 lists
+what is not covered. Fronts D2 (one-class relations, paper 17, Problem
+9.4(b)) and D1 in its host form (section 17): x_r = Σ_{i∈ρ(r)} Φ_{r,i} y_i with
+x_r the columns and y_i the rows of X. Linear codes.
+
+**31.1 (commuting blocks).** If the blocks Φ_{r,i}, over all edges (i, r) of
+the row relation, commute pairwise, then the code has dimension at most
+d(d+1)/2. There is no condition on the relation ρ or on the window.
+
+*Proof.* Over the algebraic closure take G with every G⁻¹Φ_{r,i}G upper
+triangular, Λ_{r,i}. Put X̃ = G⁻¹XG^{−T}; this is a linear bijection of the
+arrays. The equations become: row χ of X̃ is a linear function of the columns
+χ′ ≥ χ of X̃. Reveal the entries X̃[ψ][χ′] with ψ ≤ χ′. Going down from the
+last index, the columns χ′ ≥ χ are then known (their entries in later rows
+have been deduced), so row χ is determined. ∎
+
+When the blocks are diagonalisable this says more: in the coordinates X̃ the
+code is a whole-row code of window one, whatever the window of ρ was. It is
+the commuting case of the [twisted-swap note](twisted-swap.md), Theorem 4,
+in host form.
+
+**31.2 (aligned one-class relations).** Let the column index be cyclic and
+suppose X[c][r] = Σ_m α_m(r)·X[i_m(r)][c + j_m(r)] with helper rows, offsets
+and coefficients depending on r only. Then every block is a polynomial in
+the cyclic shift, the blocks commute, and the code has dimension at most
+d(d+1)/2: one half, for every window, every choice of helper rows and
+offsets, expanding or not.
+
+**Why this is a property of machines.** A head moves one cell per step. While
+one output row is written, the cells read for position c + 1 are the cells
+read for position c moved by one. If the same rule is applied at every
+position of the row, the decoder of that row commutes with the shift along
+the tape. Bounded read-degree, cheap encoding circuits and local statistics
+do not have this property; the cycle codes of section 30 do not have it.
+
+**31.3 (what is not covered).** (i) *Row boundaries.* A stretch of d cells
+read at an arbitrary phase covers the end of one input row and the start of
+the next; the block is then a shift cut by an interval projection, and such
+blocks do not commute. If all phases are at most σ the cut affects O(wσd)
+cells and the bound holds up to that; for spread phases it does not apply.
+(ii) *Rules that vary with the position* within the row. (iii) *Depth:* the
+work tapes compose several such maps with different time changes.
+(iv) *Nonlinear rules.* Each is a hypothesis on head motion or on the
+transition rule that can be stated for an actual trace.

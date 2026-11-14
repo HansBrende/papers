@@ -141,7 +141,7 @@ None gives a fixed-window gain beyond O(d).
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
-| **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from w entries (i_m(r), c + j_m(r)) | Open for window ≥ 3; not worked on | Not written |
+| **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from w entries (i_m(r), c + j_m(r)). Hypothesis on head motion alone | Linear, cyclic, rule independent of the position: at most d(d+1)/2 for every window and relation, because the blocks are shifts and commute ([row spread](notes/row-spread-of-cones.md) §31, *written, unreviewed*). Open: row boundaries (cut shifts), position-dependent rules, depth, nonlinear | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1): two classes at most (½ + o(1))d²? | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); needs a bounded-class extraction | Bounds in that paper's library |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a subadditive quantity large for the swap at every scale | Open; the cut-rank profile fails on a shear ([pass calculus](notes/pass-calculus.md) §§2–3) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | Open; not worked on | Not written |
@@ -195,15 +195,11 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0/native paid extraction (D9), with the linear
-  case stated explicitly.** The bounded G4 completion pass ends at X25; the full Shannon question
-  remains open. Source elimination now removes the transversal premise (§28), but degree-only
-  sparse-generation extraction is false (X26). Next proof-level unit: retain one actual
-  source/trace/cut fibre and identify a grid/transport premise capable of paying for a source
-  basis. For a linear fibre K≥N−B, a clean restriction with t revealed sources and surviving
-  incidence I′ must obey 3N−I′≤4(B+t); useful extraction must reverse it. First test the proposed
-  premise against the cycle-code/circuit control and the native controls in the
-  [audit](notes/native-cone-property-audit.md). No automatic linearity of native fibres,
-  no genericity premise, and no new finite search. If no additional native premise appears in
-  one pass, return to D0; reserve amplification and a different full-Shannon proof mechanism.
+- **Current focus** (replace, do not append). **D0 in progress.** Closed this round: the
+  row-closure completion rule for G4 (X25); a sparse source basis from bounded read-degree (X26).
+  Standing results for linear codes with sparse generators: rate ≤ 2/3 with two sources per cell,
+  ≤ (1 + μ)/4 at mean support μ < 3, on every fixed-window host. Candidate for the next front:
+  **D2 with row boundaries**, where the property used is shift covariance of the decoder along an
+  output row (§31), which bounded degree and local statistics lack. To be compared with the native
+  paid-recovery pass before choosing.
 - Last re-evaluation (D0): 14 November 2026.

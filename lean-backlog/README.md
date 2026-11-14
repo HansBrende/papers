@@ -150,6 +150,18 @@ Native extraction and source audit:
   bipartite. A fixed-coordinate reveal corollary retains the code's entropy
   deficit; no general capacity bound follows. Exact controls run with
   `python3 lean-backlog/tools/two_token_controls.py`.
+- [Bounded sector coupling](notes/bounded-sector-coupling.md): a reviewed
+  written theorem extends the group half-rate bound to arbitrary recovery
+  components meeting boundedly many sectors, with a quantitative error and
+  a positive-density requirement on larger components. An elementary
+  short-walk argument reuses the earlier diagonal theorem. A separate
+  near-abelian theorem covers every whole-row decoder on that class of
+  group relations. Sharper square-root bounds, exact directed good-sector
+  capacities and finite construction certificates accompany the proof.
+  [SectorWalks.lean](SectorWalks.lean) checks seven algebraic identities,
+  not the capacity theorem; run `lake env lean ../lean-backlog/SectorWalks.lean`
+  from `lean-machine/`. The finite controls need only Python's standard
+  library and have commands in the note.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

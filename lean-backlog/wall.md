@@ -203,14 +203,28 @@ near-full-rate codes a fixed-coordinate reveal also has positive linear
 cost. The next coupling argument must retain product structure and a
 full-grid rate calculation; another isolated gadget or the same two-sector
 census is not a sufficient success test.
-C34 (Fable, written, unreviewed): in the group model an odd closed walk of sectors is a
-square-root equation (gx)² = yx with short x, y. So mutual recovery inside blocks of
-boundedly many sectors is at one half for every finite group (X19), and a mutual gain at
-positive density has to couple at least about log d sectors on an expanding group. That
-is the regime of the thirteenth paper's codes, now with the product structure of the
-two-token graph; it is the surviving mutual question. One-way helpers stay unbounded:
-the Paley control is the first member of a trace family with half a symbol of excess per
-diagonal at window log d, and diagonal-wise directed decoding in F_p^k is below pairing.
+C34 review (Fable–Astra, independently reviewed written proofs): the
+[bounded-coupling theorem](notes/bounded-sector-coupling.md) now covers
+fixed recovery components meeting at most m sectors, even when components
+split sectors and overlap in sector labels. An elementary short-walk
+reduction to the previous diagonal theorem gives half+O_{w,m}(1/log d)
+for every group and alphabet, with nonlinear decoders and correlations.
+The mixed bound forces a positive fraction of cells into components with
+unbounded sector counts for any fixed positive gain. Paid shared advice
+is charged. This is a recovery-support statement, not a time lower bound.
+The sharper finite square-root bound permits logarithmic m only under
+its class-count hypothesis; there is no universal logarithmic requirement.
+Separately, groups with commuting probability bounded below have uniformly
+polynomial incidence growth and half-rate whole-row capacity even with
+one-way helpers. This uses the checked Eberhard reproof of Neumann's theorem.
+The proposed p:3 search hosts fall in that family; at the tested sizes,
+triangles/pairs/loops already give 259/441 and 832/1521 using at most two
+sectors per block. No unrestricted solver was launched on this invalid
+success criterion. A useful next construction must give full-array gain
+outside these classes; per-representation or isolated-gadget excess alone
+is insufficient. General one-way helpers and unrestricted mutual coupling
+remain open. Directed diagonal capacity on F_p^k is exactly d/p on each
+good sector; the p^r exceptional term is retained when p varies.
 The general separator target is parked without an extraction mechanism, not refuted:
 that such an extraction would prove exclusion is not an impossibility-of-method argument.
 The input-attachment control includes some expanders, but does not prove that arbitrary
@@ -257,7 +271,7 @@ direct front.
 
 | **X17** | Half rate for every oriented helper relation (no mutual pairs) | False: the known seven-vertex Paley tournament carries the Hamming code of binary dimension four; the nonlinear upper bound is q⁴. [Lean and source](notes/two-token-and-oriented-controls.md#2-oriented-helpers-can-exceed-half-the-exact-paley-control). | Any directed bound must use whole-row/grid structure. This small known gadget supplies no full-grid amplification. |
 | **X18** | Deleting o(d²) cells to make the full mutual two-token graph induced-bipartite on a uniform singular-gap incidence family | [Spectral bound](notes/two-token-and-oriented-controls.md#4-a-quantitative-obstruction-to-deleting-coordinates): at least d²(1−s₂)/(2−s₂) deletions. A high-rate hypothesis also prices fixed-coordinate reveals. | A decoder may ignore available edges; other advice or coding arguments remain open. This does not refute half-rate capacity, and does not place all native relations in the singular-gap class. |
-| **X19** | Positive limiting excess from mutual-helper decoding inside blocks of boundedly many sectors on a finite-group relation of fixed window | [Odd sector walks are square roots](notes/row-spread-of-cones.md#13-odd-sector-walks-are-square-roots-bounded-coupling-in-a-group-fable-13-november-2026): a block is bipartite unless its sectors solve (gx)² = yx for short words, at most w^{6m}·R₂(G) sectors; excess ≤ w^{6m}R₂(G)d, so O(d) in odd order and one half up to about log d sectors when classes are few. Groups with many square roots are near-abelian (Neumann) and fall to the row-separator bound (sketch). Written, unreviewed. | A code coupling ≳ log d sectors; a non-group relation; one-way helpers |
+| **X19** | Positive limiting excess when each mutual-recovery component meets boundedly many sector labels, on finite-group relations of fixed window | [Reviewed bounded-coupling theorem](notes/bounded-sector-coupling.md): half+O_{w,m}(1/log d) for every group and alphabet, nonlinear recovery and correlations allowed. Components may split sectors; paid shared advice is charged. An elementary voltage reduction uses the prior diagonal theorem, with no Neumann dependency. The sharper finite bound uses w^{4m−2}R₂ and permits logarithmic m under a separate class-count hypothesis. | A fixed gain ε forces at least (2ε−o(1))d² cells in components meeting >m sectors for every fixed m. Unrestricted one-way helpers and non-group relations remain open. No time lower bound is asserted. |
 
 ## Maintenance
 
@@ -326,3 +340,13 @@ direct front.
   induced-bipartization obstruction have reviewed written proofs, with a
   fixed-coordinate high-rate reveal consequence and exact controls. No
   general mutual capacity bound or native frontier recolouring follows.
+
+- C34 audit and strengthening, 13 November: X19 now has a complete elementary
+  written proof, an O_{w,m}(1/log d) rate error and a stronger component
+  hypothesis. Its mixed form gives a positive-density necessary condition
+  for large sector components. The root-count bound has exponent4m−2 and
+  a sharper unordered-pair form. A separate near-abelian whole-row theorem
+  is proved using a verified primary reproof of Neumann; it is not a
+  dependency of X19. Seven basic identities are Lean-verified, not the
+  complete capacity theorem. Exact finite controls invalidate the proposed
+  small-group search test. The native frontier remains unchanged.

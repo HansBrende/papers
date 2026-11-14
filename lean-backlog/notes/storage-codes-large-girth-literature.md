@@ -6,6 +6,11 @@ check of Gentner–Rautenbach's Theorem 4 are in Sections 2–3. Tags: [H] read 
 [S] search snippet only, [I] my inference. Statements tagged [S] or [I] must be checked against the
 papers before any use. Section 3 is a written, independently reviewed audit; not Lean-verified.
 
+**Update:** Target A is now proved over every field by the self-contained
+[sparse-recovery rank theorem](subcubic-half-rank.md), with directed strengthenings. The finite
+searches below are historical calibration and are not used in that proof. Target B remains open
+in this project; its literature status is not asserted by this survey.
+
 A *storage code* on a graph is a set of words in which every coordinate is a function of its
 neighbours' coordinates (guessing games, index coding with symmetric side information). Pairing on a
 perfect matching gives rate 1/2; the linear capacity is n minus the minimum rank of a matrix with
@@ -86,24 +91,27 @@ The matrix B=I−P, where P exchanges the endpoints of each vertical rung, has n
 every field and is supported inside that prism. Its actual graph is just a matching. Also, for
 asymmetric support, a force along an edge of the undirected union may use a zero coefficient.
 
-**Target A (abstract, linear; conjectural).** Let B be n×n with B_ii≠0 over any field. Suppose
+**Target A (abstract, linear; proved, written and independently reviewed).** Let B be n×n with B_ii≠0 over any field. Suppose
 the undirected graph with edge {i,j}, for i≠j, exactly when B_ij≠0 or B_ji≠0 is triangle-free and has
-maximum degree at most three. Is nullity(B)≤⌊n/2⌋, allowing asymmetric zeros? A sufficient
-subtarget is an all-pivot generating seed of at most ⌊n/2⌋ coordinates. Failure to find such a
-seed would not refute the rank statement. A bound on outgoing degree alone is a wider question.
+maximum degree at most three. Then nullity(B)≤⌊n/2⌋, allowing asymmetric zeros.
+The [proof](subcubic-half-rank.md) uses the last independent row of a support-respecting row order;
+it does not assert a small all-pivot generating seed. It also gives half for two outgoing helpers
+with no incoming-degree cap, and two-thirds for three outgoing helpers, under the stated weaker
+four-arc exclusion. These are coordinate degrees, not whole-row windows. Not yet Lean-verified.
 
 **Target B (abstract, nonlinear; conjectural).** Does every loopless triangle-free graph of maximum
 degree at most three have storage capacity at most n/2? The small-graph and cycle results above
 are leads; no exhaustive literature claim is made here.
 
-**Target C (arrays/native application; conditional).** Apply A only after obtaining a linear fibre
-with nonzero diagonal equations and the stated triangle-free **actual undirected** support.
+**Target C (arrays/native application; conditional).** Apply A after obtaining scalar affine
+equations, valid on the counted fibre, with nonzero diagonal and the stated triangle-free
+**actual undirected** support. The fibre need not itself be a linear subspace.
 A cone of size three supplies only an outgoing-helper bound. It supplies neither these additional
 graph conditions nor linearity; a self-helper may make its diagonal equation tautological.
 No extraction of the required premises from a native schedule is proved here.
 
-A counterexample to A would exhibit an abstract low-degree linear mechanism above one half.
-A balanced whole-row layout and an inexpensive native realization would still be separate tasks.
+Thus the proposed abstract low-degree linear counterexample is ruled out. A native use still
+needs these additional support and recovery premises; the common whole-row deficit remains open.
 
 ## 4. First step on Target A: peeling
 
@@ -132,10 +140,10 @@ digraphs. Outgoing peeling is also original-rule closure: seed N⁺(I), recover 
 for the conditioned remainder. Incoming peeling uses the transposed rank argument. Removing a
 mutual pair at price one does not distinguish this method from closure.
 
-**Necessary property of a smallest counterexample to A.** Every nonempty independent set expands
+**Earlier reduction, now subsumed by the proof of A.** A smallest counterexample would have every nonempty independent set expand
 strictly in both directions. In particular every vertex has out-degree and in-degree at least
-two among at most three neighbours, and hence a reciprocal edge. This narrows the asymmetric
-target; it does not prove that target false or establish its literature status.
+two among at most three neighbours, and hence a reciprocal edge. The final proof uses a simpler
+closed-row-set reduction and resolves the residual case; this peeling lemma remains reusable.
 
 **A sharp control over every field.** The exact Petersen pattern has strict independent-set
 expansion in both directions. If A is its adjacency matrix, A−I has nullity exactly five.
@@ -146,10 +154,9 @@ C=P+P⁻¹−I and D=P²+P⁻²−I. Since P⁵=I, CD=DC=I over the integers, an
 
 The factorization gives rank at most five and the off-diagonal identity gives rank at least five,
 over every field. Its kernel has no nonzero word supported on two coordinates, so it is not an
-orbit-constant pairing code. The reciprocal support case is nevertheless already covered by
-Section 3; the point still to test is asymmetric support.
+orbit-constant pairing code. This is a sharp control for the proved rank bound.
 
-## Counterexample pass on the asymmetric target (Fable, 14 November)
+## Historical counterexample pass (Fable, 14 November)
 
 Statement tested: B has nonzero diagonal, its undirected off-diagonal union is triangle-free of
 maximum degree three, asymmetric zeros are allowed; then nullity(B) ≤ ⌊n/2⌋. Equivalently the
@@ -161,7 +168,7 @@ Scripts: [minrank_f2.py](../tools/host-probe/minrank_f2.py),
 | n | graphs | exact over F₂: rank ≤ n/2 − 1 exists | real field, heuristic: converged at rank n/2 − 1 |
 |---|---|---|---|
 | 10 | Petersen and one of girth 4 | none | none |
-| 12 | 17 (all of them, by the known count) | none | none |
+| 12 | 17 reported | none | none |
 | 14 | 30 exact, 97 heuristic | none | none |
 | 16 | 60 heuristic | not run | none |
 
@@ -173,3 +180,10 @@ Scripts: [minrank_f2.py](../tools/host-probe/minrank_f2.py),
   machine precision except once at n = 16. It is a search, not a proof.
 - No counterexample. Nothing was tested over F₃ or larger fields, on non-regular subcubic graphs,
   or beyond 16 vertices.
+
+**Reproduction audit.** The binary DFS is exhaustive for each supplied labelled graph; ordering
+independent rows first and pruning by rank are sound. The reported graph list and run logs were
+not saved, so the census table and its completeness are not independently reproduced here.
+The sampling routine deduplicates its sample, but the separately prepended Petersen graph can
+duplicate a sampled graph. Preserve graph identifiers, commands and versions for a future census;
+no rerun is needed to establish A now that the all-field proof is available.

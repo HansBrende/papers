@@ -17,6 +17,11 @@ lists the exact extra fibre, relation and decoder hypotheses needed to apply
 the proved code classes through the native transfer. It asserts no new native
 extraction or unconditional transposition lower bound.
 
+**New written theorem:** [half-rank bounds for sparse recovery](notes/subcubic-half-rank.md)
+settle the asymmetric triangle-free subcubic target over every field. The stronger directed
+form covers two outgoing helpers without an incoming-degree cap; the note states its affine-code
+consequence and remaining native premises. This proof is reviewed but not yet formalized.
+
 ## What is here
 
 | Item | File | Declaration names | Field | Status |

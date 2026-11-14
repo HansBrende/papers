@@ -75,7 +75,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 **Classes with proved deficits.** The full list, with hypotheses, status and what each class
 would exclude on the machine side, is the
-[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (18 rows); Lean
+[conditional machine-exclusion table](notes/conditional-machine-exclusions.md) (20 rows); Lean
 boundaries are in the [status index](notes/consolidation-status.md). None of the hypotheses is
 supplied by B1. By mechanism, at fixed window:
 - *Opposite row orders and paid pairing* (nonlinear, half): hyperfinite row relations, near-abelian
@@ -86,6 +86,10 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. Written, reviewed; [bound](notes/pairing-coset-bound.md).
+- *Sparse recovery rank* (every field): half for triangle-free actual undirected subcubic supports,
+  or two outgoing helpers with unrestricted incoming degree; three outgoing helpers give two-thirds
+  without the additional half-rate reciprocity premise. A weaker four-arc exclusion suffices.
+  A matching plus one helper is at half even nonlinearly. Written, reviewed; [proof](notes/subcubic-half-rank.md).
 - *Gadgets* (constructions, not upper bounds): loops, polygons, cliques, hypercube codes; excess O_w(d).
 
 **What the proofs share.** Most charge one member of a paired block to the other, in the cells or
@@ -94,6 +98,8 @@ coordinates. For every code 2H = ΣH(row) + ΣH(row | rest) + S, with S the net 
 ([row spread](notes/row-spread-of-cones.md) §18); a fixed gain above one half needs S = Ω(N), and
 in every known code S is O_w(db). The Shannon certificates (B2–B4) add submodularity across
 intersections of recovery closures, and survive block aggregation and sparse mixing.
+The sparse-recovery rank proof instead uses the last independent row: two fresh columns would
+force a forbidden directed triangle. It is not a new closure-combination argument.
 
 **What is left.** A fixed gain above one half at fixed window needs:
 1. a row relation that is not hyperfinite, with recovery not confined to components of size
@@ -255,17 +261,16 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
   2. *Done (Fable survey, Astra scope audit).* [Literature](notes/storage-codes-large-girth-literature.md):
      exact reciprocal triangle-free subcubic linear patterns already satisfy half via zero forcing.
      The other entries remain leads where tagged; no claim that the survey proves openness.
-  3. *Astra, then both: next bounded proof unit.* Target A of that note: nonzero diagonal,
-     triangle-free undirected **union of actual** off-diagonal support, maximum degree three,
-     asymmetric zeros allowed. Is nullity≤⌊n/2⌋ over every field? All-pivot propagation is closure
-     in an expanded rule system, not an escape from the barrier; a small seed is sufficient but
-     not necessary for the rank bound. Fable's complementary unit is a counterexample/literature
-     check of this precise asymmetric case. Nonlinear Target B and native realization C stay
-     separate; outgoing degree three alone supplies neither the graph nor the linearity premises.
-     Fable's removal/peeling lemma is reviewed: a smallest counterexample must have strict
-     two-way expansion of every nonempty independent set. The Petersen equality control holds
-     over every field; outgoing peeling itself is ordinary closure.
-  4. *Astra, background.* Estimate reuse and effort for Lean on B3 and the quadrangle family before
-     choosing a bounded formalization unit; their written status is unchanged.
-  5. *Either, only after 1–3.* One orbit-reduced Shannon solve on the 15-point quadrangle.
+  3. *Done (Astra, independently reviewed).* [Target A and strengthenings](notes/subcubic-half-rank.md):
+     the full asymmetric subcubic half-rank theorem, all fields; two outgoing helpers without an
+     incoming cap; rank≥⌈N/k⌉ at outgoing width k≥2 under the weaker four-arc exclusion. The
+     matching-plus-one-helper case is nonlinear. Written, not Lean. No native extraction is proved.
+  4. *Astra next.* Formalize this finite rank argument in three bounded units: prefix row spans and
+     the last-row obstruction; closed-set induction and row order; coding corollaries. Reuse
+     Mathlib's row-span rank, span-insert and finite dimension APIs. No SCC library or geometric
+     machinery is needed. *Fable in parallel:* nonlinear Target B, starting at the precise step
+     that used row-space dependence; the pure cycle-plus-matching case is already settled.
+  5. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
+     estimate. One orbit-reduced Shannon solve on the 15-point quadrangle remains a bounded reserve,
+     not a replacement for the native-support or nonlinear questions.
 - Last re-evaluation (D0): 14 November 2026.

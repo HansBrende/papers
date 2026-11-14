@@ -65,8 +65,10 @@ now extends these results to coordinatewise additive-automorphism weights
 by a change of variables, including explicit finite fibre and record counts.
 The [involution adapter](../lean-machine/LeanMachine/InvolutionSums.lean)
 identifies pair differences with this kernel and proves the exact orbit count.
-Pinned-coordinate/omitted-pair instantiation and geometric rate bounds remain
-separate work.
+The [singleton adapter](../lean-machine/LeanMachine/DisjointSumsPinned.lean)
+handles active shifts that vanish on prescribed coordinates, recording their
+raw values with exact finite accounting. Selecting the active pairs from an
+omitted-orbit list and the whole-row incidence/rate bounds remain separate work.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

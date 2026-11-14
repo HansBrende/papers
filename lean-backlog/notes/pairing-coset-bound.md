@@ -4,8 +4,10 @@ Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
 **Status:** written proofs, independently reviewed; abstract counting, local
 parity extension, compatibility extraction and recovery-to-record separation
 for ordinary and automorphism-weighted sums are Lean-verified, including finite
-counts and the full-invariance involution adapter. Pinned-coordinate/omitted-pair
-instantiation, whole-row incidence counts and rate bounds remain written.
+counts, the full-invariance involution adapter, and singleton pinning for
+prescribed zero shifts. Whole-row incidence counts and rate bounds remain
+written; the generic pinning theorem takes the active blocks and pinned set
+as data rather than constructing them from an omitted-orbit list.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -119,9 +121,29 @@ all-incident enclosures are automatic for these always-recorded singletons;
 the remaining enclosures concern the active pairs. There are M−b active pairs
 and 2b singleton blocks if the original involution has M pairs. The kernel
 exponent is N−M−b, and recording 2b raw symbols yields the claimed net price b.
-Thus this is a written reduction to the existing full-kernel theorem, not a
-need for a new local-extension proof. The block construction, record conversion
-and its whole-row specialization are not yet Lean endpoints.
+The generic block construction and raw-record conversion are now Lean
+endpoints in [DisjointSumsPinned.lean](../../lean-machine/LeanMachine/DisjointSumsPinned.lean).
+`withPins` adjoins the singletons to any active bank D disjoint from E.
+`withPins_encode_eq_zero_iff` proves that its weighted kernel consists
+exactly of shifts in the active kernel that vanish on E. Thus it grants
+none of the omitted shifts. `withPins_encode_eq_of_recovery` applies the
+existing weighted theorem, with all singleton syndromes recorded; only
+the active blocks need the fully-viewed/all-incident enclosure conditions.
+The public record is the pair of **raw** values on E and selected active
+syndromes, even when the singleton weights are arbitrary automorphisms.
+
+`card_eq_pinned_kernel_mul_record_image` gives the exact kernel times
+attained-record-image identity. With N coordinates, a active blocks and
+e pinned coordinates, `card_pinned_kernel` gives q^(N−a−e), while
+`card_le_pow_of_pinned_invariant_recovery` gives q^(N−a+|T|).
+The e-symbol record price cancels exactly the e lost kernel dimensions.
+Taking a=M−b gives the one-symbol cost per omitted pair above, and more
+generally per omitted single-parity block, regardless of its size.
+Global identities require finite active and pinned index types; the power
+bound explicitly assumes finite coordinates, active indices and alphabet.
+Empty codes and trivial additive alphabets are allowed. The generic
+adapter does not construct the active pairs from an involution, instantiate
+whole-row views, or prove the subsequent incidence and trimming estimates.
 
 This measures loss of **individual orbit shifts**. A large abstract intersection C∩P_ι
 alone does not supply them: a linear constraint can exclude every individual shift while

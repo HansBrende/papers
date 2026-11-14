@@ -95,6 +95,22 @@ growing alphabet. Binary vector-linearity does not imply scalar
 F_(2^b)-linearity. A theorem about a nonlinear decoder on a linear source
 needs that source premise; the affine-kernel observation does not replace it.
 
+## A direct native premise, before whole-row enlargement
+
+[The record-view composition](local-record-view-covers.md#7-a-native-consumer-for-output-weighted-hyperfiniteness)
+also excludes oblivious schedules whose **time DAGs are uniformly
+output-weighted hyperfinite**: for every ε>0, deleting at most εT time
+vertices leaves components with at most n(ε) outputs, independently of d.
+Union that cut with Paper 14's ηL-bit depth cut, and pay a fixed fraction
+δ of targets in Paper 5's native degree trimming. The resulting record
+invoice is β(k+2)|Γ|≥(1−δ)L/2−o(L), while
+β|Γ|≤βεC(L+1)+ηL. Choosing (k+2)(βεC+η)<(1−δ)/2 excludes the class.
+This is a written composition, using partly formalized native separation;
+it is neither a whole-row class extraction nor a general native Crux.
+Ordinary time-vertex hyperfiniteness suffices. One work tape recovers a
+known exclusion by planarity; no new conclusion for arbitrary multi-tape
+motion or adaptive trace fibres is asserted.
+
 ## What remains, and what the barriers leave open
 
 The table is a list of exact conditional exclusions, not a measure or density

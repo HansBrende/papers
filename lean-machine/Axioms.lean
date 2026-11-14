@@ -1816,3 +1816,14 @@ import LeanMachine
 #print axioms LeanMachine.InvolutionSums.differenceRecord
 #print axioms LeanMachine.InvolutionSums.card_eq_orbitConstant_mul_record
 #print axioms LeanMachine.InvolutionSums.card_le_pow
+
+-- Pinned coordinates and omitted block shifts.
+#print axioms LeanMachine.DisjointSums.withPins
+#print axioms LeanMachine.DisjointSums.withPins_encode_left
+#print axioms LeanMachine.DisjointSums.withPins_encode_right
+#print axioms LeanMachine.DisjointSums.withPins_encode_eq_zero_iff
+#print axioms LeanMachine.DisjointSums.pinnedRecord
+#print axioms LeanMachine.DisjointSums.withPins_encode_eq_of_recovery
+#print axioms LeanMachine.DisjointSums.card_eq_pinned_kernel_mul_record_image
+#print axioms LeanMachine.DisjointSums.card_pinned_kernel
+#print axioms LeanMachine.DisjointSums.card_le_pow_of_pinned_invariant_recovery

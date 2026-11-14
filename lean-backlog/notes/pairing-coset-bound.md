@@ -1,8 +1,9 @@
 # Extending a pairing or parity-block template costs only a vanishing rate
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
-**Status:** written proofs, independently reviewed; the abstract record-counting
-step is Lean-verified, while the recovery geometry and rate bounds remain written.
+**Status:** written proofs, independently reviewed; abstract record counting
+and disjoint-parity partial-assignment extension are Lean-verified. The recovery
+compatibility, record-separation geometry and rate bounds remain written.
 Fable proposed the
 pairing-coset bound; Astra repaired its incident-cell step and derived the sharper finite,
 partial-invariance and forward-window-only forms below. No literature novelty claim.
@@ -44,8 +45,9 @@ record invariant under P-translations on C, it proves
 of two elements of C imply their difference lies in P. The record need only
 separate cosets **on C**; its ambient fibres can be larger. The code need not
 be linear or nonempty, and the record type need not be finite. The proof
-reuses Mathlib's subgroup saturation count. The helper-bundle extension and
-separation argument in the next paragraph are not yet formalized.
+reuses Mathlib's subgroup saturation count. The local parity-extension step
+is formalized as described in Section 5; its involution-orbit adapter and
+the recovery-based separation argument in the next paragraph remain written.
 
 **Proof.** Suppose X,Y have the same recorded differences. On B_c prescribe
 S(u)=Y(u)−X(u). This is consistent on every orbit contained in B_c because its difference
@@ -140,6 +142,20 @@ on these coordinates. Take disjoint blocks B₁,…,B_m of size at least k≥2. 
 Coordinates outside these blocks are free. Let P be this product subgroup; log_q|P|=N−m.
 Pair differences use weights +1,−1; triangle lane codes use three +1 weights.
 
+**Partial-assignment extension (Lean).** For finitely many pairwise disjoint
+nonempty finite supports, a prescribed word on any coordinate set S extends
+to arbitrary target block sums if and only if every block contained in S
+already has its target sum. This is
+[`DisjointSums.exists_extension_iff`](../../lean-machine/LeanMachine/DisjointSumsExtension.lean).
+Its proof applies the existing `encode_surjective` to the nonempty residual
+supports outside S, then adds that correction while fixing S. The derived
+`exists_kernel_shift` matches two partial words by a zero-sum shift when
+their sums agree on every fully observed block. The theorem
+`exists_weighted_extension_iff` covers the automorphisms θ_v above.
+These statements require only an additive commutative group: neither the
+alphabet nor the coordinate type must be finite. They prove local extension,
+not the whole-row compatibility or global record-separation implications.
+
 Suppose C is invariant under the parity kernels of all but a blocks and under shifts
 of every free coordinate. With omitted blocks, P is an algebraic reference and need not
 itself be a recovery code. For an active block and a nonincident v in it, recovery forces
@@ -180,9 +196,10 @@ all-one word, whereas every full orbit-constant pairing subgroup contains that w
 The binary cyclic window-two difference code at d=3 likewise excludes the all-one word.
 Those examples need their own checks; being linear is not enough to contain a pairing code.
 
-The abstract attained-record count above is the only Lean-verified step of this
-note. Compatibility, the local shift extension, the incidence counts and the
-paid/asymptotic pairing and parity-block bounds remain written and reviewed.
+Abstract attained-record counting and local disjoint-parity extension are
+Lean-verified. Compatibility, the involution-orbit adapter, global record
+separation, incidence counts and the paid/asymptotic pairing and parity-block
+bounds remain written and reviewed.
 The argument uses subgroup invariance
 of the code, not merely sparsity of a decoder, local graph statistics, or a large
 intersection with a template. The native question still needs a premise that supplies

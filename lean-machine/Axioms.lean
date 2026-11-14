@@ -1772,3 +1772,8 @@ import LeanMachine
 -- CosetRecords.
 #print axioms LeanMachine.CosetRecords.card_eq_subgroup_mul_image
 #print axioms LeanMachine.CosetRecords.card_le_subgroup_mul_card
+
+-- DisjointSumsExtension.
+#print axioms LeanMachine.DisjointSums.exists_extension_iff
+#print axioms LeanMachine.DisjointSums.exists_kernel_shift
+#print axioms LeanMachine.DisjointSums.exists_weighted_extension_iff

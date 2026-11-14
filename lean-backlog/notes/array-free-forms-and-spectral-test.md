@@ -63,6 +63,15 @@ ratio to q⁶ falls from 0.58 to 0.43 at q = 16. So on these hosts the bound imp
 bound by a bounded factor in the number of codewords, which is O(1/log q) symbols. As an upper
 bound on capacity (all alphabets) it returns the order bound there.
 
+"Capacity" in the table is the exponent attained in the limit of alphabets (on odd cycles, at
+square q). The largest code at one q can be smaller: 5 words on the binary 5-cycle.
+
+**Countercontrol (from review).** For two symbols that determine each other the confusion graph is
+the Hamming graph H(2, q), with eigenvalues 2(q−1), q−2 and −2. The eigenvalue bound gives
+|C| ≤ q, one whole symbol saved at every q. This is the order bound for that host. The programme
+always saves at least what the order bound saves; the observation above concerns only its excess
+over the order bound, and only these hosts.
+
 ## 3. A rank bound on the binary pentagon
 
 If P vanishes on the nonzero allowed differences and P(0) ≠ 0, the matrix P(x − y) restricted to a
@@ -74,11 +83,12 @@ that are not translation invariant were not tried.
 
 ## 4. Reading
 
-In the whole-row question the alphabet has d symbols and grows with the array. A common deficit
-is a saving of a constant fraction of whole symbols. A bound that saves a bounded factor of
-codewords, or a bounded number of bits per position, saves nothing in the limit. The arguments in
-the series that do save whole symbols are closure and order arguments, Shannon inequalities, rank
-arguments for linear codes, and the fibre counts of the two-sided reduction.
+In the whole-row question the alphabet has d symbols and grows with the array, so a common
+deficit is a saving of a constant fraction of whole symbols. On the tested hosts the excess of
+Delsarte's programme over the order bound is a bounded factor of codewords, which is nothing in
+that limit. This is a statement about that excess on those hosts. It is not a statement about
+Fourier, rank or semidefinite methods as families: the programme itself saves whole symbols
+wherever the order bound does.
 
-Not tested: semidefinite strengthenings of the Delsarte programme, and rank bounds from general
-matrices. Nothing here is a theorem about every host.
+Not tested: semidefinite strengthenings of the Delsarte programme, rank bounds from general
+matrices, and hosts other than those in the table. No barrier follows.

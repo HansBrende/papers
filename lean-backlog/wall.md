@@ -91,7 +91,8 @@ supplied by B1. By mechanism, at fixed window:
 - *Source counting* (nonlinear): two sources per coordinate give 2/3; mean support μ < 3 gives (1+μ)/4.
 - *Individual pairing shifts* (nonlinear, half): invariance on all but o(d²) pairs, uniformly over
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
-  written and reviewed; abstract coset-record counting now Lean, geometry adapters still written.
+  written and reviewed; abstract coset counting and disjoint-parity extension now Lean,
+  recovery geometry and rate adapters still written.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
   its soft memo charges each recovery error once. [Reuse adapter](SubcubicReuse.lean).
@@ -262,7 +263,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
 - **X29** A common deficit from counting columns that fit the best balanced Fano layout
 - **X30** A constant plane deficit using only row-closure equalities from pencils at o(n) centres
 - **X31** Transported closure with additive message bills as a stronger coding bound
-- **X32** First-level spectral (Delsarte) and translation-invariant rank bounds on the forbidden-difference form
+- **X32** A gain over the order bound from the first-level Delsarte programme or translation-invariant rank certificates on the forbidden-difference form (tested hosts only)
 
 ## Maintenance
 
@@ -303,16 +304,15 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      premise. *Constructive G4 pass closed without a witness:* the
      [ordered-information refinement](notes/row-spread-of-cones.md#19-conditional-row-recovery-and-the-full-shannon-question)
      is written and reviewed, but gives no new capacity bound. *Astra banked:* the nonlinear
-     matching-plus-one-helper theorem and the abstract coset-record count are now Lean;
-     pairing/parity geometry remains written.
+     matching-plus-one-helper theorem, coset-record count and disjoint-parity extension
+     are now Lean; pairing/parity recovery geometry remains written.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
-     estimate. *Quadrangle size estimate: dropped.* The full 180-cell lattice does not fit. A
-     sublattice of sets invariant under a subgroup with at most 14 cell orbits would fit, but its
-     value has no consumer: B4 already gives a triangle-free gap.
-  7. *Closed (X32).* [Array-free forms and a spectral test](notes/array-free-forms-and-spectral-test.md):
-     the forbidden-difference form admits Delsarte's programme, which on odd cycles and the
-     Petersen graph gains only a bounded factor of codewords over the order bound, so nothing at
-     growing alphabet. *In progress:* Astra, the one-pivot extension lemma for disjoint parity
-     constraints (Lean). Fable, review of that lemma's statement when it lands; until then no
-     premise with a consumer is open, and the next re-evaluation is due.
+     estimate. The quadrangle estimate was dropped: a further finite bound has no named
+     consumer beyond the existing triangle-free gap. No larger search is commissioned.
+  7. *Closed (X32), scope as tested.* [Array-free forms and a spectral test](notes/array-free-forms-and-spectral-test.md):
+     on odd cycles and the Petersen graph Delsarte's programme exceeds the order bound only by a
+     bounded factor of codewords. It is never worse than the order bound, so it saves whole
+     symbols where order does; no claim about other spectral, rank or semidefinite certificates.
+     *In progress:* Astra, the recovery-to-record-separation adapter (Lean). Fable, the written
+     re-evaluation (D0).
 - Last re-evaluation (D0): 14 November 2026.

@@ -187,3 +187,37 @@ not saved, so the census table and its completeness are not independently reprod
 The sampling routine deduplicates its sample, but the separately prepended Petersen graph can
 duplicate a sampled graph. Preserve graph identifiers, commands and versions for a future census;
 no rerun is needed to establish A now that the all-field proof is available.
+
+## Target B, first evidence: the Shannon bound is exactly n/2 on every small case (Fable, 14 November)
+
+Status: floating-point LP values (HiGHS), one hand proof, no general proof. Scripts:
+[shannon_graph.py](../tools/host-probe/shannon_graph.py) (all 2^n subsets, all elemental
+inequalities, so the optimum is the full Shannon bound),
+[petersen_certificate.py](../tools/host-probe/petersen_certificate.py).
+
+| graphs | n − α (order bound) | Shannon bound | n/2 |
+|---|---:|---:|---:|
+| Petersen, and one cubic graph of girth 4 on 10 vertices | 6 | 5.000000 | 5 |
+| all 17 connected triangle-free non-bipartite cubic graphs on 12 vertices | 7 | 6.000000 each | 6 |
+
+So on every triangle-free cubic graph with at most 12 vertices the Shannon inequalities alone give
+rate one half for arbitrary nonlinear codes, strictly below the order bound. In the soft language:
+the statement "2H(X) ≤ Σ_v H(X_v) for every storage code" is c_Sh = 2, and it holds on all these
+graphs. (For n ≤ 10 this agrees with the floating-point search of Baber et al.)
+
+**The five-cycle by hand.** Vertices 1..5 in cyclic order, each a function of its two neighbours.
+The closures of {1,3} and {2,4} are {1,2,3} and {2,3,4}; their union generates everything and they
+meet in the edge {2,3}. So h(1,3) + h(2,4) ≥ H + h(2,3). And {2,3,5} generates, so
+h(2,3) + h(5) ≥ H. Adding: **2H ≤ h(1,3) + h(2,4) + h(5) ≤ 5.** The seeds {1,3}, {2,4}, {5}
+partition the vertices; the gain over order comes from an edge appearing as the intersection of two
+closures.
+
+**Petersen.** Reduced by its 120 automorphisms the LP has 34 subset orbits and 148 distinct
+inequalities; dual simplex returns value 5 with 19 nonzero multipliers (printed by the script).
+It is a certificate in floating point, not yet an exact or readable proof.
+
+**Conjecture (Target B, Shannon form).** For every triangle-free graph of maximum degree three,
+every polymatroid with the recovery equalities satisfies 2h(V) ≤ Σ_v h({v}). With the linear
+theorem (rank at least ⌈N/2⌉ over every field) this would make degree three the first case where
+one half is proved for all codes on a family on which the order bound fails: for cubic graphs of
+large girth the order bound is about 0.555n.

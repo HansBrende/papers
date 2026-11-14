@@ -66,10 +66,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
-| Opposite row orders | Outside a fixed coordinate set Z, every scalar coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row)+H(Z). If this holds after a common record Q is given, 2H(X) ≤ d²b+2H(Q)+H(Z\|Q), so subquadratic payment still gives half | nonlinear; full helper rows, not just copying one entry; fixed helper choices on each fibre | *written*: [§18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets) and [§20.6](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test); no new Lean |
-| Paid core reduction | For bounded support size and fixed forward window, delete o(N) tokens and peel degree-two tokens: K=t+(N−N_*)/2+K_*, with a masked core of minimum token occurrence three. **Every two-token presentation has rate ≤2/3+o(1).** The earlier mean-support bound of §22 still applies | linear/transversal; uniform in lanes; no codegree, alignment, reverse cap or symmetry; arbitrary-support clean reduction, bounded arity for small payment | *written, reviewed*: [§23](notes/row-spread-of-cones.md#23-block-cores-and-a-paid-reduction-to-minimum-occurrence-three); not Lean |
-| Fractional payment of local matchings | Fundamental transversal coordinate matroids on codegree-one hosts: 2K ≤ N+L+N₃. Also holds with alignment across different rows; weak alignment alone does not justify the proof. Bounded raw grid degrees give half plus O(db); arbitrary masses require L+N₃=o(N). Paid token deletion can expose the required basis | linear over every field; arbitrary coupled lanes and components; specified nonlinear source-block encoders also covered; no symmetry required | *written, reviewed*: [§21.6–21.8](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations), [§22.1](notes/row-spread-of-cones.md#22-alignment-bicircular-presentations-and-a-uniform-constant-deficit); not Lean |
-| Resolved independent sources | Each helper union recovers every independent source it touches; helper unions have a fractional weighting covering every row with weight one. Then 2K ≤ N+L+N₃ | nonlinear injective full-product encoders; half when loop/near mass is o(N); strong source-resolution premise remains | *written, reviewed*: [§21.3](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations); not Lean |
+| Opposite row orders | Outside a set Z every coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row) + H(Z); given a common record Q, add 2H(Q). Also when every helper union resolves all independent sources it touches: 2K ≤ N + L + N₃ | nonlinear | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§18, 20, 21 |
+| Token counting | Token designs (generic linear codes). Paid reduction to cores of minimum token occurrence three: K = t + (N − N_*)/2 + K_*. **At most two tokens per coordinate: rate ≤ 2/3 + o(1) on every fixed-window host.** Bounded supports of mean μ < 5/2: rate ≤ (1 + 2μ)/6. Fundamental presentations on hosts of codegree one: 2K ≤ N + L + N₃ | linear, transversal; no symmetry, alignment or reverse-degree assumption; coupling unbounded | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§21–23 |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
@@ -79,79 +77,39 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Rank count | Decoder blocks invertible or zero (second rule) | linear | *Lean*: [C](C-second-rule.md) |
 | Gadgets | Loops, polygons, witness pairs, cliques and the displayed diagonal/hypercube constructions: excess O_w(d), exponential in w | varies; folded-cube gains binary | *written*: [diagonal codes](notes/diagonal-code-calibration.md); Clebsch far gadget *Lean*, [FarClebsch.lean](FarClebsch.lean) |
 
-**What the proofs share.** Many charge one member of a paired block to the other, in coordinates
-or after a basis change; spectral proofs bound eigenvalue counts instead. The support-incidence
-proof counts tokens of low occurrence degree: a coordinate touching two degree-two tokens
-forces near cells or a payment by loop cells. This forcing uses Hall matchings at any support
-size. Bounded support size lets a few heavily used rows be removed at subquadratic token cost
-without changing the fixed forward window. The exact entropy
-identity ([row spread](notes/row-spread-of-cones.md) §18) is 2H = A+R+S, with A the sum of row
-entropies, R the sum of residual row entropies, and S the signed net row synergy (negative
-O-information, an existing entropy statistic). The loop upper bound also includes two
-nonnegative slack terms: N−A and Loops−R, N=d²b. A fixed positive rate excess requires S=Ω(N)
-and extensive genuinely joint recovery. Known S need not lie in near cliques: the full Clebsch
-code has 84 units, including 4 from its far triangle-free diagonal. All such controls remain
-O_w(db). Separator proofs give a raw-S bound; algebra/symmetry dimension bounds alone do not
-remove the row-marginal slack, and row basis changes need not preserve S.
+**What the proofs share.** Most charge one member of a paired block to the other, in the cells
+or after a change of basis; spectral proofs bound eigenvalue counts; the token proofs count tokens
+of low occurrence and force near cells. Exactly, for every code
+([row spread](notes/row-spread-of-cones.md) §18): 2H = ΣH(row) + ΣH(row | rest) + S, with S the
+signed net synergy of the rows (negative O-information). A fixed gain above one half needs
+S = Ω(N); in every known code S is O_w(db).
 
-**What is left.** For a fixed positive asymptotic gain above half at fixed window:
-1. the row-graph family cannot be hyperfinite, and recovery cannot decompose entirely into
-   coordinate components of size o(log d). A small deficit also forces expansion at linear
-   scale (*Lean*: `wholeRow_rectangle_deficit`, [StatementsRowSpread.lean](StatementsRowSpread.lean));
-2. within **group relations with mutual recovery**, bounded-sector components cannot supply the
-   gain. Large coupling or a different recovery class is needed;
-3. within **linear group decoders**, growing twisted symmetry, small common algebras and the
-   specified anonymous local rules are excluded;
-4. within **bounded-degree locally bipartite supports**, bounded complex coefficients cannot
-   supply it. This does not exclude every complex whole-row decoder with one-way helpers.
+**What is left.** A fixed gain above one half at fixed window needs all of:
+1. a row relation that is not hyperfinite, with recovery not confined to components of size
+   o(log d); a small deficit forces expansion at linear scale (*Lean*:
+   `wholeRow_rectangle_deficit`, [StatementsRowSpread.lean](StatementsRowSpread.lean));
+2. for mutual recovery on group relations: components meeting unboundedly many diagonals;
+3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule;
+4. for token designs: tokens of occurrence at least three and supports of mean size at least 5/2.
 
-The unrestricted capacity question remains open. For free support coefficients the universal
-zero-corner projection bound is exactly the independence number, in every basis
-([symmetry and locality](notes/symmetry-and-locality.md)); this does not rule out all future
-symmetry or decoder-specific arguments. The gaps, nearest the wall first:
-- **G0. Is sup_w R(w) = 1 already?** Paper 15's field kernels have rate at least 1 − e^{−λm} at
-  degree bounded in m; whether the growing coupled family has a whole-row presentation at a
-  window depending only on m is open. A yes with the dimension/lane adapter in grid §6 refutes
-  a common deficit; a no matters only as far as its mechanism generalises.
-  Known ([grid note](notes/grid-labellings-and-amplified-codes.md)
-  §§6–8, [row spread](notes/row-spread-of-cones.md) §§16–17, *written*): at canonical width,
-  columns omitting a tensor factor fail for the displayed majority support; the first
-  helper-column intersection test always passes for some mixed columns (X23); the missing
-  obligation is one transversal row partition confining each column's helpers to w rows.
-  The fixed-column/palette completion is exactly Hall feasibility; choosing the common palettes
-  remains open. That bounded pass is complete and did not exclude the tower. **Limiting unmarked
-  fixed-radius statistics alone do not determine presentability**: loopless swap lifts and a
-  specified nonpresentable random-support family have the same directed-tree limit, also with
-  canonical lanes. This does not exclude exact or growing-radius tests, marked information,
-  global partition-free arguments, or local contributions to a capacity proof.
-- **G1. Nonlinear forms.** The basis and spectral pairings are proved for linear codes only; a
-  machine's code need not be linear. Wanted: an entropy version.
-- **G2. One-way helpers without symmetry.** No common deficit is known. Oriented gadgets exist (Paley
-  tournament, 4 of 7, *Lean* [PaleyTournament.lean](PaleyTournament.lean); a trace family with half a
-  symbol of excess per diagonal at window log d), none at positive density.
-- **G3. Large components with non-local coefficients.** The SL₂(F_p) balanced mutual profile
-  has common factor algebra End_Z(F[G]) of dimension d²/2 and a 3/4 cap over every field
-  ([audit](notes/symmetry-and-locality.md) §6). No gain was found or proved. This profile adds
-  five restrictions (group, linear, mutual, one family, one profile); it is parked (X22).
-- **The general bound.** Any improvement of the deficit 1/(w+1) for all whole-row codes is progress
-  on the wall itself. Two-token presentations now have a common asymptotic deficit of 1/3 on
-  **all** fixed-window hosts, including expanding ones, without an alignment or reverse-degree
-  premise. The same proof excludes rates tending to one for fixed maximum support size and
-  mean support size bounded by a fixed μ<5/2. These bounds do not exclude all gains over half.
-  Fundamental transversal designs separately satisfy 3K≤2N+L on codegree-one hosts. General
-  transversal designs and arbitrary whole-row codes remain open. Systematic form, or a
-  two-sparse matrix with nongeneric cancellations, does not establish the matching-matroid premise.
+Open questions, nearest the wall first:
+- **G0. Is sup_w R(w) = 1 already?** Paper 15's codes have rate 1 − e^{−λm} on abstract relations;
+  whether their growing coupled form is whole-row at a window depending only on m is open
+  ([grid note](notes/grid-labellings-and-amplified-codes.md) §§6–8,
+  [row spread](notes/row-spread-of-cones.md) §§16–17). Cylinder layouts fail; pairwise column tests
+  cannot decide mixed layouts (X23); limiting fixed-radius statistics cannot decide any layout.
+- **G1. Nonlinear forms** of the basis and spectral pairings.
+- **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
+  [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
+- **G4. Is the full Shannon value bounded away from d² as w grows?** Every bound here is
+  Shannon-type; the Shannon value equals the order value on the hosts computed (basis hosts
+  d = 4, 8, 16; cyclic d = 4). No host is known where it is strictly below
+  ([row spread](notes/row-spread-of-cones.md) §§19–20).
+- **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
-**Linear-host calibration.** The [host audit](notes/whole-row-host-audit.md) gives the unrestricted
-scalar/vector formulation. The 29/30 exact shear tests concern prescribed sparse graphs;
-their upper bounds do not extend to dense blocks. Genuine full-host results include Fano scalar
-dimension 39 over GF(2)/GF(3), canonical binary-vector exponent 119/3 and nonlinear upper 41,
-the exact all-alphabet exponent 46 at d=8,w=3, and the cyclic d=4,w=2 host
-with capacity = full Shannon = order = 13 ([§20.5](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test)).
-The latter supplies a token design beyond disjoint cliques, with one paid shared symbol.
-None gives a fixed-window asymptotic gain beyond O(d). One partial-permutation block per edge cannot preserve every code, but whether
-it can attain every host's optimal linear capacity is unresolved. These are calibration and
-normal-form facts, not a new exclusion or construction at positive limiting gain.
+**Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar
+39 (order bound 41); basis host d = 8, w = 3: 46 for all alphabets; cyclic d = 4, w = 2: 13. None
+gives a fixed-window gain beyond O(d).
 
 **What a proof and a machine must each respect.**
 - A proof must cover nonlinear recovery and growing alphabets; fail at growing windows (simplex and
@@ -225,13 +183,10 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Token designs** (D1; linear, transversal).
-  The paid core reduction is proved ([row spread](notes/row-spread-of-cones.md) §23,
-  *written, reviewed*): at bounded support size and fixed window, an o(N) token payment
-  leaves exact half-rate peeling plus a masked core of minimum occurrence three.
-  Two-token presentations therefore have rate ≤2/3+o(1), with no codegree or alignment
-  premise. The next bounded target is a deficit for higher-degree cores at larger support
-  sizes. A padded-grid core deficit δ suffices, transferring as δ/2; do not silently normalize
-  the mask as a balanced grid. If no mechanism emerges, return to D0. In reserve: full
-  Shannon versus order, native paid recovery, amplification. Fable is trimming the map.
+- **Current focus** (replace, do not append). **Token designs** (generic linear codes on the host;
+  D1, two restrictions: linear, transversal). Settled: supports of size at most two (rate ≤ 2/3).
+  Open: cores of minimum token occurrence three with supports of size three or more. One bounded
+  pass each (Astra: an amortised boundary charge; Fable: the construction side). If neither
+  yields a mechanism that transfers, return to D0 and compare the reserve: full Shannon versus
+  order (G4), the native side (D9/D7), amplification.
 - Last re-evaluation (D0): 14 November 2026.

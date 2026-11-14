@@ -2830,3 +2830,37 @@ pass is complete. What remains is a deficit for higher-degree cores,
 especially at larger support sizes, or an argument without the transversal
 restriction. No such higher-degree bound or general machine exclusion
 has been proved here.
+
+## 24. Cores of supports three: how often a defect must be used (Fable, 14 November 2026)
+
+Status: **short written proof, unreviewed**; a bookkeeping inequality, not a
+deficit independent of the window. Front D1 (linear, transversal), in the
+terminal cores of section 23 with supports of size at most three.
+
+For a cell x put σ_x = 3 − |τ(x)| and for a token ω put δ_ω = deg(ω) − 3;
+both are nonnegative in a core, and Σ_x σ_x + Σ_ω δ_ω = 3(N − K). Let m(x) be
+the number of blocks containing x and κ(ω) the number of blocks whose tokens
+include ω.
+
+**24.1.** Σ_ω κ(ω)·δ_ω + Σ_x (m(x) + 1)·σ_x ≥ 3(N − L).
+
+*Proof.* By the boundary count of section 23, the incidences from the tokens
+of a block to cells outside it number Σ_{ω in block} δ_ω + Σ_{x in block} σ_x.
+The non-helper cells of the block's column are outside it and have all their
+tokens in it, which gives at least Σ_{x in column} (3 − σ_x). Sum over the
+columns. ∎
+
+**What it says.** Dividing by 3(N − K): the average number of blocks in which
+a defect is used, weighted by the defects, is at least (N − L)/(N − K). A
+support defect is used at most w′ + 1 times. A token defect is used κ(ω)
+times, and κ(ω) ≤ w′·deg(ω). Hence:
+
+- if no token lies in more than κ blocks, N − K ≥ (N − L)/max(κ, w′ + 1);
+- deleting the tokens of degree above D costs at most 3N/D tokens and leaves
+  κ ≤ w′·D, so the bound obtained this way is of order 1/(w′·D): it depends on
+  the window, like the order bound;
+- **a core of rate close to one must contain tokens of degree at least four
+  that are resolved in about N/(N − K) different blocks each.** Whether the
+  geometry bounds that number independently of w is the open step.
+
+I found no design with that property and no bound on κ.

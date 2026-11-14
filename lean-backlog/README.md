@@ -126,6 +126,9 @@ Native extraction and source audit:
   canonical growing alphabets, would imply the full native crux at each fixed depth.
   The implication and its conditional machine-exclusion corollary are now Lean-verified.
   No capacity bound or unconditional machine exclusion is asserted.
+  Section 16 gives reviewed written support tests: a forward window and bounded actual
+  mutual degree force almost every radius-`Ω(√log d)` ball to be bipartite, uniformly in
+  lane count. This does not exclude Paper 15's separated tower.
 - [Simplex-code calibration](notes/simplex-code-calibration.md): a reviewed written
   construction of rate $2/3-o(1)$ at window $(1+o(1))d^{1/3}\log d$, improving
   the projective-plane window exponent. Exact finite controls include the Fano
@@ -202,6 +205,11 @@ Native extraction and source audit:
   factor at canonical width. A shortened-code bound separately rules out tensor-cylinder
   columns for every decoder of the full field kernel, with arbitrary row labels.
   Fully mixed partitions and alternative binary-fibre decoders remain open.
+  The first helper-column intersection test alone is now exhausted: every bounded-degree
+  loopless support passes it for some balanced columns at canonical width. A separate
+  derangement-model counting bound shows that such supports usually still have no
+  fixed-window presentation. Neither statement bounds high-rate codes; together they
+  isolate the need for one compatible transversal row partition.
   The row-spread note's §8 records the paid
   reverse-degree normalization and exact coset-index criterion; their incidence controls
   run with `python3 lean-backlog/tools/grid_labelling_controls.py`. These grid results

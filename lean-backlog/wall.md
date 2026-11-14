@@ -96,9 +96,13 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   Presentability of the growing coupled family at a window depending only on m remains open.
   The displayed support fails column labels omitting any tensor factor at canonical width;
   the full field kernel fails every decoder on tensor-cylinder columns. Arbitrary mixed
-  partitions and alternative binary-fibre decoders survive. For every partition, a mutual
-  support must be locally bipartite at almost all vertices ([row spread](notes/row-spread-of-cones.md)
-  §16); for the tower this is consistent, not an exclusion. A positive result needs the
+  partitions and alternative binary-fibre decoders survive. A bounded-degree mutual support
+  with bounded forward window must be locally bipartite at almost all vertices, even at
+  radius of order √log d ([row spread](notes/row-spread-of-cones.md) §16); the tower already
+  satisfies the fixed-radius requirement, so this gives no exclusion. The first
+  helper-column intersection test always passes for some balanced columns of any
+  bounded-degree loopless support at canonical width; it cannot decide the tower alone
+  ([grid note](notes/grid-labellings-and-amplified-codes.md) §7). A positive result needs the
   dimension/lane adapter in the [grid note](notes/grid-labellings-and-amplified-codes.md) §6.
   It would refute a common positive deficit, not every window-dependent or native exclusion.
   A negative result for this one tower matters insofar as its mechanism generalizes.
@@ -176,6 +180,7 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
 | **X20** | A gain from decoders with a growing twisted symmetry, an anonymous local rule, or a sparse sector profile (groups, linear, every field) | Proved at one half; see Section 1 | A balanced non-local sector profile lacking the symmetry; nonlinear rules |
 | **X21** | Testing unbounded coupling on small solvable groups, or one irreducible constituent at a time | Such families are hyperfinite; bounded blocks already beat the baseline; the code uses one decoder on the whole regular representation ([controls](notes/bounded-sector-coupling.md)) | — |
 | **X22** | Enlarging the balanced split/nonsplit SL₂ profile search | The single algebra pass gives common algebra dimension d²/2 and a 3/4 cap, but no mechanism for gain. The five-restriction excursion is parked, not disproved ([proof](notes/symmetry-and-locality.md) §6) | A concrete cancellation mechanism that could beat pairing |
+| **X23** | Forcing window to grow by the helper-column intersection test alone | At canonical width every loopless support with both degrees ≤Δ has balanced columns passing that test with parameter 16(4Δ−1). Yet random supports in a specified bounded-degree model usually have no fixed-window presentation ([grid note](notes/grid-labellings-and-amplified-codes.md) §7) | A constraint on one common transversal row partition, or additional code structure; not another cylinder-only exclusion |
 
 ## Maintenance
 
@@ -185,10 +190,12 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). G0: genuinely mixed column partitions for the
-  growing tower (Astra). Two restrictions: this code family and its fixed coordinates; a
-  displayed-support argument has the extra decoder restriction. Use the shortened-column
-  gate or exact support intersections before any search. Fable: the dual linear form of D1,
-  [row spread](notes/row-spread-of-cones.md) §15.2 (one restriction: linearity). B1's conditional
-  transfer is complete in Lean. G3 is parked after its one algebra pass.
+- **Current focus** (replace, do not append). D1/G0: a common transversal row partition
+  compatible with the column partition. Astra's bounded tower pass fixes a code family and
+  its displayed support (two restrictions); its intersection test is exhausted by X23.
+  No presentation or arbitrary-layout exclusion of that tower is proved. Fable: a directed
+  presentability constraint beyond the acyclic bound, with no mutual or linear restriction;
+  the previous dual support count reproduced the order bound. Reassess the next structural
+  criterion together before another search. B1's conditional transfer is complete in Lean.
+  G3 remains parked.
 - Last re-evaluation (D0): 14 November 2026.

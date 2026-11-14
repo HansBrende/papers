@@ -1202,72 +1202,164 @@ full field kernel also fails the natural tensor-cylinder columns (§6).
 Arbitrary fully mixed partitions, and alternative binary-fibre decoders,
 remain open.
 
-## 16. Presentable relations: normal form, and gates that do not depend on the partition (Fable, 13 November 2026)
+## 16. Presentable relations: normal form and partition-independent gates
 
-Status: **short written proofs, unreviewed**; 16.3 is a corollary of 12.1.
-Front D1, gap G0. 16.1, 16.2 and 16.4 allow one-way helpers and nonlinear
-recovery; 16.3 is for mutual (symmetric) supports only.
+Fable's proposal, audited and strengthened by Astra, 14 November 2026.
+Status: **reviewed written proofs, not Lean-verified**. Front D1, gap G0.
+Sections 16.1, 16.2 and 16.4 allow one-way helpers and nonlinear recovery;
+16.3 concerns a symmetric support (or the mutual subrelation of a directed
+support). Every assertion is about the specified support, not all possible
+decoders of a code using it.
 
-**16.1 (normal form).** A recovery digraph H on d² vertices is whole-row
-presentable at window w exactly when there are maps φ, ψ from its vertices to
-[d] (column and row), with (ψ, φ) a bijection onto [d]², and a bipartite
-graph B with at most w rows at each column, such that
+**16.1 (normal form).** A digraph $H$ on $d^2$ vertices is whole-row
+presentable at window $w$ exactly when there are column and row maps
+$\phi,\psi:V(H)\to[d]$, jointly a bijection onto $[d]^2$, and a bipartite
+row helper graph $B$ of forward degree at most $w$, such that
 
-  u → v in H  ⟹  (ψ(v), φ(u)) ∈ B.
+$$u\to v\text{ in }H\quad\Longrightarrow\quad
+       (\psi(v),\phi(u))\in B.$$
 
-The row of the helper is confined by the column of the cell that reads it.
-If H is symmetric, it is a spanning subgraph of the two-token graph of B
-(section 12).
+This is the definition written on the vertices of $H$. If $H$ is symmetric,
+applying the condition in both directions places it as a spanning subgraph
+of the two-token graph of $B$ (§12). For $d^2b$ vertices, replace the bijection
+by exactly $b$ vertices in each row-column cell. Projection of walks to
+cells still gives walks in the two-token graph, and cell-count bounds
+acquire a factor $b$. This does not bound the degree of the actual support
+unless a separate degree hypothesis is imposed.
 
-**16.2 (shortening; the column gate and where it stops).** For any set S of
-cells and any word x⁰, the words of C that agree with x⁰ outside S form a
-storage code on the relation induced on S. Hence: on one column at most w
-free symbols (the column gate of the
-[grid note](grid-labellings-and-amplified-codes.md), section 6); on a union
-of columns J at most |ρ(J)|·|J|, which is the rectangle bound read on the
-code; on any S at most |S| minus its largest induced acyclic set.
-*Where it stops.* For a linear code of dimension (1 − η)d² and a set S in
-general position, the subcode supported in S has dimension
-max(0, |S| − ηd²). On unions of columns that is below |ρ(J)|·|J| whenever
-the rectangle bound holds. So shortening sees a partition only through sets
-that support more codewords than a generic set of their size. Cylinders do;
-a mixed partition need not. It cannot be extended to mixed partitions
-without another input.
+**16.2 (shortening and its limitation).** Fix the entries outside a set
+$S$. The resulting fibre, restricted to $S$, is a storage code on $H[S]$:
+all removed helper arguments are constants. Empty fibres cause no exception.
+Over an alphabet of size $q$, a one-column fibre has at most $q^{wb}$
+words, a fibre on columns $J$ has at most $q^{b|\rho(J)||J|}$ words, and a
+fibre on arbitrary $S$ has at most $q^{|S|-a(H[S])}$ words, where $a$ is
+the maximum size of an induced acyclic set. The first two follow by
+projection to the helper rows inside the retained columns; the last is
+acyclic elimination. The field-linear column case is (6) of the
+[grid note](grid-labellings-and-amplified-codes.md).
 
-**16.3 (a gate for every partition, mutual supports).** Let the forward and
-reverse windows be w and w′. In a presentable symmetric support, at most
+The precise generic-position condition is that projection of a
+$K$-dimensional linear code onto $S^c$ has rank
+$\min(K,d^2b-|S|)$. Rank-nullity then gives shortened dimension
+$\max(0,|S|-(d^2b-K))$. On a union of columns this value passes the
+shortening gate whenever the rectangle bound holds. This explains why
+that gate alone need not detect a mixed partition; it is not a claim
+that every mixed partition of the tower has generic shortening.
 
-  d·w·(ww′)^{(ℓ−1)/2}
+**16.3 (odd closed walks in every layout).** Suppose the row helper graph
+has forward and reverse degrees at most $w,w'$. Let $H$ be a symmetric
+support in a balanced grid with $b$ lanes, and write $\mathrm{Bad}_j(H)$
+for vertices lying on an odd closed walk of length at most $2j+1$. Then
 
-vertices lie on an odd closed walk of length at most ℓ, for every odd ℓ.
+$$|\mathrm{Bad}_j(H)|\le bd\,w(ww')^j. \tag{16.1}$$
 
-*Proof.* By 16.1 the support lies in a two-token graph, and by 12.1 a cell
-(c, r) on such a walk has row port c within distance ℓ of column port r. ∎
+*Proof.* By the two-token identity a bad cell has its row port within
+incidence distance $2j+1$ of its column port. Every shorter odd path can
+be padded by backtracking to this exact length. There are at most
+$w(ww')^j$ such walks from each column, and at most $b$ vertices in each
+cell. ∎
 
-So a presentable mutual support is locally bipartite, to radius of order
-log d / log(ww′), at all but a vanishing share of its vertices, whatever the
-rows and columns are. For the amplified support with a surviving odd
-coefficient γ_s, a vertex has an odd closed walk as soon as s of its
-coordinates do in the seed. Consequences: a seed in which a positive share of
-vertices lie on odd closed walks of bounded length is not presentable at any
-bounded window in any layout; for a connected non-bipartite seed of diameter
-D the gate reads log(ww′) ≳ log d/(2D), which for a seed of logarithmic
-diameter is a bound exponential in m and independent of d. That agrees with
-the order bound and is **not an exclusion**.
+A radius-$j$ induced ball is non-bipartite exactly when its root has an
+odd closed walk of length at most $2j+1$. A same-parity edge in a breadth-first
+layering gives one direction; every vertex of such a closed walk is at
+distance at most $j$ from its root, giving the other. Thus (16.1) bounds
+non-bipartite balls as well. For fixed $w,w'$ with $ww'>1$, any
+$j\le(1-\varepsilon)\log_{ww'}d$ gives a vanishing bad fraction for
+each fixed $0<\varepsilon<1$.
+When $w=w'=1$, the bound $bd$ holds at every radius.
 
-**16.4 (spread and concentration).** In a presentable relation the heads of
-the arcs leaving one column number at most w in any single column, and the
-tails of the arcs entering one row lie in at most w′ columns. If every vertex
-has in-degree at most Δ and out-degree at least one, the arcs leaving a
-column reach at least d/(Δw) different columns. So the quotient of H by its
-columns is dense: every column partition with a sparse quotient is excluded
-at once, cylinders among them, while the arcs from a column into each of its
-w helper rows number of order d. In the group model the swap supplies this
-(a column is mapped onto each of its helper rows by a bijection). A layout
-of the tower must supply two transversal partitions with the same pattern.
+A forward cap alone does not imply this conclusion for unbounded-degree
+supports. For instance, $\rho(0)=\{0\}$ and $\rho(r)=\{0,r\}$ for $r>0$
+have $w=2$, but the full mutual graph has a loop within distance one
+of every cell. Even after removing loops, every cell is at distance at
+most one from the row-zero clique, so all radius-two balls are non-bipartite
+for $d\ge3$.
 
-**Remark (the dual form gives the order bound and no more).** In the dual
-form 15.2, ordering the columns and counting, for each column, the checks
-that are not supported in the earlier columns and their helper rows
-reproduces Σ_l (d − w − |ρ(r₁,…,r_l)|)₊. Support counting on the dual side
-is the order argument again.
+**Forward-only strengthening with bounded actual degree.** Suppose instead
+that only the forward window $w$ is bounded, and the actual symmetric
+support has maximum degree $\Delta$. For every integer $R\ge0$,
+
+$$\frac{|\mathrm{Bad}_j(H)|}{d^2b}
+ \le \frac{w(wR)^j}{d}
+       +\frac{w}{R+1}\sum_{i=0}^j\Delta^i. \tag{16.2}$$
+
+*Proof.* Delete the vertices $Z$ in rows whose reverse row-degree exceeds
+$R$. There are at most $wd/(R+1)$ such rows, so
+$|Z|\le wd^2b/(R+1)$. A bad root with a witnessing walk avoiding $Z$
+is counted by (16.1) on the remaining incidence graph, which has reverse
+degree at most $R$. If a witnessing walk meets $Z$, its root is within
+$H$-distance $j$ of $Z$, using the shorter direction around the closed
+walk. At most $|Z|\sum_{i=0}^j\Delta^i$ roots have that property. ∎
+
+For fixed $w,\Delta,j$, taking $R\asymp d^{1/(j+1)}$ gives bad fraction
+$O_{w,\Delta,j}(d^{-1/(j+1)})$, uniformly in $b$. There is also an explicit
+growing-radius guarantee. Set $K=\max(2,w,\Delta)$ and $R=K^{2j+2}$.
+Equation (16.2) gives
+
+$$\frac{|\mathrm{Bad}_j(H)|}{d^2b}
+ \le \frac{K^{2j^2+3j+1}}d+K^{-j}. \tag{16.3}$$
+
+In particular $j=\lfloor\sqrt{\log_K d}/3\rfloor$ tends to infinity
+with bad fraction tending to zero. This uses the actual degree bound;
+it is a square-root-logarithmic radius, not the logarithmic radius
+obtained from a bounded reverse window.
+
+**Application to amplification: exact scope.** If a fixed positive share
+$\alpha$ of seed vertices have odd closed walks of a fixed bounded length
+in the actual mutual support of $A$, and $\gamma_s\ne0$ for some odd
+$s$, then at least $\alpha^sN^m$ amplified vertices have such walks.
+Choose $s$ active coordinates, pad their walks to a common odd length
+by backtracking, and use the exact support formula (4) of the grid note.
+Both directions of every used edge survive. At fixed $m$ and bounded
+seed degree, (16.2) rules out a bounded-forward-window presentation of
+that displayed support in every layout. It does not rule out alternative
+recovery rules for the same code.
+
+This gives **no exclusion of Paper 15's actual tower**: its containing
+seed graphs already have odd girth tending to infinity. Moreover the
+chosen $A$ need not have symmetric support, use every containing edge,
+or be connected or of logarithmic diameter. None of these properties may
+be inferred from an ambient arithmetic graph. Conditionally, if the
+actual mutual seed support is connected, non-bipartite and of diameter
+$D_0$, every seed vertex has an odd closed walk of length at most
+$2D_0+1$, by breadth-first layering. For an unpadded presentation
+$N^m=d^2b$, (16.1) forces $d\le w(ww')^{D_0}$.
+At $D_0=O(\log N)$ this is only a requirement
+exponential in the fixed amplification order $m$, not a window diverging
+with tower level. That diameter premise is not supplied by Paper 15.
+
+**16.4 (spread and concentration).** In every presentation, the distinct
+helpers used by one column meet any other column in at most $wb$ vertices.
+If reverse row-degree is bounded by $w'$, all tails entering one row lie
+in at most $w'$ columns. If the actual support has minimum outdegree
+$a\ge1$ and maximum indegree $\Delta$, one column sends at least $adb$
+arcs. Each helper receives at most $\Delta$ of them, so they reach at least
+
+$$\left\lceil\frac{ad}{\Delta w}\right\rceil$$
+
+different columns. This is a dense column quotient when $a,\Delta,w$
+are fixed. At least **one** helper row receives $adb/w$ arcs, and each
+receives at most $\Delta db$. There is no linear lower bound for each
+helper row: for $d\ge3$ (indices modulo $d$), the loopless permutation
+
+$$F(c,r)=\begin{cases}(r,c+1),&c\ne0,\\(r+1,1),&c=0\end{cases}$$
+
+has in/outdegree one and both windows two. Column $r$ sends $d-1$ arcs
+to row $r$ and only one to row $r+1$. The two cases map bijectively to
+vertices outside and inside column one, respectively. Independent lanes
+give the same counterexample with $b$ sparse arcs.
+
+These bounds require the stated actual minimum/maximum degrees. A global
+rank bound alone does not give minimum outdegree one at every vertex of
+the majority support. The first intersection bound, even when combined
+with balanced column sizes, is not enough to test the tower: [grid note,
+§7](grid-labellings-and-amplified-codes.md#7-why-the-intersection-test-cannot-decide-mixed-layouts)
+shows that every bounded-degree loopless support passes it for some
+columns at canonical width. Finding compatible rows is a separate obligation.
+
+**Remark (the dual support-count attempt).** Ordering columns in the dual
+form of §15.2 and counting checks not already supported in earlier columns
+and their helper rows reproduces the order certificate
+$\sum_\ell(d-w-|\rho(r_1,\ldots,r_\ell)|)_+$. This records the outcome
+of that particular counting argument, not a limitation on every method
+using the dual space.

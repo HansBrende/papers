@@ -371,7 +371,121 @@ partition, (4) and the helper intersections give a separate test.
 Neither proves that all partitions fail, nor rules out alternative
 decoders for the binary fibres.
 
-## 7. What remains worth testing
+## 7. Why the intersection test cannot decide mixed layouts
+
+The first necessary test of Proposition 8.1 is
+$|N(P_r)\cap P_s|\le wb$ for every pair of columns. The following
+result shows that this test alone cannot exclude the amplified support
+at canonical width. It does not supply a common row partition.
+
+**Proposition (balanced columns passing the test).** Let $H$ be a loopless
+digraph on $L=d^2b$ vertices, with in- and outdegree at most
+$\Delta\ge1$. Put $Q=4\Delta-1$. If $d\ge8$, $b\ge1$ and
+
+$$Qd^2(e/8)^{16b}<1,$$
+
+there is a partition into $d$ columns $P_r$ of size $db$ such that the
+number of arcs from $P_r$ to $P_s$ is at most $Q(16b-1)$ for every
+ordered pair $r,s$. In particular,
+
+$$|N(P_r)\cap P_s|<W_\Delta b,
+       \qquad W_\Delta=16(4\Delta-1). \tag{8}$$
+
+At $b\ge\lceil\log_2d\rceil$, it suffices that $d\ge\max(8,Q)$.
+
+*Proof.* Greedily colour arcs by their endpoint conflicts. Each arc
+conflicts with at most $4\Delta-2$ others, so $Q$ colours suffice;
+each colour class is an endpoint-disjoint matching. Opposite arcs
+are distinct and conflict. Looplessness ensures two distinct endpoints.
+
+Choose a uniformly random balanced column partition. Fix a matching,
+an ordered column pair, and $k=16b$ arcs of that matching. The $2k$
+endpoints are distinct. Their required labels have probability at most
+$(db)^{2k}/(L/2)^{2k}=(2/d)^{2k}$: the falling-factorial denominator
+has all factors at least $L/2$, since $L\ge4k$. This holds also when
+the two columns coincide; impossible assignments have probability zero.
+The matching contains at most $L/2$ arcs. Thus the probability that
+at least $k$ of its arcs land in the chosen column pair is at most
+
+$$\binom{\lfloor L/2\rfloor}{k}(2/d)^{2k}
+ \le(2eb/k)^k=(e/8)^{16b}.$$
+
+A union bound over $Qd^2$ choices leaves a positive probability of
+avoiding all these events. Summing the resulting $k-1$ bound over
+matchings proves the arc count and (8). Finally $e<4$ and
+$b\ge\log_2d$ bound the failure probability by $Qd^{-14}<1$
+in the stated range. ∎
+
+Every balanced column partition can be completed to a balanced grid by
+splitting each column into $d$ sets of $b$ vertices. That completion need
+not have bounded row spread. Thus $W_\Delta$ is a parameter satisfying
+one necessary intersection inequality, **not an achieved window**.
+No bound on the reverse-sharing test or on shortened subcodes is supplied.
+The theorem does not make a constant-parameter claim at scalar width
+$b=1$.
+
+At fixed amplification order, Paper 15's actual support is loopless and
+has both degrees at most $\Delta_m=(D+1)^m-1$. Consequently (8) holds
+for some columns at every sufficiently large canonical balanced size,
+uniformly over the allowed seed recovery matrices. Isolated padding and
+independent lanes preserve these hypotheses. The constant can be enormous
+and exponential in $m$; the presentability question allows this because
+$m$ is fixed before the tower level grows. On unpadded tensor lengths
+where the balancing identity holds, (5) forces these columns to mix all
+factors at large levels. This is an exact limit of that intersection
+test, not a positive presentation of the tower.
+
+### A support-level calibration: the test misses most random examples
+
+The limitation is not merely a failure to construct rows. In a specified
+bounded-degree model, the test passes but actual presentation usually fails.
+
+**Proposition.** Let $d\ge2$, $b\ge1$, $L=d^2b$, and choose
+$\Delta\ge3$ independent uniform derangements of the $L$ vertices.
+Let $H$ contain their arcs, ignoring duplicates. It is loopless with
+in- and outdegree at most $\Delta$. For $1\le w\le d$,
+
+$$\Pr[H\text{ has any balanced presentation of window at most }w]
+ \le 3^\Delta(d+1)^{wd}
+        [e^\Delta w^\Delta d^{2-\Delta}]^L. \tag{9}$$
+
+For fixed $\Delta$ this probability tends to zero at fixed $w$, uniformly
+in $b\ge1$. More strongly, for any fixed
+$0<\varepsilon<1-2/\Delta$, it tends to zero when
+$w\le d^{1-2/\Delta-\varepsilon}$.
+
+*Proof.* Overcount the row/column labellings by $d^{2L}$, and the choices
+of at most $w$ helper rows for each column by $(d+1)^{wd}$, using padded
+ordered lists. For a fixed balanced labelling and these helper sets,
+each vertex has at most $wdb=wL/d$ permitted destinations. Hence at most
+$(wL/d)^{\Delta L}$ permutation tuples respect it, even when all
+functions are counted. There are at least $(L!/3)^\Delta$ derangement
+tuples: inclusion-exclusion gives the derangement proportion at least
+$1/3$ for $L\ge2$. Using $L!\ge(L/e)^L$ and summing over the choices
+gives (9).
+
+In the growing-window range, the logarithm of the right side is at most
+
+$$\Delta\log3+wd\log(d+1)+\Delta L
+                    -\Delta\varepsilon L\log d,$$
+
+which tends to minus infinity. The term $wd\log(d+1)=o(L\log d)$
+uniformly in $b\ge1$. The fixed-window conclusion follows as well. ∎
+
+At canonical width every sample satisfies the existence conclusion (8)
+for large $d$, while with probability tending to one it has no
+presentation at any fixed window. These probabilities refer only to this
+derangement-tuple model. They give no density statement about correct
+transposers or high-rate-code supports, and no exclusion of the structured
+Paper 15 family. They also say nothing about replacing the specified
+recovery relation by another decoder for a code on it.
+
+The remaining obligation is simultaneous: choose transversal rows and
+columns so that **one row partition** confines every column's full helper
+set to a bounded set of rows. Pairwise helper-column intersections do
+not ensure that consistency.
+
+## 8. What remains worth testing
 
 The open construction question is whether a growing amplified seed, or
 an assembly with sufficiently large coupled blocks, admits a balanced

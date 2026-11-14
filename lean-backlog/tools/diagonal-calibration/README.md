@@ -159,3 +159,26 @@ the general Hall charge, including a far coordinate with three degree-two
 tokens; graph-rank formulas are not used on those presentations.
 No optimizer or design search
 is run, and no files are written. These are finite checks, not Lean proofs.
+
+## Block-core controls
+
+[Row spread §23](../../notes/row-spread-of-cones.md#23-block-cores-and-a-paid-reduction-to-minimum-occurrence-three)
+proves a paid reduction to a masked core of minimum token occurrence three.
+After removing tokens touched by exceptional coordinates, degree-two tokens
+peel with exact rank cost half the removed coordinate count. Its direct
+consequence improves the two-token asymptotic rate cap to 2/3 at fixed
+forward window. All statements here are written proofs, not Lean proofs.
+
+```sh
+python3 lean-backlog/tools/diagonal-calibration/core_controls.py
+```
+
+The standard-library checker reuses the existing matching and distance
+functions. Five fixed controls verify raw core-deletion failures (including
+a far target with no active host loops), the paid repair, two successive
+clean peeling rounds with ranks 3→2→1, and ordinary pairs peeling to rank
+zero. The four-pair residual separately refutes the uncharged global rank
+inequality: rank five exceeds half its eight noncore coordinates. Exact
+defect identities and recovery are checked with maximum matching throughout.
+Constants and removed-coordinate masks are counted explicitly. No optimizer,
+host search or output-file write is used.

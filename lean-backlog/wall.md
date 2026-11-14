@@ -67,7 +67,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
 | Opposite row orders | Outside a fixed coordinate set Z, every scalar coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row)+H(Z). If this holds after a common record Q is given, 2H(X) ≤ d²b+2H(Q)+H(Z\|Q), so subquadratic payment still gives half | nonlinear; full helper rows, not just copying one entry; fixed helper choices on each fibre | *written*: [§18.3](notes/row-spread-of-cones.md#18-signed-row-synergy-and-recovery-budgets) and [§20.6](notes/row-spread-of-cones.md#20-cell-budgets-token-closures-and-the-shannonorder-test); no new Lean |
-| Low-occurrence tokens and paid row trimming | **Every two-token presentation**, every host of forward window ≤w: rate ≤5/6+o(1). More generally, fixed maximum support size a and mean at most a fixed μ<5/2 give rate ≤(1+2μ)/6+o(1). Finite bound 6K≤2I+N+(2a+2)L+(a−1)N₃, I total support incidences; paid row trimming removes the reverse-degree cap | linear codes with the stated transversal presentations; uniform in lanes and field at fixed a,w; no alignment, codegree, symmetry or component bound | *written, reviewed*: [§22.5–22.6](notes/row-spread-of-cones.md#22-alignment-bicircular-presentations-and-a-uniform-constant-deficit); not Lean |
+| Paid core reduction | For bounded support size and fixed forward window, delete o(N) tokens and peel degree-two tokens: K=t+(N−N_*)/2+K_*, with a masked core of minimum token occurrence three. **Every two-token presentation has rate ≤2/3+o(1).** The earlier mean-support bound of §22 still applies | linear/transversal; uniform in lanes; no codegree, alignment, reverse cap or symmetry; arbitrary-support clean reduction, bounded arity for small payment | *written, reviewed*: [§23](notes/row-spread-of-cones.md#23-block-cores-and-a-paid-reduction-to-minimum-occurrence-three); not Lean |
 | Fractional payment of local matchings | Fundamental transversal coordinate matroids on codegree-one hosts: 2K ≤ N+L+N₃. Also holds with alignment across different rows; weak alignment alone does not justify the proof. Bounded raw grid degrees give half plus O(db); arbitrary masses require L+N₃=o(N). Paid token deletion can expose the required basis | linear over every field; arbitrary coupled lanes and components; specified nonlinear source-block encoders also covered; no symmetry required | *written, reviewed*: [§21.6–21.8](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations), [§22.1](notes/row-spread-of-cones.md#22-alignment-bicircular-presentations-and-a-uniform-constant-deficit); not Lean |
 | Resolved independent sources | Each helper union recovers every independent source it touches; helper unions have a fractional weighting covering every row with weight one. Then 2K ≤ N+L+N₃ | nonlinear injective full-product encoders; half when loop/near mass is o(N); strong source-resolution premise remains | *written, reviewed*: [§21.3](notes/row-spread-of-cones.md#21-token-blocks-accounting-and-bounds-for-fundamental-presentations); not Lean |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
@@ -134,7 +134,7 @@ symmetry or decoder-specific arguments. The gaps, nearest the wall first:
   ([audit](notes/symmetry-and-locality.md) §6). No gain was found or proved. This profile adds
   five restrictions (group, linear, mutual, one family, one profile); it is parked (X22).
 - **The general bound.** Any improvement of the deficit 1/(w+1) for all whole-row codes is progress
-  on the wall itself. Two-token presentations now have a common asymptotic deficit of 1/6 on
+  on the wall itself. Two-token presentations now have a common asymptotic deficit of 1/3 on
   **all** fixed-window hosts, including expanding ones, without an alignment or reverse-degree
   premise. The same proof excludes rates tending to one for fixed maximum support size and
   mean support size bounded by a fixed μ<5/2. These bounds do not exclude all gains over half.
@@ -225,13 +225,13 @@ normal-form facts, not a new exclusion or construction at positive limiting gain
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **Token designs** (generic linear codes on the host;
-  D1, two restrictions: linear, transversal). Proved by Astra, *written, reviewed*
-  ([row spread](notes/row-spread-of-cones.md) §§21–22): K ≤ N/2 + O(db) for fundamental
-  presentations on hosts of codegree one; **K/N ≤ 5/6 + o(1) on every fixed-window host when
-  supports have size at most two, or bounded size and mean below 5/2**, with no further
-  assumption. Open, and the target: designs of larger support, where tokens of degree at least
-  three dominate (§23: block cores). A result must extend the covered supports or remove a
-  restriction. In reserve, not active: full Shannon versus order; native paid recovery;
-  amplification. This file is over its size; next edit trims Sections 1 and 4 in place.
+- **Current focus** (replace, do not append). **Token designs** (D1; linear, transversal).
+  The paid core reduction is proved ([row spread](notes/row-spread-of-cones.md) §23,
+  *written, reviewed*): at bounded support size and fixed window, an o(N) token payment
+  leaves exact half-rate peeling plus a masked core of minimum occurrence three.
+  Two-token presentations therefore have rate ≤2/3+o(1), with no codegree or alignment
+  premise. The next bounded target is a deficit for higher-degree cores at larger support
+  sizes. A padded-grid core deficit δ suffices, transferring as δ/2; do not silently normalize
+  the mask as a balanced grid. If no mechanism emerges, return to D0. In reserve: full
+  Shannon versus order, native paid recovery, amplification. Fable is trimming the map.
 - Last re-evaluation (D0): 14 November 2026.

@@ -2615,7 +2615,8 @@ In particular, for every fixed w,
   K/(d²b) ≤ 5/6 + O_w(d^(−1/2)),                         (22d)
 
 uniformly in b, in the relation, and in any field representing this
-coordinate matroid. There is **no reverse-degree assumption**.
+coordinate matroid. There is **no reverse-degree assumption**. Section 23.4
+improves this two-token asymptotic cap to 2/3 by a core reduction.
 
 More generally, if maximum support size is at most a and I/N≤μ, then
 
@@ -2683,44 +2684,149 @@ is a charge that remains useful at mean support size at least 5/2, or
 an argument without the transversal restriction. Improving constants
 inside the two-token class is not the next target.
 
-## 23. Block cores: the tokens of degree at least three (Fable, 13 November 2026)
+## 23. Block cores and a paid reduction to minimum occurrence three
 
-Status: 23.1 has a **short written proof, unreviewed**; 23.2 is a
-**proposal, not proved**. Front D1 (linear, transversal). Supports of any
-size. "Degree" of a token is the number of cells covering it; *high* means
-degree at least three.
+Fable's core proposal, corrected and proved with an explicit payment by
+Astra, 14 November 2026. Status: **reviewed written proofs and exact
+controls, not Lean-verified**. Front D1, linear/transversal. The clean
+reduction permits arbitrary token supports; the small payment on general
+fixed-window hosts uses a bound on support size. Degree means the number
+of coordinates containing a token. Prune globally unused tokens first.
 
-**23.1 (the core of a block).** In a whole-row token design let H_r be the
-block of column r with a perfect matching to its tokens. Then, apart from
-cells at distance at most three from their own column or lying on host
-loops:
+**23.1 (what stripping a square actually requires).** Let P be a square
+block with token set Ω and a perfect matching. Call tokens of global
+degree at most two *low*, the others *high*. Suppose every low token in
+Ω occurs in exactly one coordinate of P. Those coordinates are distinct
+forced matching mates. Removing them leaves a square on Ω's high tokens:
+every remaining coordinate has only high tokens, and the restricted
+matching covers every high token. This is a local lemma under the stated
+uniqueness condition, not a license to ignore exceptional helpers.
 
-- a token of degree one or two in the block has exactly one cell in the
-  block and is matched to it;
-- the remaining cells of the block (its *core*) cover only high tokens, and
-  the matching restricts to a perfect matching between the core and the
-  high tokens of the block.
+**Raw core deletion can break far recovery.** At d=4 put
 
-So every column has, inside its helper rows, a square block of cells all of
-whose tokens are high, resolving every high token that the column or the
-partners of its cells need.
+  ρ(0)={1,2}, ρ(1)={0,2}, ρ(2)=ρ(3)={0,1}.
 
-*Proof.* If both cells of a degree-two token lie in the helper rows of one
-column they are mutual helpers inside those rows, hence near or loops
-(section 21). So such a token has one cell in the block and the matching
-must use it. A cell covering a degree-two token of the block is therefore
-matched to it and is not in the core. ∎
+Give a=(0,0), b=(1,1) support {h,l}, and q=(2,2), e=(3,3) support {h};
+all other supports are empty. The original rank is two and all columns
+recover: a uses b,q; b uses a,q; q and e use the square a,b. All active
+coordinates are nonloops, and e is far (row 3 is isolated). Token h has
+degree four and l degree two. The pure-high core keeps only q,e, so it
+loses every nonconstant helper of e. Near helpers were essential to a
+far target. Removing their coordinates without a rank payment is invalid.
 
-**Consequence for supports of size at most two.** In the extremal profile of
-the 5/6 bound every cell covers one token of degree two and one of degree
-three, so no cell is in a core and no far design has that profile: the
-helper-row graphs are unions of stars. Cycles need cells covering two high
-tokens.
+**23.2 (the exact global defect).** Let H be the high tokens, C the
+coordinates with no low token (including constants), D=V∖C, and n₁ the
+number of degree-one tokens. For x∈D write k_low(x) for its number of
+low tokens. Every pruned presentation, even without recovery, satisfies
 
-**23.2 (proposal: reduction to minimum degree three).** The cells all of
-whose tokens are high, with the high tokens, form a whole-row token design
-by 23.1 (the *core design*). If the rank of a design could be bounded by half
-the number of its other cells plus the rank of its core design, the general
-question would reduce to designs in which every token has degree at least
-three. The missing step is the global matching: high tokens may be matched
-to cells outside the core.
+  K = rank(C)+|D|/2 + (|H|−rank(C)) + n₁/2
+                         + ½Σ_{x∈D}(k_low(x)−1).         (23a)
+
+All three correction terms are nonnegative. Indeed K=|H|+n₁+n₂ and
+Σ_D k_low=n₁+2n₂; substitution proves the identity. Thus the proposed
+uncharged upper bound is generally in the opposite direction. The
+eight-coordinate four-pair control of 20.5 has rank five, no pure-high
+active coordinate, and eight noncore coordinates, so five exceeds four.
+Padding its other eight coordinates with constants does not change this
+comparison. A successful reduction must eliminate or pay all three terms.
+
+**23.3 (clean global core and exact peeling).** Fix a pruned whole-row
+token presentation on V, with its row and column partitions and helper-row
+relation. Suppose all nonconstant
+coordinates are *far*: neither host loops nor at incidence distance three.
+Then the pure-high core C is a whole-row token design, all its high
+tokens can be matched inside C, and
+
+  K = (|V|−|C|)/2 + rank(C).                              (23b)
+
+Repeatedly applying this operation, with degrees recomputed each time,
+gives a retained coordinate set V_* and a whole-row presentation on it
+whose every remaining token has degree at least three, with
+
+  K = (N−N_*)/2 + K_*,  N_*=|V_*|, K_*=rank(V_*).         (23c)
+
+Initial constant coordinates are retained. Removed coordinates are kept
+out of the later counts; the row relation is unchanged.
+
+*Proof.* A degree-one token would force its sole occurrence to be a host
+loop, so there are none. If a degree-two token occurs at x,y and both
+coordinates lie in one helper union U_r, recovery of nonloop x forces
+y into U_col(x). The walk
+
+  row(x) — r — row(y) — col(x)
+
+has length three, contrary to farness. Thus each low token occurs at most
+once in each helper union. Moreover no coordinate has two low tokens:
+the forcing step of 22.5 would put their other occurrences on host loops,
+whose supports are empty. Therefore |V∖C|=2n₂.
+
+Apply 23.1 to every recovery square. The resulting pure-high squares
+cover all high tokens: each high token occurs in a far target, and the
+square recovering that target contains it. Their union matches all of H.
+For completeness, take a maximum matching on C. If it omits a token of
+one square (P,Ω), remove all its edges into Ω, fewer than |Ω| edges.
+All P coordinates are then free, since their supports lie in Ω. Inserting
+the square's perfect matching enlarges the global matching, a contradiction.
+Thus rank(C)=|H|. The same pure-high squares recover every retained target,
+so C is itself a valid whole-row design. Equation (23a) now has zero
+correction terms and proves (23b).
+
+Core token degrees may have fallen: a formerly high token can become
+degree two. Recompute them and repeat. Recovery and farness persist;
+degree one is again impossible. Each nontrivial step removes tokens and
+exactly twice as many coordinates. The process terminates, and summing
+the identities proves (23c). ∎
+
+**23.4 (paying for a clean core).** Let Q contain every token touched by
+a loop or distance-three coordinate. Deleting Q preserves recovery and
+reduces rank exactly by t=|Q|, by 21.8. Every surviving nonconstant
+coordinate is now far. Consequently every whole-row token presentation
+has the exact paid decomposition
+
+  K = t+(N−N_*)/2+K_*                                   (23d)
+
+for such a minimum-occurrence-three core. If maximum support size is a,
+one can pay t≤a(L+N₃). No small payment is asserted for arbitrary
+unbounded supports.
+
+On the balanced grid N=d²b with forward window at most w and maximum
+support size at most a≥2, first delete tokens touching rows of reverse
+degree greater than an integer R≥1, as in 22.6. In that trimmed relation
+pay for all loop and distance-three coordinates. The combined payment is
+
+  t/N ≤ aw/(R+1) + aw/d + aw(w−1)(R−1)/d.                 (23e)
+
+The first term pays the high-reverse rows. The other two follow from
+L′≤wdb and N₃′≤db·w(w−1)(R−1). Each deletion preserves recovery and
+has the exact token rank cost; recompute the exceptional coordinates
+after trimming the relation. With R=⌈√d⌉, t/N=O_{a,w}(d^(−1/2)),
+uniformly in the lane count. No reverse-degree assumption is needed.
+
+For two-token presentations, incidence counting in the terminal core
+gives 3K_*≤2N_*. Substitution into (23d) gives the direct consequence
+
+  K/N ≤ 2/3 + 2w/(R+1) + 2w/d
+                            + 2w(w−1)(R−1)/d,
+  K/N ≤ 2/3+O_w(d^(−1/2))  at fixed w.                   (23f)
+
+This improves the two-token cap of 22.6 as a consequence of the structural
+reduction. No alignment, codegree, symmetry or component-size assumption
+is added, and no two-thirds sharpness claim is made.
+
+**Normalization and the next target.** The core has an inherited coordinate
+mask; its rows need not have equal remaining sizes. A future bound
+K_*≤(1−δ)N_* gives rate at most max(1/2,1−δ)+t/N for the original
+design. A bound only against the full padded grid, K_*≤(1−δ)N, gives
+rate at most 1−δ/2+t/N: combine it with K_*≤N_* in (23d). Both statements
+assume 0≤δ≤1. Thus a common padded-grid deficit for minimum-degree-three
+cores would suffice within the bounded-arity class, with the stated loss.
+It does not follow merely by renaming globally high tokens: degrees must
+be recomputed, exceptional tokens paid, and the coordinate mask retained.
+
+The [fixed controls](../tools/diagonal-calibration/README.md#block-core-controls)
+check raw-core failures, the paid repair, two successive clean peeling
+steps, and peeling ordinary pairs to rank zero. The bounded reduction
+pass is complete. What remains is a deficit for higher-degree cores,
+especially at larger support sizes, or an argument without the transversal
+restriction. No such higher-degree bound or general machine exclusion
+has been proved here.

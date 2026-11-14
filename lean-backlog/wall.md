@@ -48,7 +48,11 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 - **Yes** excludes oblivious linear-time transposers (breach B1). A deficit δ(w) that falls more
   slowly than every power of 1/log log w would also do (estimate from B1 and the fourteenth paper's
   depth bound, unreviewed). The known deficit is 1/(w+1).
-- **No** is what a machine needs: it must contain such codes of rate tending to 1 (front D7).
+- **No** is necessary for a machine, not sufficient: a machine must contain such codes of rate
+  tending to 1, but codes alone do not give a machine. They would still have to be computed by
+  tape passes in linear time (front D7), and an exclusion could still hold through structure
+  that whole-row codes ignore (the native crux, D9). So a No closes this route to the exclusion
+  and decides nothing about (T).
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 

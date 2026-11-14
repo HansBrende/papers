@@ -196,12 +196,12 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0/D4: select a native premise beyond the
-  existing normal forms.** D2's proposed physical-boundary target is already covered by Paper 17's
-  line theorem, even for spread phases; no search. Literal covariance is not supplied by unit
-  head speed (X27). A next bounded unit must state either a paid estimate for actual native
-  decoders, including correctness when used, or an explicit non-subspace/position-dependent
-  D2 inequality. Do not reopen the shift/projection algebra or row-closure completion recipes.
-  Sparse-generator results remain: asymptotic rate ≤2/3 at support two, ≤(1+μ)/4 for bounded maximum support
-  and mean μ<3, on every fixed-window host; they do not provide that native premise.
+- **Current focus** (replace, do not append). **D0, no front chosen yet.** Closed this round: the
+  completion rule for G4 (X25); a sparse source basis from bounded read-degree (X26); and the
+  proposal to work on D2 with shifts and row boundaries, which paper 17 already settles for
+  linear sources at every phase (see the D2 row). What D2 leaves is in paper 17's own words:
+  window at least three with rows and offsets both spread, on sources that are not subspaces or
+  with a rule varying along the row. Neither agent has a premise for that case. In hand: Astra's
+  audit of the native decoder-change invoice (D4). Reserve to compare when it reports: G4, G0,
+  amplification. Standing results of the session are in the table of Section 1.
 - Last re-evaluation (D0): 14 November 2026.

@@ -21,9 +21,25 @@ Paper 17 is [Order, Symmetry and the Swap](../Order-Symmetry-and-the-Swap-A-Synt
 **Objective.** Decide (T): does a multitape Turing machine transpose a d × d matrix of
 logarithmic-size entries in linear time? An exclusion of oblivious machines alone is a major result.
 
-**The wall today is one statement about codes.** A *whole-row code* at window w is a set of d × d
-arrays in which column r is a (possibly nonlinear) function of the rows ρ(r), |ρ(r)| ≤ w.
-Let R(w) be its best rate for large d, over the alphabets {0,1}^{b(d)}.
+**The wall today is one statement about codes.** The objects:
+- **Array.** X is a d × d array. Each entry is a string of b bits, b about log₂ d, as in the
+  transposition problem.
+- **Helper rows.** For each column index r, ρ(r) is a *set of row indices* (a subset of
+  {1, …, d}). |ρ(r)| is the number of indices in it.
+- **Window.** w is one number: no set ρ(r) has more than w indices.
+- **Whole-row code.** A set C of arrays such that, for every r, the contents of the rows listed
+  in ρ(r) determine the whole of column r: two arrays of C that agree on those rows agree on
+  column r. The rule that computes the column may be anything; it need not be linear.
+- **Rate.** If C has as many arrays as there are ways to fill k entries freely, its rate is
+  k/d²; in general, (log of the number of arrays in C) / (number of bits in an array).
+- **R(w).** The best rate at window w when d is large: the largest rate over all choices of ρ
+  and C, in the limit of growing d.
+- **Example.** ρ(r) = {r}, so w = 1: column r must be computable from row r. The symmetric
+  arrays qualify (column r equals row r). Their d(d+1)/2 entries on and above the diagonal are
+  free, so the rate is just over ½. This code is called *pairing*.
+- **Why transposition.** Row r of the output Xᵀ is column r of X. A machine that writes it after
+  looking at only w rows of the input makes column r a function of those rows, on the inputs it
+  handles correctly (breach B1 makes this precise).
 
 > **Is sup_w R(w) < 1?** Equivalently: is there one δ > 0 with every whole-row code at every fixed
 > window having at most (1 − δ)d² symbols?

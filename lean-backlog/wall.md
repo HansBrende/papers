@@ -117,14 +117,16 @@ Open questions, nearest the wall first:
 - **G1. Nonlinear forms** of the basis and spectral pairings.
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
   [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
-- **G4. Is the full Shannon value bounded away from d² as w grows?** Universal
-  equality is false (B2), and a positive-density gap persists on growing hosts
-  at fixed window (B3), with unrestricted source/recovery scope. Those Fano
-  lifts already have order rate ≤41/49; high-order families are still the test.
-  The paid Fano inequality supplies exact recovery-error charges, but no cheap
-  coarse pattern for arbitrary native cones. Next: identify such a premise on
-  a wider family, or an incidence proof for high-order bases. PG(2,3) has
-  130≤Sh≤140; no new upper there. Near-order witnesses on other families remain open.
+- **G4. Is the full Shannon value bounded away from d² as w grows?** Universal equality with order
+  is false (B2) and the gap has positive density at fixed window (B3), with no restriction on the
+  code. The Fano lifts have order rate ≤ 41/49, so they are not near the wall. Two things are missing:
+  (a) a *high-order base*, a family with order rate tending to one and a Shannon bound that stays
+  below one (candidate: projective planes, conjectured value two thirds; PG(2,3) has 130 ≤ Sh ≤ 140);
+  (b) whether the mechanism needs triangles at the coarse scale. The certificate's positive dual
+  contains no triangle orbit; the smallest triangle-free tests are the 3×3 grid (21 ≤ Sh ≤ 23 on 36
+  cells) and the quadrangle of order (2,2) (90 ≤ Sh ≤ 118 on 180)
+  ([note](notes/triangle-free-hosts.md)). In soft form the question is whether
+  Σ_v I(X_v; helpers) ≤ c·(total correlation) holds with c bounded where order gives no bound.
 - **The general bound.** For all whole-row codes the best deficit is still 1/(w+1).
 
 **Calibration** ([host audit](notes/whole-row-host-audit.md)). Exact full-host values: Fano scalar-linear
@@ -132,6 +134,7 @@ Open questions, nearest the wall first:
 (order bound 41); basis host d = 8, w = 3: 46 for all alphabets.
 Cyclic w = 2 has capacity and Shannon/order value d(d+3)/2−1 for every d≥2 and every alphabet;
 this attains the universal window-two upper bound. The cyclic-five witness is graphic.
+The 3×3 grid host has capacity at least 39 of 54 for every alphabet (pairing 36, order 41).
 None gives a code's fixed-window gain above half beyond O(d); B3 concerns
 a positive-density improvement of an upper bound, not a high-rate construction.
 
@@ -212,16 +215,13 @@ a positive-density improvement of an upper bound, not a high-rate construction.
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D1/G4, extend the scope of the paid
-  coarse-pattern bound.** The finite-gap amplifier gives a fixed-window family,
-  while the soft Fano inequality prices missing macro recovery. Distance: no code
-  restriction, one host-structure restriction (a useful coarse pattern/error budget).
-  Next unit must give a checkable premise beyond the exact Fano quotient, preferably
-  on a class where the order rate approaches one. Stop after one proof-level pass
-  if it only redescribes the same quotient or assumes the cheap invoice it needs.
-  Keep Fable's general-plane attempt as a possible source of high-order bases;
-  no additional LP, host sweep, or constant optimization is part of this target.
-  The source-core theorem is banked; the tower sparse gate and record-only native
-  change invoice remain closed at their stated scope. Neither supplies an alternative
-  premise for a new search.
+- **Current focus** (replace, do not append). **D1/G4, two bounded units.** Distance: no code
+  restriction; the host is restricted. (1) One exact Shannon computation on the 3×3 grid, the
+  smallest host without mutual triangles: value 23 means the certificate mechanism needs coarse
+  triangles, value below 23 means it does not, and only then the 15-point quadrangle gets one solve.
+  (2) One proof-level pass on a checkable premise for the paid coarse-pattern bound beyond the
+  exact Fano quotient; stop if it only redescribes that quotient or assumes the invoice it needs.
+  Fable: the plane argument by hand (pairing across line pairs must be paid for). If neither unit
+  produces a statement that reaches a high-order family, bank B2 and B3 and return to D0. No host
+  sweep and no constant tuning.
 - Last re-evaluation (D0): 14 November 2026.

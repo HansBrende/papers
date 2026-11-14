@@ -325,6 +325,74 @@ controls. No result in this audit supplies it, and no new class of transposers
 has been excluded. D8's shared-decoder/full-regular-representation success test
 remains valid, but it is parked while this native comparison is resolved.
 
+## 6. Finishing the native entry-change audit
+
+14 November 2026. **Written controls, not Lean-verified.** Paper 17's
+affine entry-advice theorem assumes the changed-rule count E. Over a finite
+field F_q, if at most q^B advice values select affine rules for transposition
+on all q^{d²} inputs, its necessary invoice is
+
+$$2B+d+E\ge d^2.$$
+
+Here E counts changes of the **linear parts** between adjacent receiver
+indices in the prescribed unit-shift views. Constants depending on the
+advice and target are allowed and cancel in the theorem. No reviewed
+native theorem supplies a useful general upper bound on this E. B1 gives
+row support, and Paper 20's cut-cone evaluation gives the effective
+functions, without making them affine or bounding their changes.
+
+Even ordinary transductions show why an advice-size estimate is not
+automatic. Over bits let N=d², let m_c=X[0,c] be the first raw row, and
+compute the row-major output
+
+$$Y[r,c]=m_c X[r,c].$$
+
+This is an oblivious O(N) tape computation with fixed alphabets, states and
+tape count, including the marker access. Count the input length with a
+binary counter in an amortized O(N) scan, compute its square root in
+polynomial time in log N, return to the start, and prepare a marked work
+interval of d cells. Counting and writing that interval costs O(d log d).
+Copy the first raw row into it, then return both heads to their starts in
+O(d) steps. For each input row scan the input and
+marker interval together, output their AND, then pause the input head and
+rewind the marker head. All scans and rewinds total O(d²). Every movement
+and append time depends only on length and phase, not on the input data.
+This is a written uniform program description, not a compiled transition
+table. The output tape is only appended to.
+
+Revealing m costs B=d bits. On the full marker fibre X[0,*]=m, let
+Z=σ^cX be Paper 17's shifted view. For r≥1 the output has linear part
+a^m_{c,r}(Z)=m_c Z[r,0]. Row-zero outputs are the affine constants m_c,
+so their linear parts can be zero. With cyclic indices put
+J(m)=#{c:m_c≠m_{c+1}}. The exact minimum change count, over affine
+extensions of this same transduction on the **full marker fibre**, is
+
+$$E_{\min}=(d-1)J(m).$$
+
+The displayed rules attain it. Conversely, every other row of Z is free
+on the shifted fibre; hence any affine extension must have coefficient
+m_c on Z[r,0] and zero on every other free coordinate. Different adjacent
+marker bits force different linear parts. Coefficients on the fixed row
+or constant offsets cannot remove that difference. For an alternating
+marker at even d, E_min=N−d despite B=d. Even with no advice, a fixed
+period-two mask can be applied during a straight scan and gives E=N on
+the full input space. Choosing a different shift may exploit that
+periodicity; the control does not exclude broader periodic normal forms.
+
+Two qualifications are essential. First, the marker record alone is not
+asserted to reduce the full native dependency depth; further cut records
+may shrink its fibre and change the best effective rules. Second, these
+machines do **not** compute transposition on that whole fibre. Correctness
+would additionally require X[c,r]=m_cX[r,c]. For m_0=1 and h ones in m,
+this leaves only a symmetric h×h block, with the row and column indexed
+by 0 prescribed, of affine dimension h(h−1)/2. Its source deficit is large,
+and its best affine extensions need not have the above E_min.
+
+Thus a small shared record, cheap replay, or a fixed periodic transition
+table does not by itself give E=O(B). This closes that proposed shortcut,
+not a correctness-dependent, source-sensitive extraction theorem. The
+native audit found no such theorem to substitute into the invoice.
+
 ## Sources
 
 Numbers refer to the revision pinned above; theorem names and source files

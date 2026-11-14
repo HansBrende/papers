@@ -129,6 +129,15 @@ Native extraction and source audit:
   Section 16 gives reviewed written support tests: a forward window and bounded actual
   mutual degree force almost every radius-`Ω(√log d)` ball to be bipartite, uniformly in
   lane count. This does not exclude Paper 15's separated tower.
+- [Sparse encoders and nonlinear cores](notes/sparse-encoder-cores.md): reviewed
+  written proofs for whole-row codes with injective full-cube encoders over any
+  common finite alphabet, at fixed forward window.
+  Exact source peeling gives asymptotic rate at most 2/3 at support two, and
+  at most (1+μ)/4 at mean support μ<3 with bounded maximum support. The note
+  computes the majority tensor generator's supports and shows that every
+  independent-source encoder onto its displayed subspace has growing mean
+  support. It makes no such claim for the full kernel or binary syndrome fibres.
+  These results are not Lean-formalized and do not supply a native encoder.
 - [Simplex-code calibration](notes/simplex-code-calibration.md): a reviewed written
   construction of rate $2/3-o(1)$ at window $(1+o(1))d^{1/3}\log d$, improving
   the projective-plane window exponent. Exact finite controls include the Fano

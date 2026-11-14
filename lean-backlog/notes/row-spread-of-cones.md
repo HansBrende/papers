@@ -3285,6 +3285,14 @@ premise in sections 22–23 is removed here. What remains is linearity and,
 for inexpensive exceptional-cell deletion, a bound on generator support.
 The mean-support consequence improves the earlier threshold 5/2 to 3.
 
+**Later extension.** [Sparse encoders](sparse-encoder-cores.md) removes
+linearity over finite alphabets: injective encoders of a full independent
+source cube satisfy the same exact core reduction, asymptotic two-source
+2/3 bound, and mean-support threshold three with bounded maximum support.
+The proof replaces subtraction by relative permutations. The source and coordinate alphabets must have the
+same finite size; arbitrary correlated-source fibres are not covered.
+The infinite-field result proved here remains separate.
+
 **Setup.** Let G be an N×K matrix of column rank K over any field F.
 Its image is a linear whole-row code on a coordinate set V, with the
 specified row and column partitions; write ℓ_x for its coordinate

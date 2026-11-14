@@ -67,7 +67,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | Mechanism | Class | Scope | Status |
 |---|---|---|---|
 | Opposite row orders | Outside a set Z every coordinate is recoverable from one other row: 2H(X) ≤ ΣH(row) + H(Z); given a common record Q, add 2H(Q). Also 2K ≤ N + L + N₃ when every helper union resolves all independent sources it touches and nonnegative column weights cover every row with total weight one; this gives half when L+N₃=o(N) | nonlinear | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§18, 20, 21 |
-| Source elimination and token counting | Exact paid core reduction K = t + (N − N_*)/2 + K_* for arbitrary field-linear generators. **Two sources per coordinate: rate ≤ 2/3 + o(1)** on every fixed-window host. Fixed maximum support and mean μ < 3: rate ≤ (1 + μ)/4 + o(1). Separately, fundamental transversal presentations on codegree-one hosts have 2K ≤ N + L + N₃, giving half when L+N₃=o(N) | linear with the stated source support; genericity only in the separate fundamental case; no reverse-degree or bounded-coupling assumption | *written, reviewed*: [row spread](notes/row-spread-of-cones.md) §§21–23, 28 |
+| Source elimination and token counting | Exact paid core K = t + (N − N_*)/2 + K_* for injective encoders Q^K→Q^N over every common finite alphabet. **Two sources per coordinate: rate ≤2/3+o(1)**. Fixed maximum support and mean μ<3: rate ≤(1+μ)/4+o(1). Also holds at fixed support when w³=o(d). Separately, fundamental transversal presentations on codegree-one hosts have 2K≤N+L+N₃ | nonlinear encoding and recovery; full independent source cube, bounded essential supports; no reverse-degree or bounded-coupling premise. Infinite-field linear result remains separate | *written, reviewed*: [nonlinear core and tower test](notes/sparse-encoder-cores.md); [row spread](notes/row-spread-of-cones.md) §§21–23, 28 |
 | Pairing of cells after a small payment | Row relation hyperfinite: o(d) row vertices deleted, pieces of size o(d). Covers groups with commuting probability bounded below, and marked quotients of one amenable group. The separator also gives S+R ≤ H(revealed coordinates) | nonlinear, one-way helpers | *written, reviewed*: [separator bound](notes/window-pages-and-input-attachments.md), [near-abelian groups](notes/bounded-sector-coupling.md), [amenable sources](notes/symmetry-and-locality.md) |
 | | Recovery components of size o(log d); products of local codes | nonlinear | *written*: [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | | Group relations, mutual recovery whose components each meet at most m diagonals (*sectors*): d²/2 + O(d²/log d) | nonlinear, mutual only | *written, reviewed*: [bounded-sector coupling](notes/bounded-sector-coupling.md); identities *Lean*, [SectorWalks.lean](SectorWalks.lean) |
@@ -91,18 +91,24 @@ S = Ω(N); in every known code S is O_w(db).
 2. for mutual recovery on group relations: components meeting unboundedly many diagonals;
 3. for linear group decoders: no growing twisted symmetry, small common algebra or local rule.
 
-For the stronger target of **rates approaching one**, field-linear codes with bounded-size
-generator supports must survive the paid reduction to minimum-occurrence-three cores. Their
-mean support cannot stay below three by a fixed amount in any such sequence of bases;
-two-sparse generators are excluded. This does not prove growing density in every basis,
-or exclude every gain above one half. Sparse recovery is a different property (X26).
+For the stronger target of **rates approaching one**, injective independent-source encoders
+with bounded essential support must survive the paid reduction to minimum-occurrence-three
+cores. Their mean support cannot stay below three by a fixed amount; two-source encoders are
+excluded even when all functions are nonlinear, over any common finite alphabet. This does
+not supply such an encoder for a correlated native fibre or exclude every gain above one half.
+Sparse recovery is a different property (X26).
 
 Open questions, nearest the wall first:
-- **G0. Is sup_w R(w) = 1 already?** Paper 15's codes have rate 1 − e^{−λm} on abstract relations;
+- **G0. Is sup_w R(w) = 1 already?** Paper 15's exhibited field-linear codes have rate at least
+  1 − e^{−λm} on abstract relations;
   whether their growing coupled form is whole-row at a window depending only on m is open
   ([grid note](notes/grid-labellings-and-amplified-codes.md) §§6–8,
   [row spread](notes/row-spread-of-cones.md) §§16–17). Cylinder layouts fail; pairwise column tests
   cannot decide mixed layouts (X23); limiting fixed-radius statistics cannot decide any layout.
+  The cheap sparse-source test fails for the exhibited majority-fixed subspace: its growing
+  minimum distance forces growing mean support in **every** onto independent-source encoder,
+  linear or not ([support audit](notes/sparse-encoder-cores.md#5-the-defining-sources-of-the-majority-construction)).
+  This neither decides its layout nor describes the full majority kernel or binary syndrome fibres.
 - **G1. Nonlinear forms** of the basis and spectral pairings.
 - **G2. One-way helpers without symmetry.** Oriented gadgets exist (*Lean*:
   [PaleyTournament.lean](PaleyTournament.lean)), none at positive density.
@@ -187,6 +193,7 @@ None gives a fixed-window gain beyond O(d).
 | **X25** | Inclusion–exclusion budgets on row-closure intersections, including the minimum/clipping repair | The repaired rule fails recovery and submodularity on d=4, ρ(r)=[4]∖{r}, despite attainable row budgets and capacity=Sh=order=15 ([row spread §29](notes/row-spread-of-cones.md#29-the-repaired-completion-rule-fails-at-window-three)). This closes the recipe, not G4 | A different completion with a proved polymatroid/recovery theorem, or a valid universal inequality |
 | **X26** | Bounded recovery degree, even with O(N) encoding circuits, forces a sparse generator after cheap linear advice | High-girth regular-graph cycle codes have arbitrarily high constant rate and bounded recovery degree, but every generator has mean support ≥g(K−t)/N after t linear reveals ([row spread §30](notes/row-spread-of-cones.md#30-sparse-recovery-and-cheap-circuits-need-not-give-sparse-generators)). No whole-row/native realization is asserted | A property of the actual grid or paid tape computation, beyond these abstract circuit conditions |
 | **X27** | Unit-speed native motion supplies literal unit-shift affine covariance after cheap advice | The fixed-state adjacent-pair transducer runs in 2N+O(1) steps but needs log_q M+z≥N/2−d for such replacement in the same coordinates ([§31.3](notes/row-spread-of-cones.md#31-shift-covariance-existing-bounds-and-the-native-gap)). It is not a transposer and does commute with a two-position shift | A correctness-dependent premise or a broader paid normal form; periodic classes and nonlinear maps are not excluded |
+| **X28** | A cheap shared record automatically gives E=O(B) affine rule changes | Replaying a d-bit marker in paid O(d²) tape time can force E=d²−d on its full marker fibre ([native audit §6](notes/native-cone-property-audit.md#6-finishing-the-native-entry-change-audit)). The marker alone is not a depth-reduction cut; the full fibre is not transpose-correct | A source-sensitive bound for an actual correct cheap-cut fibre, not record size alone |
 
 ## Maintenance
 
@@ -196,12 +203,13 @@ None gives a fixed-window gain beyond O(d).
   statement of Section 1 (linear, mutual-only, group relation, symmetric, …). Prefer work that
   removes a restriction over work that adds an excluded sub-class. A nested excursion that has gone
   two rounds without a statement that lifts one level is stopped and recorded in Section 4.
-- **Current focus** (replace, do not append). **D0, no front chosen yet.** Closed this round: the
-  completion rule for G4 (X25); a sparse source basis from bounded read-degree (X26); and the
-  proposal to work on D2 with shifts and row boundaries, which paper 17 already settles for
-  linear sources at every phase (see the D2 row). What D2 leaves is in paper 17's own words:
-  window at least three with rows and offsets both spread, on sources that are not subspaces or
-  with a rule varying along the row. Neither agent has a premise for that case. In hand: Astra's
-  audit of the native decoder-change invoice (D4). Reserve to compare when it reports: G4, G0,
-  amplification. Standing results of the session are in the table of Section 1.
+- **Current focus** (replace, do not append). **D0, comparing reserves after the bounded checks.**
+  The source-core theorem now removes linearity, using relative permutations, but retains a
+  full independent sparse-source representation. The majority-tower support check does not
+  supply it, even after nonlinear reparametrization of the displayed subspace. The native
+  audit supplies no useful E bound (X28). Candidate next: one bounded G4 certificate attempt
+  on the full Fano host, whose Shannon value remains between 119/3 and the order bound 41;
+  a verified upper bound below 41 would exhibit a technique beyond order. A restricted relaxation
+  returning 41 would not settle its full Shannon value. Do not enlarge that test without a
+  concrete certificate mechanism, or restart the closed completion recipes.
 - Last re-evaluation (D0): 14 November 2026.

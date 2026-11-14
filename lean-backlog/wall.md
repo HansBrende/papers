@@ -262,6 +262,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
 - **X29** A common deficit from counting columns that fit the best balanced Fano layout
 - **X30** A constant plane deficit using only row-closure equalities from pencils at o(n) centres
 - **X31** Transported closure with additive message bills as a stronger coding bound
+- **X32** First-level spectral (Delsarte) and translation-invariant rank bounds on the forbidden-difference form
 
 ## Maintenance
 
@@ -305,6 +306,13 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
      matching-plus-one-helper theorem and the abstract coset-record count are now Lean;
      pairing/parity geometry remains written.
   6. *Background.* B3 and the quadrangle formalizations remain written todos pending a reuse/effort
-     estimate. The quadrangle reserve starts with a compressed-family size estimate: the previous
-     pair-intersection census exceeded 100,000 masks before any LP. No larger search is commissioned.
+     estimate. *Quadrangle size estimate: dropped.* The full 180-cell lattice does not fit. A
+     sublattice of sets invariant under a subgroup with at most 14 cell orbits would fit, but its
+     value has no consumer: B4 already gives a triangle-free gap.
+  7. *Closed (X32).* [Array-free forms and a spectral test](notes/array-free-forms-and-spectral-test.md):
+     the forbidden-difference form admits Delsarte's programme, which on odd cycles and the
+     Petersen graph gains only a bounded factor of codewords over the order bound, so nothing at
+     growing alphabet. *In progress:* Astra, the one-pivot extension lemma for disjoint parity
+     constraints (Lean). Fable, review of that lemma's statement when it lands; until then no
+     premise with a consumer is open, and the next re-evaluation is due.
 - Last re-evaluation (D0): 14 November 2026.

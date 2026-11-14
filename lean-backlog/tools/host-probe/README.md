@@ -23,6 +23,11 @@ Incidence hosts: rows = points, columns = lines, helpers of a column = the point
   the integer grid-code identities above. This is a written construction
   with an exact checker, not Lean-verified ([note](../../notes/quadrangle-grid-control.md)).
 
+- `delsarte_lp.py`: Delsarte's linear-programming bound for storage codes on small graphs
+  in difference form, at several alphabet sizes; `rank_bound_pentagon.py`: exhaustive
+  translation-invariant rank bound over F₂ on the binary 5-cycle. Finite tests for
+  [this note](../../notes/array-free-forms-and-spectral-test.md); floating-point LP.
+
 The symbolic certificate needs only the Python standard library:
 
 ```sh

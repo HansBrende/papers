@@ -63,8 +63,10 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   for an oblivious transposer and not sufficient. A safe chain of
   relaxations, each forgetting data of the one before:
   1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
-     writes and appends on every input. Equivalent to the machine; a re-encoding, not a simpler
-     criterion. A network code on a tape diagram with free gates is already weaker.
+     writes and appends on every input. Shared motion gives the oblivious-machine version;
+     this is a written semantic equivalence, not a simpler criterion. The
+     [converse adapter is estimated, not implemented](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate).
+     A network code on a tape diagram with free gates is already weaker.
   2. *Causal values and cut records* on the native bit DAG, with the records each output can
      reach: at depth D at most 1+(k+1)K_D bounded-width records and K_D raw bits per output.
   3. *An all-input index encoder of charged length on one native cone system* (B1 supplies it;
@@ -96,6 +98,12 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 | **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Lean:* paid residual/full inequalities, exact Shannon optima with polymatroid witnesses, order41, and the all-alphabet code upper bound ([status](notes/consolidation-status.md)). The exact acyclic-set maximum 8 and gap against every acyclic invoice are Lean in [WholeRowAcyclic](WholeRowAcyclic.lean). Actual lane-code realization remains written. |
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Lean:* [macro projection](MacroProjection.lean), [conditional every-order comparison](../lean-machine/LeanMachine/WholeRow/LiftOrder.lean), [Fano gap against every acyclic invoice](FanoLift.lean), with an explicit complete-lift instance of growing window 3n. *Written, reviewed:* [fixed-degree existence and girth](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Lean:* paid scalar-error certificate, residual/full upper bounds, triangle-freeness, row-order optima, full maximum acyclic size 13 and gap against every acyclic invoice ([status](notes/consolidation-status.md)). Lower code, joint-column price, square adapter and amplification remain written; exact capacity remains open. |
+
+Here “every order bound” includes induced acyclic-set invoices, exactly identified with the
+best row order by [AcyclicOrder](../lean-machine/LeanMachine/WholeRow/AcyclicOrder.lean), and
+displayed-rule transported closure invoices with unit coordinate prices and additive message
+bills, which cannot improve them by [ClosureBarriers.transported_invoice_ge](ClosureBarriers.lean).
+Both comparisons are Lean; this is not a barrier for full Shannon inequalities or extra algebraic rules.
 
 **Classes with proved deficits.** The full list, with hypotheses, status and what each class
 would exclude on the machine side, is the
@@ -311,7 +319,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     implication to or from Paper 4's motion classes is established).
   - *Review and stopping point.* Astra: B3 stages 1–2 and the acyclic-set adapter complete;
     [permutation counting and girth remain parked](notes/finite-shannon-gap-amplification.md#7-lean-coverage-and-remaining-effort).
-    Fable: review of the acyclic-set identification and complete-lift instance. No construction experiment is commissioned.
+    The [same-table converse estimate](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
+    is complete; Fable reviews its definitions and scope. No converse development or construction experiment is commissioned.
   - *Open, no premise with a consumer:* the one-table half of rung 2 of the ladder; expander-type
     motion coupled to a code (Paper 4's open problem). No numerical search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

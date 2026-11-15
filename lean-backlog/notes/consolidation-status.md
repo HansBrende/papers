@@ -72,7 +72,12 @@ lake env python3 ../../lean-backlog/check.py \
 ## Scope corrections retained in the index
 
 Transported closure invoices are **at least** the original acyclic bound;
-they need not equal it. The connected two-triangle-system example gives
+they need not equal it. Together, the Lean acyclic-set identification in
+[AcyclicOrder.lean](../../lean-machine/LeanMachine/WholeRow/AcyclicOrder.lean)
+and `ClosureBarriers.transported_invoice_ge` justify “every order bound”
+for induced acyclic invoices and the displayed-rule transported closure
+invoices with unit coordinate prices and additive message bills.
+The connected two-triangle-system example gives
 `2N/3+1/2`, whereas the original acyclic exponent is `2N/3`. The interval
 relay also need not achieve the optimal finite value. These are limits of
 displayed-rule closure counting with the stated prices, not limits of full

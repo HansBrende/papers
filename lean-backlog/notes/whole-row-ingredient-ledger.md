@@ -40,6 +40,8 @@ original computation, with the same time bound, not a simpler capacity
 criterion. No separate Lean converse for this new packaging is added here.
 The underlying finite-table semantics already occur in the first paper's
 [machine definitions][P1defs] and the eleventh paper's [field DAG][P11prune].
+Section 5 audits the converse against those definitions and estimates its
+formalization; it does not commission or implement that adapter.
 
 A generic causal network code on a valid tape diagram is weaker. Its nodes
 can compute different arbitrary functions; at block level they can see
@@ -182,7 +184,111 @@ typed execution. Between them, the open task is to identify a retained
 property with a capacity or transport inequality that consumes it. This
 ledger names the losses; it does not supply such an inequality.
 
+## 5. Converse formalization: source audit and effort estimate
+
+**Status: estimate only, not a new Lean theorem.** The proposed work is the
+converse in Section 1: locally consistent diagrams for one fixed table
+agree with its actual execution. Forward extraction already underlies the
+series; checking it against a new diagram record would be bookkeeping.
+This is a moderate adapter over existing execution semantics, not a new
+interpreter and not a compilation of arbitrary network codes.
+
+### Exact targets and reusable interfaces
+
+| Existing interface | Role in the proposed adapter |
+|---|---|
+| `Transpose.TM`, `Config`, `readInput`, `init`, `step`, `ComputesWithin` in the frozen [Statement.lean][P1statement] | Authoritative finite table, blank initialization, out-of-range input reads, writes before moves, unreadable append-only output and halting. No change to the frozen model is needed. |
+| `Transpose.Tape.ObliviousOn` in [Defs.lean][P1defs] | The exact obliviousness B1 uses: common exact halting time, head positions and append decisions at **every** time, including the terminal positions at T. |
+| `Transpose.Tape.ObliviousLinearTimeTransposable` in [DefsCE.lean][P1ce] | Existing global target for the proposed equivalence. One M and one natural time constant precede all dimensions. This is the **oblivious** variant, not the frozen `LinearTimeTransposable`, which allows adaptive motion. |
+| `MergeDepth.Motion`, `Trace`, `Value` in [Traces.lean][P11traces] | Existing types for directions/append presence, their cumulative walks, and finite step payloads. `workPos_eq_of_agree`, `inPos_eq_of_agree` and the trace recurrences supply the positional bookkeeping. |
+| `Transpose.Tape.Impl.headSym_eq_writtenSym`, `headSym_eq_blank`, `computesWithin_iff`, `outRev_reverse_eq` in [Run.lean][P1run] | Last-write reads, first-visit blanks, the bridge from exact halting to `ComputesWithin`, and the ordered list of appends. The same file supplies successor and frozen-tail lemmas. |
+| `exists_lastVisit`, `isLastVisit_congr` in [Locality.lean][P1local]; `matrixInputs_eq` in [Encode.lean][P1encode] | Finite latest visits, transfer along equal walks, and equality of matrix encodings with **all** words of length d²b. No restricted-input surrogate is needed. |
+| `MergeDepth.ObliviousLinTime` in [LinearCrux.lean][P11linear] | Per-size consumer: `ObliviousOn M (inputsOfLength (d*d*b)) T`, the real time bound, and `Transposes M d b`. At b=`entryBits d` this is exactly the predicate excluded by [RowSpreadCrux.lean][Consumer]. |
+
+Two available interfaces do **not** discharge the converse. A
+`TSDiagram.Valid` in [DefsCE.lean][P1ce] supplies geometry and output counts,
+not local table execution or values. Conversely, `FollowsTrace` and the
+values in `Pruning` in [FieldPruning.lean][P11prune] already refer to actual
+runs. Assuming them for a proposed diagram would assume the realization
+that the adapter is meant to prove.
+
+### The missing finite predicate
+
+Reuse the raw fields k, g, q, δ of `TM`; installing them as a `TM` is
+definitional. For each size choose a horizon T and a finite motion prefix
+`Fin T → Motion k`, shared by all inputs. Extend it by `none` after T to
+use `Trace.input` and `Trace.work`. For each input supply T payloads of
+type `Value`: next state, written symbols and optional output bit.
+
+The validator must use **only these supplied data**, not `run`, `trace M`,
+`FollowsTrace` or `ComputesWithin`. Before step t, take the state from the
+preceding payload (zero at t=0), the input symbol from `readInput` at the
+computed input position, and each work symbol from the latest earlier
+visit in the supplied walk (blank if none). Require δ to return exactly
+the payload together with the supplied moves, with output presence equal
+to the common append decision. At T require δ to return `none` using the
+same read rule. Correctness separately requires the payload appends, in
+order, to be the prescribed transpose on every input.
+
+This includes pauses, revisits, both tape directions and the final move;
+it neither gives an external controller to the table nor omits termination.
+The fixed table precedes d and the inputs; only the horizon/motion may
+depend on d, and the payload values may depend on the input. No separate
+algorithm generating this family is necessary once local consistency
+forces it to equal the uniquely determined execution. Merely giving a
+computable schedule or a common gate catalogue would not suffice.
+
+### Proof obligation and budget
+
+One strong induction should establish equality of the actual state,
+positions and previous transition results through t. At a work read,
+equal positions transfer the proposed latest visit to the actual run;
+the existing last-write or blank lemma then identifies the read symbol.
+Local δ consistency identifies the next action, and the successor lemmas
+advance the invariant. This avoids constructing a second infinite tape
+store. The terminal check and append-list theorem give exact halting and
+output, hence `ComputesWithin` with **no** time, tape, alphabet or state
+overhead. The generic replay lemma can concern one input and its own
+motion; shared motion is needed only by the oblivious family wrapper.
+
+Common finite motion plus the frozen-tail lemmas yields `ObliviousOn` at
+all times, not only before T. `matrixInputs_eq` supplies the all-word
+interface. The final wrappers should give `ObliviousLinTime` per size and
+an iff with `ObliviousLinearTimeTransposable` globally. In the forward
+global wrapper, its common halting time inherits the linear bound from
+`ComputesWithin` by `haltsAt_unique`.
+
+| Unit | Estimated Lean work, including declarations and comments |
+|---|---|
+| Finite data, latest-visit lookup, local validator | 80–150 lines |
+| Replay and exact halting/output consequences | 140–280 lines; the main uncertainty is the induction invariant and visit-index coercions |
+| All-time obliviousness, per-size/global wrappers, forward checks and axiom audit | 80–170 lines |
+| **Total** | **About 300–600 lines and 8–14 named definitions/lemmas; one focused implementation unit plus review, not a measured or guaranteed duration.** |
+
+Staging in the backlog can reuse both paper libraries. Code using
+`MergeDepth.Trace` cannot be placed in the first paper without reversing
+the dependency direction; a later permanent home would be beside the
+eleventh paper's trace adapter. No frozen-file changes or new execution
+semantics are priced. The cost of a converse for free network gates,
+block encoders or externally scheduled diagrams is **not** included: those
+are weaker hypotheses, not alternate presentations of this validator.
+
+**Recommendation and stop.** The converse is feasible as a moderate
+reuse-based adapter, but it is not already a short wrapper. Its value is
+an exact formal top rung, not a new capacity inequality. No development
+is started by this estimate. An equivalence with the frozen all-machine
+statement would instead allow input-dependent motion and halting times;
+that family definition is outside this unit, even though the one-input
+replay lemma would be reusable.
+
 [P1defs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean
+[P1statement]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean
+[P1ce]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsCE.lean
+[P1run]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Run.lean
+[P1local]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Locality.lean
+[P1encode]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Encode.lean
+[P11traces]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/Traces.lean
+[P11linear]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/LinearCrux.lean
 [P1codes]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/codes.tex
 [P1hints]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/plainrobust.tex
 [ShiftCover]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/CEHint.lean

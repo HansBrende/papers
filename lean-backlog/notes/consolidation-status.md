@@ -7,6 +7,8 @@ code results exclude a machine class. The native common-deficit hypothesis
 is still open. The task-ready target is [`Wall.Conjecture`](../Wall.lean),
 with verified implication from the original wall and verified adaptive
 consumer. Strict non-equivalence between the open statements is unproved.
+The [conditional bridge closure audit](#conditional-bridge-closure-audit)
+separates the frozen checker's import replay from its target axiom filter.
 
 | Item | Lean coverage | What remains |
 |---|---|---|
@@ -77,6 +79,75 @@ lake env python3 ../../lean-backlog/check.py \
   BlockEndRows BlockCodeTransfer BlockCodeInvoice WholeRowTCC WeakWholeRowTCC \
   FiniteWholeRowPayments Wall
 ```
+
+## Conditional bridge closure audit
+
+The audit targets the already-imported theorem
+`Wall.Conjecture → ¬ Transpose.LinearTimeTransposable`. It does not create
+`Transpose.answer`, assert the open hypothesis, or run the final checker on
+an unconditional answer. The actual [frozen verifier](../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Verify.lean)
+requires that unconditional type. Any future proof of the hypothesis and
+its additional imports must be checked again.
+
+At bridge revision `c078f49`, with Lean v4.34.1 and Mathlib revision
+`d13f23b723b8a846827a245b89c10fc7d3f11612`, the loaded closure has:
+
+| Part | Modules |
+|---|---:|
+| Lean toolchain, trusted by the frozen verifier's path test | 2,357 |
+| Mathlib umbrella and its Mathlib imports | 8,530 |
+| Batteries, Aesop, Qq, Plausible, ProofWidgets, ImportGraph, LeanSearchClient | 378 |
+| Repository sources, including the bridge | 291 |
+| **Total** | **11,556** |
+
+The repository part comprises Paper 1 (53 modules, through Paper 2's
+read-only build adapter), Papers 2/4/5/8/9/11/14/15
+(27/2/7/13/40/29/43/2), shared `lean-machine` (48), and the backlog (27).
+Paper 15 contributes only `PaidInputs` and `Conditioning`. Package
+requirements are not import dependencies: the Fano and grid certificates,
+`ShannonCertificate`, `MacroProjection`, `WholeRowAcyclic`, and the finite
+Clebsch/Paley modules are absent. Several older modules import the umbrella
+`Mathlib`, so all 8,530 modules under that import are present. The diagnostic
+prints every actual module name and resolved artifact path.
+
+The 609,722 selected non-toolchain declarations contain no axiom
+declarations. The bridge's transitive axiom list is exactly `propext`,
+`Classical.choice`, `Quot.sound`. The mapped non-toolchain sources contain
+no active `native_decide`, `decide +native`, or `axiom` tokens after removing
+comments and strings; the 291 repository sources additionally pass the
+placeholder/unsafe/kernel-bypass scan. The frozen statement and verifier
+match the research project's SHA-256 values.
+
+The verifier replays eligible declarations from **all** non-toolchain
+imports, then applies its axiom whitelist only to the answer's transitive
+dependencies. An unused imported axiom would not itself fail that final
+filter. Lean's replay API skips unsafe and partial declarations; the audit
+reports selected and eligible counts separately. Source scans and axiom
+reports alone do not establish successful fresh replay.
+
+**Replay cost/status:** the single-threaded cached-artifact attempt reached
+the fresh-kernel phase (16.790 seconds after its internal inventory marker),
+then hit the 600-second whole-process cap while that phase was active.
+No completed replay or kernel rejection was established. This is a bounded
+attempt on a shared host, not an isolated replay benchmark. No Mathlib
+source rebuild was part of the diagnostic. An earlier combined attempt
+also timed out; its optional exhaustive all-constants axiom scan has no
+completed result and is not required by the frozen checker.
+
+After preparing the pinned compiled dependencies and checking the backlog,
+run from `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean`:
+
+```sh
+lake env python3 ../../lean-backlog/tools/audit_wall_closure.py
+lake env python3 ../../lean-backlog/tools/audit_wall_closure.py --replay --timeout 600
+```
+
+The [Lean diagnostic](../tools/audit_wall_closure.lean) mirrors the frozen
+selection/replay and checks the conditional target's exact type; its
+[launcher](../tools/audit_wall_closure.py) uses one Lean thread and a bounded
+runtime, with live phase markers. Raw output contains local paths and
+should be saved outside the public repository. This is verification
+tooling, not a new mathematical result or an answer to the open problem.
 
 ## Scope corrections retained in the index
 

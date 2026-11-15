@@ -1,6 +1,6 @@
 # Closure and entropy: proof status and remaining work
 
-14 November 2026. This is a verification index, not a new capacity theorem.
+15 November 2026. This is a verification index, not a new capacity theorem.
 The [conditional machine-exclusion table](conditional-machine-exclusions.md)
 records exactly which additional native hypotheses would let the existing
 code results exclude a machine class. The native common-deficit hypothesis
@@ -8,6 +8,7 @@ is still open.
 
 | Item | Lean coverage | What remains |
 |---|---|---|
+| Common whole-row deficit to robust block TCC | [BlockIntervalWalk](../BlockIntervalWalk.lean) and [BlockCut](../BlockCut.lean) embed the actual block graph in unit-speed walk dependencies and project Paper 14’s cut. [BlockCodeLocal](../BlockCodeLocal.lean), [BlockCutPrice](../BlockCutPrice.lean), [BlockRowGrouping](../BlockRowGrouping.lean) and [BlockCodeTransfer](../BlockCodeTransfer.lean) prove local determination, exact capacity/output pricing, paid grouping and robust fibres. [BlockCodeInvoice](../BlockCodeInvoice.lean) allows any finite co-entropy bill. [WholeRowTCC](../WholeRowTCC.lean) proves the actual robust/plain predicates and the **adaptive** exclusion from a common canonical deficit, also from the normalized two-sided version. [Quantitative conventions](block-tcc-from-whole-row.md#7-lean-declaration-map-and-quantitative-conventions). | No missing step in this implication. The common deficit and the converse remain open. The separate asymptotic o(L)-coentropy extension and sharper directed-cone window remain written; the larger checked ball window suffices for the exact endpoint. The original one-window oblivious invoice remains in [RowSpreadCrux](../RowSpreadCrux.lean). |
 | Sparse-recovery rank and affine-code bounds | Original triangle-free endpoints already in Paper 4; Paper 10 S* also covers nonlinear recovery under the stronger no-transitive-triangle premise. [SparseRankBounds.lean](../../lean-machine/LeanMachine/SparseRankBounds.lean) proves N ≤ k rank for nonzero diagonal, outgoing width k ≥ 2 and the weaker four-arc exclusion. [ThreeHelperRank.lean](../../lean-machine/LeanMachine/ThreeHelperRank.lean) proves half at width three with the one-way-head premise, including the sharper rooted charge N + 2 ≤ 2 rank + outdeg(root) for rank ≥ 2. Both reuse one hereditary closed-cut induction. [SparseAffineCodes.lean](../../lean-machine/LeanMachine/SparseAffineCodes.lean) proves the cardinality consequences for finite alphabets embedded coordinatewise in any field, allowing arbitrary subsets of an affine fibre. The local last-row lemma retains semiring/no-zero-divisor generality. | None for these statements. Arbitrary nonlinear recovery under the weaker pattern and native extraction are not proved. No new verification of the original scalar endpoint is claimed. |
 | Triangle-free subcubic nonlinear and soft bounds | [SubcubicReuse.lean](../SubcubicReuse.lean) composes existing `HalfRate.n3_decomp`, `rateBound_n3` and `SoftRecovery.soft_half`; asymmetric helper subsets use diminishing returns. Exact weighted half and recovery-error coefficient one hold for arbitrary polymatroids. | None for these statements. The original Target B was already proved in Paper 7; no new Petersen/twelve-vertex LP is needed. Coordinate-graph support is an extra native premise, not whole-row window three. |
 | Matching plus one helper | [MatchingSeed.lean](../../lean-machine/LeanMachine/MatchingSeed.lean) proves Hall selection meeting all extra-helper traps, retaining any one prescribed endpoint of a perfect matching. [InvolutionCompletion.lean](../../lean-machine/LeanMachine/InvolutionCompletion.lean) preserves existing pairs when completing an even-size matching. [MatchingRecovery.lean](../../lean-machine/LeanMachine/MatchingRecovery.lean) proves an exact ⌊N/2⌋ determining set for partial matchings and arbitrary nonlinear recovery, plus the all-alphabet code bound and the attained-range price for a varying boundary record. | None for these statements. The matching and loopless extra-helper sets are fixed across the code; neither native extraction nor value-dependent helper choices are asserted. |
@@ -69,7 +70,9 @@ lake env python3 ../../lean-backlog/check.py \
   DecoderSelection DecoderEntropy SubcodeSelection ConditionalSubcode \
   ShannonCertificate SubcubicReuse FanoCertificate FanoFull FanoOrder FanoAttainment \
   MacroProjection FanoLift GridCertificate GridFull GridOrder WholeRowAcyclic \
-  SameTable LocalRecordViews
+  SameTable LocalRecordViews \
+  BlockIntervalWalk BlockCut BlockCodeLocal BlockCutPrice BlockRowGrouping \
+  BlockCodeTransfer BlockCodeInvoice WholeRowTCC
 ```
 
 ## Scope corrections retained in the index

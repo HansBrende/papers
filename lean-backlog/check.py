@@ -26,6 +26,8 @@ MODULES = [
     "FanoFull", "FanoOrder", "FanoAttainment", "MacroProjection", "FanoLift",
     "GridCertificate", "GridFull", "GridOrder", "WholeRowAcyclic",
     "WindowPages", "FarClebsch", "PaleyTournament", "SameTable", "LocalRecordViews",
+    "BlockIntervalWalk", "BlockCut", "BlockCodeLocal", "BlockCutPrice",
+    "BlockRowGrouping", "BlockCodeTransfer", "BlockCodeInvoice", "WholeRowTCC",
 ]
 
 

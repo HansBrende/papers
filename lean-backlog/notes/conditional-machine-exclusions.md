@@ -7,6 +7,14 @@ The [ingredient ledger](whole-row-ingredient-ledger.md) separately records
 which native data B1 retains or forgets; it does not supply the additional
 class premises in this table.
 
+There is now a stronger **unrestricted**, Lean-verified consumer: a common
+canonical whole-row deficit implies robust block TCC and therefore excludes
+adaptive linear-time transposers. The [block transfer](block-tcc-from-whole-row.md)
+proves the additional graph refinement, capacity bill and row grouping;
+its combined endpoint is [WholeRowTCC.lean](../WholeRowTCC.lean). It does not automatically supply
+any restricted-class premise below. The table's explicit 169ε/64 invoices
+continue to describe the original Lean oblivious route.
+
 ## The common accounting
 
 Fix the work-tape count k, value width β, time constant C≥1 and ε>0 before

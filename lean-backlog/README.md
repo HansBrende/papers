@@ -99,6 +99,16 @@ strengthened to containment of every acyclic set in a row-order set.
 The complete Fano lift is an explicit instance with growing window 3n;
 fixed-degree random existence and growing girth remain written.
 
+The common-deficit transfer now reaches the **robust block Tape Coding
+Conjecture** and its existing **adaptive-machine** consumer in
+[WholeRowTCC.lean](WholeRowTCC.lean). The actual block graph is embedded in
+unit-speed walk dependencies, then cut, priced and grouped into whole-row
+fibres. The [proof and declaration map](notes/block-tcc-from-whole-row.md)
+record every adapter and the quantitative conventions. The finite invoice
+allows arbitrary co-entropy and correctness only on the solving input set.
+A common canonical whole-row deficit remains the explicit open hypothesis;
+no converse or unconditional exclusion is asserted.
+
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,
 records, bit cones and uniformity. It separates the existing all-fibre

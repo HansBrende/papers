@@ -5,12 +5,14 @@ Hans Brende, Claude Fable 5.2 and GPT-6 Astra, 14 November 2026.
 Existing Lean declarations are linked below; no new equivalence between
 arbitrary network codes and machines is asserted. This ledger answers which
 additional requirements a code construction would have to meet. It does not
-open a new capacity search or prove an exclusion.
+open a new capacity search or prove an unconditional exclusion.
 
 Write L=d²b(d) for the raw input length. B1 proves that a common positive
 whole-row deficit, along the canonical alphabets, excludes oblivious
-linear-time transposers. Its converse is not proved. A large whole-row code
-is one necessary object, not a construction of a transposer.
+linear-time transposers. The Lean-verified block-network transfer in Section 7
+strengthens this: the same common deficit implies robust TCC and therefore
+excludes adaptive linear-time transposers too. Neither converse is proved. A large whole-row code is one
+necessary object, not a construction of a transposer.
 
 ## 1. An exact top statement needs the local execution semantics
 
@@ -214,9 +216,10 @@ claimed. It does **not** identify this class with the first paper's
 attached rows, allow capacities of order rG per block, and in the robust
 form require correctness only on a large input subset. Arbitrary such
 block gates need not refine to these constant-width step gates. B1
-consequently supplies no proof of the full block conjecture or a converse
-to machines. Its same-table provenance is available from a machine but
-unused as a cross-vertex restriction in this reduction.
+alone consequently supplies no proof of the full block conjecture or a
+converse to machines. Section 7 supplies the additional block-graph bridge;
+it does not simulate those block gates. Same-table provenance is available
+from a machine but unused as a cross-vertex restriction in either reduction.
 
 ## 5. Converse formalization: source audit and effort estimate
 
@@ -408,6 +411,53 @@ views may already have forgotten the fixed table. Rung 2 above retains
 their native same-table provenance; dropping it is an additional
 relaxation. No converse incorporating the coding reduction and only new
 constraints on the static code or helper relation is established here.
+
+## 7. A common whole-row deficit implies robust block TCC
+
+**Lean-verified:** [block-network transfer and declaration map](block-tcc-from-whole-row.md),
+with the final endpoints in [WholeRowTCC.lean](../WholeRowTCC.lean).
+The answer to the proposed implication is **yes**, including the robust
+large-input-subset form. The converse remains unproved.
+
+The additional geometric step is small but necessary. A slot's pair
+residency on each tape is an integer interval of at most three blocks;
+consecutive intervals overlap. Replace each slot by a twelve-step traversal
+that visits its interval before and after one pivot. Every block chord
+then lifts to a genuine last-visit hop between the two endpoint traversals,
+and each memory edge lifts along the spine. Paper 14's arbitrary-walk
+`genie_cost` therefore cuts at most θN block slots to bounded depth, for
+N=⌈T/r⌉, independently of the growing grain r=⌈db/G⌉. Only graph geometry
+is refined; arbitrary block gates are still arbitrary block gates.
+
+At a cut slot, record all outgoing messages and the bits it appends. The
+profile and chord uniqueness give at most (4k+1)rG bits per slot, hence
+bill at most (4k+1)θG(c+1/d)L for T≤cL. Each surviving slot cone sees
+boundedly many whole input rows. Since N≤(cG+1)d and each slot meets at
+most two output rows, at most ηd output rows use more than
+M=⌈2(cG+1)/η⌉ slots. Freeze their corresponding **input columns**, costing
+ηL bits. A record fibre of a correct input set of co-entropy C₀db is a
+whole-row code at the fixed window w=2MΣ_(j≤D)(k+1)^j, with rate at least
+
+    1−C₀/d−(4k+1)θG(c+1/d)−η.
+
+A common deficit δ contradicts this after choosing θ,η and the capacity
+slack below δ, then taking d large. All-input correctness suffices but is
+unnecessary: the robust fibre count works on the large set itself. Thus
+the implication is
+
+    common canonical whole-row deficit
+      ⇒ RobustNoCode_TM ⇒ NoCode_TM,
+    RobustNoCode_TM ⇒ ¬ LinearTimeTransposable.
+
+The last implication reuses the first paper; the first is the new
+Lean-verified transfer (using the slightly larger fixed ball window
+M·2·(2k+3)^D). A common deficit for symmetric, reflexive,
+two-sided codes also suffices, through the existing factor-two normal
+form. No new decoder symmetry or full-input hypothesis is needed here.
+The older Paper 4 remark concerned its native crux, not this universal
+whole-row hypothesis, and predates the general walk theorem used in the
+new bridge. This does not settle its reverse implication or turn a static
+code into a causal implementation.
 
 [SameTable]: ../SameTable.lean
 [P1defs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean

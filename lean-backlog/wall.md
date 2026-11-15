@@ -50,9 +50,11 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 > window having asymptotic rate at most 1 − δ along the canonical alphabets?
 
 - Known for w ≥ 1: ½ ≤ R(w) ≤ w/(w+1). Symmetric matrices give ½ (*pairing*). Conjectured: R(w) = ½.
-- **Yes** excludes oblivious linear-time transposers (breach B1). A deficit δ(w) that falls more
-  slowly than every power of 1/log log w would also do (estimate from B1 and the fourteenth paper's
-  depth bound, unreviewed). The known deficit is 1/(w+1).
+- **Yes** implies robust block TCC and excludes **adaptive** linear-time transposers
+  ([Lean transfer](WholeRowTCC.lean), [proof and scope](notes/block-tcc-from-whole-row.md)). B1's original oblivious
+  exclusion remains Lean. For that original **oblivious** route, a deficit δ(w) that falls more
+  slowly than every power of 1/log log w is also proposed to suffice (estimate from B1 and the
+  fourteenth paper's depth bound, unreviewed). The known deficit is 1/(w+1).
 - **No** is necessary for a machine, not sufficient: a machine must contain such codes of rate
   tending to 1, but codes alone do not give a machine. They would still have to be computed by
   tape passes in linear time (front D7), and an exclusion could still hold through structure
@@ -60,7 +62,8 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   not a possible sufficiently slow window-dependent deficit route, and decides nothing about (T).
 - **Between this statement and the machine** ([ingredient ledger](notes/whole-row-ingredient-ledger.md)).
   Existence of whole-row codes with rates tending to one (a **No** answer) is necessary
-  for an oblivious transposer and not sufficient. A safe chain of
+  for a transposer and not sufficient; the adaptive necessity uses the Lean-verified block
+  transfer and the first paper's robust trace-class reduction. A safe chain of
   relaxations, each forgetting data of the one before:
   1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
      writes and appends on every input. Shared motion gives the oblivious-machine version;
@@ -98,7 +101,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 | | Date | What fell | Status |
 |---|---|---|---|
-| **B1** | 13 Nov 2026 | *Codes, machines and counting are tied.* An additional cheap cut puts all cones of almost every output row into boundedly many input rows. A common positive whole-row deficit along the canonical alphabets gives the literal native crux at every fixed depth and excludes oblivious linear-time transposers. The direct route needs a deficit only at one explicit window, exceeding 169ε/64. Before this the wall was three separate obstacles (paper 17, Section 4). | *Lean throughout:* geometry in [WindowSpread.lean](WindowSpread.lean), finite counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), `uniformWholeRowRateCanonicalBits_crux`, `uniformWholeRowRateCanonicalBits_excludes` and `wholeRow_window_bound_excludes` in [RowSpreadCrux.lean](RowSpreadCrux.lean), reusing Paper 14. Capacity remains a hypothesis. See [row spread](notes/row-spread-of-cones.md) §§2–5. |
+| **B1** | 13–15 Nov 2026 | *Codes, machines and counting are tied.* A common positive whole-row deficit along the canonical alphabets gives the native crux and, by a block-graph refinement, robust TCC and the **adaptive** exclusion. The direct oblivious route needs a deficit only at one explicit window, exceeding 169ε/64. Capacity remains a hypothesis. | *Lean:* original geometry in [WindowSpread.lean](WindowSpread.lean), counting in [ConeCodeTransfer.lean](ConeCodeTransfer.lean), crux and oblivious endpoints in [RowSpreadCrux.lean](RowSpreadCrux.lean). *Lean:* [block refinement, capacity-priced cut and robust transfer](WholeRowTCC.lean), [proof and module map](notes/block-tcc-from-whole-row.md); the adaptive consumer reuses Paper 1. No converse is proved. |
 | **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Lean:* paid residual/full inequalities, exact Shannon optima with polymatroid witnesses, order41, and the all-alphabet code upper bound ([status](notes/consolidation-status.md)). The exact acyclic-set maximum 8 and gap against every acyclic invoice are Lean in [WholeRowAcyclic](WholeRowAcyclic.lean). Actual lane-code realization remains written. |
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Lean:* [macro projection](MacroProjection.lean), [conditional every-order comparison](../lean-machine/LeanMachine/WholeRow/LiftOrder.lean), [Fano gap against every acyclic invoice](FanoLift.lean), with an explicit complete-lift instance of growing window 3n. *Written, reviewed:* [fixed-degree existence and girth](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Lean:* paid scalar-error certificate, residual/full upper bounds, triangle-freeness, row-order optima, full maximum acyclic size 13 and gap against every acyclic invoice ([status](notes/consolidation-status.md)). Lower code, joint-column price, square adapter and amplification remain written; exact capacity remains open. |
@@ -310,7 +313,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
   named unit in progress, reports when it ends, and takes the next; whoever empties the queue
   proposes its refill). The queue of 14 November is archived at the end of
   [closed-fronts.md](closed-fronts.md).
-  - *Banked (Lean):* B1; the finite cores of B2 and B4; the two-sided normal form; the closure
+  - *Banked (Lean):* B1, now through [robust block TCC and the adaptive exclusion](WholeRowTCC.lean) under a common deficit; the finite cores of B2 and B4; the two-sided normal form; the closure
     barriers; the sparse rank theorems; the [pairing and parity-template rate theorems](notes/pairing-coset-bound.md)
     through their uniform endpoints (pairing rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n),
     with an explicit additional charge for initially inactive fixed cells); B3's deterministic
@@ -328,8 +331,8 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     [permutation counting and girth remain parked](notes/finite-shannon-gap-amplification.md#7-lean-coverage-and-remaining-effort).
     The [same-table replay checker](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
     and abstract local-view invoice are complete. The [sparse-record refinement audit](notes/whole-row-ingredient-ledger.md#6-what-bounded-causal-views-can-reconstruct)
-    separates finite nonuniform gates from fixed-table control. No adaptive-family wrapper,
-    probability/girth development or construction experiment is commissioned.
+    separates finite nonuniform gates from fixed-table control. The common-deficit block bridge is complete;
+    no same-table adaptive-family wrapper, probability/girth development or construction experiment is commissioned.
   - *Open, no premise with a consumer:* the one-table half of rung 2 of the ladder; expander-type
     motion coupled to a code (Paper 4's open problem). No numerical search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

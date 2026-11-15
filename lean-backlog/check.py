@@ -25,7 +25,7 @@ MODULES = [
     "ShannonCertificate", "SubcubicReuse", "FanoCertificate",
     "FanoFull", "FanoOrder", "FanoAttainment", "MacroProjection", "FanoLift",
     "GridCertificate", "GridFull", "GridOrder", "WholeRowAcyclic",
-    "WindowPages", "FarClebsch", "PaleyTournament",
+    "WindowPages", "FarClebsch", "PaleyTournament", "SameTable",
 ]
 
 

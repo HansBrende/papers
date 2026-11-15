@@ -153,6 +153,14 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   only one explicit window and retains the sharper `169ε/64` threshold. The native
   finite theorem allows arbitrary traces and initial cuts, with `d≥4`, `b≥1`, and the
   stated time/depth bounds. No capacity conjecture or unconditional exclusion is proved.
+- [`SameTable.lean`](SameTable.lean) verifies the exact top of the
+  [ingredient ledger](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate):
+  finite local table checks imply exact execution, and a common-motion family
+  with one fixed table and time constant is equivalent to the first paper's
+  `ObliviousLinearTimeTransposable`. The per-size iff is exactly B1's
+  `ObliviousLinTime`, with no overhead. The one-input replay lemma assumes
+  neither obliviousness nor transposition. No adaptive-family equivalence,
+  arbitrary-network-code compiler or machine construction is claimed.
 - [`TwoSidedCodeTransfer.lean`](TwoSidedCodeTransfer.lean) defines arbitrary nonlinear
   two-sided codes and proves their finite upper bounds transfer to one-sided codes at
   half the deficit, for every nonempty finite alphabet. It verifies the canonical

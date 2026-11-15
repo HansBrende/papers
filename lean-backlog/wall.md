@@ -64,8 +64,9 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   relaxations, each forgetting data of the one before:
   1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
      writes and appends on every input. Shared motion gives the oblivious-machine version;
-     this is a written semantic equivalence, not a simpler criterion. The
-     [converse adapter is estimated, not implemented](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate).
+     [the finite validator and exact equivalence are Lean](SameTable.lean), including B1's
+     per-size predicate and all-time obliviousness. This is a re-encoding, not a simpler criterion
+     ([readable statement](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)).
      A network code on a tape diagram with free gates is already weaker.
   2. *Causal values and cut records* on the native bit DAG, with the records each output can
      reach: at depth D at most 1+(k+1)K_D bounded-width records and K_D raw bits per output.
@@ -311,6 +312,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     through their uniform endpoints (pairing rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n),
     with an explicit additional charge for initially inactive fixed cells); B3's deterministic
     macro projection, conditional comparison against every acyclic invoice and Fano gap above one percent; the exact rectangular row-order/acyclic-set theorem and complete-lift sanity instance.
+    The same-table tableau/replay equivalence with oblivious linear-time transposition is also Lean.
     Boundaries: [status index](notes/consolidation-status.md).
   - *Banked (written, reviewed):* B3's fixed-degree random existence and girth;
     the [ingredient ledger](notes/whole-row-ingredient-ledger.md);
@@ -319,8 +321,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     implication to or from Paper 4's motion classes is established).
   - *Review and stopping point.* Astra: B3 stages 1–2 and the acyclic-set adapter complete;
     [permutation counting and girth remain parked](notes/finite-shannon-gap-amplification.md#7-lean-coverage-and-remaining-effort).
-    The [same-table converse estimate](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
-    is complete; Fable reviews its definitions and scope. No converse development or construction experiment is commissioned.
+    The [same-table converse](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
+    is complete within its cap; Fable reviews the endpoint. No adaptive-family wrapper,
+    probability/girth development or construction experiment is commissioned.
   - *Open, no premise with a consumer:* the one-table half of rung 2 of the ladder; expander-type
     motion coupled to a code (Paper 4's open problem). No numerical search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

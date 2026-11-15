@@ -92,11 +92,12 @@ arbitrary overlapping checks, equations without this mutual form, or nonlinear c
 
 \subsection{What the conjecture forgets about machines}\label{sec:constr-forgets}
 
-Between a machine and \cref{conj:MCC} lie several statements, each obtained from the one before by forgetting
-something: the run as a table of steps, which is a restatement of the machine
-(\lean{SameTable.uniformTableaux_iff}); the values on a cut with the few records that each output can reach; an index
-code for all inputs on the cone system; the whole-row codes on its fibres. The reduction of \cref{sec:rows} never uses
-that all steps apply the same rule.
+For oblivious machines the ladder starts with a same-table tableau family with a common motion schedule,
+equivalent to an oblivious linear-time transposer (\lean{SameTable.uniformTableaux_iff}). It then passes to the
+values on a cut with the few records that each output can reach; an index code for all inputs on the cone system;
+and the whole-row codes on its fibres. The reduction of \cref{sec:rows} never uses that all steps apply the same
+rule. The tableau equivalence covers only oblivious families; the adaptive exclusion uses the block-code
+reduction of \cref{thm:T}.
 
 \begin{proposition}[Runs that a cheap cut splits]\label{prop:hyperfinite}
 \notformalized
@@ -110,17 +111,34 @@ Then the machine does not transpose.
 
 \begin{remark}[Fibres are nearly Markov]\label{rem:markov}
 Proof sketch only: this remark is not used elsewhere and has not been independently reviewed. In the setting of
-\cref{thm:T}, fix a value $z$ of the messages on the edges out of the cut. Let $G_z$ be the set of all inputs for which
-every cut slot, computed from the prescribed incoming messages and from its attached rows, emits the prescribed
-outgoing messages. Each of these conditions involves boundedly many rows, so the uniform distribution on $G_z$
-factorizes over the rows and has the Markov property of the hypergraph of these conditions. The code of
-\cref{thm:T} is $C_z=F\cap G_z$, where $F$ is the set of inputs on which the block code is correct, of co-entropy~$a$.
-A counting argument gives a $z$ for which $C_z$ is large and
-$D\bigl(\mathrm{Unif}(C_z)\,\big\|\,\mathrm{Unif}(G_z)\bigr)\le a+2$ bits. For such a $z$, if a set $S$ of rows separates
-two sets of rows in that hypergraph, their mutual information given the rows $S$ is at most $a+2$ on $C_z$, and
-anything that is a function of each of the two sets has conditional entropy at most $a+2$ given~$S$. An entry is a
-function of its own row and of the helper rows of its column, so this bounds what helper rows can know across a
-separator. The bound is paid once for every separator, and we do not know how to combine separators.
+\cref{thm:T}, let $z$ record the exact messages on the edges out of the cut, the source bits demanded by outputs
+rooted at cut slots, and the exceptional input columns. Let $G_z$ be the set of all inputs with these prescribed
+values. Fixing the outgoing cut messages lets each cut slot be evaluated from the earlier prescribed messages
+and the raw rows in its remaining backward cone. Thus $G_z$ is defined by bounded-row consistency conditions,
+together with the recorded raw-bit constraints. The latter split into conditions on individual rows, including
+those fixing exceptional columns. The uniform distribution on a nonempty $G_z$ therefore factorizes over these
+row constraints and has the Markov property of their hypergraph. The factors may depend on~$z$.
+
+Let $F$ be the solving set of co-entropy at most~$a$. Every $C_z=F\cap G_z$ is now a whole-row code: the cut-root
+targets and the exceptional columns are fixed, and the remaining columns have the recovery maps of \cref{thm:T}.
+Use exact messages, whose capacities hold on $F$, rather than the unrestricted residue fibres of the formal
+observation map. The admissible $G_z$ are disjoint and cover $F$, though they need not cover the full input cube.
+If there are at most $2^B$ admissible complete transcripts, some $z$ satisfies
+\[
+ \card{C_z}\ge 2^{L-a-B-2},\qquad
+ D\bigl(\mathrm{Unif}(C_z)\,\big\|\,\mathrm{Unif}(G_z)\bigr)\le a+2\quad\text{bits}.
+\]
+Indeed the transcripts with $\card{C_z}<\card F/(4\cdot2^B)$ contain fewer than $\card F/4$ inputs of $F$;
+those with $\card{C_z}<2^{-a}\card{G_z}/4$ contain at most $\card F/4$, since
+$\sum_z\card{G_z}\le2^L$. Choose a fibre outside both classes and use
+$D(\mathrm{Unif}(C_z)\|\mathrm{Unif}(G_z))=\log_2(\card{G_z}/\card{C_z})$.
+
+On this same fibre, if a set $S$ of rows separates two sets of rows in the constraint hypergraph, their mutual
+information given the rows $S$ is at most $a+2$: marginalize the relative entropy and use conditional independence
+under $\mathrm{Unif}(G_z)$. Anything that is a function of each of the two sets then has conditional entropy at
+most $a+2$ given~$S$. An entry is a function of its own row and of the helper rows of its column, so this applies
+when those bundles are separated by~$S$. The bound is available for every separator on the selected fibre, but
+we do not know how to combine separators without paying it repeatedly.
 \end{remark}
 
 \subsection{What a machine would need}\label{sec:constr-machine}

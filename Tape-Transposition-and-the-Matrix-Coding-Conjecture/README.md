@@ -39,7 +39,9 @@ The maintained Lean modules, using only the standard axioms, include:
   bounds, included by this package's root module.
 
 Complete written proofs, not Lean: existence of bounded-window mixing relations
-and growing-girth Fano lifts; the three-lane realization of Fano's optimum; and
+and growing-girth Fano lifts; the three-lane realization of Fano's optimum; the
+bound of rate one half for parity codes over induced matchings (the form of the
+codes that refute the Mittal-Raz conjecture) at a fixed window; and
 the exclusion of oblivious runs fragmented by a cheap cut into components with
 few outputs. The exact finite certificate does not assert grid attainment or
 attainment on the sparse lifts.

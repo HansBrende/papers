@@ -43,7 +43,8 @@ The window is fixed before $d$ grows, and this is essential. Mittal and Raz conj
 matrices of bits at a window proportional to~$d$, as the block rigidity of the transpose, and proved that it would
 exclude linear-time machines, even with advice~\cite[Theorem~29 and Conjecture~36]{MittalRaz2021}. That conjecture
 is false: codes of rate tending to one exist already at window $d^{1-\alpha}$, by a construction of Braverman and
-Forbes~\cite[Proposition~10.8.3]{Mittal2025} (\cref{rem:growing}). Their reduction cuts the run by the method of
+Forbes~\cite[Proposition~10.8.3]{Mittal2025} (\cref{rem:growing}); at a fixed window codes of the same form have
+rate one half in the limit and no more (\cref{prop:matchings}). Their reduction cuts the run by the method of
 Paul, Pippenger, Szemer\'edi and Trotter, after which an output may still depend on a small constant fraction of
 the rows.
 The reduction of this paper uses the cut of bounded depth of the fourteenth paper of the series, and the window it
@@ -172,7 +173,8 @@ states the open problems.
 Lean~4 with Mathlib~\cite{Mathlib2026}; each carries a line naming its declarations, and \cref{sec:leanindex} lists
 them. They use the axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound} only. \Cref{thm:T,thm:F}
 conclude the frozen proposition of the first paper. Not formalized, and proved in the text: the two existence statements
-\cref{prop:mixing,prop:lifts}, the exclusion of \cref{prop:hyperfinite}, and the code that attains the Fano optimum.
+\cref{prop:mixing,prop:lifts}, the bound of \cref{prop:matchings}, the exclusion of \cref{prop:hyperfinite}, and the
+code that attains the Fano optimum.
 Remarks are not formalized either: in particular the arithmetic of \cref{rem:weak-demand} and the sketch of
 \cref{rem:markov}; \cref{prop:known} and the results in the table of \cref{sec:invariance} are cited from earlier
 papers with their status there. A
@@ -201,7 +203,11 @@ different scale. What it adds is the scale: a fixed window suffices (\cref{thm:W
 give and which the known constructions do not reach; the reduction covers the series' statement for entries of
 $b(d)$ bits and is formalized. The families of matrices that refute the conjecture at large windows are also the
 delivery schemes of coded caching with as many packets as users~\cite{YanEtAl2017,ShanmugamEtAl2017}, as the second
-paper of the series noted~\cite{SecondPaper2026}.
+paper of the series noted~\cite{SecondPaper2026}. Under that dictionary the bounds from acyclic sets
+(\cref{prop:known,thm:O}) are the acyclic index-coding converse used for caching with uncoded
+placement~\cite[Lemma~1]{WanTuninettiPiantanida2020}, and \cref{prop:matchings} is a limit on delivery by
+induced matchings when every user stores a bounded number of packets of each file; the limits on induced matchings
+in nearly complete graphs go back to~\cite[Section~3]{AMS2013}.
 
 \paragraph{Network coding.} Adler, Harvey, Jain, Kleinberg and Lehman related transposition in the input--output
 model to network coding~\cite{AHJKL2006}, and the network coding conjecture of Li and Li~\cite{LiLi2004} would have
@@ -217,7 +223,8 @@ coding on products of graphs, coded caching), for reductions of lower bounds on 
 codes or rigidity, and for the name of the conjecture. The closest work is that of Mittal and Raz, discussed above.
 Apart from it we found no study of these codes at a fixed window, no earlier bound or conjecture of rate one half
 for them, and no other use of the name. We read abstracts and, where the text was at hand, the papers; most
-dissertations in the area were not read. The search was not exhaustive.
+dissertations in the area were not read. The works that cite Mittal and Raz, as listed by a citation index in
+November 2026, are on parallel repetition, judging by their titles. The search was not exhaustive.
 
 \subsection{Organization}\label{sec:intro-org}
 

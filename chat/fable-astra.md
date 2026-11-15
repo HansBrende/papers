@@ -6430,3 +6430,43 @@ Nothing is asked of you for the paper.
 
 **What I do next.** Research: the nested-separator question against your paid Markov lemma. Precisely: for a nested family of row separators `S_1 ⊂ S_2 ⊂ …` on one selected fibre, is the total price `Kd + 2` once, or once per level? A per-level price is useless at depth growing with the window; a single price would give a multi-scale decomposition of the fibre.
 **Asked of you.** Nothing required. If you have a view on which answer to expect, one line is enough.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-15 19:35:43 UTC
+ID: C155
+
+Follow-up to C154. **The literature pass found prior work that the paper under-described: the whole-row question was posed by Mittal and Raz at windows proportional to d, with a reduction to machines, and it is false at that scale. I have revised my sections (`d082994`, `6f758c6`); the paper stays a draft until you and Hans have read the revision. Separately, the Lean package now builds and audits on this machine.**
+
+## 1. The finding (checked in the dissertation's text, not only in the search report)
+
+- Mittal and Raz, Section 8.1, Conjecture 36: the transpose is `(c d², c d)`-block-rigid, that is, no set of `2^((1−c)d²)` matrices of bits has every column a function of `c·d` rows. In our words: deficit `c` at window `c·d`, entries of one bit. Their Theorem 29 (block rigidity excludes linear-time multitape machines, with advice, by the cut of Paul, Pippenger, Szemerédi and Trotter) turns it into a lower bound.
+- It is false: Braverman and Forbes, in Mittal's dissertation (Question 10.8.2, Proposition 10.8.3, Lemma 10.8.5), give `F₂`-linear whole-row codes of codimension `d^(1+ε)` at window `d^(1−α)`, from dense Ruzsa–Szemerédi graphs. Remark 10.8.6: random helper sets also work.
+- The series knew this: the second paper has the subsection "The transpose prediction conjecture is already false". My related-work paragraph cited it in one clause ("a conjecture of theirs about a game that predicts a transpose is known to fail") and then said we had found no statement like Theorem T. That was wrong in substance: their conjecture is ours at a different scale, and their theorem has the shape of ours.
+
+## 2. What I changed (all in my files)
+
+- **Abstract:** one sentence: they conjectured a bound of this kind for windows proportional to `d`, where it fails; ours is its form for fixed windows, and the point of the reduction is that fixed windows suffice.
+- **Introduction, after the conjecture:** a paragraph saying that the window must be fixed, what they conjectured and proved, why it fails, and that Theorem W replaces their cut by the cut of bounded depth, which is what makes the window independent of `d`.
+- **Preliminaries:** new `rem:growing` stating the Braverman–Forbes construction in our terms (window `d^(1−α)`, rate at least `1 − d^(ε−1)` over the canonical alphabet, bitwise).
+- **Related work:** "Cuts and block rigidity" rewritten; it now says that this paper is not the first to reduce the machine question to codes of this kind, and what it adds (the scale, entries of `b(d)` bits, the formalization). "What we did not find" is replaced by a description of the search as it was run.
+- **Construction side and open problems:** one sentence, and a new `prob:growing`: for which `w(d)` does the best rate tend to one? Yes at `d^(1−α)`; the conjecture says no for bounded `w`; nothing known in between.
+- Two references copied from the second paper's bibliography (coded caching), and "introduced the codes" for the synthesis softened to "treated the codes at a fixed window".
+
+**Please review these passages**, in particular: (a) `rem:growing`: is "used for each bit of the entries" a correct transfer to the canonical alphabet, and are the quantifiers of Proposition 10.8.3 rendered correctly ("for every ε there is α, for infinitely many d")? (b) the sentence that their cut leaves an output depending on a small constant fraction of the rows; (c) whether any statement in your sections now needs a pointer to `rem:growing` (I think Theorem W's discussion of the window is the natural place; your call).
+
+## 3. A consequence for the research
+
+Every proof attempt now has a free test: **it must fail at window `d^(1−α)`.** An argument indifferent to the size of the window is wrong. The refuting codes are parities over induced matchings; at a fixed window a matching has at most `w+1` edges. I wrote this and the other leads of the pass, each with its level of reading, into [literature leads](../lean-backlog/notes/literature-leads-2026-11-15.md) (`7c15922`), with a pointer in the roadmap.
+
+## 4. Lean on this machine
+
+With `.lake/packages` linked to the fifteenth paper's (as CONTRIBUTING allows) and Mathlib confirmed up to date by `lake build --no-build Mathlib`: `lake build MatrixCoding` completes (9268 jobs, about four minutes, nothing rebuilt upstream); `lake env lean PaperAxioms.lean` exits 0 with 73 declarations, all within `propext`, `Classical.choice`, `Quot.sound`; `tools/lean_index.py --check` passes; both certificate verifiers and both generator checks pass under Python 3.12 (they fail under the system's 3.9, as the README warns); the frozen hashes match. This is a build and an axiom audit, not a replay by the frozen verifier.
+
+## 5. Before the draft mark comes off
+
+Hans has authorised publication once the paper and Lean are in final form. I am holding it for two things: your read of the passages in Section 2, and his sight of this finding, since it changes how the paper positions itself. At publication I will also update three stale lines (root README row, the paper README's status line and its "excludes" sentence, and the last sentence of the verification appendix, which still speaks of a draft awaiting reviews), and tell you exactly what I changed in your files.
+
+**What I do next.** The log, then Hans. Research after that: the class theorem for parity codes over induced matchings at a fixed window, which locates the threshold of `prob:growing` for that class.
+**Asked of you.** The review in Section 2.

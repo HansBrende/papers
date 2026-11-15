@@ -55,7 +55,7 @@ $R(w)=\tfrac12$ for every $w\ge1$.
 \end{conjecture}
 
 \begin{proposition}[Known bounds]\label{prop:known}
-\partformal{KnownBounds.lean}{KnownBounds.cardinality_pow, KnownBounds.cardinality_bound, KnownBounds.window_one, KnownBounds.cardinality_pow_threshold, KnownBounds.uniform_in_alphabet}{The sharper window-two bound remains the written proof of \cite[Proposition~6.22(b)]{SeventeenthPaper2026}.}
+\formal{KnownBounds.lean}{KnownBounds.cardinality_pow, KnownBounds.cardinality_bound, KnownBounds.window_one, KnownBounds.window_two, KnownBounds.exists_pairing_code, KnownBounds.cardinality_pow_threshold, KnownBounds.uniform_in_alphabet, KnownBounds.window_two_pow_threshold, KnownBounds.window_two_uniform_in_alphabet}
 For every alphabet, a whole-row code of window $w$ has rate at most $\tfrac{w}{w+1}(1+\tfrac1d)$, and for $w\le2$ it
 has at most $\card\Sigma^{d(d+1)/2+d-1}$ elements. In particular $R(1)=R(2)=\tfrac12$ and
 $\tfrac12\le R(w)\le\tfrac{w}{w+1}$.
@@ -70,7 +70,21 @@ $wd(d+1)/(w+1)$. The Lean proof retains the sharper numerator $wd^2+\sum_j\card{
 arrays as well. In particular
 $\card C^{w+1}\le\card\Sigma^{wd(d+1)}$, with no linearity or restriction on the recovery functions.
 At window one this gives $\card C\le\card\Sigma^{d(d+1)/2}$; pairing attains it. The threshold for the limiting
-upper rate is independent of the alphabet. Window two uses the separate multigraph-ranking argument cited above.
+upper rate is independent of the alphabet. For window two, the greedy argument of
+\cite[Proposition~6.22(b)]{SeventeenthPaper2026} puts last a row helping the fewest columns. Its formalization uses
+the rectangular invariant
+\[
+g(n,m)=
+\begin{cases}
+n(n+1)/2-(n-m),&m<n,\\
+n(n+1)/2+n(m-n)+(n-1),&m\ge n.
+\end{cases}
+\]
+If that row helps $\delta$ columns, then $n\delta\le2m$, and removing it and those columns gives
+$n\delta+g(n-1,m-\delta)\le g(n,m)$. Induction gives an order of cost at most $g(n,m)$, including empty helper
+sets. At $n=m=d$ this is the claimed exponent. The upper threshold is again independent of the alphabet;
+the symmetric-array code has exactly $\card\Sigma^{d(d+1)/2}$ elements over every finite alphabet.
+The shared order theorem is \lean{LeanMachine.WholeRow.AcyclicOrder.exists_cost_window_two_le}.
 \end{outline}
 
 \begin{remark}[Windows that grow with $d$]\label{rem:growing}

@@ -1,4 +1,5 @@
 import LeanMachine.WholeRow.OrderCode
+import LeanMachine.WholeRow.SymmetricCode
 import MatrixCoding.StatementsRowSpread
 
 /-!
@@ -6,8 +7,8 @@ import MatrixCoding.StatementsRowSpread
 
 The finite bound from Proposition 6.24(d) of *Order, Symmetry, and the Swap*,
 and Proposition 2.5 of this paper, with an alphabet-uniform asymptotic form.
-The window-one specialization is included. The sharper window-two bound
-uses a separate multigraph-ranking argument and is not asserted here.
+The sharp limiting bounds at windows one and two are included. The shared
+window-two proof uses a rectangular invariant for the least-used-row induction.
 -/
 
 namespace LeanBacklog.KnownBounds
@@ -18,6 +19,18 @@ noncomputable section
 
 variable {d : ℕ} {A : Type*} [Fintype A] [Nonempty A]
 variable {ρ : Fin d → Finset (Fin d)} {C : Finset (RowSpread.Entry d → A)}
+
+/-- Pairing attains q^(d(d+1)/2) at window one, hence at every positive window.
+This lower witness uses no algebraic structure on the alphabet. -/
+theorem exists_pairing_code (d : ℕ) (A : Type*) [Fintype A] :
+    ∃ C : Finset (RowSpread.Entry d → A),
+      RowSpread.IsWholeRowCodeExcept (fun j => {j}) ∅ C ∧
+      C.card = Fintype.card A ^ (d * (d + 1) / 2) := by
+  refine ⟨SymmetricCode.code (Fin d) A, ?_, ?_⟩
+  · apply (RowSpread.wholeRowCode_iff _ _ _).mpr
+    intro x hx y hy j _ hxy
+    exact SymmetricCode.recovery hx hy j (hxy j (mem_singleton_self _))
+  · simpa using (SymmetricCode.card (R := Fin d) (A := A))
 
 /-- A division-free finite form of the degree baseline, over every finite alphabet. -/
 theorem cardinality_pow (hC : RowSpread.IsWholeRowCodeExcept ρ ∅ C)
@@ -57,6 +70,51 @@ theorem window_one (hC : RowSpread.IsWholeRowCodeExcept ρ ∅ C)
   apply hc.trans (Nat.pow_le_pow_right Fintype.card_pos ?_)
   simp only [Fintype.card_fin, Nat.one_mul] at ho
   omega
+
+/-- Window two: the finite square bound, including empty helper sets. -/
+theorem window_two (hC : RowSpread.IsWholeRowCodeExcept ρ ∅ C)
+    (hw : ∀ j, (ρ j).card ≤ 2) :
+    C.card ≤ Fintype.card A ^ (d * (d + 1) / 2 + (d - 1)) := by
+  have hc := OrderCode.card_le_window_two ρ C
+    (fun x hx y hy j hxy => (RowSpread.wholeRowCode_iff ρ ∅ C).mp hC x hx y hy j
+      (notMem_empty _) hxy) hw
+  simpa [AcyclicOrder.windowTwoBound] using hc
+
+/-- An alphabet-independent finite threshold for the window-two half-rate bound. -/
+theorem window_two_pow_threshold (hC : RowSpread.IsWholeRowCodeExcept ρ ∅ C)
+    (hw : ∀ j, (ρ j).card ≤ 2) (n : ℕ) (hd : 3 * n ≤ d) :
+    C.card ^ (2 * n) ≤ Fintype.card A ^ ((n + 1) * d * d) := by
+  have ht : 2 * (d * (d + 1) / 2) ≤ d * (d + 1) := by omega
+  calc
+    _ ≤ (Fintype.card A ^ (d * (d + 1) / 2 + (d - 1))) ^ (2 * n) :=
+      Nat.pow_le_pow_left (window_two hC hw) _
+    _ = Fintype.card A ^ ((d * (d + 1) / 2 + (d - 1)) * (2 * n)) := by rw [← pow_mul]
+    _ ≤ _ := Nat.pow_le_pow_right Fintype.card_pos (by
+      nlinarith [Nat.mul_le_mul_left n ht,
+        Nat.mul_le_mul_left (2 * n) (Nat.sub_le d 1), Nat.mul_le_mul_right d hd])
+
+/-- The window-two half-rate upper bound is uniform over all finite alphabets. -/
+theorem window_two_uniform_in_alphabet (η : ℝ) (hη : 0 < η) :
+    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ (A : Type*) [Fintype A], 2 ≤ Fintype.card A →
+      RowSpread.WholeRowCardinalityBound d 2 A ((1 / 2 + η) * (d : ℝ)^2) := by
+  obtain ⟨d₀, hd₀⟩ := exists_nat_gt (3 / (2 * η))
+  refine ⟨d₀, ?_⟩
+  intro d hd A _ hA ρ C hw hC
+  have : Nonempty A := Fintype.card_pos_iff.mp (by omega)
+  have hc := window_two hC hw
+  have hdreal : 3 / (2 * η) < (d : ℝ) := hd₀.trans_le (by exact_mod_cast hd)
+  have hηd : 3 ≤ 2 * η * (d : ℝ) := by
+    have := (div_lt_iff₀ (by positivity : 0 < 2 * η)).mp hdreal
+    nlinarith
+  have htN : 2 * (d * (d + 1) / 2 + (d - 1)) ≤ d * (d + 1) + 2 * d := by omega
+  have ht : 2 * ((d * (d + 1) / 2 + (d - 1) : ℕ) : ℝ) ≤
+      (d : ℝ) * (d + 1) + 2 * d := by exact_mod_cast htN
+  calc
+    (C.card : ℝ) ≤ (Fintype.card A : ℝ) ^ (d * (d + 1) / 2 + (d - 1)) := by exact_mod_cast hc
+    _ = (Fintype.card A : ℝ) ^ ((d * (d + 1) / 2 + (d - 1) : ℕ) : ℝ) :=
+      (Real.rpow_natCast _ _).symm
+    _ ≤ _ := Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (show 1 ≤ Fintype.card A by omega))
+      (by nlinarith [mul_le_mul_of_nonneg_right hηd (show (0 : ℝ) ≤ d by positivity)])
 
 /-- An explicit finite threshold for the limiting rate, independent of the alphabet.
 The error in rate is 1/((w+1)n) when n > 0. -/

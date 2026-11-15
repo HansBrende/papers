@@ -218,3 +218,5 @@ import LeanMachine.WholeRow.InducedMatchings
 import LeanMachine.WholeRow.GraphMatchings
 import LeanMachine.WholeRow.OrderAverage
 import LeanMachine.WholeRow.OrderCode
+import LeanMachine.WholeRow.WindowTwo
+import LeanMachine.WholeRow.SymmetricCode

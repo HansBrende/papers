@@ -48,8 +48,12 @@ import MatrixCoding
 #print axioms LeanBacklog.KnownBounds.cardinality_bound
 #print axioms LeanBacklog.KnownBounds.cardinality_pow
 #print axioms LeanBacklog.KnownBounds.cardinality_pow_threshold
+#print axioms LeanBacklog.KnownBounds.exists_pairing_code
 #print axioms LeanBacklog.KnownBounds.uniform_in_alphabet
 #print axioms LeanBacklog.KnownBounds.window_one
+#print axioms LeanBacklog.KnownBounds.window_two
+#print axioms LeanBacklog.KnownBounds.window_two_pow_threshold
+#print axioms LeanBacklog.KnownBounds.window_two_uniform_in_alphabet
 #print axioms LeanBacklog.LocalRecordViews.half_invoice
 #print axioms LeanBacklog.MacroProjection.upper_of_projection
 #print axioms LeanBacklog.RectangleBarrier.rectangle_barrier
@@ -89,6 +93,7 @@ import MatrixCoding
 #print axioms LeanBacklog.WindowSpread.nativeRowSpreadQuantitative
 #print axioms LeanBacklog.WindowSpread.native_row_spread_prefix
 #print axioms LeanMachine.WholeRow.AcyclicOrder.exact_acyclic_card
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exists_cost_window_two_le
 #print axioms LeanMachine.WholeRow.AcyclicOrder.exists_rowSet_superset
 #print axioms LeanMachine.WholeRow.AcyclicOrder.rowSet_card_add_cost
 #print axioms LeanMachine.WholeRow.pairing_card_pow_le_half

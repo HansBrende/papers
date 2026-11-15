@@ -1,4 +1,5 @@
 import LeanMachine.WholeRow.OrderAverage
+import LeanMachine.WholeRow.WindowTwo
 import LeanMachine.OrderedRecovery
 
 /-!
@@ -47,6 +48,15 @@ theorem card_le_order
     dsimp [S]
     omega
   simpa only [Fintype.card_coe, Fintype.card_fun, hsize] using Fintype.card_le_of_injective f hf
+
+/-- The rectangular window-two bound, for arbitrary nonlinear codes. -/
+theorem card_le_window_two [Nonempty A]
+    (hC : ∀ x ∈ C, ∀ y ∈ C, ∀ j,
+      (∀ i ∈ ρ j, ∀ k, x (i, k) = y (i, k)) → ∀ i, x (i, j) = y (i, j))
+    (h2 : ∀ j, (ρ j).card ≤ 2) :
+    C.card ≤ Fintype.card A ^ windowTwoBound (Fintype.card R) (Fintype.card J) := by
+  obtain ⟨o, ho⟩ := exists_cost_window_two_le ρ h2
+  exact (card_le_order ρ C hC o).trans (Nat.pow_le_pow_right Fintype.card_pos ho)
 
 /-- The finite degree bound without division or logarithms. -/
 theorem card_pow_le_degree [Nonempty A]

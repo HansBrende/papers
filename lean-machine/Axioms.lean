@@ -1901,3 +1901,13 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.pairing_card_sq_le_forward_given
 #print axioms LeanMachine.WholeRow.pairing_card_pow_le_half_given
 #print axioms LeanMachine.WholeRow.pairing_card_pow_le_half_of_inactive_fixed
+
+-- Deterministic row-order lower bounds for rectangle-mixing lifts.
+#print axioms LeanMachine.WholeRow.LiftOrder.cost
+#print axioms LeanMachine.WholeRow.LiftOrder.RectangleMixing
+#print axioms LeanMachine.WholeRow.LiftOrder.rectangleMixing_iff_exact
+#print axioms LeanMachine.WholeRow.LiftOrder.clone_group_card
+#print axioms LeanMachine.WholeRow.LiftOrder.cost_ge_base_order
+#print axioms LeanMachine.WholeRow.LiftOrder.cost_ge_of_base_bound
+#print axioms LeanMachine.WholeRow.LiftOrder.cloneOrder
+#print axioms LeanMachine.WholeRow.LiftOrder.cost_clone_order_le

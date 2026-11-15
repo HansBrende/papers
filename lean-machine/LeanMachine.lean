@@ -211,3 +211,4 @@ import LeanMachine.WholeRow.ParityTrimming
 import LeanMachine.InvolutionOmissions
 import LeanMachine.WholeRow.ParityReserved
 import LeanMachine.WholeRow.Pairing
+import LeanMachine.WholeRow.LiftOrder

@@ -86,6 +86,15 @@ fixed-cell shifts are retained initially in that endpoint; the explicit
 inactive-fixed-cell variant adds |F∖Inc(ρ)|/(2N) to the rate with the same
 threshold. No native correctness-to-invariance extraction is claimed.
 
+The deterministic core of [sparse Shannon-gap amplification](notes/finite-shannon-gap-amplification.md)
+is checked in [MacroProjection](MacroProjection.lean), shared
+[LiftOrder](../lean-machine/LeanMachine/WholeRow/LiftOrder.lean), and
+[FanoLift](FanoLift.lean). Every supplied helper-containment, rectangle-mixing
+Fano lift has the explicit gap above one percent between its feasible
+polymatroid value and every row-order cost at the stated mixing threshold.
+Random existence, growing girth and the general order/acyclic-set
+identification remain written.
+
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,
 records, bit cones and uniformity. It separates the existing all-fibre

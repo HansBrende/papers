@@ -1,8 +1,11 @@
 # Finite Shannon gaps persist at fixed window
 
 14 November 2026. GPT-6 Astra, following the Fano certificate developed
-with Claude Fable. **Status: written proof, independently reviewed; not
-Lean-verified.** No claim of literature novelty is made.
+with Claude Fable. **Status: deterministic macro projection and conditional
+row-order comparison Lean-verified; random existence and the girth refinement
+remain written proofs, independently reviewed.** No claim of literature
+novelty is made. The general order/acyclic-set identification used below
+also remains a written result of Paper 17.
 
 A finite gap between Shannon and order bounds need not disappear as the
 matrix grows, even when both incidence degrees stay fixed. This note
@@ -258,12 +261,42 @@ would be bases whose order rates approach one while their Shannon
 rates have a uniform deficit. The projective-plane conjecture would
 provide such bases, but is proved here only for Fano.
 
-## 7. Lean reuse and effort estimate
+## 7. Lean coverage and remaining effort
 
-**Status of this section: source audit and implementation plan, not a new
-formal theorem.** The series and installed Lean libraries were checked
-before estimating the work. B3 remains written. The estimate favors
-separate completed milestones, with no new host search or numerical work.
+The deterministic stages are complete. The series and installed Lean
+libraries were checked before implementation. No new host search or
+numerical work was used; permutation counting and girth are stopped at
+their existing written proofs.
+
+[`MacroProjection.lean`](../MacroProjection.lean) proves `upper_of_projection`
+for arbitrary row and column maps with a common positive bound on macro-cell
+fibre size. The maps need not be onto and fibre sizes need not be equal.
+`fano_upper_of_projection` also permits cap zero, and `fano_clone_upper`
+allows rectangular clone counts n,m, giving 3h(full)≤119nm.
+
+[`LiftOrder.lean`](../../lean-machine/LeanMachine/WholeRow/LiftOrder.lean)
+proves `cost_ge_base_order` and `cost_ge_of_base_bound`. Both use one-based
+last-helper positions, with zero cost for an empty helper set. With n clones
+per group and 1≤r≤n, rectangle mixing above each base incidence gives the
+lower bound a²S for **every** fine order, where a=n−r+1. The proof constructs
+the induced base order from distinct arrival thresholds; the statement
+does not assume that order or its threshold inequalities. Helper containment
+is not needed for this lower bound. `rectangleMixing_iff_exact` identifies
+the at-least-r rectangle interface with exactly r rows and r columns.
+`cost_clone_order_le` proves the converse n² comparison by a contiguous
+clone-group order under helper containment, without mixing.
+
+[`FanoLift.lean`](../FanoLift.lean) connects these statements to the actual
+Fano incidence and its checked order value 41. It proves the finite gap
+
+$$\operatorname{cost}(\pi)-h(\mathrm{full})
+\ge41(n-r+1)^2-\frac{119}{3}n^2$$
+
+for every feasible fine polymatroid h and every fine order π. Under
+99n≤100(n−r+1), `conditional_gap_one_percent` gives 15523n²/30000,
+and `gap_coefficient_gt_one_percent` proves that this exceeds (7n)²/100
+for n>0. These are conditional inequalities, not a Lean construction
+of mixing lifts or a lower bound on their Shannon value.
 
 The entropy aggregation has a direct existing consumer. Paper 4's
 [polymatroid library](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Polymatroid.lean)
@@ -276,16 +309,15 @@ A macro singleton has n² cells, so its rank is at most n². Applying
 normalization by n² is needed for this first endpoint. For a base already
 supplied with a homogeneous weighted rate bound, Paper 4's
 `RateBound.of_hom` transfers that bound directly. An arbitrary unit-cap base
-bound U needs a small scalar-rescaling
-adapter, or an interface giving its bound at cap a.
+bound U is transferred by the scalar rescaling in `upper_of_projection`.
 
 | Milestone | Actual reuse and missing work | Relative effort and completion criterion |
 |---|---|---|
-| Deterministic macro upper bound | The push-forward API above; finite fibre sizes; checked Fano cap | Small, focused unit. Prove the upper bound for every supplied helper-containment map. |
-| Every-order lower bound, conditional on rectangle mixing | [`RectangleBarrier.ready_card_lt`](../RectangleBarrier.lean) supplies the counting idea; [`FanoOrder.exact_last_helper_value`](../FanoOrder.lean) supplies the base value 41. New work: sort a-th-clone arrival thresholds, charge every fine order, and prove the separate contiguous-order upper bound. | Moderate finite combinatorics. Finish a conditional finite amplification theorem before starting probability. |
+| Deterministic macro upper bound | Paper 4 push-forward/validity, scalar rescaling, finite fibre sizes, checked Fano cap | **Lean, complete:** `MacroProjection`. Arbitrary supplied helper-containment maps and bounded fibres. |
+| Every-order comparison, conditional on rectangle mixing | Finite arrival-threshold counting in shared `LiftOrder`; [`FanoOrder.exact_last_helper_value`](../FanoOrder.lean) supplies 41 | **Lean, complete:** induced base order and a² lower comparison; separate contiguous-order n² upper comparison. |
 | Existence of bounded-degree mixing lifts | [`FiniteUniformProbability`](../../lean-machine/LeanMachine/FiniteUniformProbability.lean) supplies finite product averages and union bounds. [`BlockRanking`](../../lean-machine/LeanMachine/BlockRanking.lean) counts other permutation events, but not rectangle avoidance. New work: uniform restriction/image counts for permutations, the product construction, both degree bounds and the eventual failure estimate. | Substantial. First prove the exact avoidance probability, then the finite failure bound and eventual existence without the girth refinement. |
 | Same-degree logarithmic girth | Reuse the permutation restriction count. New work: finite colored cycle witnesses, repeated matching colors, expected short-cycle count, isolation, and survival of larger rectangles. | Largest uncertainty; a separate substantial stage after existence. Use no-short-cycle or extended-girth predicates, since ordinary Mathlib girth is zero for acyclic graphs. |
-| Fano constants and comparison | Existing Fano upper/order endpoints; finite incidence checks and rational arithmetic; rigorous elementary log estimates | Small after the generic inputs. Retain the degree 3600 and gap greater than 1/100 rather than silently weakening them. |
+| Fano constants and comparison | Existing Fano upper/order endpoints and exact rational arithmetic | **Lean, complete conditional gap:** `FanoLift`. Degree 3600, eventual existence and the needed logarithmic estimates remain in the written construction. |
 
 The installed Mathlib has finite permutation and embedding counts,
 falling factorials, factorial/binomial estimates, finite uniform laws and
@@ -298,19 +330,16 @@ larger degree, but does not prove the displayed degree-3600 result.
 One further boundary matters when reporting completion. The general
 Paper 17 identification of the minimum row-order cost with the complement
 of a maximum induced acyclic set is still a written theorem. The
-conditional amplification can first use the explicit last-helper order
-cost, but a fully Lean-checked claim about **every acyclic-set bound** also
+conditional amplification uses the explicit last-helper order cost;
+a fully Lean-checked claim about **every acyclic-set bound** also
 needs that adapter. Fano's own exact order value is already checked.
 The optional small-separator argument and paid macro-error extension are
 separate from the first milestone. Neither supplies a native quotient or
 an error budget.
 
-**Recommendation.** Start with the short deterministic macro upper bound,
-then reassess the every-order unit. Full B3 is a multi-stage formalization
-project, dominated by permutation and cycle counting; it is not a small
-wrapper around the finite certificate. No reliable clock-time estimate is
-available before the permutation-counting pilot. Completing it would bank
-the existing method separation and reusable machinery, without advancing
-the common deficit on arbitrary hosts. The present sparse lifts still
-inherit their base's constant order deficit, and their Shannon upper bound
-is not asserted to be attained.
+**Stopping point.** Stages 1 and 2 are banked; do not start permutation or
+cycle counting without a new decision. Full B3 remains partially formalized.
+The conditional deterministic theorem banks the existing method separation
+and reusable machinery without advancing the common deficit on arbitrary
+hosts. The sparse lifts still inherit their base's constant order deficit,
+and their Shannon upper bound is not asserted to be attained.

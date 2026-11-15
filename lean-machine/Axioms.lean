@@ -1929,3 +1929,12 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost_le
 #print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost_eq_of_bounds
 #print axioms LeanMachine.WholeRow.AcyclicOrder.exact_acyclic_card
+
+-- Row-order averaging and the degree baseline for arbitrary-alphabet codes.
+#print axioms LeanMachine.WholeRow.OrderAverage.exists_order_incidence_bound
+#print axioms LeanMachine.WholeRow.OrderAverage.exists_order_degree_bound
+#print axioms LeanMachine.WholeRow.OrderAverage.minimumCost_degree_bound
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exists_cost_window_le
+#print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost_window_le
+#print axioms LeanMachine.WholeRow.OrderCode.card_le_order
+#print axioms LeanMachine.WholeRow.OrderCode.card_pow_le_degree

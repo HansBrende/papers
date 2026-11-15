@@ -29,6 +29,11 @@ import MatrixCoding
 #print axioms LeanBacklog.InducedMatchingCodes.cardinality_pow_le_half
 #print axioms LeanBacklog.InducedMatchingCodes.isWholeRowCode
 #print axioms LeanBacklog.InducedMatchingCodes.large_cells
+#print axioms LeanBacklog.KnownBounds.cardinality_bound
+#print axioms LeanBacklog.KnownBounds.cardinality_pow
+#print axioms LeanBacklog.KnownBounds.cardinality_pow_threshold
+#print axioms LeanBacklog.KnownBounds.uniform_in_alphabet
+#print axioms LeanBacklog.KnownBounds.window_one
 #print axioms LeanBacklog.LocalRecordViews.half_invoice
 #print axioms LeanBacklog.MacroProjection.upper_of_projection
 #print axioms LeanBacklog.RectangleBarrier.rectangle_barrier

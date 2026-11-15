@@ -55,11 +55,23 @@ $R(w)=\tfrac12$ for every $w\ge1$.
 \end{conjecture}
 
 \begin{proposition}[Known bounds]\label{prop:known}
-\cited{\cite[Propositions~6.22 and~6.24]{SeventeenthPaper2026}; not formalized there.}
+\partformal{KnownBounds.lean}{KnownBounds.cardinality_pow, KnownBounds.cardinality_bound, KnownBounds.window_one, KnownBounds.cardinality_pow_threshold, KnownBounds.uniform_in_alphabet}{The sharper window-two bound remains the written proof of \cite[Proposition~6.22(b)]{SeventeenthPaper2026}.}
 For every alphabet, a whole-row code of window $w$ has rate at most $\tfrac{w}{w+1}(1+\tfrac1d)$, and for $w\le2$ it
 has at most $\card\Sigma^{d(d+1)/2+d-1}$ elements. In particular $R(1)=R(2)=\tfrac12$ and
 $\tfrac12\le R(w)\le\tfrac{w}{w+1}$.
 \end{proposition}
+
+\begin{outline}
+The averaging argument is that of \cite[Proposition~6.24(d)]{SeventeenthPaper2026}. Fix a row order and retain, in
+each column, the entries up to its last helper row. These entries determine the array by induction in that order.
+For a set of $k$ helper rows and one other row, each of the $k+1$ rows is last in equally many orders: exchanging
+two row labels is a bijection between the two classes of orders. Summing these counts gives an order of cost at most
+$wd(d+1)/(w+1)$. The Lean proof retains the sharper numerator $wd^2+\sum_j\card{\rho(j)}$, and applies to rectangular
+arrays as well. In particular
+$\card C^{w+1}\le\card\Sigma^{wd(d+1)}$, with no linearity or restriction on the recovery functions.
+At window one this gives $\card C\le\card\Sigma^{d(d+1)/2}$; pairing attains it. The threshold for the limiting
+upper rate is independent of the alphabet. Window two uses the separate multigraph-ranking argument cited above.
+\end{outline}
 
 \begin{remark}[Windows that grow with $d$]\label{rem:growing}
 In \cref{def:rate,conj:MCC} the window is fixed before $d$ grows. This cannot be relaxed much. Mittal and Raz

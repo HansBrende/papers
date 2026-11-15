@@ -164,9 +164,9 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   It belongs to no Lake package and is not built with the papers.
 - [`StatementsD.lean`](StatementsD.lean) holds the open obligations of item D, each with `sorry`. It
   needs `lake build LeanMachine.BoundedWeight.Asymptotic` first and is checked the same way.
-- [`StatementsOrderWindow.lean`](StatementsOrderWindow.lean) holds one open obligation for paper 21, with
-  `sorry`: the window bound `(w+1)·minimumCost ≤ w·|J|·(|R|+1)` for row orders. The queue of paper 21's
-  unformalized items and their plans is in [the formalization queue](notes/paper21-formalization-queue.md).
+- [`StatementsOrderWindow.lean`](StatementsOrderWindow.lean) is now a compatibility import of the proved
+  window bound `(w+1)·minimumCost ≤ w·|J|·(|R|+1)` in `LeanMachine.WholeRow.OrderAverage`.
+  Paper 21's [formalization queue](notes/paper21-formalization-queue.md) records the remaining items.
 - [`StatementsWholeRow.lean`](StatementsWholeRow.lean) defines the open linear D1 and covariant-group
   D8 conjectures as `Prop`s, with separate fixed-field and uniform-in-field variants. It asserts neither
   conjecture. Its helper lemmas check covariance, group-algebra conventions, ambient dimension, and

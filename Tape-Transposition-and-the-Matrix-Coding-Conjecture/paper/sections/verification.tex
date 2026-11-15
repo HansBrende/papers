@@ -17,10 +17,11 @@ lake build
 lake env lean PaperAxioms.lean
 \end{verbatim}
 The cache command retrieves the pinned compiled Mathlib dependencies; a compatible existing cache can instead be
-reused. The paper's root module imports all $45$ public local modules. Of these, $44$ are the maintained proofs and
+reused. The paper's root module imports all $46$ public local modules. Of these, $45$ are the maintained proofs and
 adapters, and \leanfile{MatrixCoding.Invariance} imports the pairing and parity theorems from the shared library.
-The induced-matching counting proof is also maintained in the shared library; the paper adapter states recovery
-in the same whole-row predicate and an explicit alphabet-uniform threshold. Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
+The induced-matching counting proof and the row-order averaging bound are also maintained in the shared library;
+their paper adapters use the same whole-row predicate and give alphabet-uniform thresholds. The window-two
+improvement in \cref{prop:known} remains a cited written proof. Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
 packaged: \leanname{LeanBacklog} is part of their names, not an additional mathematical dependency. The earlier flat
 entry points are compatibility imports of the maintained files.
 

@@ -215,3 +215,5 @@ import LeanMachine.WholeRow.LiftOrder
 import LeanMachine.RecoveryAcyclic
 import LeanMachine.WholeRow.AcyclicOrder
 import LeanMachine.WholeRow.InducedMatchings
+import LeanMachine.WholeRow.OrderAverage
+import LeanMachine.WholeRow.OrderCode

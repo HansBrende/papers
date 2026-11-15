@@ -20,6 +20,7 @@ import MatrixCoding.GridFull
 import MatrixCoding.GridOrder
 import MatrixCoding.InducedMatchings
 import MatrixCoding.Invariance
+import MatrixCoding.KnownBounds
 import MatrixCoding.LocalRecordViews
 import MatrixCoding.MacroProjection
 import MatrixCoding.NormalizedCodeTransfer

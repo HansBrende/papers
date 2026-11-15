@@ -27,6 +27,10 @@ The maintained Lean modules, using only the standard axioms, include:
   conclusions against the first paper's frozen transposition proposition.
 - [Row spread](lean/MatrixCoding/WindowSpread.lean) and
   [its coding transfer](lean/MatrixCoding/RowSpreadCrux.lean).
+- [The general degree baseline](lean/MatrixCoding/KnownBounds.lean):
+  `|C|^(w+1) ≤ q^(wd(d+1))`, the window-one bound, and the limiting rate
+  `w/(w+1)` uniformly over finite alphabets. The sharper window-two bound
+  remains the written multigraph argument in Paper 17.
 - [The symmetric, reflexive, two-sided normal form](lean/MatrixCoding/NormalizedRateTransfer.lean).
 - [Exact acyclic-set values](lean/MatrixCoding/WholeRowAcyclic.lean),
   [the assigned-rule bound](lean/MatrixCoding/ClosureBarriers.lean), and

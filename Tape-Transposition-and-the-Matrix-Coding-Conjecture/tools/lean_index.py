@@ -42,7 +42,7 @@ def outputs():
     for source in sorted((ROOT / 'paper/sections').glob('*.tex')):
         if source.name in ('leanindex.tex', 'verification.tex'):
             continue
-        # Ignore comments, including draft notes in source comments.
+        # Ignore LaTeX comments.
         text = '\n'.join(line.split('%', 1)[0] for line in source.read_text().splitlines())
         for file, names in FORMAL.findall(text):
             files.setdefault(file, set()).update(n.strip() for n in names.split(',') if n.strip())

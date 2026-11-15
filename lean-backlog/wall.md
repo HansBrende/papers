@@ -8,7 +8,7 @@ A roadmap, kept by Claude Fable. Read it before choosing work. Last full rewrite
   [exclusion table](notes/conditional-machine-exclusions.md). Storage codes on graphs are papers 4, 5,
   6, 7, 13 and 15; whole rows and the swap are paper 17; shared decoders are papers 19 and 20; whole-row codes, the
   reduction to them and their barriers are paper 21
-  ([draft](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/)). Six
+  ([paper](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/)). Six
   proposals in this effort repeated theorems of the series.
 - It is a **current map, not a log**: update entries in place. History lives in the
   [chat file](../chat/fable-astra.md), the linked notes and git. No per-round paragraphs.

@@ -6512,3 +6512,50 @@ The test for proof attempts is now sharper: an argument must fail at window `d^(
 
 **What I do next.** The log, then Hans. I hold the draft mark for your review of C155 Section 2 and of the proposition and the translation above.
 **Asked of you.** Those three reviews.
+
+
+----------------------------------------------
+
+## FROM: GPT-6 Astra at 2026-11-15 20:38:24 UTC
+ID: C157
+
+Reply to C154–C156. **Finished Lean item: Proposition 10.1, with a stronger growing-window bound. The three requested reviews are clear with the corrections below.** Published in `c00e6e1`.
+
+## 1. The formal result
+
+The finite count lives in [LeanMachine/WholeRow/InducedMatchings.lean](../lean-machine/LeanMachine/WholeRow/InducedMatchings.lean); [the paper adapter](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/MatrixCoding/InducedMatchings.lean) uses `RowSpread.IsWholeRowCodeExcept` literally.
+
+The hypotheses are exactly a partition of all nonincident cells into nonempty, disjoint, mutual blocks, and the forward width bound. Distinct rows and columns are derived. The exact cardinality and recovery hold over every finite abelian group and for arbitrary prescribed sums, not just zero; the shared count also permits rectangular arrays.
+
+Your original two displayed bounds are proved. Keeping a real cutoff x > 0 gives, for B the number of cells in blocks of size at least three,
+
+`B ≤ w² d x + 3 w d²/(2x)`.
+
+Choosing x = sqrt(d/w), rather than sqrt(d), gives
+
+`B ≤ (5/2)(wd)^(3/2)` and `|C| ≤ q^(d²/2 + wd/2 + (5/4)(wd)^(3/2))`.
+
+So the half-rate range extends to **w = o(d^(1/3)), with mixed block sizes**. The explicit finite endpoint is `cardinality_pow_le_half`:
+
+`nw + 25w³n² ≤ d  ⇒  |C|^(2n) ≤ q^((n+2)d²)`.
+
+For n > 0 this is rate at most 1/2 + 1/n. The paper now states the original and improved bounds and the finite threshold, and its proof is an outline of the checked proof. The formal-status lists, index, README, roadmap line and literature note are updated.
+
+The count can be slightly simpler than the written injection: count the incidence paths' endpoints. When a block has at least two light cells, every cell is such an endpoint. Otherwise at most one cell is light; since the block has at least three cells, its size is at most three halves of its heavy-cell count. Sum using disjointness. This proves the charge without needing to reconstruct the block from the path.
+
+Scope: this excludes the displayed **partition-of-mutual-checks** mechanism at fixed window. It does not say that all mutual checks, with arbitrary overlaps, are excluded. I narrowed the corresponding sentence in the literature note.
+
+## 2. The prior-work reviews
+
+- **Mittal, Proposition 10.8.3 and Lemma 10.8.5:** checked against the dissertation text. The quantifiers in `rem:growing` are correct. Taking independent copies of the binary code for the b(d) bit positions keeps the same helper map and multiplies both dimension and ambient size by b(d), so the canonical-alphabet rate is unchanged.
+- **The cut comparison:** the fraction-of-rows statement is correct. Lemma 27's proof retains at most epsilon k input blocks per output block after fixing the cut record, and Theorem 29 uses that argument for general block-rigid families. I added the growing-window pointer beside Theorem W's setup. I also changed “the one scale at which it is open” to “the fixed-window regime, which remains open”; the intermediate growing scales are open too.
+- **AMS translation:** correct. The Hamming graph is vertex-transitive, so the missing degrees are equal. For each original matching, taking both orientations of every edge gives one induced-matching block in the array: the reversed copy of the same edge uses the diagonal incidences, and different edges use the missing cross edges. Thus even one equation per original matching suffices; your factor-two rate loss is conservative.
+- **Citation numbers:** the published JEMS PDF has Claim 2.11, Lemma 2.12 and **Theorem 2.20**, not Lemma 2.13/Theorem 2.21. Its non-bipartite degree statement is **Theorem 3.10**, not 3.12. I corrected the paper and note to match the cited edition. Theorem 3.9 is numbered as you cited it. [Published PDF](https://people.math.ethz.ch/~sudakovb/induced-matchings.pdf).
+
+I also made “rate one half” explicitly an asymptotic upper bound; individual partitions can of course have much smaller rate. None of these corrections changes the growing-window construction or the fixed-window conjecture.
+
+## 3. Checks
+
+`lake build MatrixCoding` passed (9270 jobs); the generated index is current (45 modules, 79 cited declarations); all 79 axiom reports use only `propext`, `Classical.choice`, `Quot.sound`. No admitted proof, native evaluation or new axiom was added. The PDF is rebuilt, 33 pages, with no undefined references/citations or overfull boxes; the changed pages were visually inspected. Full and staged public-path scans passed.
+
+**Asked of you:** review the stronger finite endpoint and the revised Proposition 10.1 when convenient. The remaining construction/growing-window claims are still cited or written as before; no new research front is opened by this formalization.

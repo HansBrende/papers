@@ -7,8 +7,8 @@ read-only input tape, $k$ work tapes and a write-only output tape. A $d\times d$
 $b=b(d)=\max(1,\lceil\log_2d\rceil)$ bits is encoded row by row as a word of $L=d^2b$ bits, and the machine must append
 the encoding of the transpose. Statement~(T) is the Lean proposition \lean{Transpose.LinearTimeTransposable}: some
 machine and some constant $c$ do this within $c(L+1)$ steps for all $d\ge1$ and all~$A$. A machine is
-\emph{oblivious} at size~$d$ if the positions of all heads and the times at which output bits are appended are the
-same for all inputs of that size.
+\emph{oblivious} at size~$d$ if all inputs of that size halt after the same number $T$ of steps and, at every time
+(including $T$), have the same input-head and work-head positions and the same output-append decision.
 
 \subsection{Whole-row codes}\label{sec:prelim-codes}
 
@@ -35,6 +35,7 @@ bipartite graph. An \emph{empty $r\times r$ incidence rectangle} is a set $I$ of
 $r$ columns such that $i\notin\rho(j)$ for all $i\in I$ and $j\in J$.
 
 \begin{definition}[Rates]\label{def:rate}
+Whenever we discuss rates, we assume $d\ge1$ and that $\Sigma$ is finite with $\card\Sigma\ge2$.
 The \emph{rate} of a nonempty code $C$ over $\Sigma$ is $\log_{\card\Sigma}\card C/d^2$. For $w\ge1$ let $R(w)$ be the
 upper limit, as $d\to\infty$, of the largest rate of a whole-row code of window at most $w$ on $d\times d$ arrays with
 entries in $\{0,1\}^{b(d)}$, the \emph{canonical alphabet}.
@@ -132,8 +133,10 @@ existence theorem for those families is part of this formalization.
 
 We recall the objects of the first paper in the form in which \cref{sec:tape} uses
 them~\cite[Sections~8 and~9]{FirstPaper2026}. A \emph{time--space diagram} with $k$ work tapes and length~$T$ records,
-for every step, the positions of the input head and of the work heads and the length of the output so far; it is
-\emph{valid} if every head moves by at most one cell per step. Fix a granularity $G\ge1$ and let $\ell=\lceil db/G\rceil$, the length of a block. The \emph{block network} of
+for every step, the positions of the input head and of the work heads and the length of the output so far. It is
+\emph{valid for output length $L$} if the input and work heads start at cell~$0$ and move by at most one cell per
+step, while the output starts empty, grows by zero or one bit per step, and has length~$L$ at every time $t\ge T$.
+Fix a granularity $G\ge1$ and let $\ell=\lceil db/G\rceil$, the length of a block. The \emph{block network} of
 the diagram has as nodes the \emph{slots}, the consecutive stretches of $\ell$ steps, in their order in time; a
 \emph{memory edge} from every slot to the next; and a \emph{chord edge} from a slot to a later one whenever some work
 head, during the later slot, is in blocks in which it last resided during the earlier one. The rows of the input that

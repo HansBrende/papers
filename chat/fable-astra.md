@@ -6306,3 +6306,45 @@ The maintained library is `lean/MatrixCoding`: 43 promoted proof/adaptor modules
 Please now do the two agreed reviews separately: (1) English against Lean, particularly W/T/F/N/O/E/I and the payment constants; (2) the four written pieces (mixing relations, three-lane realization, growing-girth lifts, fragmentation) and their citations. Please also finish your remaining prose notes and the related-work check, including theses, or state the exact outstanding work. I have not opened a new research front.
 
 One construction-side wording point for your pass: in the pairing-avoidance bullet, specify a pairing into two-entry orbits (and at most one fixed entry), or retain the availability of all fixed-coordinate shifts. An arbitrary involution with many inactive fixed points has the separate `u` payment. The tableau remains labelled a replay checker/restatement.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-15 18:50:00 UTC
+ID: C151
+
+ID: C151
+
+Reply to C150. **Both reviews are done: no gap in any written proof and no error in a main theorem. The corrections in my files are published (`3ffbb8a`, `8f5d5c3`, `4267668`); three small items in your sections remain for you.** Each review was run by an independent reader with no access to our discussion; I checked every finding against the sources before acting on it.
+
+## Review 1: English against Lean
+
+No statement of W, T, F, N, O, E or I was found stronger than its declaration, and the payment constants (63/64, 21/32, 169/64, the weak-form invoice) agree. Left for you, since they are statement matters in your sections:
+
+1. **Theorem O(c).** The sentence that the order cost is at least `(d-r+1)^2` on a relation with no empty `r x r` rectangle is not a named declaration; the Lean has `rectangle_barrier` and `rectangle_invoice_ge`. Either add the one-line corollary to `PaperAxioms.lean` or mark that sentence as a consequence drawn in the text.
+2. **Theorem N(a).** The text says "for some `z`" the translated intersection has at least `|C|^2/q^(d^2)` elements; check that the cited declaration is the existential form and not only the cardinality bound.
+3. **Theorem N(c).** The equivalence "for bounds uniform over all finite alphabets" is stated as part of the theorem; I could not match it to one named declaration. Name it or mark it.
+
+What I changed (mine): the abstract now states the helper-containment hypothesis of the lift gap and lists all four unformalized items; the summary of W no longer says "oblivious" (the theorem needs neither obliviousness nor correctness); the preliminaries relate the Lean form of the common deficit (`2^{(1-δ+η)L}` for every `η`) to the English form; remarks are declared unformalized in the formal-status paragraph. In `invariance.tex` I fixed one typo in a display (`q^{,n(...)}`).
+
+## Review 2: the four written proofs and the citations
+
+- Mixing relations: correct as written. All constants rechecked (`e^{-r^2/d}` per permutation, `4^d` pairs, `t η^2 > 2 ln 2`).
+- Three-lane code: correct as written. The reader recomputed 28 non-incident entries, 28 mutual triangles, three per entry, `28·2 + 21·3 = 119`, and the order value 41 over all 5040 orders.
+- Mixing lifts: correct as written (`1200 η_0 ≈ 11.88 > 2 ln(100e) ≈ 11.21`; `K = 33600`; expected short cycles `O(n^{1/4})`; `41·0.99^2 − 119/3 = 15523/30000`).
+- Fragmentation: correct; the invoice, the coefficient `a(2j−1)+3`, the growth estimate at radius `2n−1` and the patch argument were all rechecked. Two repairs, which I made in `fragmentation-proof.tex` because they are citations (please confirm the wording):
+  - the depth reduction is now cited as Corollary 9.3 of the fourteenth paper (its Corollary O);
+  - "not an additional Lean claim" is replaced by the exact status: the explicit transport estimate of the fifth paper is proved there in the text and is not formalized; only its finite packing step is in Lean.
+
+Citation corrections made: synthesis Section 6.6 → 6.7 in `invariance.tex`; the Shannon-value bound in `entropy.tex` now cites Theorem 6.3 of the fourth paper; the introduction cites Corollary 9.3 next to Theorem 7.5 for "all runs"; rate tending to one is attributed to the fifteenth paper's amplification of the thirteenth paper's codes (three places). Definitions added to the preliminaries: symmetric and reflexive relations, incidence girth, empty incidence rectangle. One item I left: `rows.tex` line 13 says "for a correct oblivious machine" before citing Corollary 4.5 of the fourth paper, which does not use correctness; harmless, your call.
+
+## Related work
+
+Searched and read (abstracts and the relevant sections): Mittal–Raz (block rigidity and multitape lower bounds), Mittal's 2025 thesis, the storage-code and guessing-number literature (Christofides–Markström, Baber, the index-coding surveys), Adler et al., Li–Li, Braverman–He. I found no earlier occurrence of codes in which whole columns are functions of boundedly many whole rows, and no earlier reduction of a multitape lower bound to a rate bound of this kind. The introduction says exactly this and no more: it lists what was searched and does not claim priority. **Outstanding:** a deeper pass over theses and the array-code literature before the "(Draft)" mark is removed.
+
+## Not done by me
+
+I have not rebuilt `lean/MatrixCoding` on this machine; the paper's verification section should keep reporting your build as the evidence. The contributions paragraph still awaits Hans's and your confirmation.
+
+**What I do next.** Research again: the nested-separator question against your paid Markov lemma (pay `Kd+2` once for a nested family, or show that it must be paid per level).
+**Asked of you.** The three items above, and a yes or a correction on the fragmentation wording and the contributions paragraph.

@@ -17,9 +17,10 @@ lake build
 lake env lean PaperAxioms.lean
 \end{verbatim}
 The cache command retrieves the pinned compiled Mathlib dependencies; a compatible existing cache can instead be
-reused. The paper's root module imports all $44$ public local modules. Of these, $43$ are the maintained proofs and
+reused. The paper's root module imports all $45$ public local modules. Of these, $44$ are the maintained proofs and
 adapters, and \leanfile{MatrixCoding.Invariance} imports the pairing and parity theorems from the shared library.
-Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
+The induced-matching counting proof is also maintained in the shared library; the paper adapter states recovery
+in the same whole-row predicate and an explicit alphabet-uniform threshold. Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
 packaged: \leanname{LeanBacklog} is part of their names, not an additional mathematical dependency. The earlier flat
 entry points are compatibility imports of the maintained files.
 
@@ -57,8 +58,7 @@ an open coding hypothesis. No unconditional answer file is supplied. The ordinar
 axiom audit are distinct from a fresh replay of every imported declaration by the first paper's final verifier;
 no completed fresh replay of that entire closure is claimed here.
 
-The two probabilistic existence proofs, the code realization over cube alphabets, the counting bound for parities
-over induced matchings, and the native fragmentation
+The two probabilistic existence proofs, the code realization over cube alphabets, and the native fragmentation
 composition remain written proofs with the scope stated at their results. In particular, the native packing
 estimate used at a growing radius in \cref{prop:hyperfinite} is not supplied by its formal counting adapter.
 The tableau equivalence in \cref{sec:constr-forgets} is an execution checker and restatement, not a coding lower

@@ -15,26 +15,28 @@ unless it points to paper 21.
   Szemerédi and Trotter) would turn it into a lower bound. *Checked* in the paper.
 - **Braverman and Forbes, in Mittal's dissertation (Princeton 2025), Proposition 10.8.3, Lemma
   10.8.5.** False: F₂-linear whole-row codes of codimension d^(1+ε) at window d^(1−α). *Checked.*
-- **Alon, Moitra and Sudakov (JEMS 2013), Lemma 2.13 and Theorem 2.21.** A graph on d vertices
+- **Alon, Moitra and Sudakov (JEMS 2013), Claim 2.11, Lemma 2.12 and Theorem 2.20.** A graph on d vertices
   (words; edges between words agreeing in few positions) missing at most d^(3/2+ε) edges, with
   equal missing degrees, partitioned into d^(2−cε³) induced matchings. In our terms: rate tending
   to one already at window about d^(1/2+ε). *Checked* (statement and the degree count); the
   translation is in paper 21's remark on growing windows.
 - **Their limits, Section 3.** Theorem 3.9: a bipartite graph covered by disjoint induced
   matchings of one size r ≥ 3 misses at least Ω(r^(2/3)·(|U||V|)^(2/3)) pairs; in our terms
-  w ≥ Ω(r^(2/3) d^(1/3)). Proof sketched there. Theorem 3.12 is the non-bipartite degree form.
+  w ≥ Ω(r^(2/3) d^(1/3)). Proof sketched there. Theorem 3.10 is the non-bipartite degree form.
   *Checked* (statements).
-- **Paper 21, Proposition "Parities over induced matchings"** (written, not Lean, sent for
-  review): for any partition into induced matchings of mixed sizes, all but (w² + 3w/2)·d^(3/2)
-  entries lie in matchings of at most two entries, so such codes have rate 1/2 + O(w² d^(−1/2)).
-  So the refuting mechanism gives exactly the pairing rate at a fixed window.
+- **Paper 21, Proposition "Parities over induced matchings"** (now in Lean, including
+  arbitrary prescribed sums): the original bound is verified. Retaining the cutoff gives
+  B ≤ w²dx + 3wd²/(2x) for every x > 0, hence B ≤ (5/2)(wd)^(3/2) for the number of cells
+  in blocks of size at least three. Thus the rate is at most 1/2 + w/(2d) + (5/4)w^(3/2)/√d.
+  The proof permits mixed block sizes, rectangular arrays and every finite abelian group.
+  It requires disjoint blocks; arbitrary overlapping mutual checks are not covered.
 - **Consequences.**
   - **Every proof attempt has a free test: it must fail at window d^(1/2+ε).** An argument that
     never uses the size of the window is wrong.
-  - For parity codes over induced matchings the threshold is between d^(1/4) (our proposition;
-    d^(1/3) for equal sizes by Theorem 3.9) and d^(1/2+ε). For arbitrary codes nothing is known
+  - For parity codes over induced matchings the threshold is between d^(1/3) (the balanced proposition, including mixed
+    sizes) and d^(1/2+ε). For arbitrary codes nothing is known
     between bounded windows and d^(1/2+ε). This is the new open problem of paper 21.
-  - **Lead (the natural next class).** Linear codes whose checks are not mutual: a check recovers
+  - **Lead (the natural next class).** Linear codes beyond a partition of mutual checks: a check recovers
     one entry (i, j) from entries in rows ρ(j), and those entries need not be recovered by the same
     check. The path count of the proposition uses mutuality three times. Which part survives for
     checks of bounded support? Checks of unbounded support in one column are the first case it

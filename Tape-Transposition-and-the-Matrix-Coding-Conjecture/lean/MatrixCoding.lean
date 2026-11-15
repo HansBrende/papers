@@ -18,6 +18,7 @@ import MatrixCoding.FiniteWholeRowPayments
 import MatrixCoding.GridCertificate
 import MatrixCoding.GridFull
 import MatrixCoding.GridOrder
+import MatrixCoding.InducedMatchings
 import MatrixCoding.Invariance
 import MatrixCoding.LocalRecordViews
 import MatrixCoding.MacroProjection

@@ -23,6 +23,12 @@ import MatrixCoding
 #print axioms LeanBacklog.GridFull.full_upper
 #print axioms LeanBacklog.GridFull.paid_full
 #print axioms LeanBacklog.GridFull.storage_card_fifth
+#print axioms LeanBacklog.InducedMatchingCodes.cardinality
+#print axioms LeanBacklog.InducedMatchingCodes.cardinality_bound
+#print axioms LeanBacklog.InducedMatchingCodes.cardinality_bound_balanced
+#print axioms LeanBacklog.InducedMatchingCodes.cardinality_pow_le_half
+#print axioms LeanBacklog.InducedMatchingCodes.isWholeRowCode
+#print axioms LeanBacklog.InducedMatchingCodes.large_cells
 #print axioms LeanBacklog.LocalRecordViews.half_invoice
 #print axioms LeanBacklog.MacroProjection.upper_of_projection
 #print axioms LeanBacklog.RectangleBarrier.rectangle_barrier

@@ -27,8 +27,8 @@ Whole-row codes of rate tending to one do exist when the window may grow like $d
 They are not the codes asked for above, whose window depends on $\eps$ only. They show that a proof of the conjecture
 cannot be indifferent to the size of the window (\cref{prob:growing}).
 
-The codes of \cref{rem:growing} have one form, and at a fixed window that form gives no more than the symmetric
-arrays. Call a set $M$ of non-incident entries an \emph{induced matching} for~$\rho$ if any two of its entries
+The codes of \cref{rem:growing} have one form, and at a fixed window that form has asymptotically no greater rate
+than the symmetric arrays. Call a set $M$ of non-incident entries an \emph{induced matching} for~$\rho$ if any two of its entries
 $(i,j)\ne(i',j')$ satisfy $i\in\rho(j')$ and $i'\in\rho(j)$. Its entries then lie in distinct rows and in distinct
 columns. Let $\mathcal M$ be a partition of the set of non-incident entries into induced matchings and let $A$ be a
 finite abelian group. Let $C(\mathcal M)$ be the set of arrays over $A$ whose entries sum to zero over every
@@ -39,39 +39,55 @@ matchings of a Ruzsa--Szemer\'edi graph, and so are the delivery schemes of a pl
 packets as users~\cite{YanEtAl2017}.
 
 \begin{proposition}[Parities over induced matchings]\label{prop:matchings}
-\notformalized
+\formal{InducedMatchings.lean}{InducedMatchingCodes.isWholeRowCode, InducedMatchingCodes.cardinality, InducedMatchingCodes.large_cells, InducedMatchingCodes.cardinality_bound, InducedMatchingCodes.cardinality_bound_balanced, InducedMatchingCodes.cardinality_pow_le_half}
 Let $\rho$ have window $w$ on $[d]$ and let $\mathcal M$ be a partition of its non-incident entries into induced
 matchings. Then at most $(w^2+\tfrac32w)\,d^{3/2}$ entries lie in matchings with three or more entries, and
 \[
  \card{C(\mathcal M)}\le\card A^{\,d^2/2+wd/2+(w^2/2+3w/4)\,d^{3/2}} .
 \]
-So at a fixed window the codes of this form have rate at most $\tfrac12+O(d^{-1/2})$.
+Balancing the counting charges gives the stronger growing-window bound
+\[
+ \card{C(\mathcal M)}\le\card A^{\,d^2/2+wd/2+(5/4)(wd)^{3/2}} .
+\]
+In particular these codes have rate at most $\tfrac12+o(1)$ whenever $w=o(d^{1/3})$, including every fixed window.
+An explicit finite form is
+\[
+ n w+25w^3n^2\le d
+ \quad\Longrightarrow\quad
+ \card{C(\mathcal M)}^{2n}\le\card A^{(n+2)d^2}\qquad(n\in\N).
+\]
+All these bounds hold with arbitrary prescribed sums on the matchings in place of zero.
 \end{proposition}
-\begin{informalproof}
-Let $\ell(i)$ be the number of columns $j$ with $i\in\rho(j)$, so that $\sum_i\ell(i)\le wd$. Call a row \emph{heavy}
-if $\ell(i)>\sqrt d$. There are fewer than $w\sqrt d$ heavy rows, and they contain fewer than $H=wd^{3/2}$ entries.
+\begin{outline}
+The shared proof also covers rectangular arrays and retains an arbitrary cutoff $x>0$. Let $\ell(i)$ be the number of columns helped by row $i$, and call a row heavy if
+$\ell(i)>x$. Since $\sum_i\ell(i)\le wd$, the heavy rows contain at most $wd^2/x$ entries.
 
-Let $e_1=(a_1,b_1)$ be an entry of a matching $M\in\mathcal M$ with at least three entries. Suppose first that $M$
-has an entry $e_2=(a_2,b_2)\ne e_1$ in a row that is not heavy, and let $e_3=(a_3,b_3)$ be a third entry of~$M$. Then
-$a_2\in\rho(b_1)$, $a_2\in\rho(b_3)$ and $a_1\in\rho(b_3)$. The quadruple $(b_1,a_2,b_3,a_1)$ determines $e_1$; hence
-$M$, because $\mathcal M$ is a partition; hence $e_2$, the entry of $M$ in row~$a_2$, and $e_3$, the entry of $M$ in
-column~$b_3$. There are at most $d$ choices of $b_1$, then $w$ of $a_2\in\rho(b_1)$, then $\ell(a_2)\le\sqrt d$ of
-$b_3$, then $w$ of $a_1\in\rho(b_3)$. So at most $w^2d^{3/2}$ entries $e_1$ are of this kind. In the other case all
-entries of $M$ other than $e_1$ lie in heavy rows. Then either $e_1$ lies in a heavy row, or $e_1$ is the only entry
-of $M$ outside the heavy rows and $M$ has at least two entries in heavy rows. There are fewer than $H$ entries of the
-first kind and fewer than $H/2$ of the second. So at most $B=(w^2+\tfrac32w)d^{3/2}$ entries lie in matchings with
-three or more entries.
+Let $e_1=(a_1,b_1)$ lie in a matching with at least three entries. If the matching has another entry
+$e_2=(a_2,b_2)$ in a light row, choose a third entry $e_3=(a_3,b_3)$. Mutuality gives the incidence path
+$b_1,a_2,b_3,a_1$. Its endpoint determines $e_1$, and there are at most $d\cdot w\cdot x\cdot w$ such paths.
+No choice of matching has to be recovered from the path. In a matching with at least two light entries, every
+entry has such a path. In any remaining matching of size at least three, there is at most one light entry and
+at least two heavy entries, so the total size is at most three halves of the number of heavy entries.
+Disjointness lets these charges be summed. Thus, if $B$ counts the entries in matchings of size at least three,
+\[
+ B\le w^2dx+\frac{3wd^2}{2x}.
+\]
+Taking $x=\sqrt d$ gives the first bound on $B$. Taking $x=\sqrt{d/w}$ gives
+$B\le\tfrac52(wd)^{3/2}$; zero sizes or zero window are handled separately.
 
-There are at least $d^2-wd$ non-incident entries, of which at least $d^2-wd-B$ lie in matchings with at most two
-entries. So $\card{\mathcal M}\ge(d^2-wd-B)/2$. The matchings are disjoint and each imposes one equation, so
-$\card{C(\mathcal M)}=\card A^{\,d^2-\card{\mathcal M}}$.
-\end{informalproof}
+There are at least $d^2-wd-B$ entries in matchings of size at most two. Consequently
+$2\card{\mathcal M}\ge d^2-wd-B$. Disjoint nonempty sums are independent equations over every finite abelian
+group, even with prescribed nonzero right-hand sides, so
+$\card{C(\mathcal M)}=\card A^{d^2-\card{\mathcal M}}$.
+The finite threshold follows by squaring the square-root term; it is uniform in the alphabet and in $\rho$.
+\end{outline}
 
-The proof uses that the window is fixed: the bound is vacuous once $w$ is of order $d^{1/4}$. For matchings that all
-have the same size $r\ge3$, Alon, Moitra and Sudakov state a stronger bound, which in the present terms reads
-$wd\ge\Omega(r^{2/3}d^{4/3})$~\cite[Theorem~3.9]{AMS2013}; its proof is sketched there and also follows paths of
-length three among the incident pairs. \Cref{prop:matchings} says nothing about linear codes whose equations are not
-of this mutual form, nor about nonlinear codes. For those the question is the conjecture.
+The window dependence is essential: the balanced bound becomes vacuous when $w$ is of order $d^{1/3}$.
+For matchings that all have the same size $r\ge3$, Alon, Moitra and Sudakov give the additional dependence on $r$:
+in the present terms $wd\ge\Omega(r^{2/3}d^{4/3})$~\cite[Theorem~3.9]{AMS2013}.
+Their proof is sketched there and also counts paths of length three among the incident pairs.
+\Cref{prop:matchings} permits mixed matching sizes, but requires a partition: it makes no assertion about
+arbitrary overlapping checks, equations without this mutual form, or nonlinear codes. Those remain part of the conjecture.
 
 \subsection{What the conjecture forgets about machines}\label{sec:constr-forgets}
 

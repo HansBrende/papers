@@ -23,7 +23,7 @@ A roadmap, kept by Claude Fable. Read it before choosing work. Last full rewrite
 **Prior work to keep in view (15 November):** Mittal and Raz posed the whole-row question at windows
 proportional to d, and it is false there (Braverman and Forbes), in fact from window d^(1/2+ε) on (Alon, Moitra
 and Sudakov). Every proof attempt must fail at window d^(1/2+ε). The refuting codes have rate one half at a
-fixed window (paper 21, proposition on induced matchings). Details and other leads: [literature leads](notes/literature-leads-2026-11-15.md).
+fixed window, and even for w = o(d^(1/3)) (paper 21, proposition on induced matchings; now in Lean). Details and other leads: [literature leads](notes/literature-leads-2026-11-15.md).
 
 Paper 17 is [Order, Symmetry and the Swap](../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/)
 (Section 4: diagnosis; Section 9: open problems).

@@ -34,14 +34,15 @@ The maintained Lean modules, using only the standard axioms, include:
 - [Fano's exact Shannon value](lean/MatrixCoding/FanoAttainment.lean),
   [the grid upper certificate](lean/MatrixCoding/GridFull.lean), and
   [the conditional gap for mixing lifts](lean/MatrixCoding/FanoLift.lean).
+- [Parities over induced matchings](lean/MatrixCoding/InducedMatchings.lean): half rate at fixed
+  window, with the stronger range `w = o(d^(1/3))`, arbitrary finite abelian alphabets and
+  prescribed sums; the finite counting proof is in the shared library.
 - The shared library's [pairing](../lean-machine/LeanMachine/WholeRow/Pairing.lean)
   and [parity](../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
   bounds, included by this package's root module.
 
 Complete written proofs, not Lean: existence of bounded-window mixing relations
-and growing-girth Fano lifts; the three-lane realization of Fano's optimum; the
-bound of rate one half for parity codes over induced matchings (the form of the
-codes that refute the Mittal-Raz conjecture) at a fixed window; and
+and growing-girth Fano lifts; the three-lane realization of Fano's optimum; and
 the exclusion of oblivious runs fragmented by a cheap cut into components with
 few outputs. The exact finite certificate does not assert grid attainment or
 attainment on the sparse lifts.

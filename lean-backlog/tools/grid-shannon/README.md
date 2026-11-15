@@ -11,8 +11,9 @@ upper **114/5 < 23** on the 9-row, 6-column grid host. The full-host bound
 is **204/5 < 41**, with a known lower code of size q³⁹. The exact Shannon
 value and exact capacity are **not** determined. The paid scalar-error inequality,
 residual/full upper bounds, residual triangle-freeness and exact row-order values are
-**Lean-verified**. The lower code, joint-column-error price 8/15, general acyclic/order
-adapter and square balancing remain written with exact checks where applicable.
+**Lean-verified**. The lower code, joint-column-error price 8/15 and square balancing remain
+written with exact checks where applicable. The general acyclic/order adapter
+is now Lean-verified in Paper 21.
 
 ## Small proof replay
 

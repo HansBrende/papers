@@ -3,6 +3,15 @@
 Written results collected for Lean formalization, independently of the work that produced them.
 Items A, B and C are verified in `lean-machine`. Item D (added 12 November 2026, evening) is open.
 
+**Paper 21 promotion:** the 43 modules used by
+[Tape Transposition and the Matrix Coding Conjecture](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/)
+are maintained in its [`lean/MatrixCoding`](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/MatrixCoding/)
+library; their flat files here are compatibility imports. General pairing, parity,
+and order machinery remains in `lean-machine`. **[`Wall.lean`](Wall.lean)** remains
+an entry point for agents attacking the open `LeanBacklog.Wall.Conjecture`, imported
+from the paper's [`MatrixCoding/Wall.lean`](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/MatrixCoding/Wall.lean).
+There is one definition of the target, and neither entry point assumes it is true.
+
 **Roadmap:** [`wall.md`](wall.md) states where the wall stands today and lists the direct, indirect
 and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.
 

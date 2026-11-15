@@ -12,8 +12,8 @@ either target. The
 finite exceptional-column wrapper, cone comparisons and raw-conditioning
 budget are proved below.
 
-From `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/`, check:
-`lake env lean ../../lean-backlog/StatementsRowSpread.lean`.
+From `Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/`, check:
+`lake env lean MatrixCoding/StatementsRowSpread.lean`.
 The finite storage-code definition is reused literally; no linearity or
 field assumption is added.
 -/

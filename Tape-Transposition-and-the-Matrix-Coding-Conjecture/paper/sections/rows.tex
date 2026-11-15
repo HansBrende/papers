@@ -63,9 +63,9 @@ the trace and its append prefix, before any input values or code are chosen.
 \formal{RowSpreadCrux.lean}{RowSpread.native_indexCode_bound_of_wholeRow, RowSpread.uniformWholeRowRateCanonicalBits_crux, RowSpread.uniformWholeRowRateCanonicalBits_excludes, RowSpread.wholeRow_window_bound_excludes}
 Let $B_D=\sum_{j=0}^D(k+1)^j$. Under the trace and depth hypotheses of \cref{thm:W}, a whole-row cardinality bound
 $q^a$ at width $w_*(k,B_D,D,c,\eps)$, for $q=2^b$, forces every $m$-bit index code for the original cones to satisfy
-\[
- L\le m+\tfrac{105}{64}\eps L+ba.                    \tag{1}\label{eq:raw-invoice}
-\]
+\begin{equation}\label{eq:raw-invoice}
+ L\le m+\tfrac{105}{64}\eps L+ba.
+\end{equation}
 Consequently a common asymptotic deficit $\delta>0$ gives the native crux at rate $\delta$: for every fixed depth
 and every $\eta>0$, all sufficiently large canonical sizes require at least $(\delta-\eta)L$ index bits.
 It excludes oblivious linear-time transposers.
@@ -79,7 +79,7 @@ $\beta$. The dimension threshold is uniform over these machines.
 Every old cone is contained in its new cone together with the union $U$ of the old cones rooted at newly cut
 vertices. Since each has at most $B_D$ raw coordinates, $|U|\le(63/64)\eps L$ when Theorem W is used with
 $\beta=B_D$. Freeze the index message, these raw bits and the $db|E|$ bits in exceptional columns. Every resulting
-fibre, grouped into $b$-bit entries, is a whole-row code. Counting all fibres proves (1), since
+fibre, grouped into $b$-bit entries, is a whole-row code. Counting all fibres proves \cref{eq:raw-invoice}, since
 $63/64+21/32=105/64$. Choosing geometric and capacity slacks below $\eta/3$ yields the crux at $\delta$.
 The depth-reduction consumer of~\cite[Corollary O]{BoundedStack2026} then excludes the machines.
 

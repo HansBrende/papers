@@ -15,8 +15,8 @@ Fix $k,G,c,C_0$, with $G\ge1$, and suppose a code solves complete exchange on $F
 $|F|\ge2^{L-C_0db}$, on a valid diagram of length at most $cL$. Write $\ell=\lceil db/G\rceil$ and
 $N=\lceil T/\ell\rceil$.
 
-\emph{Realization and cut.} On each work tape, the blocks visited in a slot form an interval of at most two
-adjacent blocks; consecutive such intervals have a common endpoint. Replace each slot by twelve unit steps that
+\emph{Realization and cut.} On each work tape, the resident block set of a slot, including the adjacent block
+retained at a crossing, is an interval of diameter at most two. Consecutive intervals share a boundary anchor. Replace each slot by twelve unit steps that
 visit its interval around a common pivot. Memory edges are represented by state paths, and a chord has a
 last-visit path between the corresponding intervals. Project a depth-reduction cut of this refined walk back to
 slots. For any $\theta>0$ this gives $\Gamma\subseteq[N]$ with $|\Gamma|\le\theta N$ and a rank increasing across
@@ -35,9 +35,9 @@ No correctness on inputs outside $F$ is used: message residues make the observat
 and capacity bounds make those residues exact on $F$.
 
 \emph{Contradiction.} If a whole-row bound has exponent $a$, counting fibres gives the finite inequality
-\[
- L\le C_0db+(4kG+1)\ell|\Gamma|+db|E|+ba.        \tag{2}\label{eq:block-invoice}
-\]
+\begin{equation}\label{eq:block-invoice}
+ L\le C_0db+(4kG+1)\ell|\Gamma|+db|E|+ba.
+\end{equation}
 Take $\eps=\delta/8$, choose $P>2(cG+1)/\eps$, and choose
 $\theta=\eps/((4k+1)G(c+1))$. The bounds $N\le(cG+1)d$ and $N\ell\le(c+1)L$ make each of the cut and
 exception bills at most $\eps L$. For sufficiently large $d$, the co-entropy bill is also at most $\eps L$.

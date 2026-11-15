@@ -35,10 +35,11 @@ Proved here:
 The first two arrows prove weakening, NOT strict non-equivalence for the
 actual capacities. No converse or strict-separation theorem is known.
 
-Reproduce from High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean:
-  lake env python3 ../../lean-backlog/check.py
-After the dependencies are checked, the focused command is:
-  lake env python3 ../../lean-backlog/check.py FiniteWholeRowPayments Wall
+Reproduce from Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean:
+  lake build MatrixCoding.Wall
+  lake env lean MatrixCoding/Wall.lean
+The old lean-backlog/Wall.lean is a compatibility import of this file, so
+agents working from the backlog use exactly the same open proposition.
 
 To work on the open problem, add your own theorem of either type:
   LeanBacklog.Wall.Conjecture

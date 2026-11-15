@@ -1,6 +1,18 @@
 # Fano dual in orbit form
 
-The notation and mask convention are in the [proof note](../../notes/fano-shannon-certificate.md#3-a-33-term-certificate).
+Points and line normals are the seven nonzero binary triples in lexicographic
+order. Residual cells are the 28 pairs `(point, line)` with nonzero dot product,
+listed lexicographically. Bit `k` of a mask selects residual cell `k`.
+Write `cl` for repeated whole-column recovery closure, `F_A` for the closure of
+the complete residual rows of point set `A`, and `h̄` for the average of `h`
+over the 168 collineations. The [geometric dictionary](orbit-dictionary.md)
+gives representatives of all set orbits.
+
+The row kinds are: N, `−h̄(S) ≤ 0`; S,
+`h̄(S∩T)+h̄(cl(S∪T))−h̄(S)−h̄(T) ≤ 0`; B,
+`h̄(S) ≤ 4|A|+|S∖F_A|`; I, `h̄(S)−h̄(T) ≤ |S∖T|`; and J,
+`h̄(cl(S∪T))−h̄(S) ≤ |T∖S|`. These formulas use exact recovery;
+the Lean certificate retains the conditional recovery costs as well.
 Each row means its stated inequality multiplied by the positive integer weight.
 The exact sum is `264 h̄(W) ≤ 4928`. In a B row the second mask denotes point rows; otherwise both masks denote residual cells.
 

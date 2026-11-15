@@ -9,8 +9,8 @@ These adapters use actual unit-speed head trajectories and the existing native
 last-visit/dependency definitions. `WindowCounting.lean` packs the resulting
 integer-indexed labels into the finite list of `WindowAmortization.lean`.
 
-Check from `High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/`:
-`lake env lean ../../lean-backlog/WindowLabels.lean`.
+Check from `Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/`:
+`lake env lean MatrixCoding/WindowLabels.lean`.
 -/
 
 namespace LeanBacklog.WindowLabels

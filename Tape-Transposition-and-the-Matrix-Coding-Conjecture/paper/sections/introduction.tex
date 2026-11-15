@@ -39,6 +39,17 @@ at every fixed window (the \emph{half-rate conjecture}, \cref{conj:half}), which
 paper of the series asked the question for a fixed alphabet~\cite[Problem~9.4(c)]{SeventeenthPaper2026}. What is known
 is the bound $w/(w+1)$ for the rate, and one half for $w\le2$~\cite{SeventeenthPaper2026}.
 
+The window is fixed before $d$ grows, and this is essential. Mittal and Raz conjectured the corresponding bound for
+matrices of bits at a window proportional to~$d$, as the block rigidity of the transpose, and proved that it would
+exclude linear-time machines, even with advice~\cite[Theorem~29 and Conjecture~36]{MittalRaz2021}. That conjecture
+is false: codes of rate tending to one exist already at window $d^{1-\alpha}$, by a construction of Braverman and
+Forbes~\cite[Proposition~10.8.3]{Mittal2025} (\cref{rem:growing}). Their reduction cuts the run by the method of
+Paul, Pippenger, Szemer\'edi and Trotter, after which an output may still depend on a small constant fraction of
+the rows.
+The reduction of this paper uses the cut of bounded depth of the fourteenth paper of the series, and the window it
+leaves does not depend on~$d$ (\cref{thm:W}). So the question of Mittal and Raz returns at the one scale at which it
+is open, and \cref{conj:MCC} is that question.
+
 \subsection{Results}\label{sec:intro-results}
 
 The first three theorems are the reduction. The other four are about the conjecture.
@@ -91,7 +102,7 @@ network after lifting the network to a walk.
 
 \paragraph{The seventeenth paper,} the synthesis, reduced the oblivious case to one function, the best rate of a
 storage code on the cone relations left by cheap cuts, and described the statement that would decide it
-(\cref{sec:intro-diagnosis}). It also introduced the codes of this paper, under the name of $\rho$-codes, proved the
+(\cref{sec:intro-diagnosis}). It also treated the codes of this paper at a fixed window, under the name of $\rho$-codes, proved the
 bounds $w/(w+1)$ and one half for $w\le2$, and asked for one half at every window~\cite{SeventeenthPaper2026}. The
 present paper shows that these codes, and a far weaker bound than one half, are all that the question about machines
 needs.
@@ -178,14 +189,19 @@ fail~\cite{ChristofidesMarkstrom2011,Baber2017}; \cref{thm:E} is a statement of 
 coding theory a \emph{matrix code} usually means a code in the rank metric and an \emph{array code} a code for
 arrays of disks. The conjecture of this paper is named after the matrix that is transposed and concerns neither.
 
-\paragraph{Cuts.} Fixing the values on a cut of a computation of small depth goes back to Valiant's depth
-reduction~\cite{Valiant1977}; Paul, Pippenger, Szemer\'edi and Trotter cut the computations of multitape
+\paragraph{Cuts and block rigidity.} Fixing the values on a cut of a computation of small depth goes back to Valiant's
+depth reduction~\cite{Valiant1977}; Paul, Pippenger, Szemer\'edi and Trotter cut the computations of multitape
 machines~\cite{PPST1983}. With their technique Mittal and Raz showed that a function with a static property, block
 rigidity, cannot be computed in linear time by a multitape machine, even with advice, and that an explicit such
-function would follow from a strong parallel repetition theorem~\cite{MittalRaz2021}; a conjecture of theirs about a
-game that predicts a transpose is known to fail~\cite{Mittal2025}. Our reduction has the same shape, a static
-statement that excludes linear time through a cut, with a different statement: it is about codes on arrays, and it
-is specific to transposition.
+function would follow from a strong parallel repetition theorem~\cite{MittalRaz2021}. For the transpose, block
+rigidity says that no large family of matrices has every column a function of few rows: it is a bound for whole-row
+codes. They conjectured it for windows proportional to~$d$, and it fails there (\cref{rem:growing}). So this paper
+is not the first to reduce the question about machines to codes of this kind, and its conjecture is theirs at a
+different scale. What it adds is the scale: a fixed window suffices (\cref{thm:W,thm:T}), which their cut does not
+give and which the known constructions do not reach; the reduction covers the series' statement for entries of
+$b(d)$ bits and is formalized. The families of matrices that refute the conjecture at large windows are also the
+delivery schemes of coded caching with as many packets as users~\cite{YanEtAl2017,ShanmugamEtAl2017}, as the second
+paper of the series noted~\cite{SecondPaper2026}.
 
 \paragraph{Network coding.} Adler, Harvey, Jain, Kleinberg and Lehman related transposition in the input--output
 model to network coding~\cite{AHJKL2006}, and the network coding conjecture of Li and Li~\cite{LiLi2004} would have
@@ -195,10 +211,13 @@ refuted~\cite{BravermanHe2026,ZhangLiLi2026}. The Tape Coding Conjecture of the 
 networks of tapes; \cref{conj:MCC} is not a statement about networks at all. Lower bounds for transposition are known
 on machines with one work tape~\cite{DMS1991,DietzfelbingerMaass1993}.
 
-\paragraph{What we did not find.} We searched for the whole-row relations, under names such as array codes with
-recovery of columns from rows and locally recoverable array codes, and for a statement like \cref{thm:T} among the
-works above and those that cite them. We found neither. The search was not exhaustive; in particular we have not read
-every dissertation in the area.
+\paragraph{The search.} We searched for whole-row codes under other names (array and product codes with recovery of
+columns from rows, locally recoverable codes with several recovery sets, storage codes, guessing games and index
+coding on products of graphs, coded caching), for reductions of lower bounds on machines to static statements about
+codes or rigidity, and for the name of the conjecture. The closest work is that of Mittal and Raz, discussed above.
+Apart from it we found no study of these codes at a fixed window, no earlier bound or conjecture of rate one half
+for them, and no other use of the name. We read abstracts and, where the text was at hand, the papers; most
+dissertations in the area were not read. The search was not exhaustive.
 
 \subsection{Organization}\label{sec:intro-org}
 

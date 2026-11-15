@@ -13,9 +13,9 @@ Can a multitape Turing machine transpose a d × d matrix of ⌈log₂ d⌉-bit e
 in linear time? A *whole-row code* is a set of arrays in which each column is a
 function of at most w complete rows. The **Matrix Coding Conjecture** asks for
 a rate bound below one independent of w, with w fixed as d grows. (Mittal and Raz
-conjectured such a bound at windows proportional to d; that version is false.) This paper proves that conjecture
-implies the robust Tape Coding Conjecture and excludes adaptive linear-time
-transposers as well as oblivious ones.
+conjectured such a bound at windows proportional to d; that version is false.) This paper proves that the
+conjecture implies the robust Tape Coding Conjecture, and so would exclude
+linear-time transposers, adaptive as well as oblivious.
 
 ## What is proved
 

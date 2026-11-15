@@ -325,8 +325,9 @@ Native extraction and source audit:
   Shannon attainment by polymatroids and order calculation are now
   Lean-verified; the [status index](notes/consolidation-status.md) names
   the declarations. The rectangular order/acyclic-set identification and
-  full-host gap against every acyclic invoice are also Lean. Actual
-  three-lane code realization remains written.
+  full-host gap against every acyclic invoice are also Lean. The
+  three-lane code realization is Lean-verified in paper 21's package
+  ([FanoLaneCode](../Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/MatrixCoding/FanoLaneCode.lean)).
 - [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
   any strict finite Shannon/order gap persists at positive density on
   growing fixed-window hosts, also with incidence girth Ω(log d) at the

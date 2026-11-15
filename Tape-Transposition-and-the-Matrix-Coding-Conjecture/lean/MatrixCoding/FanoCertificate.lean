@@ -14,7 +14,7 @@ are the nonzero binary triples in lexicographic order, indexed by Fin 7.
 The paid theorem needs no exact recovery, singleton caps or symmetry assumption.
 The residual exact-recovery bound is its corollary. Companion modules prove
 the full 49-cell contraction, Shannon attainment by explicit polymatroids,
-and order value 41. The actual triangle-code realization remains written.
+order value 41, and actual three-lane code realization over finite abelian groups.
 -/
 
 namespace LeanBacklog.FanoCertificate

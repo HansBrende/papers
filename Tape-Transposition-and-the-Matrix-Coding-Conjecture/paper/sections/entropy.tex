@@ -8,14 +8,16 @@ the alphabet or the recovery functions~\cite[Theorem~6.3]{FourthPaper2026}.
 
 \begin{theorem}[Theorem E: entropy beats order]\label{thm:E}
 \formal{FanoFull.lean}{FanoFull.full_upper, FanoFull.wholeRow_card_cube}
-\partformal{FanoAttainment.lean}{FanoAttainment.full_attainment, FanoAttainment.full_shannon_exact}{the realization of the attaining polymatroid by the three-lane code, proved below.}
+\formal{FanoAttainment.lean}{FanoAttainment.full_attainment, FanoAttainment.full_shannon_exact}
+\formal{FanoLaneCode.lean}{FanoLaneCode.through_card, FanoLaneCode.mem_code_iff, FanoLaneCode.update_incident, FanoLaneCode.isWholeRowCode, FanoLaneCode.code_card, FanoLaneCode.log_card, FanoLaneCode.optimal, FanoLaneCode.exists_code_for_cardinality}
 \formal{GridFull.lean}{GridFull.full_upper, GridFull.storage_card_fifth}
 \formal{WholeRowAcyclic.lean}{WholeRowAcyclic.fano_exact_acyclic_card, WholeRowAcyclic.fano_gap, WholeRowAcyclic.grid_exact_acyclic_card, WholeRowAcyclic.grid_gap}
 \formal{FanoLift.lean}{FanoLift.conditional_gap, FanoLift.conditional_acyclic_gap, FanoLift.conditional_gap_one_percent, FanoLift.completeLift_gap}
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
 \item \emph{Fano.} Let $d=7$ and let $\rho(j)$ be the three points on line $j$ of the Fano plane. Then
-$\Sh(\rho)=119/3$ and $\sigma(\rho)=41$. For every integer $q\ge2$ a code over an alphabet of $q^3$ symbols attains
-the Shannon value. Every acyclic-set bound exceeds it by at least $4/3$ entries.
+$\Sh(\rho)=119/3$ and $\sigma(\rho)=41$. Over $A^3$, for every finite abelian group~$A$, there is a whole-row
+code with exactly $\card A^{119}$ words. In particular, for every integer $q\ge2$ a code over an alphabet of $q^3$
+symbols attains the Shannon value. Every acyclic-set bound exceeds it by at least $4/3$ entries.
 \item \emph{Grid.} For the $9\times6$ array whose columns are the six lines of the $3\times3$ grid and whose rows are
 its nine points, $\Sh\le204/5$ and $\sigma=41$. There is no mutual triangle of nonincident entries. No equality
 for this Shannon bound or for the capacity is claimed.
@@ -85,14 +87,19 @@ $S\mapsto h(S\cup Z)-h(Z)$ on the residual entries, and use that enlarging a con
 increment of a polymatroid. This proves the full-host forms without charging $Z$ twice.
 \end{outline}
 
-\begin{informalproof}[Code realization in \cref{thm:E}(a)]
-Identify a base alphabet of size $q$ with $\Z/q\Z$. For each of the $28$ mutual triangles independently choose
-$a,b\in\Z/q\Z$ and put $(a,b,-a-b)$ on its three entries. Assign the three triangles containing a nonincident
-entry to its three lanes in any fixed order. Every lane is recoverable from the other two entries of its triangle,
-which belong to the helper rows of the target column. Give each of the $21$ incident entries three independent
-free lanes. All $56+63=119$ choices are recoverable from the resulting array, so the code has $q^{119}$ words on
-$49$ entries with alphabet size $q^3$. The upper bound gives equality. This construction uses no field structure.
-\end{informalproof}
+\begin{outline}[Code realization in \cref{thm:E}(a)]
+Let $A$ be any finite abelian group. The saved list of $28$ mutual triangles has exactly three triangles through
+every nonincident entry. Choose a fixed bijection between these three triangles and the three lanes of that entry.
+For each triangle impose one zero-sum equation on its three assigned lanes. Every lane is recoverable from the
+other two entries of its triangle, which belong to the helper rows of the target column. Incident entries recover
+themselves and their three lanes occur in no check, so they remain free.
+
+The $28$ supports are nonempty and pairwise disjoint on the $147$ scalar coordinates. The shared disjoint-sums
+fibre theorem therefore gives exactly $\card A^{147-28}=\card A^{119}$ arrays. The same argument permits any
+prescribed triangle sums. The full Fano upper bound proves optimality among all whole-row codes over~$A^3$.
+Taking $A=\Z/q\Z$ supplies every integer $q\ge2$; the normalized logarithm is $119/3$ symbols over the alphabet
+of size $q^3$. No field structure is used.
+\end{outline}
 
 \begin{proposition}[Mixing lifts exist]\label{prop:lifts}
 \notformalized

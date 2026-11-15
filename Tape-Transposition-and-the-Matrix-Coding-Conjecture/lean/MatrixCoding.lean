@@ -12,6 +12,7 @@ import MatrixCoding.ConeCodeTransfer
 import MatrixCoding.FanoAttainment
 import MatrixCoding.FanoCertificate
 import MatrixCoding.FanoFull
+import MatrixCoding.FanoLaneCode
 import MatrixCoding.FanoLift
 import MatrixCoding.FanoOrder
 import MatrixCoding.FiniteWholeRowPayments

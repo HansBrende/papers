@@ -15,6 +15,14 @@ import MatrixCoding
 #print axioms LeanBacklog.FanoFull.full_upper
 #print axioms LeanBacklog.FanoFull.paid_full
 #print axioms LeanBacklog.FanoFull.wholeRow_card_cube
+#print axioms LeanBacklog.FanoLaneCode.code_card
+#print axioms LeanBacklog.FanoLaneCode.exists_code_for_cardinality
+#print axioms LeanBacklog.FanoLaneCode.isWholeRowCode
+#print axioms LeanBacklog.FanoLaneCode.log_card
+#print axioms LeanBacklog.FanoLaneCode.mem_code_iff
+#print axioms LeanBacklog.FanoLaneCode.optimal
+#print axioms LeanBacklog.FanoLaneCode.through_card
+#print axioms LeanBacklog.FanoLaneCode.update_incident
 #print axioms LeanBacklog.FanoLift.completeLift_gap
 #print axioms LeanBacklog.FanoLift.conditional_acyclic_gap
 #print axioms LeanBacklog.FanoLift.conditional_gap

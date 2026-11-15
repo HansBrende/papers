@@ -36,6 +36,7 @@ The maintained Lean modules, using only the standard axioms, include:
   [the assigned-rule bound](lean/MatrixCoding/ClosureBarriers.lean), and
   [the rectangle barrier](lean/MatrixCoding/RectangleBarrier.lean).
 - [Fano's exact Shannon value](lean/MatrixCoding/FanoAttainment.lean),
+  [the optimal three-lane code](lean/MatrixCoding/FanoLaneCode.lean) over every finite abelian base alphabet,
   [the grid upper certificate](lean/MatrixCoding/GridFull.lean), and
   [the conditional gap for mixing lifts](lean/MatrixCoding/FanoLift.lean).
 - [Parities over induced matchings](lean/MatrixCoding/InducedMatchings.lean): half rate at fixed
@@ -46,7 +47,7 @@ The maintained Lean modules, using only the standard axioms, include:
   bounds, included by this package's root module.
 
 Complete written proofs, not Lean: existence of bounded-window mixing relations
-and growing-girth Fano lifts; the three-lane realization of Fano's optimum; and
+and growing-girth Fano lifts; and
 the exclusion of oblivious runs fragmented by a cheap cut into components with
 few outputs. The exact finite certificate does not assert grid attainment or
 attainment on the sparse lifts.

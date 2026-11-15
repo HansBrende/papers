@@ -6,9 +6,9 @@ import MatrixCoding.FanoFull
 The sum of the rank-two functions on the 28 mutual triangles, divided by
 three, is an actual valid polymatroid with unit singleton values and total
 value 56/3. Together with `FanoCertificate.residual_le` this proves the exact
-residual Shannon value. This file does not formalize realization by the
-three-lane code; the explicit polymatroid is sufficient for Shannon attainment.
-Adding independent unit-rank incident coordinates gives the full value 119/3.
+residual Shannon value. The companion `FanoLaneCode` formalizes realization
+by an actual three-lane code over every finite abelian base alphabet. Here
+adding independent unit-rank incident coordinates gives the full value 119/3.
 -/
 
 namespace LeanBacklog.FanoAttainment
@@ -211,7 +211,7 @@ theorem full_attainment : ∃ h : Finset Grid → ℝ,
   ⟨fullTriangleRank, fullTriangleRank_isPolymatroid, fullTriangleRank_isValid,
     fullTriangleRank_singleton_le, fullTriangleRank_total⟩
 
-/-- Exact full-host Shannon value; no entropic realization is asserted here. -/
+/-- Exact full-host Shannon value. The actual code realization is in `FanoLaneCode`. -/
 theorem full_shannon_exact :
     (∀ h : Finset Grid → ℝ, IsPolymatroid h → IsValid h helpers →
       (∀ p, h {p} ≤ 1) → h univ ≤ 119 / 3) ∧

@@ -112,7 +112,7 @@ supplied by B1. By mechanism, at fixed window:
   finite abelian alphabets, with no reverse-degree bound. [Bound](notes/pairing-coset-bound.md)
   is Lean-verified through omitted-orbit selection, exact permitted shifts, fixed-cell
   cancellation and the uniform rate ½+b/N+1/n for d≥n(w+2w³n).
-  Original fixed-cell shifts must be retained initially. The general active-parity
+  The inactive-fixed-cell variant adds half their nonincident density, also in Lean. The general active-parity
   template and its paid heavy-row theorem are also Lean. No native invariance extraction.
 - *Subcubic coordinate support* (nonlinear, half, Lean): Paper 7 N3 already covers every
   triangle-free undirected support of degree at most three, including directed helper subsets;
@@ -300,15 +300,16 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
   [closed-fronts.md](closed-fronts.md).
   - *Banked (Lean):* B1; the finite cores of B2 and B4; the two-sided normal form; the closure
     barriers; the sparse rank theorems; the [pairing and parity-template rate theorems](notes/pairing-coset-bound.md)
-    through their uniform endpoints (rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n)).
+    through their uniform endpoints (pairing rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n),
+    with an explicit additional charge for initially inactive fixed cells).
     Boundaries: [status index](notes/consolidation-status.md).
   - *Banked (written, reviewed):* B3; the [ingredient ledger](notes/whole-row-ingredient-ledger.md);
     the [local-view exclusion](notes/local-record-view-covers.md) of time diagrams that one cut
     of density ε₀ < 1/[2s(k+2)c] splits into components with o(log log d) outputs (no
     implication to or from Paper 4's motion classes is established).
-  - *In progress.* Astra: reuse/effort check for the optional inactive-fixed-cell variant, then
-    an effort estimate for B3 in Lean, the one breach that is only written. Fable: reviews of
-    finished endpoints.
+  - *In progress.* Astra: the inactive-fixed-cell endpoint is complete; the [B3 effort audit](notes/finite-shannon-gap-amplification.md#7-lean-reuse-and-effort-estimate)
+    recommends deterministic macro-projection first, then the conditional order bound.
+    Random existence and the girth refinement are separate later milestones. Fable: endpoint reviews.
   - *Open, no premise with a consumer:* the one-table half of rung 2 of the ladder; expander-type
     motion coupled to a code (Paper 4's open problem). No numerical search is commissioned.
 - Last re-evaluation (D0): 14 November 2026.

@@ -114,9 +114,9 @@ additional price is **one symbol per omitted pair**, not two. In particular,
 2 log_q|C| ≤ N+2b+L+∑_c |M_c||J_c|.
 
 The active-fixed-cell assumption matters if full compatibility is dropped.
-Written variant only: if inactive nonincident fixed cells are also permitted,
-add their number to the right side. The involution endpoints below retain
-all original fixed-cell shifts initially.
+If initially inactive fixed cells are also permitted, add the number of
+those outside the original incidence set to the right side. This variant
+is now Lean-verified as well; its exact scope is given at the end of Section 4.
 
 **Formalization and reuse.** The full-kernel hypothesis is stronger
 than the active-shift hypothesis here; omitted pairs are not only a numerical
@@ -231,6 +231,32 @@ alphabet, lane count, involution and omitted list. The finite cardinality
 statements also handle empty codes, trivial alphabets and empty coordinate
 types. They require all original fixed-cell shifts to be active before
 trimming; they require neither code linearity nor a reverse-degree bound.
+
+**Initially inactive fixed cells (Lean).** Let F be any subset of the fixed
+cells. We now require invariance only under shifts in `activeShifts` that
+vanish on F. Ordinary recovery is still on the original relation. Write
+u=|F∖Inc(ρ)|. With the same dimension threshold,
+`pairing_card_pow_le_half_of_inactive_fixed` proves
+
+  |C|^(2n) ≤ q^[n(N+2b+u)+2N],
+
+so the rate is at most 1/2+b/N+u/(2N)+1/n. Initially inactive fixed cells
+that are incident incur no additional charge. Activity of other fixed-cell
+shifts is part of the subgroup hypothesis; **incidence** of those cells is
+derived from it and recovery, not from recovery alone.
+
+The proof reuses the singleton pins E=omittedCells∪F and reserves
+fixedCells∩Inc(ρ), rather than all fixed cells. The more general
+`pairing_fixed_incident_or_pinned` proves that every fixed coordinate is
+incident or pinned, for nonempty codes over nontrivial alphabets. Hence
+fixedCells∖Inc(ρ)=F∖Inc(ρ) in this specialization. The `given` variants
+`pairing_card_sq_le_after_trim_given`, `pairing_card_sq_le_forward_given`
+and `pairing_card_pow_le_half_given` allow any raw pin set outside active
+pairs and conditional recovery given that set. Their squared exponents
+retain the term |fixedCells∖Inc(ρ)|. Thus the fixed-cell correction in
+Section 3 also holds before trimming, with the stated additional term.
+The original all-fixed-shifts-active endpoints retain their hypotheses
+and conclusions and now reuse this more general count.
 
 ## 5. Triangle lanes and general single-parity blocks
 
@@ -449,8 +475,8 @@ finite general parity-template incidence and bounded-degree estimates,
 paid heavy-row deletion, the forward-width-only bound and its uniform
 vanishing-excess consequence. Omitted-involution-orbit selection and the
 sharper pairing fixed-cell correction are Lean-verified through the finite
-uniform half-rate endpoint. The optional variant allowing initially inactive
-nonincident fixed cells remains written. Invariance
+uniform half-rate endpoint, including the explicit charge for initially
+inactive nonincident fixed cells. Invariance
 is relative to a specified additive
 group on the entry alphabet; for b-bit symbols bitwise XOR supplies one such
 group. No claim identifies invariance under different choices of group law.

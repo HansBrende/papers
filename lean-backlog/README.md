@@ -82,8 +82,9 @@ identifies the exact allowed subgroup, and the
 cancels the fixed-cell term even after trimming. At side length
 d≥n(w+2w³n), its rate is at most 1/2+b/N+1/n, with b omitted pairs,
 uniformly over finite abelian alphabets and lane counts. All original
-fixed-cell shifts are retained initially. No native correctness-to-invariance
-extraction is claimed.
+fixed-cell shifts are retained initially in that endpoint; the explicit
+inactive-fixed-cell variant adds |F∖Inc(ρ)|/(2N) to the rate with the same
+threshold. No native correctness-to-invariance extraction is claimed.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

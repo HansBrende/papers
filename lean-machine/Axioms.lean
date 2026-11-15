@@ -1896,3 +1896,8 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.pairing_card_sq_le_degrees
 #print axioms LeanMachine.WholeRow.pairing_card_sq_le_forward
 #print axioms LeanMachine.WholeRow.pairing_card_pow_le_half
+#print axioms LeanMachine.WholeRow.pairing_fixed_incident_or_pinned
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_after_trim_given
+#print axioms LeanMachine.WholeRow.pairing_card_sq_le_forward_given
+#print axioms LeanMachine.WholeRow.pairing_card_pow_le_half_given
+#print axioms LeanMachine.WholeRow.pairing_card_pow_le_half_of_inactive_fixed

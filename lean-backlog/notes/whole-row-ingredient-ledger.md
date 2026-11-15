@@ -185,6 +185,39 @@ typed execution. Between them, the open task is to identify a retained
 property with a capacity or transport inequality that consumes it. This
 ledger names the losses; it does not supply such an inequality.
 
+**Where B1 uses the table (reading audit).** No step needs the local rule
+at time t to equal the rule at another time or size. In the machine adapter,
+[`stepValue_eq_of_preds`][P11prune] uses the table to establish local
+determination on all inputs at each fixed vertex; [`toFunDag`][P11prune]
+then retains only that `det` property. The generic
+[`FunDag.cone` / `isIndexCode_of`][P11dag] already allow different functions
+at every vertex. [`field_isIndexCode`][P11record] adds output correctness and
+the joint step-record range bound 2^β; [`exists_indexCode`][Native] recodes
+the cut tuple into β|Γ| bits. The cut exists for arbitrary unit-speed work
+walks by [`genie_cost`][Native], row spread is already stated for arbitrary
+traces in [WindowSpread][Window], and [ConeCodeTransfer][Transfer] uses no
+execution semantics. Thus the same B1 argument applies to an all-input
+causal transposition code on a fixed **step-level** tape diagram with
+unit-speed input/work walks: its only raw read at each step is the actual
+scanned bit, its parents are the state/last-write predecessors, initial
+values are input-independent, its fixed output schedule appends exactly
+the L transposed bits in order on every input, and all the information to
+be recorded at each step (state,
+work writes and output) has at most 2^β possible joint values, for fixed
+k,β,C before the size grows and horizon T≤C(L+1). Gates may vary with both
+time and size. A common whole-row deficit therefore excludes this
+nonuniform class too, by the same cut and fibre invoice. This is a written
+reuse of the generic lemmas; the exported native `exists_indexCode` and
+exclusion wrappers still name a machine, and no new Lean endpoint is
+claimed. It does **not** identify this class with the first paper's
+[Tape Coding Conjecture][P1tcc]: its [block networks][P1codes] expose whole
+attached rows, allow capacities of order rG per block, and in the robust
+form require correctness only on a large input subset. Arbitrary such
+block gates need not refine to these constant-width step gates. B1
+consequently supplies no proof of the full block conjecture or a converse
+to machines. Its same-table provenance is available from a machine but
+unused as a cross-vertex restriction in this reduction.
+
 ## 5. Converse formalization: source audit and effort estimate
 
 **Status: routine restatement and replay-checker tooling, Lean verified in
@@ -386,10 +419,12 @@ constraints on the static code or helper relation is established here.
 [P11traces]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/Traces.lean
 [P11linear]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/LinearCrux.lean
 [P1codes]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/codes.tex
+[P1tcc]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/conjecture.tex
 [P1hints]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/plainrobust.tex
 [ShiftCover]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/CEHint.lean
 [AHJKL]: https://www.math.uwaterloo.ca/~harvey/Publications/Capacity/Capacity-Soda.pdf
 [P11prune]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/FieldPruning.lean
+[P11dag]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/FieldDag.lean
 [P11record]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/FieldMachine.lean
 [Native]: ../../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/lean/BoundedStackDepth/Machines.lean
 [Pages]: ../WindowPages.lean

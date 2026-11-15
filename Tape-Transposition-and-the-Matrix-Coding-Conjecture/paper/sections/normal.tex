@@ -2,19 +2,32 @@
 
 \begin{theorem}[Theorem N: two-sided codes on symmetric relations]\label{thm:N}
 \formal{TwoSidedCodeTransfer.lean}{RowSpread.difference_fibre_twoSided, RowSpread.wholeRow_card_sq_le_of_twoSided, RowSpread.commonDeficit_iff_twoSided}
-\formal{NormalizedRateTransfer.lean}{RowSpread.twoSided_card_le_of_fixedCross, RowSpread.commonDeficit_iff_normalizedTwoSided, RowSpread.commonDeficitCanonicalBits_iff_normalizedTwoSided}
-Let $C$ be a whole-row code for $\rho$ over an alphabet $\Sigma$ with a group structure.
+\formal{NormalizedCodeTransfer.lean}{RowSpread.twoSided_card_le_of_fixedCross, RowSpread.NormalizedTwoSidedWholeRowCardinalityBound.twoSided}
+\formal{NormalizedRateTransfer.lean}{RowSpread.commonDeficit_iff_normalizedTwoSided, RowSpread.commonDeficitCanonicalBits_iff_normalizedTwoSided}
+Let $C$ be a whole-row code for $\rho$ over a finite abelian group $\Sigma$ of size $q\ge2$.
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
-\item For some array $z$, the set $C\cap(z+C^{\mathsf T})$ is a two-sided whole-row code for $\rho$ with at least
-$\card C^2/\card\Sigma^{d^2}$ elements.
-\item If every two-sided code on a symmetric reflexive relation of window $w+R+1$ has at most $\card\Sigma^{a}$
-elements, then every two-sided code for a helper map of window $w$ has at most $\card\Sigma^{a+2wd^2/(R+1)}$ elements.
-\item \Cref{conj:MCC} is equivalent to the same statement for two-sided codes, and to the same statement for
-two-sided codes on symmetric reflexive relations.
+\item Some $D_z=C\cap(z+C^{\mathsf T})$ is two-sided for $\rho$ and has at least $|C|^2/q^{d^2}$ elements.
+\item Let $R\in\N$. If every two-sided code on a symmetric reflexive relation of window at most $w+R+1$ has at most
+$q^a$ elements, every two-sided code for a map of window at most $w$ has at most $q^{a+2wd^2/(R+1)}$ elements.
+\item The existence of a common deficit is equivalent for all codes, for two-sided codes, and for two-sided codes
+on symmetric reflexive relations. This holds both for canonical bit alphabets and for bounds uniform over all finite
+alphabets. A two-sided deficit $\delta$ gives a one-sided deficit $\delta/2$; symmetrizing the relation has no further
+asymptotic loss.
 \end{enumerate}
 \end{theorem}
-\draftnote{Outline: every pair of elements of $C$ occurs in exactly one $z$-fibre; freezing the rows and columns of
-high reverse degree. Examples: the cyclic relation, where the one-sided excess $d-1$ over pairing becomes~$1$.}
+\begin{outline}
+Every ordered pair $(x,y)\in C^2$ has exactly one difference $z=x-y^{\mathsf T}$. Summing $|D_z|$ over the $q^{d^2}$
+possible differences gives $|C|^2$. Membership in $C$ supplies column recovery, and membership in $z+C^{\mathsf T}$
+supplies row recovery, since coordinate translations preserve agreement. This proves (a).
 
-So the conjecture loses nothing if rows are required to be functions of columns as well. A deficit $\delta$ for
-two-sided codes gives $\delta/2$ for all codes.
+For (b), at most $wd/(R+1)$ rows occur in more than $R$ helper sets. Fix their entries and the entries of the
+corresponding columns. Within each fibre, remove those rows from every helper set, then add the reverse relation
+and the diagonal. The resulting relation is symmetric and reflexive with width at most $w+R+1$. There are at most
+$q^{2wd^2/(R+1)}$ raw records, yielding (b). The exact finite version pays the overlap of the fixed rows and columns
+only once, as used in \cref{thm:F}.
+
+For (c), choose $R$ large enough for any prescribed error at a fixed original window, and apply (a). Reverse
+implications are restrictions to subclasses. Canonical alphabets carry their usual bitwise additive structure;
+for an arbitrary finite alphabet one may transfer a cyclic group structure along a bijection. Neither the code nor
+its decoder is assumed invariant under that group operation or under transposition.
+\end{outline}

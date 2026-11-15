@@ -1,0 +1,52 @@
+\begin{informalproof}
+The step width $s$ bounds the joint record at a step, including the state and the work symbols needed to continue
+the run. Write $n(d)\ge1$ for an integer upper bound on the outputs per component; replacing it by a larger integer
+does not change $n(d)=o(\log\log d)$. Choose constants $0<\delta<1$ and $\eta>0$ such that
+\[
+ (k+2)(s\theta c+\eta)<(1-\delta)/2.
+\]
+In addition to the assumed cut $\Gamma_h$, use the depth-reduction theorem~\cite{BoundedStack2026} to obtain a cut
+$\Gamma_D$ of record cost at most $\eta L$ and a remaining depth $D$ independent of $d$. For
+$\Gamma=\Gamma_h\cup\Gamma_D$ the undirected components only shrink, both conclusions hold, and
+\begin{equation}\label{eq:fragment-upper}
+ s\card\Gamma\le s\theta c(L+1)+\eta L.
+\end{equation}
+Because the schedule is oblivious these cuts and the ensuing helper sets can be fixed before the input.
+
+Each output now has at most $B=\sum_{j=0}^{D}(k+1)^j$ raw input helpers. Apply the paid degree reduction of
+\cite[Corollary~3.8]{DirectedRecovery2026}, conditioning on input coordinates that occur in too many cones.
+For a fixed sufficiently large reverse-degree cutoff this retains at least $(1-\delta)L$ demanded coordinates,
+and their paired-port incidence relation has both degrees at most a constant $\Delta\ge2$. The native
+paired-distance estimate of \cite[Theorem~3.3]{DirectedRecovery2026} is needed with a slowly growing radius here,
+not merely in its fixed-radius asymptotic form. Its finite packing proof gives, at radius $2n-1$,
+\[
+ \#\{\text{retained targets at paired distance at most }2n-1\}
+ \ \le\ V_{2n-1}\!\sum_{j=1}^{n}2j\,\bigl(a(2j-1)+3\bigr)
+              \frac{L}{\log_2d},
+\]
+where $V_r=\sum_{j=0}^{r}\Delta^j$ and $a=4c(B+1)(k+2)(k+6)$ are as in that proof. The coefficient is
+$O_{k,D,c,\Delta}(n^3\Delta^{2n})$. Since $n=o(\log\log d)$, its ratio to $\log_2d$ tends to zero. Remove these
+$o(L)$ targets, leaving at least $(1-\delta)L-o(L)$ good ones. This use of the explicit native transport estimate
+is part of the written proof, not an additional Lean claim.
+
+Partition the good outputs according to the uncut component containing their output step, with a singleton patch
+for a good output at a cut root. A patch has at most $n$ targets. Its induced paired-port graph has at most $2n$
+vertices. If the two ports of a target were connected there, a shortest path would have length at most $2n-1$,
+contrary to its being good. Thus the separated-components lemma~\cite{DirectedRecovery2026} bounds every storage
+code on the patch's induced relation by $2^{|J|/2}$.
+
+For each patch fix all exterior input bits, including the paid conditioning coordinates. Let $T_J$ be the cut
+records at its incoming boundary; include the root record for a cut-root output. Local determination on the DAG
+makes these records an index code for the demands in $J$, with the induced raw helpers. The fibre bound gives
+$s|T_J|\ge |J|/2$. The records need not be independent and are not charged as a joint entropy. This is precisely
+the abstract local-view invoice, formalized as \lean{LocalRecordViews.half_invoice}.
+
+A cut vertex has at most $k+1$ forward children, each entering at most one uncut component, and at most one output
+of its own. Hence $\sum_J|T_J|\le(k+2)|\Gamma|$. Summing the patch inequalities gives
+\[
+ s(k+2)|\Gamma|\ge(1-\delta)L/2-o(L),
+\]
+contradicting \eqref{eq:fragment-upper} for large $d$. The argument uses outputs per component, not its number of
+steps or its time span. No implication in either direction with the macroscopic-motion classes of
+\cite{FourthPaper2026} is established.
+\end{informalproof}

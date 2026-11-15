@@ -1,42 +1,50 @@
 \section{From block codes to whole rows}\label{sec:tape}
 
-The Tape Coding Conjecture is about codes on block networks, in which a node may compute anything from the rows
-attached to it. We cut such a code as we cut a run. A block network is not the dependency graph of a walk, so the cut
-of the fourteenth paper does not apply to it directly; the first step is to realize it inside one.
+A block node may compute any function of its attached rows and incoming messages. The argument below uses this
+causal determination, not a shared transition table. The block graph is first realized inside a walk dependency
+graph so that the depth reduction applies to its actual edges.
 
 \begin{theorem}[Theorem T: the Matrix Coding Conjecture implies the Tape Coding Conjecture]\label{thm:T}
 \formal{WholeRowTCC.lean}{BlockTCC.robustNoCode_of_commonDeficit, BlockTCC.noCode_of_commonDeficit, BlockTCC.not_linearTimeTransposable_of_commonDeficit, BlockTCC.robustNoCode_of_normalizedTwoSidedDeficit}
-If \cref{conj:MCC} holds, then \cref{conj:TCC} holds, in its robust and hence in its plain form. Consequently
-\cref{conj:MCC} implies that \textup{(T)} fails: \lean{Transpose.LinearTimeTransposable} is false. The same follows
-from the conjecture for two-sided codes on symmetric reflexive relations.
+\Cref{conj:MCC} implies \cref{conj:TCC}, in its robust and hence plain form. It therefore implies
+the negation of \lean{Transpose.LinearTimeTransposable}, including adaptive machines. The same conclusion follows from a
+common deficit for two-sided codes on symmetric reflexive relations.
 \end{theorem}
-
 \begin{outline}
-Suppose a causal code solves complete exchange on a set $F$ of inputs of co-entropy at most $C_0db$, on the block
-network of a valid diagram of length at most~$cL$.
+Fix $k,G,c,C_0$, with $G\ge1$, and suppose a code solves complete exchange on $F$ with
+$|F|\ge2^{L-C_0db}$, on a valid diagram of length at most $cL$. Write $\ell=\lceil db/G\rceil$ and
+$N=\lceil T/\ell\rceil$.
 
-\emph{Lifting.} Every slot is replaced by a walk of twelve positions that visits the blocks on both sides of a common
-pivot, so that every memory edge and every chord edge of the network becomes a path of the dependency graph of a
-walk (\leanfile{BlockIntervalWalk.lean}).
+\emph{Realization and cut.} On each work tape, the blocks visited in a slot form an interval of at most two
+adjacent blocks; consecutive such intervals have a common endpoint. Replace each slot by twelve unit steps that
+visit its interval around a common pivot. Memory edges are represented by state paths, and a chord has a
+last-visit path between the corresponding intervals. Project a depth-reduction cut of this refined walk back to
+slots. For any $\theta>0$ this gives $\Gamma\subseteq[N]$ with $|\Gamma|\le\theta N$ and a rank increasing across
+all uncut edges, bounded by $D=\operatorname{genieDepth}(k,1,12,\theta)$.
 
-\emph{Cutting.} The cut of the fourteenth paper for that walk, projected back to slots, is a set $\Gamma$ of at most
-$\theta N$ of the $N$ slots after whose removal every path has bounded length (\leanfile{BlockCut.lean}).
+\emph{Payment.} Record every outgoing message of a cut slot and every output bit rooted there. Profile capacities
+give at most $4kG\ell$ message bits per cut slot, and there are at most $\ell$ cut-root output bits. The total bill
+is therefore $(4kG+1)\ell|\Gamma|$. The network has undirected degree at most $2k+2$, so a radius-$D$ ball has at
+most $(2k+3)^D$ nodes. A node sees at most two input rows. Equal cut records and equal raw values in that ball
+determine an uncut output by induction on time.
 
-\emph{Rows.} A slot has at most two attached input rows, so the slots from which an output slot can be reached
-without passing through $\Gamma$ meet boundedly many rows; rows of the transpose that meet too many output slots are
-paid for (\leanfile{BlockRowGrouping.lean}, \leanfile{BlockCodeLocal.lean}).
+\emph{Grouping.} Let $P$ be a positive integer. Discard output rows meeting more than $P$ slots; their number
+satisfies $P|E|\le2N$. Every other output row has all its cones in at most $2P(2k+3)^D$ input rows. Fixing the
+cut record and the exceptional input columns consequently gives whole-row code fibres on $F$, at that one window.
+No correctness on inputs outside $F$ is used: message residues make the observation a total finite-valued map,
+and capacity bounds make those residues exact on $F$.
 
-\emph{Fibres.} Fix the messages on the edges out of $\Gamma$ and the paid rows. On the inputs of $F$ that produce
-them, every remaining column of the array is a function of boundedly many rows: a whole-row code
-(\leanfile{BlockCodeTransfer.lean}).
-
-\emph{Invoice.} The profile capacities bound the number of fixed bits by a multiple of $\theta L$. Some fibre has at
-least $2^{L-\text{cost}}$ elements, and for small $\theta$ this contradicts the deficit
-(\leanfile{BlockCutPrice.lean}, \leanfile{BlockCodeInvoice.lean}).
+\emph{Contradiction.} If a whole-row bound has exponent $a$, counting fibres gives the finite inequality
+\[
+ L\le C_0db+(4kG+1)\ell|\Gamma|+db|E|+ba.        \tag{2}\label{eq:block-invoice}
+\]
+Take $\eps=\delta/8$, choose $P>2(cG+1)/\eps$, and choose
+$\theta=\eps/((4k+1)G(c+1))$. The bounds $N\le(cG+1)d$ and $N\ell\le(c+1)L$ make each of the cut and
+exception bills at most $\eps L$. For sufficiently large $d$, the co-entropy bill is also at most $\eps L$.
+The common-deficit hypothesis at the now fixed window gives $ba\le(1-\delta+\eps)L$. Thus
+$L\le(1-\delta+4\eps)L=(1-\delta/2)L$, a contradiction. The first paper's robust-code consumer supplies the
+adaptive conclusion. The normalized version follows from \cref{thm:N}.
 \end{outline}
-\draftnote{Give the constants (the price $(4kG+1)\ell$ of a cut slot, the bound on the rows of a cone) and the
-treatment of the co-entropy of $F$.}
 
-The theorem is a common strengthening, not a comparison: it does not say that the Tape Coding Conjecture implies
-anything about whole-row codes. A whole-row code of rate near one need not be computable by a causal code on any
-diagram, and no converse of \cref{thm:T} is known.
+This proves one implication between the coding questions. No converse is asserted: a static whole-row code of
+high rate need not be realizable as a causal code on a tape diagram.

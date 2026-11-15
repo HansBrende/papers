@@ -1,30 +1,104 @@
 \section{Where one half is proved}\label{sec:invariance}
 
-One half is known for $w\le2$ (\cref{prop:known}), for relations whose rows or offsets are not
-spread~\cite{SeventeenthPaper2026}, and for several classes of relations and codes from the earlier papers, listed in
-\cref{tab:classes}. The theorem of this section adds a class defined by a symmetry of the code, with no condition on
-the relation.
+One half is known for $w\le2$ (\cref{prop:known}) and for several further classes in the series. The theorem here
+adds a condition on the code, with no restriction on the helper relation beyond its forward window.
 
-Let $\iota$ be an involution of the entries, for example $(i,j)\mapsto(j,i)$. A \emph{pairing shift} adds one group
-element to the two entries of an orbit of~$\iota$, or to a fixed entry.
+Let $\iota$ be an involution of the entries. A \emph{pairing shift} adds one group element to both entries of a
+two-entry orbit of $\iota$, or adds it to a fixed entry. Different orbits may be shifted independently. For the
+transpose involution these are the independent symmetric-array shifts; invariance under their sum alone is not
+the hypothesis.
 
 \begin{theorem}[Theorem I: invariance under a pairing]\label{thm:I}
-\formal{WholeRow/Pairing.lean}{WholeRow.pairing_card_sq_le_forward, WholeRow.pairing_card_pow_le_half}
-\formal{WholeRow/ParityTrimming.lean}{WholeRow.parity_card_le_forward, WholeRow.parity_card_pow_le_baseline}
-Let $\Sigma$ be a finite abelian group, $\rho$ a helper map of window $w$ on $[d]$, and $C$ a whole-row code
-for~$\rho$ that is invariant under the pairing shifts of all orbits of $\iota$ except $b$ orbits of two entries. Then
-for every $n\ge1$ with $d\ge n(w+2w^3n)$,
-\[
-  \card C^{2n}\ \le\ \card\Sigma^{\,n(d^2+2b)+2d^2},
-\]
-that is, the rate is at most $\tfrac12+b/d^2+1/n$. If in addition the shifts of $u$ fixed entries that are not
-incident are missing, the bound holds with $2b+u$ in place of~$2b$. For codes invariant under the shifts of $m$
-disjoint parity blocks of at least two entries each, the rate is at most $1-m/d^2+1/n$.
-\end{theorem}
-\draftnote{The statement, in particular the two variants, is to be checked against the Lean declarations. Outline:
-compatibility from recovery; records separate cosets; the count; deletion of heavy rows at one
-symbol per block; lanes. Table of the classes with one half, with citations. These declarations are in the shared
-library; the verification appendix must say which build covers them.}
+\formal{LeanMachine/WholeRow/Pairing.lean}{LeanMachine.WholeRow.pairing_card_sq_le_forward, LeanMachine.WholeRow.pairing_card_pow_le_half, LeanMachine.WholeRow.pairing_card_pow_le_half_of_inactive_fixed}
+\formal{LeanMachine/WholeRow/ParityTrimming.lean}{LeanMachine.WholeRow.parity_card_le_forward, LeanMachine.WholeRow.parity_card_pow_le_baseline}
+Let $\Sigma$ be a finite abelian group of order $q\ge2$, $\rho$ a helper map of window $w$ on $[d]$, and $C$ a
+whole-row code. Suppose $C$ is invariant under every pairing shift except possibly those on $b_0$ two-entry orbits.
+For every integer $n\ge1$ with $d\ge n(w+2w^3n)$,
+\begin{equation}\label{eq:pairing-invariance}
+  \card C^{2n}\ \le\ q^{\,n(d^2+2b_0)+2d^2}.
+\end{equation}
+Thus its rate is at most $1/2+b_0/d^2+1/n$.
 
-The theorem excludes one mechanism at every window: a code above the pairing rate cannot keep the pairing symmetry on
-all but $o(d^2)$ orbits. Nothing is known to force that symmetry on the codes that come from machines.
+More generally, the shifts on a set $F$ of fixed entries may also be withheld. Put
+$u=\card{F\setminus\{(i,j):i\in\rho(j)\}}$. Then \eqref{eq:pairing-invariance} holds with $2b_0+u$ in place of
+$2b_0$: only the inactive fixed entries that are nonincident are charged.
+
+For the parity variant let $B_1,\ldots,B_m$ be disjoint sets of entries, each of size at least two. Suppose $C$ is
+invariant under every shift supported on their union whose coordinate sum on each $B_a$ is zero. At the same
+threshold,
+\begin{equation}\label{eq:parity-invariance}
+ \card C^n\le q^{,n(d^2-m)+d^2},
+\end{equation}
+so its rate is at most $1-m/d^2+1/n$. These are zero-sum shifts on each block, not constant shifts.
+\end{theorem}
+
+\begin{outline}
+The finite group count has two parts. Recovery forces compatibility between the subgroup of allowed shifts and
+each coordinate's helper view. Suitable records then distinguish the subgroup cosets that meet the code. One
+records block sums, the designated exceptional coordinates, and additional block data where an enclosure of the
+helper views fails. The coset count bounds the code by the subgroup size times the number of records. This works
+for arbitrary sets and nonlinear recovery functions.
+
+For disjoint parity blocks the starting exponent is $N-m$, where $N$ is the number of coordinates. Raw values
+outside the blocks can be pinned; their record cost cancels the missing kernel dimensions. After deleting rows
+helping more than $t$ columns, the extra exponent is at most
+\[
+ \card{\text{blocks touching the recorded rows}}+
+       \frac{\lambda d(w+w^2t)}2
+ \ \le\ \frac{wN}{t+1}+\frac{\lambda d(w+w^2t)}2,
+\]
+where $\lambda$ is the lane count and $N=\lambda d^2$. Disjointness charges at most one symbol per block touching
+a recorded row. Set $t=2wn$. Multiplication by $n$ makes the first term at most $N/2$, and
+$d\ge n(w+2w^3n)$ makes the second at most $N/2$. This proves \eqref{eq:parity-invariance}, uniformly in the
+alphabet, number of lanes, block sizes and relation.
+
+For pairing, use a weighted difference on each two-entry orbit, so that its kernel consists of equal shifts on
+the two entries; omit the $b_0$ exceptional orbits by pinning their coordinates. Every active fixed-coordinate
+shift forces that coordinate to be incident: otherwise it changes a recovered value while keeping its helper rows
+fixed. Reserve these original incidences before heavy-row deletion. This cancels their contribution to the orbit
+count, while omitted pairs contribute two entries in the squared inequality. If shifts on $F$ are inactive, their
+raw record and lost kernel dimension cancel, and only $F$ outside the original incidences remains unreserved.
+The same heavy-row calculation, in the squared count, gives \eqref{eq:pairing-invariance} and its $u$ variant.
+The Lean statements allow several lanes and coordinatewise additive automorphisms in the weighted sums; the
+unweighted one-lane forms above are special cases.
+\end{outline}
+
+For fixed $w$, choosing $n$ of order $\sqrt{d/w^3}$ gives error $O_w(d^{-1/2})$. A positive asymptotic gain over
+one half therefore requires the loss of individual pairing shifts on a positive fraction of the two-entry orbits,
+or a corresponding payment for inactive nonincident fixed entries. Nothing proved here forces this invariance on
+the fibres of a machine.
+
+\begin{longtable}{@{}p{.40\textwidth}p{.25\textwidth}p{.29\textwidth}@{}}
+\caption{Selected half-rate classes with published proofs. Bounds are uniform in the finite alphabet except where
+linear scalar recovery is stated. These are additional premises on the counted fibres or their actual helpers;
+row spread alone supplies none of them.}\label{tab:classes}\\
+\toprule
+Premise & Bound & Source and formal status\\
+\midrule
+\endfirsthead
+\toprule Premise & Bound & Source and formal status\\\midrule
+\endhead
+Whole-row window at most two & $\log_q\card C\le d(d+1)/2+d-1$ & \Cref{prop:known}; written proof in the synthesis.\\[.5em]
+Helper rows of every column lie in one block of a partition into blocks of size at most fixed $s$
+& $\log_q\card C\le(d^2+sd)/2$ & \cite[Section~6.7, ``The order bound for whole rows'']{SeventeenthPaper2026}; written.\\[.5em]
+One-class helpers $(i_m(r),c+j_m(r))$ at $(c,r)$, with at most $s+1$ offsets in total, fixed $s\ge1$
+& $\log_q\card C\le d^2/2+6d^{2-1/(s+1)}$ & \cite[Section~6.6, ``Order bounds for one-class relations'']{SeventeenthPaper2026}; written.\\[.5em]
+Scalar linear recovery $X^\mathsf{T}=\sum_a A_aXB_a^\mathsf{T}$, with all $B_a$ simultaneously triangularizable over a field extension
+& Dimension at most $d(d+1)/2$ & \cite[``One triangularizable side'']{SeventeenthPaper2026}; written reduction to the Lean flag bound.\\[.5em]
+Actual directed helpers are subsets of the neighbours of a triangle-free undirected graph of degree at most three
+& $\card C^2\le q^N$ on $N$ coordinates & \cite[Theorem N3]{SeventhPaper2026}; Lean. This is coordinate degree, not whole-row window.\\[.5em]
+Actual paired-port incidence relations are uniformly hyperfinite and have paired-distance separation
+& $\log_q\card C\le(1/2+o(1))N$ & \cite[``Hyperfinite half-rate bound'']{DirectedRecovery2026}; Lean finite separator and asymptotic bound.\\[.5em]
+Pairing-shift invariance except on $o(d^2)$ two-entry orbits, with all fixed shifts retained
+& $\log_q\card C\le(1/2+o(1))d^2$ & \Cref{thm:I}; Lean, no reverse-degree assumption.\\
+\bottomrule
+\end{longtable}
+
+To read the table as a conditional exclusion of an oblivious machine class, the additional premise must hold on the
+large fibres produced by the cut and row-spread construction, at its canonical alphabet and its actual window.
+A one-sided deficit $\delta$ then suffices when $\delta>169\eps/64$; an extra $p(d)$-bit record adds $p(d)/L$ to the
+right side. If the bound is supplied only after the two-sided intersection, its deficit must exceed
+$169\eps/32+2p(d)/L$. An arbitrary small structured subcode does not suffice: its size must survive these payments.
+For linear rows of the table, a scalar realization over a field must be supplied; vector linearity of the bits does
+not automatically give scalar linearity over the entry alphabet. The unrestricted implication of \cref{thm:T}
+needs no such additional premise, but does not extract any of these restricted classes.

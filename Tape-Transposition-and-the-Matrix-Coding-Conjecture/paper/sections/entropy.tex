@@ -1,44 +1,142 @@
 \section{Entropy beyond order}\label{sec:entropy}
 
 A \emph{valid polymatroid} for $\rho$ is a normalized, monotone, submodular function $h$ on sets of entries with
-$h(\{x\})\le1$ and $h(S\cup\{x\})=h(S)$ whenever $S$ contains the helper rows of the column of~$x$. The entropy of a
-uniformly random element of a code, in units of $\log\card\Sigma$, is a valid polymatroid whose value on the set of
-all entries is $\log_{\card\Sigma}\card C$. So the largest value of a valid polymatroid on that set, the \emph{Shannon
-value} $\mathrm{Sh}(\rho)$, bounds $\log_{\card\Sigma}\card C$~\cite{SeventhPaper2026}.
+$h(\{x\})\le1$ and $h(H_x\cup\{x\})=h(H_x)$, where $H_x$ is the union of the helper rows of the column of~$x$.
+Entropy, in units of $\log\card\Sigma$, is such a function for every whole-row code. The largest possible value on
+all entries is the \emph{Shannon value} $\Sh(\rho)$; it bounds $\log_{\card\Sigma}\card C$ without an assumption on
+the alphabet or the recovery functions~\cite{SeventhPaper2026}.
 
 \begin{theorem}[Theorem E: entropy beats order]\label{thm:E}
 \formal{FanoFull.lean}{FanoFull.full_upper, FanoFull.wholeRow_card_cube}
-\formal{FanoAttainment.lean}{FanoAttainment.full_attainment, FanoAttainment.full_shannon_exact}
+\partformal{FanoAttainment.lean}{FanoAttainment.full_attainment, FanoAttainment.full_shannon_exact}{the realization of the attaining polymatroid by the three-lane code, proved below.}
+\formal{GridFull.lean}{GridFull.full_upper, GridFull.storage_card_fifth}
 \formal{WholeRowAcyclic.lean}{WholeRowAcyclic.fano_exact_acyclic_card, WholeRowAcyclic.fano_gap, WholeRowAcyclic.grid_exact_acyclic_card, WholeRowAcyclic.grid_gap}
 \formal{FanoLift.lean}{FanoLift.conditional_gap, FanoLift.conditional_acyclic_gap, FanoLift.conditional_gap_one_percent, FanoLift.completeLift_gap}
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
-\item \emph{Fano.} Let $d=7$ and let $\rho(j)$ be the three points of the line $j$ of the Fano plane. Then
-$\mathrm{Sh}(\rho)=119/3$, a code over an alphabet of $q^3$ symbols attains it, and $\sigma(\rho)=41$: every
-acyclic bound is at least $4/3$ entries above the truth.
+\item \emph{Fano.} Let $d=7$ and let $\rho(j)$ be the three points on line $j$ of the Fano plane. Then
+$\Sh(\rho)=119/3$ and $\sigma(\rho)=41$. For every integer $q\ge2$ a code over an alphabet of $q^3$ symbols attains
+the Shannon value. Every acyclic-set bound exceeds it by at least $4/3$ entries.
 \item \emph{Grid.} For the $9\times6$ array whose columns are the six lines of the $3\times3$ grid and whose rows are
-its nine points, $\mathrm{Sh}\le204/5$ and $\sigma=41$. The entries outside the incidences have no mutual triangles.
-\item \emph{Lifts.} Let $d=7n$, let every row and column of the Fano relation be replaced by $n$ copies, and let
-$\rho$ be a helper map whose helper rows are copies of points on the line of the column. If every $r$ copies of a
-point and every $r$ copies of a line through it contain a helper incidence, then for every valid polymatroid $h$ and
-every acyclic set~$A$,
+its nine points, $\Sh\le204/5$ and $\sigma=41$. There is no mutual triangle of nonincident entries. No equality
+for this Shannon bound or for the capacity is claimed.
+\item \emph{Lifts.} Let $n\ge1$, $1\le r\le n$, and replace every row and column of the Fano relation by $n$ copies.
+Suppose every helper of a fine column is a copy of a point on its base line. Suppose also that every $r$ copies of
+a point and every $r$ copies of a line through it contain a helper incidence. For every valid polymatroid $h$ and
+every acyclic set~$A$ on the $d=7n$ array,
 \[
-  d^2-\card A-h(\text{all entries})\ \ge\ 41\,(n-r+1)^2-\tfrac{119}{3}\,n^2 ,
+  d^2-\card A-h(\text{all entries})\ \ge\ 41\,(n-r+1)^2-\tfrac{119}{3}\,n^2 .
 \]
-which exceeds $d^2/100$ when $99n\le100(n-r+1)$.
+The right side exceeds $d^2/100$ when $99n\le100(n-r+1)$.
 \end{enumerate}
 \end{theorem}
-\draftnote{Certificates and their generator; the three-lane code; the projection lemma
-(\lean{MacroProjection.upper_of_projection}); the threshold argument for every order of the fine rows.}
+
+\begin{outline}
+First condition on the incident entries: there are $21$ in Fano and $18$ in the grid. On the remaining $28$ and
+$36$ entries the certificates give, respectively,
+\begin{equation}\label{eq:paid-residual}
+ 3h(V)\le2\sum_{v\in V}h(\{v\})+\sum_{v\in V}h(v\mid H_v),\qquad
+ 30h(V)\le19\sum_{v\in V}h(\{v\})+11\sum_{v\in V}h(v\mid H_v).
+\end{equation}
+Here $h(v\mid S)=h(S\cup\{v\})-h(S)$. These are exact positive combinations of $33$ and $18$ semantic
+inequalities: submodularity, purchases of entries, and recovery with its conditional cost retained. One first
+averages $h$ over the $168$ Fano automorphisms or the $72$ grid automorphisms. This preserves the total, the sum
+of singleton values and the sum of recovery costs; it imposes no symmetry on $h$ or the code. The generated Lean
+proofs check the automorphisms, each set containment used in recovery, and the integer coefficient identity.
+The saved rational certificates and their independent checkers are supplied with the paper.
+
+For exact recovery the last sums vanish. Adding the conditioned entries costs at most their number, giving
+$21+56/3=119/3$ and $18+114/5=204/5$. The attaining Fano polymatroid is the sum, over its $28$ mutual triangles,
+of one third of the rank-two uniform matroid on each triangle, plus the free incident entries. Each nonincident
+entry belongs to three triangles, so it has singleton value one. Every triangle's other two entries are available
+as helpers, proving validity. Its total is $119/3$. The order certificates enumerate the $128$ Fano point subsets
+and the $512$ grid point subsets in an exact recurrence, and display orders of cost $41$ attaining the lower bound.
+\Cref{thm:O} converts these values to maximum acyclic-set sizes $8$ and $13$.
+
+For a lift, let $B_{ij}$ be the $n^2$ fine entries over base entry $(i,j)$ and set
+$g(S)=h(\bigcup_{(i,j)\in S}B_{ij})/n^2$. The blocks partition the fine array. Thus $g$ is a polymatroid with
+unit singleton caps, and helper containment makes it valid for Fano. Consequently $h(V)\le(119/3)n^2$.
+This is an instance of \lean{MacroProjection.upper_of_projection}, which more generally allows any fibre-size
+cap and does not require the projection to be onto.
+
+For the order bound put $a=n-r+1$. In any fine row order let $\tau_i$ be the one-based position of the $a$-th row
+in group $i$. Order the seven groups by these distinct thresholds. If $i$ is the $k$-th group in this order, then
+$\tau_i\ge ka$. For a base line $j$ choose its incident group $i$ with largest threshold. Just before $\tau_i$,
+that group has $r$ unvisited rows. At most $r-1$ fine columns of group $j$ can already have all their helpers:
+otherwise those columns and the $r$ unvisited rows would contradict mixing on this incidence. Therefore at least
+$a$ columns have last-helper position at least $\tau_i$. Summing over the seven line groups gives cost at least
+$a^2\sigma(\text{Fano})=41a^2$. This and \cref{thm:O} prove (c). Finally
+$41(99/100)^2-119/3=15523/30000>49/100$.
+\end{outline}
+
+For clarity, the paid inequalities used above have the following scope.
+\begin{proposition}[Paid certificates]\label{prop:paid-entropy}
+\formal{FanoCertificate.lean}{FanoCertificate.paid_fano}
+\formal{GridCertificate.lean}{GridCertificate.paid_grid}
+\formal{FanoFull.lean}{FanoFull.paid_full}
+\formal{GridFull.lean}{GridFull.paid_full}
+The two inequalities in \eqref{eq:paid-residual} hold for every polymatroid on the respective residual host, without
+recovery or singleton-cap hypotheses. On the full host, if $Z$ is the set of incident entries, their left sides
+are $3h(V\mid Z)$ and $30h(V\mid Z)$, their singleton terms become $h(v\mid Z)$, and their recovery terms may be
+charged using the original full helper sets. Here $h(V\mid Z)=h(V)-h(Z)$.
+\end{proposition}
+\begin{outline}
+The same nonnegative certificate retains every conditional recovery cost. Apply it to
+$S\mapsto h(S\cup Z)-h(Z)$ on the residual entries, and use that enlarging a conditioning set decreases an
+increment of a polymatroid. This proves the full-host forms without charging $Z$ twice.
+\end{outline}
+
+\begin{informalproof}[Code realization in \cref{thm:E}(a)]
+Identify a base alphabet of size $q$ with $\Z/q\Z$. For each of the $28$ mutual triangles independently choose
+$a,b\in\Z/q\Z$ and put $(a,b,-a-b)$ on its three entries. Assign the three triangles containing a nonincident
+entry to its three lanes in any fixed order. Every lane is recoverable from the other two entries of its triangle,
+which belong to the helper rows of the target column. Give each of the $21$ incident entries three independent
+free lanes. All $56+63=119$ choices are recoverable from the resulting array, so the code has $q^{119}$ words on
+$49$ entries with alphabet size $q^3$. The upper bound gives equality. This construction uses no field structure.
+\end{informalproof}
 
 \begin{proposition}[Mixing lifts exist]\label{prop:lifts}
 \notformalized
-For every large $n$ there is a lift as in \cref{thm:E}(c) with $r=\lceil n/100\rceil$, with at most $3600$ helper
-rows for every column and at most $3600$ columns helped by every row, and with incidence girth at least
-$c\log n$ for a constant $c>0$.
+For every sufficiently large $n$ there is a lift as in \cref{thm:E}(c) with $r=\lceil n/100\rceil$, with at most
+$3600$ helper rows for every column and at most $3600$ columns helped by every row, and with incidence girth at least
+$c_0\log n$ for an absolute constant $c_0>0$.
 \end{proposition}
-\draftnote{Complete proof: unions of $1200$ random perfect matchings on every incidence; the union bound for empty
-rectangles; deletion of one vertex on every short cycle.}
+\begin{informalproof}
+Put $t=1200$ and $\eta=1/100$. On each of the $21$ base incidences choose $t$ independent uniform bijections
+between its two clone sets, each of size $n$, and take the union of their edges. Both degrees are at most $3t$.
+All logarithms in this proof are natural. Choose $0<\eta_0<\eta$ so close to $\eta$ that
+$t\eta_0>2\log(e/\eta_0)$, possible since $12>2\log(100e)$. Put $r_0=\lceil\eta_0 n\rceil$.
+For one matching and fixed sets of $r_0$ rows and columns, the probability that no edge joins them is
+\[
+ \frac{\binom{n-r_0}{r_0}}{\binom n{r_0}}
+ \le (1-r_0/n)^{r_0}\le e^{-r_0^2/n},
+\]
+with probability zero if $2r_0>n$. A union bound over the base incidences and the choices of the two sets is at most
+$21\binom n{r_0}^{2}e^{-t r_0^2/n}$, which tends to zero exponentially. Thus the required mixing at scale $r_0$
+holds with probability tending to one.
 
-These relations have window $3600$, and $\sigma\le(41/49)d^2$ already bounds their codes away from rate one. The
-theorem is evidence about methods, not about the conjecture: inequalities that are not of order type can hold at
-positive density at a fixed window.
+We also bound short cycles before simplifying parallel edges. Write $s=7$, $K=4st$ and
+$g=\lfloor\log n/(4\log K)\rfloor$. A simple cycle of length $\ell\ge4$ in the union has a choice of one of the
+$t$ matchings witnessing each edge. There are at most $(2s)^\ell n^\ell t^\ell$ ordered possibilities for its
+base vertices, clone vertices and witnesses. For any particular matching, $m$ distinct prescribed images have
+probability $1/(n)_m$ if consistent, and zero otherwise. Since $\ell\le g$ and $n\ge2g$, this is at most
+$(2/n)^m$. Independence between matchings therefore bounds the probability of the witnessed cycle by
+$(2/n)^\ell$. The expected number of simple cycles of lengths at most $g$ is at most
+$\sum_{\ell=4}^{g}K^\ell\le K^{g+1}/(K-1)=O(n^{1/4})$.
+By Markov's inequality, fewer than $\sqrt n$ such cycles occur with probability tending to one. Choose a realization
+with this property and with the preceding mixing property.
+
+For each short cycle select one of its vertices and isolate every selected vertex: retain all row and column
+labels, but delete its incident edges. This isolates fewer than $\sqrt n$ vertices and leaves no cycle of length
+at most $g$. Every rectangle of $r=\lceil\eta n\rceil$ clones on a base incidence has at least $r-\sqrt n\ge r_0$
+unisolated vertices on each side, for all large $n$. The original mixing property supplies an edge between them,
+which survives isolation. Thus mixing at scale $r$, helper containment and the degree bounds all persist.
+Finally $g\ge\log n/(8\log K)$ for large $n$. Isolated labels cause no problem: an empty-helper column is constant
+in a code, and the macro projection remains valid.
+\end{informalproof}
+
+The complete lift is a simple non-vacuity check: take every clone of every incident point as a helper. It has width
+$3n$, mixes at $r=1$, and gives the gap $(4/3)n^2$. It is not a fixed-window family. The sparse lifts of
+\cref{prop:lifts} have window $3600$ and a positive-density gap at growing girth; no attaining code on these lifts
+is asserted. Ordering whole row groups in a base-optimal order gives $\sigma\le41n^2=(41/49)d^2$ even for them.
+Thus this separates Shannon inequalities from all acyclic bounds at fixed window; it does not approach the
+rate-one regime of the Matrix Coding Conjecture.

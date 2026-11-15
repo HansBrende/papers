@@ -1,45 +1,91 @@
 \section{From runs to whole rows}\label{sec:rows}
 
-This section proves the reduction for oblivious machines. It is the direct route, and it shows where the rows come
-from: the input head reads the matrix row by row, so a short stretch of computation sees few rows.
+The geometry concerns traces, without a correctness assumption. The input is stored row by row; its head may move
+in either direction. A window of $db$ steps visits an interval meeting at most two input rows. The issue is to
+bound how many such windows the cones of one output row can reach.
 
 \subsection{Cuts, cones and index codes}\label{sec:rows-cones}
 
-Fix an oblivious run of length $T\le c(L+1)$ at size~$d$. Its \emph{dependency graph} has the steps as vertices; a
-step depends on the preceding step and, for every work tape, on the last earlier step at which that head was on the
-same cell~\cite[Section~4]{FourthPaper2026}. A \emph{cut} is a set $\Gamma$ of steps whose values are revealed; its
-\emph{depth} is the largest number of vertices on a path that avoids it. The \emph{cone} of an output bit is the set
-of input positions read at the steps from which its appending step can be reached without passing through~$\Gamma$.
-The revealed values form an index code: two inputs with the same revealed values that agree on the cone of an output
-bit agree on that bit of the transpose~\cite[Corollary~4.5]{FourthPaper2026}. Every run of linear length has a cut of
-at most $\eps L$ revealed bits and depth bounded in terms of $\eps$, $k$, $c$ and the width of a
-step~\cite[Theorem~7.5]{BoundedStack2026}.
+The dependency graph of a trace has a state edge from the preceding step and, on each work tape, an edge from the
+last earlier visit to the current cell. A cut is a set $\Gamma$ of time vertices. We use the library's root
+convention: a dependency path may start at a cut vertex, but its subsequent vertices must avoid the cut. Its raw
+cone consists of the input positions read along such paths. Thus a cut-root output is not silently discarded.
+For a correct oblivious machine, records of width at most $\beta$ at the cut vertices give an index code of at most
+$\beta|\Gamma|$ bits for these cones~\cite[Corollary~4.5]{FourthPaper2026}.
 
-\subsection{Theorem W}\label{sec:rows-W}
+Put
+\[
+ M=\left\lceil\frac{4k(k+1)\beta c}{\eps}\right\rceil,\qquad
+ P=\left\lceil\frac{2c}{\eps}\right\rceil,\qquad
+ w_*(k,\beta,D,c,\eps)=2(P+1)(M+2)^D.
+\]
+All ceilings here are natural-number ceilings. In Lean, $w_*$ is defined by
+\lean{RowSpread.rowSpreadWindow}.
 
 \begin{theorem}[Theorem W: whole rows]\label{thm:W}
 \formal{WindowSpread.lean}{WindowSpread.native_row_spread_prefix, WindowSpread.nativeRowSpreadQuantitative, WindowSpread.nativeRowSpreadExtension}
-Let $k$, $c$ and the width of a step be fixed, and let $\eps>0$. There are $w$ and $D$, depending on these and not
-on~$d$, such that for all large $d$ every oblivious run of length at most $c(L+1)$ at size $d$ has a cut $\Gamma$ of
-depth at most~$D$ that reveals at most $\eps L$ bits, a set $E$ of at most $\eps d$ exceptional rows of the transpose,
-and a helper map $\rho$ of window at most~$w$, such that the cone of every output bit in a row $j\notin E$ of the
-transpose lies in the rows $\rho(j)$ of the input.
+Fix $k,\beta,D\in\N$, $c\ge1$, $\eps>0$, $d\ge4$ and $b\ge1$. Let a unit-speed trace have a horizon
+$T\le c(d^2b+1)$ and at least $d^2b$ appends before $T$. For every cut $\Gamma$ whose free dependency paths have at
+most $D+1$ vertices, there are a larger cut $\Gamma'$, a set $E\subseteq[d]$ and a helper map $\rho$ such that
+\begin{align*}
+ \Gamma'\setminus\Gamma&\subseteq[0,T),&
+ \beta|\Gamma'\setminus\Gamma|&\le\tfrac{63}{64}\eps d^2b,&
+ |E|&\le\tfrac{21}{32}\eps d,\\
+ |\rho(j)|&\le w_*(k,\beta,D,c,\eps)&&\text{for every }j.
+\end{align*}
+The depth bound is preserved. For every output row $j\notin E$ in the first $d^2b$ appends, the raw cone of each
+of its bits lies in input rows $\rho(j)$. Neither correctness, obliviousness nor a bound on $|\Gamma|$ is assumed.
 \end{theorem}
-\draftnote{Statement to be checked word for word against the Lean proposition; outline of the formal proof (the
-counting of windows along the input walk, the guards, the row cover) to be written.}
+\begin{outline}
+Partition time into $N=\lceil T/(db)\rceil$ physical windows. For one work tape label each visited cell by the last
+window visiting it. During a window the visited cells form an interval. Overwriting that interval removes its
+interior label blocks and creates at most three blocks. The potential ``number of blocks'' therefore bounds the
+total number of distinct predecessor-window labels by $3N$ per tape. The proof includes pauses and first visits;
+first visits have no earlier label to charge.
+
+Call a window bad if its tape predecessors exceed $M$. Add guards at the relevant reads and their state
+predecessors, including the root cases. The native count is
+\[
+ (M+1)|\Gamma'\setminus\Gamma|\le3k(k+1)Ndb.
+\]
+Since $Ndb\le T+db\le(21/16)c\,d^2b$ for $d\ge4$, the definition of $M$ gives the displayed cut bill.
+After guarding, a free path can move between at most $M+2$ coarse neighbours at each step. Its depth is at most
+$D$, so it reaches at most $(M+2)^D$ physical windows from a given append window.
+
+Let an output row's span run from its first to its last append window. The disjoint ordered spans give
+$P|E|\le N$ for rows meeting more than $P+1$ windows. The same physical-window estimate yields
+$|E|\le(21/32)\eps d$. Every remaining span meets at most $P+1$ windows, each reachable window sees at most two
+input rows, and their union defines $\rho(j)$. The larger cut cannot increase depth. These counts depend only on
+the trace and its append prefix, before any input values or code are chosen.
+\end{outline}
 
 \begin{corollary}[The oblivious case]\label{cor:W-obl}
 \formal{RowSpreadCrux.lean}{RowSpread.native_indexCode_bound_of_wholeRow, RowSpread.uniformWholeRowRateCanonicalBits_crux, RowSpread.uniformWholeRowRateCanonicalBits_excludes, RowSpread.wholeRow_window_bound_excludes}
-If \cref{conj:MCC} holds with deficit~$\delta$, then every index code on the cone system of a cut of bounded depth of
-an oblivious linear-time run has at least $(\delta-o(1))L$ bits, at every depth, and no oblivious machine transposes
-in linear time. A bound at one explicit window, with a deficit above a fixed multiple of the cost of the cut, already
-excludes the machines with the corresponding resources.
-\end{corollary}
-\draftnote{The constants of this statement (the factor in front of $\delta$, the multiple of the cost of the cut in
-the one-window form) are to be taken from the Lean declarations. Outline: fix the revealed values and the exceptional
-rows; the fibre is a whole-row code for $\rho$ (\lean{entryWord_wholeRow_of_cones}); sum over fibres.}
+Let $B_D=\sum_{j=0}^D(k+1)^j$. Under the trace and depth hypotheses of \cref{thm:W}, a whole-row cardinality bound
+$q^a$ at width $w_*(k,B_D,D,c,\eps)$, for $q=2^b$, forces every $m$-bit index code for the original cones to satisfy
+\[
+ L\le m+\tfrac{105}{64}\eps L+ba.                    \tag{1}\label{eq:raw-invoice}
+\]
+Consequently a common asymptotic deficit $\delta>0$ gives the native crux at rate $\delta$: for every fixed depth
+and every $\eta>0$, all sufficiently large canonical sizes require at least $(\delta-\eta)L$ index bits.
+It excludes oblivious linear-time transposers.
 
-The synthesis reduced the oblivious case to one function, the best rate of a storage code on the cone relations left
-by cheap cuts~\cite[Section~4.1]{SeventeenthPaper2026}. The corollary replaces that function, which depends on the
-schedule, by the rate of whole-row codes: if this rate stays below one, no oblivious machine transposes in linear
-time.
+More economically, for fixed $k,\beta,c$ and $\eps>0$, an asymptotic deficit
+$\delta>(169/64)\eps$ at the single window
+$w_*(k,\beta,\operatorname{genieDepth}(k,\beta,c,\eps),c,\eps)$ excludes all such machines with step width at most
+$\beta$. The dimension threshold is uniform over these machines.
+\end{corollary}
+\begin{outline}
+Every old cone is contained in its new cone together with the union $U$ of the old cones rooted at newly cut
+vertices. Since each has at most $B_D$ raw coordinates, $|U|\le(63/64)\eps L$ when Theorem W is used with
+$\beta=B_D$. Freeze the index message, these raw bits and the $db|E|$ bits in exceptional columns. Every resulting
+fibre, grouped into $b$-bit entries, is a whole-row code. Counting all fibres proves (1), since
+$63/64+21/32=105/64$. Choosing geometric and capacity slacks below $\eta/3$ yields the crux at $\delta$.
+The depth-reduction consumer of~\cite[Corollary O]{BoundedStack2026} then excludes the machines.
+
+For the one-window form, first take the depth-reduction cut of cost at most $\eps L$, then apply W with the
+machine's actual record-width bound $\beta$. Record the enlarged cut directly: its cost is at most
+$(127/64)\eps L$. Paying the exceptional columns adds $(21/32)\eps L$. Thus the total is
+$(169/64)\eps L$, which is strictly smaller than the asserted capacity deficit. The capacity slack can be chosen
+inside that strict margin.
+\end{outline}

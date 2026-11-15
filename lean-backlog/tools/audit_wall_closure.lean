@@ -1,4 +1,4 @@
-import Wall
+import MatrixCoding.Wall
 import Lean
 
 /-!

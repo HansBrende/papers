@@ -1,3 +1,68 @@
 \section{Building and verifying}\label{sec:verification}
-\draftnote{Toolchain and pins; build and axiom commands; which declarations are in the shared library; the frozen
-files and their hashes; the literature search; heartbeat settings.}
+
+The paper is accompanied by the Lake package \leanfile{matrixCoding}, using Lean
+\leanname{leanprover/lean4:v4.34.1} and Mathlib revision
+\leanname{d13f23b723b8a846827a245b89c10fc7d3f11612}. The manifest retains the pins of the earlier papers. The whole
+repository is needed: the package imports the fifteenth paper's library and the shared \leanfile{lean-machine}
+library by relative path, with their transitive dependencies. It does not copy the earlier theorems.
+
+From this paper's directory the reproducible commands are
+\begin{verbatim}
+python3 tools/lean_index.py --check
+python3 tools/fano-shannon/generate_lean.py --check
+python3 tools/grid-shannon/generate_lean.py --check
+cd lean
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+The cache command retrieves the pinned compiled Mathlib dependencies; a compatible existing cache can instead be
+reused. The paper's root module imports all $44$ public local modules. Of these, $43$ are the maintained proofs and
+adapters, and \leanfile{MatrixCoding.Invariance} imports the pairing and parity theorems from the shared library.
+Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
+packaged: \leanname{LeanBacklog} is part of their names, not an additional mathematical dependency. The earlier flat
+entry points are compatibility imports of the maintained files.
+
+\leanfile{PaperAxioms.lean} and \cref{sec:leanindex} are generated together from the formal-status lines and inline
+references. The audit prints the dependencies of every cited declaration, including imported endpoints. Only
+\leanname{propext}, \leanname{Classical.choice} and \leanname{Quot.sound} are permitted. The open conjectures are
+propositions passed as hypotheses; no proof of either conjecture is imported. There are no admitted proofs,
+additional axioms or native-evaluation certificates in the local library. The larger routines set
+\leanname{maxHeartbeats} to $10^6$, or $2\cdot10^6$ for the two generated certificates, and some finite computations
+set \leanname{maxRecDepth} to $4096$. These affect elaboration limits, not the kernel's proof rules.
+
+The exact certificates can also be checked independently using only Python 3.10 or later, without optimization:
+\begin{verbatim}
+python3 tools/fano-shannon/verify_certificate.py
+python3 tools/grid-shannon/verify_certificate.py
+\end{verbatim}
+Do not run these Python checkers with assertions disabled. The generators use the saved rational certificates and
+emit semantic Lean proofs; neither the generator, the discovery solver, nor a floating-point optimum is trusted by
+the Lean theorem. The Fano geometric dictionary in \leanfile{tools/fano-shannon} describes the $34$ set orbits in
+its $33$-term certificate. The grid certificate has $18$ terms. These are finite positive combinations, not
+enumerations of the full Shannon cone. An attaining polymatroid proves the Fano value exact; no corresponding
+attainment is asserted for the grid upper bound.
+
+The first paper's frozen files are unchanged. Their SHA-256 hashes are
+\begin{center}\small
+\begin{tabular}{@{}l@{}}
+\leanfile{Transpose/Statement.lean}\\
+\leanname{2853e0434355f77816dac9304454f571392ec763d55d3128c2c4912fd380216c}\\[.4em]
+\leanfile{Verify.lean}\\
+\leanname{ac2365f66e2a0bded9dd0e036c53c7ad51eb88eb17873df1a36521ffe8f6de7f}
+\end{tabular}
+\end{center}
+\Cref{thm:T,thm:F} conclude the negation of that frozen transposition proposition. This remains conditional on
+an open coding hypothesis. No unconditional answer file is supplied. The ordinary package build and declaration
+axiom audit are distinct from a fresh replay of every imported declaration by the first paper's final verifier;
+no completed fresh replay of that entire closure is claimed here.
+
+The two probabilistic existence proofs, the code realization over cube alphabets, and the native fragmentation
+composition remain written proofs with the scope stated at their results. In particular, the native packing
+estimate used at a growing radius in \cref{prop:hyperfinite} is not supplied by its formal counting adapter.
+The tableau equivalence in \cref{sec:constr-forgets} is an execution checker and restatement, not a coding lower
+bound. Neither the packaging nor the finite certificates assert a common deficit.
+
+The PDF is built in \leanfile{paper/} with \leanname{latexmk -pdf main.tex}. The repository's public-path checks
+apply to its sources, scripts and PDF. Independent statement and written-proof reviews are recorded separately
+from successful builds; a draft awaiting those reviews is not a completed publication check.

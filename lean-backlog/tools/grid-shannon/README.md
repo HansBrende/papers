@@ -1,3 +1,9 @@
+The maintained certificate and generator are now in
+[Paper 21](../../../Tape-Transposition-and-the-Matrix-Coding-Conjecture/tools/grid-shannon/).
+The old script paths below are compatibility links. General acyclic/order
+identification is now Lean-verified in that paper; the historical discovery
+receipts and ancillary experiments remain here.
+
 # Triangle-free grid Shannon certificate
 
 The [proof note](../../notes/triangle-free-shannon-gap.md) gives residual

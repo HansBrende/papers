@@ -1,37 +1,73 @@
 \section{Order and closure}\label{sec:order}
 
-The bounds of \cref{prop:known} come from one argument: a set $A$ of entries is \emph{acyclic} if no entry of $A$ is
-reached from itself along helpers inside~$A$, an entry that is its own helper counting as a cycle; then a code has at
-most $\card\Sigma^{d^2-\card A}$ elements. We determine the best such bound and show what it cannot do.
+A set of entries is acyclic when its induced helper relation has no nonempty closed walk. An incident entry has a
+self-loop and cannot belong to such a set. Specifying the complement determines every entry in an acyclic set in
+order, so its cardinality subtracts from the exponent of a code bound.
 
 \begin{theorem}[Theorem O: order bounds, exactly]\label{thm:O}
-\formal{AcyclicOrder.lean}{WholeRow.exists_rowSet_superset, WholeRow.rowSet_card_add_cost, WholeRow.exact_acyclic_card}
+\formal{LeanMachine/WholeRow/AcyclicOrder.lean}{LeanMachine.WholeRow.AcyclicOrder.exists_rowSet_superset, LeanMachine.WholeRow.AcyclicOrder.rowSet_card_add_cost, LeanMachine.WholeRow.AcyclicOrder.exact_acyclic_card}
 \formal{ClosureBarriers.lean}{ClosureBarriers.assigned_rule_card_le, ClosureBarriers.transported_invoice_ge}
 \formal{RectangleBarrier.lean}{RectangleBarrier.rectangle_barrier, RectangleBarrier.rectangle_invoice_ge}
-Let $\rho$ be a helper map on $[d]$, for arrays with rows $[d]$ and columns in any finite set.
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
-\item For an order of the rows, the entries that lie strictly after the last helper row of their column form an
-acyclic set, and every acyclic set is contained in one of these. The largest acyclic set has $d^2-\sigma(\rho)$
-entries, where $\sigma(\rho)$ is the least value, over the orders of the rows, of the sum over the columns of the
-position of the last helper row.
-\item If the recovery rules of $m$ helper relations together generate all entries from a set of $s$ entries, then
-$d^2-s$ is at most the sum of the sizes of their largest acyclic sets. In particular the rules of transported copies
-of one relation never give a better bound than its own acyclic bound.
-\item If no $r$ rows and $r$ columns are free of incidences of $\rho$, then $\sigma(\rho)\ge(d-r+1)^2$.
+\item For $d$ rows and a finite column set $J$, the entries strictly after every helper row of their column form an
+acyclic set. Every acyclic set is contained in one obtained this way. Consequently its maximum size is
+$d|J|-\sigma(\rho)$, where
+\[
+ \sigma(\rho)=\min_{\pi:[d]\simeq\{1,\ldots,d\}}
+                 \sum_{j\in J}\max_{i\in\rho(j)}\pi(i),\qquad \max\varnothing=0.
+\]
+\item On a finite ground set of size $N$, suppose $m$ displayed helper rules together recover everything from seeds
+$S$. If their largest acyclic sets have sizes $\alpha_1,\ldots,\alpha_m$, then
+$N-|S|\le\sum_j\alpha_j$. For transported copies of one relation the intersection/seed invoice
+$((m-1)N+|S|)/m$ is at least $N-\alpha$.
+\item On $m\ge1$ square layouts of the same $d^2$ coordinates, allow different relations, each with no empty
+$r\times r$ incidence rectangle, where $1\le r\le d$. If their rules recover everything from $S$, then
+\[
+ d^2+(r-1)^2\le |S|+(m+1)d(r-1).
+\]
+In particular the corresponding invoice is at least
+$d^2-(1+1/m)d(r-1)+(r-1)^2/m$. For a single square relation,
+$\sigma(\rho)\ge(d-r+1)^2$.
 \end{enumerate}
 \end{theorem}
-\draftnote{The inequality of (c) and the form of (b) are to be checked against the Lean declarations. Outlines; the
-values $\sigma=41$ for the Fano and grid relations.}
+\begin{outline}
+For (a), rank the entries in an acyclic set $A$ so that internal helpers have smaller rank. Assign to row $i$ the
+maximum of rank plus one on its entries in $A$, or zero when there are none. Every helper row of $(i,j)\in A$ has
+strictly smaller maximum than row $i$. Any order refining these maxima therefore contains $A$ in its displayed
+row-order set. Conversely that set is acyclic by row position. Column $j$ has exactly $d-\max\pi(\rho(j))$ such
+entries, giving the exact count.
+
+For (b), assign each recovered nonseed entry to the rule that first recovered it. Inside one assigned set, every
+helper that is also assigned there was recovered earlier. That set is acyclic. Sum their cardinalities and rearrange
+the intersection invoice. This concerns the displayed rules, not additional algebraic consequences or all Shannon
+inequalities.
+
+For (c), let $a=r-1$ and stop just when some layout first has $d-a$ complete rows. Before that event every layout
+has at least $r$ incomplete rows, so at most $a$ ready columns: $r$ ready columns and $r$ incomplete rows would form
+an empty rectangle. In the distinguished layout at least $d-a$ rows, hence $(d-a)d$ cells, are now known. Its own
+at most $a$ ready columns cover at most $(d-a)a$ of those cells; each other layout contributes at most $da$.
+Everything else must be a seed. This gives $d^2+a^2\le|S|+(m+1)da$. If the seed set already has $d-a$ complete
+rows, the same inequality follows immediately. Apply the case $m=1$ to the complement of an acyclic set and use (a).
+\end{outline}
 
 \begin{proposition}[Mixing relations of bounded window]\label{prop:mixing}
 \notformalized
-For every $\eta>0$ there is a $t$ such that for all large $d$ there is a symmetric reflexive helper map on $[d]$ of
-window at most $2t+1$ for which no $\lceil\eta d\rceil$ rows and $\lceil\eta d\rceil$ columns are free of incidences.
+For every $\eta>0$ there is an integer $t$ such that for all large $d$ there is a symmetric reflexive helper map of
+window at most $2t+1$ with no empty $\lceil\eta d\rceil$ by $\lceil\eta d\rceil$ incidence rectangle.
 \end{proposition}
-\draftnote{Complete proof: the union of $t$ random perfect matchings with their inverses and the diagonal, for
-$t\eta^2>2\ln2$, and a union bound over pairs of sets.}
+\begin{informalproof}
+It suffices to treat $0<\eta<1$; otherwise the identity relation works. Choose $t\eta^2>2\ln2$ and take $t$
+independent uniform permutations of $[d]$. Use their graphs, their inverses and the diagonal as incidences.
+The resulting relation is symmetric and reflexive and both degrees are at most $2t+1$. Put $r=\lceil\eta d\rceil$.
+For fixed $r$-subsets $A,B$, one permutation misses their rectangle with probability
+\[
+ \frac{\binom{d-r}{r}}{\binom dr}\le(1-r/d)^r\le e^{-r^2/d},
+\]
+with value zero if $2r>d$. Independence bounds the probability for all $t$ permutations by $e^{-tr^2/d}$.
+There are at most $4^d$ pairs of subsets, so the probability of any empty required rectangle is at most
+$\exp((2\ln2-t\eta^2)d)<1$. Some choice works; adding reverse edges and the diagonal preserves that property.
+\end{informalproof}
 
-By (c) and \cref{prop:mixing} the best acyclic bound has rate at least $(1-\eta)^2$ on some relations of bounded
-window, so no bound of this
-kind, and by (b) no closure argument with transported copies, proves \cref{conj:MCC}. This confirms the indication of
-the synthesis for large windows~\cite[Section~9]{SeventeenthPaper2026}.
+As $\eta$ tends to zero the lower bound $(d-r+1)^2/d^2$ tends to one. Thus acyclic invoices, and transported
+closure invoices using only the displayed rules, cannot prove a common deficit. This imposes no restriction on
+stronger entropy arguments.

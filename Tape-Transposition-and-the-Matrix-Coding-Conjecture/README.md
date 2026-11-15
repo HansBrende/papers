@@ -2,53 +2,87 @@
 
 Hans Brende, Claude Fable 5.2 (Anthropic) and GPT-6 Astra (OpenAI) · November 2026
 
-**Draft.** The introduction and the preliminaries are written; the other sections state their results and
-mark in red what is still to be written. The proofs, the paper's own Lean library, the index of
-declarations, the reviews and the literature search are not done. Nothing here should be cited yet.
+**Draft under review.** The proof sections and Lean package are supplied. The
+remaining draft notes identify prose and review work; the coding conjecture is open.
 
-[Paper PDF](paper/main.pdf) · [LaTeX](paper/) (CC BY 4.0)
+[Paper PDF](paper/main.pdf) · [LaTeX](paper/) (CC BY 4.0) · [Lean](lean/) (Apache 2.0)
 
 ## The question
 
-Can a multitape Turing machine transpose a d × d matrix of ⌈log₂ d⌉-bit entries in linear time? The
-first paper of the series,
-[*Matrix Transposition and the Tape Coding Conjecture*](../Matrix-Transposition-and-the-Tape-Coding-Conjecture/),
-reduced this to a conjecture about network codes on the time–space diagrams of tapes. This paper is its
-companion: a conjecture about arrays alone implies that conjecture.
-
-A *whole-row code* of window w is a set of d × d arrays in which every column is a function of at most
-w rows. The **Matrix Coding Conjecture** says that such codes have rate bounded away from one, by a
-bound that does not depend on w.
+Can a multitape Turing machine transpose a d × d matrix of ⌈log₂ d⌉-bit entries
+in linear time? A *whole-row code* is a set of arrays in which each column is a
+function of at most w complete rows. The **Matrix Coding Conjecture** asks for
+a rate bound below one independent of w. This paper proves that conjecture
+implies the robust Tape Coding Conjecture and excludes adaptive linear-time
+transposers as well as oblivious ones.
 
 ## What is proved
 
-Formalized in Lean 4 with the standard axioms only. The declarations currently live in
-[`lean-backlog/`](../lean-backlog/) and [`lean-machine/`](../lean-machine/); they will move to this paper's
-library.
+The maintained Lean modules, using only the standard axioms, include:
 
-- The Matrix Coding Conjecture implies the robust Tape Coding Conjecture and hence that
-  `Transpose.LinearTimeTransposable` is false, for all machines
-  ([`WholeRowTCC.lean`](../lean-backlog/WholeRowTCC.lean)). A weak form suffices
-  ([`Wall.lean`](../lean-backlog/Wall.lean)).
-- For oblivious machines, after a cheap cut the outputs of almost every row of the transpose depend on
-  boundedly many rows of the input.
-- A two-sided normal form; the exact value of every acyclic-set bound, and barriers for order and
-  closure arguments; entropy bounds below every acyclic bound on the Fano and grid relations and on
-  mixing lifts; rate one half for codes invariant under a pairing.
+- [The common-deficit implication](lean/MatrixCoding/WholeRowTCC.lean) and the
+  [weaker sufficient target](lean/MatrixCoding/Wall.lean), with their conditional
+  conclusions against the first paper's frozen transposition proposition.
+- [Row spread](lean/MatrixCoding/WindowSpread.lean) and
+  [its coding transfer](lean/MatrixCoding/RowSpreadCrux.lean).
+- [The symmetric, reflexive, two-sided normal form](lean/MatrixCoding/NormalizedRateTransfer.lean).
+- [Exact acyclic-set values](lean/MatrixCoding/WholeRowAcyclic.lean),
+  [the assigned-rule bound](lean/MatrixCoding/ClosureBarriers.lean), and
+  [the rectangle barrier](lean/MatrixCoding/RectangleBarrier.lean).
+- [Fano's exact Shannon value](lean/MatrixCoding/FanoAttainment.lean),
+  [the grid upper certificate](lean/MatrixCoding/GridFull.lean), and
+  [the conditional gap for mixing lifts](lean/MatrixCoding/FanoLift.lean).
+- The shared library's [pairing](../lean-machine/LeanMachine/WholeRow/Pairing.lean)
+  and [parity](../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
+  bounds, included by this package's root module.
 
-Proved in the text and not formalized: the existence of mixing relations and of mixing lifts at bounded
-window, and one exclusion of runs that a cheap cut splits.
+Complete written proofs, not Lean: existence of bounded-window mixing relations
+and growing-girth Fano lifts; the three-lane realization of Fano's optimum; and
+the exclusion of oblivious runs fragmented by a cheap cut into components with
+few outputs. The exact finite certificate does not assert grid attainment or
+attainment on the sparse lifts.
 
-## What is open
+## What remains open
 
-The Matrix Coding Conjecture itself, in any of its forms. No converse is known: a refutation would not
-give a machine.
+The Matrix Coding Conjecture and its weak form. The common form implies the
+weak form; strict logical separation is not proved. There is no converse from
+the existence of high-rate array codes to a machine. No unconditional solution
+of the frozen transposition problem is supplied.
 
-## Building
+To work on the precise weak target, import `MatrixCoding.Wall` and prove or
+refute `LeanBacklog.Wall.Conjecture`. The name is retained for compatibility;
+the maintained source is in this paper. No admitted theorem is used.
+
+## Building and verifying
+
+Clone the whole repository, retaining sibling paper directories. Lean 4.34.1
+and the pinned Mathlib revision are recorded in `lean/`; do not update the pins.
 
 ```sh
-cd paper && latexmk -pdf main.tex
+cd lean
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
 ```
 
-The Lean build instructions will be added with the paper's library. Until then see
-[`lean-backlog/Wall.lean`](../lean-backlog/Wall.lean) for the commands that check the main implications.
+From this paper's directory:
+
+```sh
+python3 tools/lean_index.py --check
+python3 tools/fano-shannon/generate_lean.py --check
+python3 tools/grid-shannon/generate_lean.py --check
+python3 tools/fano-shannon/verify_certificate.py
+python3 tools/grid-shannon/verify_certificate.py
+cd paper
+latexmk -pdf main.tex
+```
+
+Python 3.10 or later is needed for the certificate checkers. No LP solver is
+needed. Omit `--check` to regenerate the corresponding files. The index tool
+also generates `PaperAxioms.lean`, auditing every cited declaration. The build
+covers the shared invariance dependencies; no separate backlog build is needed.
+Old `lean-backlog` entry points remain compatibility imports.
+
+A package build and an axiom audit are not a fresh replay of the entire import
+closure by the frozen final verifier. That larger replay has not completed in
+the capped audit. See the paper's verification appendix for formal scope.

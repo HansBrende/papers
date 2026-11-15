@@ -34,14 +34,12 @@ that all steps apply the same rule.
 
 \begin{proposition}[Runs that a cheap cut splits]\label{prop:hyperfinite}
 \notformalized
-Let an oblivious machine with $k$ work tapes run in time $c(L+1)$ with steps of $s$ bits. Suppose that for some
+Let an oblivious machine with $k\ge1$ work tapes run in time $c(L+1)$ with steps of $s$ bits. Suppose that for some
 $\theta$ with $s(k+2)c\,\theta<\tfrac12$ and all large $d$ there is a set of at most $\theta T$ steps whose removal
 leaves components of the dependency graph, edges taken without direction, with $o(\log\log d)$ output steps each.
 Then the machine does not transpose.
 \end{proposition}
-\draftnote{Complete proof from the local-view inequality (\lean{LocalRecordViews.half_invoice}, formalized), the cut
-of the fourteenth paper and the separation theorem of the fifth paper. Relation to the classes of the fourth paper:
-no implication is established in either direction.}
+\input{sections/fragmentation-proof}
 
 \begin{remark}[Fibres are nearly Markov]\label{rem:markov}
 Proof sketch only: the set of inputs with a given cut message is cut out by constraints on boundedly many rows each,

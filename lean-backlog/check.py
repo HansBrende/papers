@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check native row-spread and its calibrations in the existing pinned environment.
+"""Check legacy entry points against the maintained Paper 21 package.
 
 From High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean/:
     lake env python3 ../../lean-backlog/check.py
@@ -13,8 +13,9 @@ import subprocess
 import sys
 
 SOURCE = Path(__file__).resolve().parent
-PACKAGE = SOURCE.parent / "High-Rate-Separated-Storage-Codes-and-Tape-Transposition" / "lean"
-CACHE = PACKAGE / ".lake" / "build" / "lean-backlog"
+PACKAGE = SOURCE.parent / "Tape-Transposition-and-the-Matrix-Coding-Conjecture" / "lean"
+LEGACY_PACKAGE = SOURCE.parent / "High-Rate-Separated-Storage-Codes-and-Tape-Transposition" / "lean"
+CACHE = LEGACY_PACKAGE / ".lake" / "build" / "lean-backlog"
 MODULES = [
     "StatementsRowSpread", "ConeCodeTransfer", "WindowAmortization", "WindowLabels",
     "WindowCounting", "WindowGuards", "WindowRows", "WindowConeWindows",
@@ -37,6 +38,16 @@ def main():
     unknown = set(selected) - set(MODULES)
     if unknown:
         raise SystemExit("Unknown module(s): " + ", ".join(sorted(unknown)))
+    if os.environ.get("MATRIX_BACKLOG_ENV") != str(PACKAGE):
+        # Re-enter Lake's current environment even when invoked from an older
+        # paper's `lake env`. No dependency pin or package cache is changed.
+        env = os.environ.copy()
+        env.pop("LEAN_PATH", None)
+        env["MATRIX_BACKLOG_ENV"] = str(PACKAGE)
+        subprocess.run(["lake", "build", "MatrixCoding"], cwd=PACKAGE, env=env, check=True)
+        subprocess.run(["lake", "env", sys.executable, str(Path(__file__).resolve()), *selected],
+                       cwd=PACKAGE, env=env, check=True)
+        return
     CACHE.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env["LEAN_PATH"] = str(CACHE) + os.pathsep + env.get("LEAN_PATH", "")
@@ -49,16 +60,6 @@ def main():
              str(root.joinpath(*module.split('.')).with_suffix('.lean'))],
             cwd=PACKAGE, env=env, check=True,
         )
-    if {"NormalizedCodeTransfer", "NormalizedRateTransfer"}.intersection(selected):
-        shared = SOURCE.parent / "lean-machine"
-        check("LeanMachine.SymmetricHelpers", shared, shared / ".lake" / "build" / "lib" / "lean")
-    if {"ClosureBarriers", "EntropyConsolidation", "MacroProjection", "FanoLift", "WholeRowAcyclic"}.intersection(selected):
-        shared = SOURCE.parent / "lean-machine"
-        check("LeanMachine.RecoveryAcyclic", shared, shared / ".lake" / "build" / "lib" / "lean")
-    if {"MacroProjection", "FanoLift", "WholeRowAcyclic"}.intersection(selected):
-        shared = SOURCE.parent / "lean-machine"
-        check("LeanMachine.WholeRow.LiftOrder", shared, shared / ".lake" / "build" / "lib" / "lean")
-        check("LeanMachine.WholeRow.AcyclicOrder", shared, shared / ".lake" / "build" / "lib" / "lean")
     if {"FarClebsch", "PaleyTournament"}.intersection(selected):
         # Keep the existing namespace intact: a partial namespace in CACHE
         # would shadow Paper 4's other compiled modules on LEAN_PATH.

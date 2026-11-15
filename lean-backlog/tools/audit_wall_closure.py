@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Audit the already-built conditional Wall theorem; never constructs Answer.lean.
 
-From High-Rate-Separated-Storage-Codes-and-Tape-Transposition/lean:
+From Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean:
     lake env python3 ../../lean-backlog/tools/audit_wall_closure.py
     lake env python3 ../../lean-backlog/tools/audit_wall_closure.py --replay
 
-Prepare pinned compiled dependencies and run lean-backlog/check.py first.
+Run `lake build MatrixCoding` in that package first.
 The default inventory and target axiom check, or optional fresh-kernel replay, run
 in one Lean process. Raw output includes local paths: save it outside the
 public repository. The timeout covers imports, audit and replay together.
@@ -29,12 +29,12 @@ def main():
         parser.error("--timeout must be positive")
     source = Path(__file__).resolve().parent
     root = source.parent.parent
-    package = root / "High-Rate-Separated-Storage-Codes-and-Tape-Transposition" / "lean"
-    cache = package / ".lake" / "build" / "lean-backlog"
+    package = root / "Tape-Transposition-and-the-Matrix-Coding-Conjecture" / "lean"
+    cache = package / ".lake" / "build" / "lib" / "lean" / "MatrixCoding"
     if not (cache / "Wall.olean").is_file():
-        parser.error("Wall.olean is missing; prepare dependencies and run lean-backlog/check.py")
+        parser.error("Wall.olean is missing; run lake build MatrixCoding in Paper 21")
     env = os.environ.copy()
-    env["LEAN_PATH"] = str(cache) + os.pathsep + env.get("LEAN_PATH", "")
+    env.pop("LEAN_PATH", None)
     env["WALL_REPLAY"] = "1" if args.replay else "0"
     env["WALL_ALL_AXIOMS"] = "1" if args.all_axioms else "0"
     started = time.monotonic()
@@ -44,7 +44,7 @@ def main():
         progress = Path(directory) / "progress"
         env["WALL_AUDIT_PROGRESS"] = str(progress)
         process = subprocess.Popen(
-            ["lean", "-j1", str(source / "audit_wall_closure.lean")],
+            ["lake", "env", "lean", "-j1", str(source / "audit_wall_closure.lean")],
             cwd=package, env=env,
         )
         last = ""

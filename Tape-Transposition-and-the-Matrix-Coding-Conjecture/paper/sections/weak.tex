@@ -6,7 +6,7 @@ with the same consequence. By \cref{thm:N} it may be stated for two-sided codes 
 
 For $k\ge5$, $G\ge1$, $c\ge4$, $d\ge1$, $\theta>0$ and $R\ge0$ put $b=b(d)$, $L=d^2b$, $\ell=\lceil db/G\rceil$ and
 \begin{align*}
-  D&=\text{the depth of the cut of density $\theta$ of~\cite[Theorem~7.5]{BoundedStack2026}},&
+  D&=\operatorname{genieDepth}(k,1,12,\theta),&
   W&=2(G+1)(2k+3)^{D},\\
   K&=c+4+5(k-3)(cG+2),&
   M&=(4kG+1)\,\ell\,\bigl\lfloor\theta\lceil cL/\ell\rceil\bigr\rfloor,\\
@@ -28,8 +28,31 @@ helper map of window at most $W+R+1$, has at most $2^{(1-\delta)L}$ elements, an
 \formal{Wall.lean}{Wall.of_commonDeficit, Wall.excludes_adaptive, Wall.of_previous, Wall.commonDeficit_implies_previous}
 \Cref{conj:MCC} implies \cref{conj:weak}, and \cref{conj:weak} implies that \textup{(T)} fails.
 \end{theorem}
-\draftnote{Outline: final-output diagrams of co-entropy $Kd$ from the first paper (\lean{codes_coentLinear_at}), the
-end invoice with integer budgets (\leanfile{FiniteWholeRowPayments.lean}), the normalization.}
+\begin{outline}
+The first paper's buffered-machine reduction, \lean{Transpose.Tape.Impl.codes_coentLinear_at}, gives at every
+sufficiently large $d$ a solving set of co-entropy at most $Kd$, with all $L$ output bits appended in the final $L$
+steps. It uses $k=k_{\rm machine}+5$, the buffered cell-width parameter $G$, and $c=2c_{\rm machine}+4$; the machine's
+state count enters only the lower threshold on $d$.
+
+A final output row occupies at most $G+1$ slots, so no exceptional columns are needed and the helper window is
+$W=2(G+1)(2k+3)^D$. There are at most $\lceil cL/\ell\rceil$ slots, and at most
+$\lfloor\theta\lceil cL/\ell\rceil\rfloor$ cut slots, giving the exact message bill $M$.
+
+For a one-sided fibre, Theorem N first passes to a two-sided code. Rows of reverse degree exceeding $R$ number at
+most $h$ as defined above; there are none if $R\ge d$. Freezing those rows and the same columns costs at most
+$X=2dh-h^2$ entries. The assumed normalized exponent therefore bounds the original one-sided exponent by
+$[d^2+(1-\delta)d^2+X]/2$. Substitution in (2) gives
+\[
+ L\le Kd+M+\tfrac b2\bigl(d^2+(1-\delta)d^2+X\bigr),
+\]
+contradicting condition (ii). Cofinality supplies a witness $d$ beyond the machine's threshold; all code and helper
+choices remain universally quantified at that $d$.
+
+Conversely, a common deficit supplies the normalized bound with any smaller positive deficit. Choose fixed
+$\theta$ small enough, then $R$ large enough, and finally $d$ large enough. The estimates
+$M\le(4kG+1)\theta(cL+db)$ and $X\le2Wd^2/(R+1)$ absorb the finite overheads and prove condition (ii).
+This establishes implication, not strict separation of the two open conjectures.
+\end{outline}
 
 \begin{remark}[What the weak form asks]\label{rem:weak-demand}
 Condition~(ii) reads, up to lower-order terms, $\delta>2(4kG+1)c\,\theta+2W/(R+1)$ at window $U=W+R+1$. So a bound
@@ -37,6 +60,8 @@ $1-f(U)$ on the rate at window~$U$ need not have $f$ bounded below: it suffices 
 value $f(W+R+1)$ exceeds the right-hand side. \emph{Heuristic:} the depth $D$ of the cut grows very fast as $\theta$
 falls and $W$ is exponential in~$D$, so that $\theta$ is of the order of an inverse power of $\log\log W$; a deficit
 that falls more slowly than every such power would then suffice. We have not proved an estimate of this form. On the other hand the general
-bound $f(U)=1/(U+1)$ of \cref{prop:known} never meets it, since $1/(W+R+2)<2W/(R+1)$. The symmetric arrays show
+bound $f(U)=1/(U+1)$ cannot meet even the exact finite invoice. Indeed a useful witness has $U<d$, and, writing
+$t=R+1$, one has $h\ge\lfloor d/t\rfloor$ and $X/d^2\ge1/t>1/(U+1)$. For the middle inequality write
+$d=at+s$, $0\le s<t$: then $t(2da-a^2)-d^2=a^2t(t-1)-s^2\ge0$. The symmetric arrays show
 $\delta\le(d-1)/(2d)$, and a window of $d$ or more admits all arrays, so every witness has $W+R+1<d$.
 \end{remark}

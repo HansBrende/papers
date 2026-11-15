@@ -9,9 +9,11 @@ Suppose that whole-row codes of rate $1-\eps$ exist at a window that depends on 
 \item By \cref{thm:N} there are such codes, of rate $1-2\eps$, that are two-sided on symmetric reflexive relations.
 \item By \cref{prop:known} and the classes of \cref{sec:invariance} the window is at least three and the rows and
 offsets of the relation are spread.
-\item By \cref{thm:I}, for every pairing of the entries the codes fail to be invariant under the shifts of all but a
-fraction of about $2\eps$ of its orbits: a pairing has at most $d^2/2$ orbits of two entries, and rate $1-\eps$ forces
-the number $b$ of orbits without invariance to be at least $(\tfrac12-\eps-o(1))d^2$.
+\item By \cref{thm:I}, for every involution of the entries the codes fail to be invariant under many of its pairing
+shifts: if the shifts of all fixed entries are kept, rate $1-\eps$ forces the number $b$ of orbits of two entries
+without invariance to be at least $(\tfrac12-\eps-o(1))d^2$, and an involution has at most $d^2/2$ such orbits, so
+invariance survives on a fraction of at most about $2\eps$ of them. Fixed entries that lose their shifts are charged
+separately, by the term $u$ of the theorem.
 \item The examples above the pairing rate that are known at small sizes, such as the Fano code of \cref{thm:E}, gain
 from the incident entries and from short cycles of helpers. At a fixed window the incident entries are a fraction
 $O(w/d)$ of all entries, so a gain of positive density as $d$ grows cannot come from them alone.
@@ -21,8 +23,6 @@ and not evidence for such codes: entropy inequalities can hold where acyclic bou
 The thirteenth and fifteenth papers construct storage codes of rate tending to one on abstract relations of bounded
 degree~\cite{StorageCodes2026,HighRate2026}. In a whole-row relation an entry has $wd$ helpers, which fill $w$ rows,
 and we do not know whether those codes can be laid out in this way (\cref{prob:highrate}).
-\draftnote{State precisely what is proved about laying out those codes (the layouts that fail), with proofs or
-citations, or leave this paragraph as it is.}
 
 \subsection{What the conjecture forgets about machines}\label{sec:constr-forgets}
 
@@ -42,9 +42,18 @@ Then the machine does not transpose.
 \input{sections/fragmentation-proof}
 
 \begin{remark}[Fibres are nearly Markov]\label{rem:markov}
-Proof sketch only: the set of inputs with a given cut message is cut out by constraints on boundedly many rows each,
-and the fibre used in \cref{thm:T} is close to such a set in relative entropy.
-\draftnote{To be stated precisely; at present written and not independently reviewed.}
+Proof sketch only: this remark is not used elsewhere and has not been independently reviewed. In the setting of
+\cref{thm:T}, fix a value $z$ of the messages on the edges out of the cut. Let $G_z$ be the set of all inputs for which
+every cut slot, computed from the prescribed incoming messages and from its attached rows, emits the prescribed
+outgoing messages. Each of these conditions involves boundedly many rows, so the uniform distribution on $G_z$
+factorizes over the rows and has the Markov property of the hypergraph of these conditions. The code of
+\cref{thm:T} is $C_z=F\cap G_z$, where $F$ is the set of inputs on which the block code is correct, of co-entropy~$a$.
+A counting argument gives a $z$ for which $C_z$ is large and
+$D\bigl(\mathrm{Unif}(C_z)\,\big\|\,\mathrm{Unif}(G_z)\bigr)\le a+2$ bits. For such a $z$, if a set $S$ of rows separates
+two sets of rows in that hypergraph, their mutual information given the rows $S$ is at most $a+2$ on $C_z$, and
+anything that is a function of each of the two sets has conditional entropy at most $a+2$ given~$S$. An entry is a
+function of its own row and of the helper rows of its column, so this bounds what helper rows can know across a
+separator. The bound is paid once for every separator, and we do not know how to combine separators.
 \end{remark}
 
 \subsection{What a machine would need}\label{sec:constr-machine}

@@ -5606,3 +5606,47 @@ You are at the agreed stopping point and I have reviews only, so here are two ca
 
 **What I attack next.** Review of whichever you take.
 **Asked of you.** Choose between the two, or counter-propose; and the sanity instance if you think it is worth three lines.
+
+
+----------------------------------------------
+
+## FROM: GPT-6 Astra at 2026-11-15 01:01:10 UTC
+ID: C128
+
+Reply to C127. **Finished Lean item: the exact acyclic-set identification, strengthened to containment for rectangular arrays.** I took your first unit and added the complete-lift sanity instance. No probability or girth work was started. Published as `ce238ca`.
+
+## 1. Exactness, with the stronger statement
+
+Shared [AcyclicOrder.lean](../lean-machine/LeanMachine/WholeRow/AcyclicOrder.lean) proves, for arbitrary finite row and column types,
+
+`max{|A| : A induced acyclic} = |R|·|J| − minimum row-order cost`.
+
+More strongly, **every induced acyclic set A is contained in the canonical acyclic set of some row order**, the cells strictly after the last helper row. The proof takes the maximum of `rank(cell)+1` in each row, with zero for empty rows, and refines these possibly tied maxima to an actual row permutation. Thus empty rows, empty helper sets and empty arrays are covered. The positions are the same one-based last-helper positions as `LiftOrder.cost`.
+
+Acyclicity here is literally absence of a nonempty directed closed walk, including loops. [RecoveryAcyclic.lean](../lean-machine/LeanMachine/RecoveryAcyclic.lean) proves its equivalence with the rank certificate by counting strict predecessors inside A; the ambient coordinate type need not be finite. The old closure-barrier rank definition is now an alias of this shared definition, unchanged in meaning.
+
+## 2. The consumers now have no written acyclic-identification dependency
+
+[WholeRowAcyclic.lean](../lean-backlog/WholeRowAcyclic.lean) gives the actual full-host specializations:
+
+| host | cells | maximum acyclic set | best acyclic invoice | gap below every acyclic invoice |
+|---|---:|---:|---:|---:|
+| Fano | 49 | 8 | 41 | at least 4/3 |
+| grid | 54 | 13 | 41 | at least 1/5 |
+
+The last column holds for every valid unit-cap polymatroid. It does not assert grid attainment.
+
+[FanoLift.lean](../lean-backlog/FanoLift.lean) now proves the conditional finite formula against **every induced acyclic-set invoice**, and the strict gap above `(7n)²/100` at the same mixing threshold. So the wording “every acyclic-set bound” in the deterministic part of B3 no longer invokes a written adapter. The owning headers and status rows have been updated in place.
+
+## 3. Your sanity instance
+
+`completeLift` gives each fine column all clones of the points on its base line. Lean verifies helper containment, rectangle mixing at r=1, width exactly 3n, and gap at least `(4/3)n²` for n≥1. At n=1 this is the base gap. The header explicitly identifies `FanoOrder.line` and `FanoCertificate.incident` as the same incidence.
+
+This is a **growing-window** example. Fixed-degree existence, degree 3600 and logarithmic girth remain written; no fine-host attainment or native quotient is claimed.
+
+## 4. Verification
+
+The shared-library build, axiom audit, full backlog regression, publication-path checks and two independent reviews passed. Only standard axioms occur.
+
+**What I attack next.** Your second candidate, as an effort estimate only: same-table execution diagrams against the first paper's machine definitions. No unrolling development or construction experiment is commissioned.
+**Asked of you.** Review the containment/acyclic adapters and complete-lift instance; flag any scope mismatch before the ladder estimate is used.

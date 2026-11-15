@@ -72,7 +72,7 @@ $\card C^{w+1}\le\card\Sigma^{wd(d+1)}$, with no linearity or restriction on the
 At window one this gives $\card C\le\card\Sigma^{d(d+1)/2}$; pairing attains it. The threshold for the limiting
 upper rate is independent of the alphabet. For window two, the greedy argument of
 \cite[Proposition~6.22(b)]{SeventeenthPaper2026} puts last a row helping the fewest columns. Its formalization uses
-the rectangular invariant
+the rectangular invariant $g(0,m)=0$ and, for $n\ge1$,
 \[
 g(n,m)=
 \begin{cases}
@@ -81,8 +81,9 @@ n(n+1)/2+n(m-n)+(n-1),&m\ge n.
 \end{cases}
 \]
 If that row helps $\delta$ columns, then $n\delta\le2m$, and removing it and those columns gives
-$n\delta+g(n-1,m-\delta)\le g(n,m)$. Induction gives an order of cost at most $g(n,m)$, including empty helper
-sets. At $n=m=d$ this is the claimed exponent. The upper threshold is again independent of the alphabet;
+$n\delta+g(n-1,m-\delta)\le g(n,m)$. Starting from the zero cost of an array with no rows, induction gives an order
+of cost at most $g(n,m)$, including empty helper sets. At $n=m=d$ this is the claimed exponent. The upper threshold
+is again independent of the alphabet;
 the symmetric-array code has exactly $\card\Sigma^{d(d+1)/2}$ elements over every finite alphabet.
 The shared order theorem is \lean{LeanMachine.WholeRow.AcyclicOrder.exists_cost_window_two_le}.
 \end{outline}
@@ -93,13 +94,13 @@ In \cref{def:rate,conj:MCC} the window is fixed before $d$ grows. This cannot be
 conjectured that for some constant $c>0$ no set of $2^{(1-c)d^2}$ matrices of bits has every column a function of
 $cd$ rows; in their terms, that the transpose is a block-rigid function~\cite[Conjecture~36]{MittalRaz2021}. In the
 terms of this paper that is a deficit $c$ at window $cd$, for entries of one bit. It is false. By a construction of
-Braverman and Forbes, given in Mittal's dissertation, for every $\eps>0$ there is an $\alpha>0$ such that for
+Braverman and Forbes, given in Mittal's dissertation, for every $0<\eps<1$ there is an $\alpha>0$ such that for
 infinitely many~$d$ some helper map of window at most $d^{1-\alpha}$ has an $\F_2$-linear whole-row code of
 codimension at most $d^{1+\eps}$~\cite[Question~10.8.2, Proposition~10.8.3 and Lemma~10.8.5]{Mittal2025}. Used for
 each bit of the entries, it gives whole-row codes over the canonical alphabet of rate at least $1-d^{\eps-1}$. The
 codes are defined by parities over the induced matchings of a dense Ruzsa--Szemer\'edi graph, and the same
 constructions are delivery schemes in coded caching~\cite{ShanmugamEtAl2017,YanEtAl2017}; see the second paper of the
-series~\cite{SecondPaper2026}. So the best rate at window $d^{1-\alpha}$ tends to one, and \cref{conj:MCC} would be
+series~\cite{SecondPaper2026}. So the best rate at window $d^{1-\alpha}$ has upper limit one, and \cref{conj:MCC} would be
 false for windows of that size. A second construction of Alon, Moitra and Sudakov lowers the window. For
 infinitely many~$d$ it is a graph on $d$ vertices, the words of a fixed length with an edge between two words that
 agree in few positions, that misses at most $d^{3/2+\eps}$ edges and whose edges are partitioned into

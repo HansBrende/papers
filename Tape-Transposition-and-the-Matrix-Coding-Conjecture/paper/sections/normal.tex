@@ -1,7 +1,7 @@
 \section{Normal forms}\label{sec:normal}
 
 \begin{theorem}[Theorem N: two-sided codes on symmetric relations]\label{thm:N}
-\formal{TwoSidedCodeTransfer.lean}{RowSpread.difference_fibre_twoSided, RowSpread.wholeRow_card_sq_le_of_twoSided, RowSpread.commonDeficit_iff_twoSided}
+\formal{TwoSidedCodeTransfer.lean}{RowSpread.exists_large_difference_fibre, RowSpread.difference_fibre_twoSided, RowSpread.wholeRow_card_sq_le_of_twoSided, RowSpread.commonDeficit_iff_twoSided}
 \formal{NormalizedCodeTransfer.lean}{RowSpread.twoSided_card_le_of_fixedCross, RowSpread.NormalizedTwoSidedWholeRowCardinalityBound.twoSided}
 \formal{NormalizedRateTransfer.lean}{RowSpread.commonDeficit_iff_normalizedTwoSided, RowSpread.commonDeficitCanonicalBits_iff_normalizedTwoSided}
 Let $C$ be a whole-row code for $\rho$ over a finite abelian group $\Sigma$ of size $q\ge2$.
@@ -26,6 +26,9 @@ and the diagonal. The resulting relation is symmetric and reflexive with width a
 $q^{2wd^2/(R+1)}$ raw records, yielding (b). The exact finite version pays the overlap of the fixed rows and columns
 only once, as used in \cref{thm:F}.
 
+The all-alphabet equivalence in (c) is
+\lean{RowSpread.commonDeficit_iff_normalizedTwoSided}; its canonical-bit counterpart is
+\lean{RowSpread.commonDeficitCanonicalBits_iff_normalizedTwoSided}.
 For (c), choose $R$ large enough for any prescribed error at a fixed original window, and apply (a). Reverse
 implications are restrictions to subclasses. Canonical alphabets carry their usual bitwise additive structure;
 for an arbitrary finite alphabet one may transfer a cyclic group structure along a bijection. Neither the code nor

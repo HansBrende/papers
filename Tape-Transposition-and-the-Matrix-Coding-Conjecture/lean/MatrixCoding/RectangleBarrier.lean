@@ -1,4 +1,5 @@
 import MatrixCoding.ClosureBarriers
+import LeanMachine.WholeRow.AcyclicOrder
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Finset.Max
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
@@ -234,6 +235,51 @@ theorem rectangle_invoice_ge {m r : ℕ} (hm : 0 < m) (hr : 1 ≤ r) (hrd : r �
         (r - 1 : ℕ) ^ 2 := by
       field_simp [ne_of_gt hm']
     _ ≤ _ := by nlinarith only [h']
+
+open LeanMachine.RecoveryAcyclic LeanMachine.WholeRow.AcyclicOrder LeanMachine.WholeRow.LiftOrder
+open scoped Classical
+
+/-- No empty r-by-r incidence rectangle forces this lower bound for every
+one-based row-order cost. This is the one-copy consequence of the barrier. -/
+theorem rectangle_order_cost_ge {d r : ℕ} (hr : 1 ≤ r) (hrd : r ≤ d)
+    (ρ : Fin d → Finset (Fin d)) (hρ : NoEmptyRectangle ρ r)
+    (o : Fin d ≃ Fin (Fintype.card (Fin d))) :
+    (d-r+1)^2 ≤ cost ρ o := by
+  classical
+  let A := rowSet ρ o
+  let S : Finset (Fin d × Fin d) := univ \ A
+  obtain ⟨rank, hrank⟩ := (rank_iff_acyclic _ _).mpr (rowSet_acyclic ρ o)
+  let W : RecoveryWitness (fun _ : Fin 1 => gridHelpers ρ (Equiv.refl _)) S := {
+    rank := rank
+    copy := fun _ => 0
+    earlier := by
+      intro x y hy
+      by_cases hys : y ∈ S
+      · exact Or.inl hys
+      · right
+        have hx : x.val ∈ A := by simpa [S] using x.property
+        have hyA : y ∈ A := by simpa [S] using hys
+        exact hrank x hx y hyA ((mem_rowHelpers ρ x y).mpr (mem_filter.mp hy).2)
+  }
+  have hb := rectangle_barrier (by decide : 0 < 1) hr hrd (fun _ : Fin 1 => ρ)
+    (fun _ => hρ) (fun _ => Equiv.refl _) S W
+  have hpart : S.card + A.card = d*d := by
+    simp [S, card_sdiff_of_subset (subset_univ A), A]
+    have h := card_le_univ (rowSet ρ o)
+    simp only [Fintype.card_prod, Fintype.card_fin] at h
+    omega
+  have hc : A.card + cost ρ o = d*d := by
+    simpa [A] using rowSet_card_add_cost ρ o
+  have hS : S.card = cost ρ o := by omega
+  rw [hS] at hb
+  have he : (d-r+1)+(r-1)=d := by omega
+  nlinarith
+/-- The same rectangle lower bound for the least cost over all row orders. -/
+theorem rectangle_minimumCost_ge {d r : ℕ} (hr : 1 ≤ r) (hrd : r ≤ d)
+    (ρ : Fin d → Finset (Fin d)) (hρ : NoEmptyRectangle ρ r) :
+    (d-r+1)^2 ≤ minimumCost ρ := by
+  obtain ⟨o, ho⟩ := exists_minimum_order ρ
+  simpa only [ho] using rectangle_order_cost_ge hr hrd ρ hρ o
 
 #print axioms rectangle_barrier
 #print axioms rectangleBarrierTarget

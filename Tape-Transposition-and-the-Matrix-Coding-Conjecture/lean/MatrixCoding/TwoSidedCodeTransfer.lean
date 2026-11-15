@@ -98,6 +98,38 @@ theorem difference_fibre_twoSided {d : ℕ} {α : Type u} [AddGroup α] [Decidab
     rw [hrec] at h
     exact sub_left_inj.mp h
 
+/-- A selected translated fibre is two-sided and carries at least the average
+number of ordered pairs. The integer product form includes empty codes and
+one-symbol alphabets, without division or a nonemptiness premise on the code. -/
+theorem exists_large_difference_fibre {d : ℕ} {α : Type u}
+    [Fintype α] [AddGroup α] [DecidableEq α] (ρ : Fin d → Finset (Fin d))
+    (C : Finset (Entry d → α)) (hC : IsWholeRowCodeExcept ρ ∅ C) :
+    ∃ z : Entry d → α,
+      let D := (((C.product C).filter fun p : (Entry d → α) × (Entry d → α) =>
+        p.1 - transposeWord p.2 = z).image Prod.fst)
+      IsTwoSidedWholeRowCode ρ D ∧ C.card ^ 2 ≤ Fintype.card α ^ (d * d) * D.card := by
+  classical
+  let F := fun z : Entry d → α => (C.product C).filter
+    (fun p : (Entry d → α) × (Entry d → α) => p.1 - transposeWord p.2 = z)
+  obtain ⟨z, _, hz⟩ := exists_max_image univ (fun z => (F z).card) univ_nonempty
+  have hcount := card_le_of_real_fibre_bound (C.product C)
+    (fun p => p.1 - transposeWord p.2) ((F z).card : ℝ) (fun z' => by
+      exact_mod_cast hz z' (mem_univ _))
+  have hinj : Set.InjOn Prod.fst (F z : Set ((Entry d → α) × (Entry d → α))) := by
+    intro x hx y hy hxy
+    have hxz := (mem_filter.mp hx).2
+    have hyz := (mem_filter.mp hy).2
+    have he : transposeWord x.2 = transposeWord y.2 := by
+      have h := hxz.trans hyz.symm
+      rw [hxy] at h
+      exact sub_right_inj.mp h
+    exact Prod.ext hxy (congrArg transposeWord he)
+  refine ⟨z, difference_fibre_twoSided ρ C hC z, ?_⟩
+  rw [card_image_of_injOn hinj]
+  have hnat : (C.product C).card ≤ Fintype.card (Entry d → α) * (F z).card := by
+    exact_mod_cast hcount
+  simpa [card_product, Entry, sq] using hnat
+
 /-- Relation-specific squared bound. This is stronger than a uniform-window
 adapter: any common real cardinality bound for the two-sided codes of this
 one relation bounds the square of every one-sided code's size. -/

@@ -3,7 +3,8 @@
 Hans Brende, Claude Fable 5.2 (Anthropic) and GPT-6 Astra (OpenAI) · November 2026
 
 **Draft under review.** The proof sections and Lean package are supplied.
-Independent statement and written-proof reviews are in progress; the coding conjecture is open.
+Independent statement and written-proof reviews have supplied corrections, now incorporated.
+Final author review and a deeper related-work pass remain; the coding conjecture is open.
 
 [Paper PDF](paper/main.pdf) · [LaTeX](paper/) (CC BY 4.0) · [Lean](lean/) (Apache 2.0)
 

@@ -27,6 +27,8 @@ import MatrixCoding
 #print axioms LeanBacklog.MacroProjection.upper_of_projection
 #print axioms LeanBacklog.RectangleBarrier.rectangle_barrier
 #print axioms LeanBacklog.RectangleBarrier.rectangle_invoice_ge
+#print axioms LeanBacklog.RectangleBarrier.rectangle_minimumCost_ge
+#print axioms LeanBacklog.RectangleBarrier.rectangle_order_cost_ge
 #print axioms LeanBacklog.RowSpread.IsWholeRowCodeExcept
 #print axioms LeanBacklog.RowSpread.NormalizedTwoSidedWholeRowCardinalityBound.twoSided
 #print axioms LeanBacklog.RowSpread.UniformWholeRowRateCanonicalBits
@@ -36,6 +38,7 @@ import MatrixCoding
 #print axioms LeanBacklog.RowSpread.commonDeficit_iff_normalizedTwoSided
 #print axioms LeanBacklog.RowSpread.commonDeficit_iff_twoSided
 #print axioms LeanBacklog.RowSpread.difference_fibre_twoSided
+#print axioms LeanBacklog.RowSpread.exists_large_difference_fibre
 #print axioms LeanBacklog.RowSpread.native_indexCode_bound_of_wholeRow
 #print axioms LeanBacklog.RowSpread.rowSpreadWindow
 #print axioms LeanBacklog.RowSpread.twoSided_card_le_of_fixedCross

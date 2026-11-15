@@ -106,13 +106,22 @@ unit-speed walk dependencies, then cut, priced and grouped into whole-row
 fibres. The [proof and declaration map](notes/block-tcc-from-whole-row.md)
 record every adapter and the quantitative conventions. The finite invoice
 allows arbitrary co-entropy and correctness only on the solving input set.
-The adaptive exclusion also follows from the weaker finite criterion in
+The standalone target for proving or refuting the sufficient hypothesis is
+**[`LeanBacklog.Wall.Conjecture`](Wall.lean)**. It is an open proposition;
+the file also proves the original common-deficit hypothesis implies it and
+it excludes adaptive linear-time transposers. Importing it assumes no open
+theorem. Strict non-equivalence with the original wall is not established.
+
+The adaptive exclusion also follows from the finite criterion in
 [WeakWholeRowTCC.lean](WeakWholeRowTCC.lean): only cofinally many dimensions,
 canonical alphabets and symmetric reflexive two-sided codes need be tested;
 the window and deficit may vary with dimension. Its exact savings need only
 exceed one explicit allowance for each resource triple. [Section 8 of the
 proof](notes/block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis)
-states the quantifiers and finite inequality. These capacity bounds remain
+states the quantifiers and finite inequality. [Section 9](notes/block-tcc-from-whole-row.md#9-standalone-target-and-the-precise-comparison)
+and [FiniteWholeRowPayments](FiniteWholeRowPayments.lean) sharpen its payments
+by integer rounding and exact cross overlap; that is the version in `Wall`.
+These capacity bounds remain
 open hypotheses; no converse or unconditional exclusion is asserted.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what

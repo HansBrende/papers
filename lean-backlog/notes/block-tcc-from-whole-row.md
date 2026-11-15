@@ -4,8 +4,10 @@ Hans Brende and GPT-6 Astra, 15 November 2026.
 **Status: the robust implication and its adaptive-machine consumer are
 Lean-verified.** The geometric refinement, finite counting and uniform
 composition are checked in the modules mapped in Section 7. Section 8 gives
-a strictly less uniform, finite sufficient hypothesis for the adaptive
-exclusion, also checked in Lean. No capacity deficit is proved here.
+a less uniform, finite sufficient hypothesis for the adaptive exclusion,
+also checked in Lean. Section 9 gives its sharper standalone target and
+proves the implication from the original wall; strict non-equivalence for
+actual capacities is not established. No capacity deficit is proved here.
 
 The implication holds for the **robust** conjecture, not just its
 all-input version:
@@ -406,6 +408,76 @@ corollary are **written, reviewed, not formalized**; the finite criterion
 (5), with its exact quantifiers, is formalized. Merely f(w)>0 at every
 fixed w is not enough for this argument: the deficit must beat its own
 depth-cut cost.
+
+## 9. Standalone target and the precise comparison
+
+**Lean-verified:** [Wall.lean](../Wall.lean) is the entry point for agents
+trying to prove or refute `LeanBacklog.Wall.Conjecture`. The file states the
+quantifiers, alphabet, helper relation and both recovery conditions. The
+target is a `Prop` definition, not an admitted theorem, so importing it
+cannot assume the open problem. Its conditional adaptive exclusion and
+the comparison arrows are fully proved.
+
+### What “weaker” has been verified to mean
+
+Let P be the original statement of `wall.md`:
+there exists δ>0 with `UniformWholeRowRateCanonicalBits (1−δ)`.
+Let Q be Section 8's `AdaptiveNormalizedCriterion`, and H the new
+`Wall.Conjecture`. The checked implications are
+
+    P → Q → H → ¬ LinearTimeTransposable.
+
+`Wall.commonDeficit_implies_previous` proves the first arrow, not just
+that P and Q have the same machine consumer. With common deficit δ₀,
+choose θ=δ₀/[16(4kG+1)c], then a fixed R making the normalization payment
+less than δ₀/4, and use the common bound with slack δ₀/2. The effective
+deficit exceeds δ₀/8 while the asymptotic cut price is δ₀/16. A sufficiently
+large dimension meets the finite allowance, for every requested threshold.
+`Wall.of_previous` proves the second arrow using the smaller payments below.
+
+**Strict non-equivalence for actual code capacities remains open.**
+P→H does not establish that H→P is false. In classical logic a proof of
+¬(H→P) for these fixed propositions would prove both H and ¬P: it would
+exclude adaptive machines and refute the original common-deficit
+conjecture. An abstract numerical rate profile with a slowly vanishing
+deficit illustrates the relaxation of the numerical requirements, but is
+not a family of whole-row codes realizing such a separation. No assertion
+of strict separation, or of the converse, is made here.
+
+### Further finite weakening
+
+Keep k,G,c,d,θ,R,δ and W as in Section 8. Put
+
+    L=d²b(d),       r=⌈db(d)/G⌉,
+    Nmax=⌈cL/r⌉,    K=c+4+5(k−3)(cG+2),
+    M=(4kG+1)r⌊θNmax⌋,
+    h=0 if R≥d, otherwise min(d,⌊Wd/(R+1)⌋),
+    X=2dh−h².
+
+The standalone target uses the same normalized code bound
+`|C|≤2^((1−δ)L)` at width W+R+1, but only requires
+
+    δL > 2(Kd+M) + b(d)X.                           (6)
+
+The improvement retains three facts lost in Section 8's envelopes:
+the number of grain slots is an integer ceiling; the cut cardinality is
+an integer floor; and the h×h overlap of the fixed rows and columns is
+paid once. If R≥d there are no heavy rows at all. These are finite
+quantitative improvements, not a new asymptotic mechanism or a proof of
+strict separation between the open propositions.
+
+[FiniteWholeRowPayments.lean](../FiniteWholeRowPayments.lean) proves
+M≤(4kG+1)θ(cL+db) and X≤[2W/(R+1)]d², so every witness to (5) is a
+witness to (6). It also proves the smaller payments directly on the
+actual diagram and normalization. A normalized bound of exponent a
+gives one-sided exponent (d²+a+X)/2; the record invoice then yields
+L≤Kd+M+b(d)(d²+(1−δ)d²+X)/2, contrary to (6).
+
+No resource quantifier, capacity hypothesis or machine premise has been
+hidden in the standalone file. In particular the choices precede the
+tested code and relation, the alphabet remains dimension-dependent, and
+the conclusion concerns adaptive machines. No full robust TCC follows
+from this weaker target in the present proof.
 
 [WholeRow]: ../StatementsRowSpread.lean
 [BlockDefs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsCE.lean

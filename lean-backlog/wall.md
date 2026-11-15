@@ -49,9 +49,17 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 > **Is sup_w R(w) < 1?** Equivalently: is there one δ > 0 with every whole-row code at every fixed
 > window having asymptotic rate at most 1 − δ along the canonical alphabets?
 
+This is the original common-deficit benchmark. The task-ready sufficient
+target for other agents is **[`LeanBacklog.Wall.Conjecture`](Wall.lean)**:
+finite capacity bounds at cofinally many dimensions, with integer cut and
+exact fixed-cross payments. The file proves the original benchmark implies
+the new target and the new target excludes adaptive machines. **Strict
+non-equivalence for actual capacities is not established**; the converse is
+open ([precise comparison](notes/block-tcc-from-whole-row.md#9-standalone-target-and-the-precise-comparison)).
+
 - Known for w ≥ 1: ½ ≤ R(w) ≤ w/(w+1). Symmetric matrices give ½ (*pairing*). Conjectured: R(w) = ½.
 - **Yes** implies robust block TCC and excludes **adaptive** linear-time transposers
-  ([Lean transfer](WholeRowTCC.lean), [proof and scope](notes/block-tcc-from-whole-row.md)). For adaptive exclusion alone the [finite cofinal criterion](WeakWholeRowTCC.lean) needs no common deficit and permits dimension-dependent windows. B1's original oblivious
+  ([Lean transfer](WholeRowTCC.lean), [proof and scope](notes/block-tcc-from-whole-row.md)). For adaptive exclusion alone the [standalone finite criterion](Wall.lean) needs no common deficit and permits dimension-dependent windows. B1's original oblivious
   exclusion remains Lean. A deficit δ(w) that falls more slowly than every power of
   1/log log w also suffices for the adaptive route ([written, reviewed consequence](notes/block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis)
   of the finite criterion and Paper 14's depth bound; the growth estimate is not Lean).
@@ -102,7 +110,7 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
 
 | | Date | What fell | Status |
 |---|---|---|---|
-| **B1** | 13–15 Nov 2026 | *Codes, machines and counting are tied.* A common canonical whole-row deficit gives the native crux, robust TCC and the **adaptive** exclusion. Adaptive exclusion alone needs only the [finite cofinal criterion](notes/block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis): dimension-dependent windows/deficits, symmetric reflexive two-sided codes and one explicit coentropy allowance. Capacity remains a hypothesis. | *Lean:* geometry/counting in [WindowSpread](WindowSpread.lean), [ConeCodeTransfer](ConeCodeTransfer.lean), oblivious endpoints in [RowSpreadCrux](RowSpreadCrux.lean); [robust block transfer](WholeRowTCC.lean) and [weakened adaptive endpoint](WeakWholeRowTCC.lean), reusing Paper 1. No converse is proved. |
+| **B1** | 13–15 Nov 2026 | *Codes, machines and counting are tied.* A common canonical whole-row deficit gives the native crux, robust TCC and the **adaptive** exclusion. Adaptive exclusion alone needs only the [finite cofinal criterion](notes/block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis): dimension-dependent windows/deficits, symmetric reflexive two-sided codes and one explicit coentropy allowance. Capacity remains a hypothesis. | *Lean:* geometry/counting in [WindowSpread](WindowSpread.lean), [ConeCodeTransfer](ConeCodeTransfer.lean), oblivious endpoints in [RowSpreadCrux](RowSpreadCrux.lean); [robust block transfer](WholeRowTCC.lean) and [standalone sharper target and adaptive endpoint](Wall.lean), reusing Paper 1. The original common deficit implies the target; strict non-equivalence is unproved. |
 | **B2** | 14 Nov 2026 | *Shannon inequalities can beat every order bound.* Fano: Sh = 119/3 against order 41, for arbitrary sources and nonlinear recovery; the three-lane code attains it. One finite host. | *Lean:* paid residual/full inequalities, exact Shannon optima with polymatroid witnesses, order41, and the all-alphabet code upper bound ([status](notes/consolidation-status.md)). The exact acyclic-set maximum 8 and gap against every acyclic invoice are Lean in [WholeRowAcyclic](WholeRowAcyclic.lean). Actual lane-code realization remains written. |
 | **B3** | 14 Nov 2026 | *The gap has positive density at fixed window and incidence girth Ω(log d).* Every finite strict gap amplifies by sparse incidence blow-ups with short cycles deleted. From Fano: both degrees ≤ 3600 and σ − Sh > 0.01d². These hosts already have order deficit 8/49; attainment of their upper bound is unknown. | *Lean:* [macro projection](MacroProjection.lean), [conditional every-order comparison](../lean-machine/LeanMachine/WholeRow/LiftOrder.lean), [Fano gap against every acyclic invoice](FanoLift.lean), with an explicit complete-lift instance of growing window 3n. *Written, reviewed:* [fixed-degree existence and girth](notes/finite-shannon-gap-amplification.md), [paid recovery](notes/fano-soft-recovery.md) |
 | **B4** | 14 Nov 2026 | *The gap needs no mutual triangles in the residual base.* The 9×6 grid has 39 ≤ Sh ≤ 204/5 < 41 (on its 36 non-incident cells, 21 ≤ Sh ≤ 114/5 < 23); cloning gives an 18×18 base with degrees six and no residual mutual triangles, which B3 amplifies. Exact value and capacity open. | *Lean:* paid scalar-error certificate, residual/full upper bounds, triangle-freeness, row-order optima, full maximum acyclic size 13 and gap against every acyclic invoice ([status](notes/consolidation-status.md)). Lower code, joint-column price, square adapter and amplification remain written; exact capacity remains open. |
@@ -314,7 +322,7 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
   named unit in progress, reports when it ends, and takes the next; whoever empties the queue
   proposes its refill). The queue of 14 November is archived at the end of
   [closed-fronts.md](closed-fronts.md).
-  - *Banked (Lean):* B1, through [robust block TCC](WholeRowTCC.lean) under a common deficit and the [weaker cofinal adaptive criterion](WeakWholeRowTCC.lean); the finite cores of B2 and B4; the two-sided normal form; the closure
+  - *Banked (Lean):* B1, through [robust block TCC](WholeRowTCC.lean) under a common deficit and the [standalone cofinal adaptive criterion and comparison](Wall.lean); the finite cores of B2 and B4; the two-sided normal form; the closure
     barriers; the sparse rank theorems; the [pairing and parity-template rate theorems](notes/pairing-coset-bound.md)
     through their uniform endpoints (pairing rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n),
     with an explicit additional charge for initially inactive fixed cells); B3's deterministic

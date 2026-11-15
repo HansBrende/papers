@@ -475,6 +475,13 @@ The [exact quantifiers and finite inequality](block-tcc-from-whole-row.md#8-the-
 are Lean-verified. This weaker premise excludes adaptive machines directly
 and is not claimed to imply the full robust block conjecture.
 
+The final task-ready target is [`Wall.Conjecture`](../Wall.lean).
+It retains the integer cut size and exact fixed-cross overlap, with
+`CommonDeficit → previous criterion → Conjecture → ¬(T)` proved in that file.
+This is a proved weakening; strict non-equivalence for the actual capacity
+statements is not established. [The exact comparison](block-tcc-from-whole-row.md#9-standalone-target-and-the-precise-comparison)
+separates these claims. No admitted theorem asserts the target.
+
 [SameTable]: ../SameTable.lean
 [P1defs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean
 [P1statement]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean

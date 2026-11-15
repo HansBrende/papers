@@ -20,6 +20,11 @@ retains the cut and normalization payments. It does not automatically supply
 any restricted-class premise below. The table's explicit 169ε/64 invoices
 continue to describe the original Lean oblivious route.
 
+The standalone, finitely sharpened target is
+[`Wall.Conjecture`](../Wall.lean), with its conditional `excludes_adaptive`
+theorem. The [comparison and exact payments](block-tcc-from-whole-row.md#9-standalone-target-and-the-precise-comparison)
+are Lean-verified; the converse and strict non-equivalence remain unproved.
+
 ## The common accounting
 
 Fix the work-tape count k, value width β, time constant C≥1 and ε>0 before

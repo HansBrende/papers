@@ -28,7 +28,7 @@ MODULES = [
     "WindowPages", "FarClebsch", "PaleyTournament", "SameTable", "LocalRecordViews",
     "BlockIntervalWalk", "BlockCut", "BlockCodeLocal", "BlockCutPrice",
     "BlockRowGrouping", "BlockEndRows", "BlockCodeTransfer", "BlockCodeInvoice",
-    "WholeRowTCC", "WeakWholeRowTCC",
+    "WholeRowTCC", "WeakWholeRowTCC", "FiniteWholeRowPayments", "Wall",
 ]
 
 

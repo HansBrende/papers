@@ -5,7 +5,7 @@ does not change $n(d)=o(\log\log d)$. Choose constants $0<\delta<1$ and $\eta>0$
 \[
  (k+2)(s\theta c+\eta)<(1-\delta)/2.
 \]
-In addition to the assumed cut $\Gamma_h$, use the depth-reduction theorem~\cite{BoundedStack2026} to obtain a cut
+In addition to the assumed cut $\Gamma_h$, use the depth reduction for oblivious machines~\cite[Corollary~9.3]{BoundedStack2026} to obtain a cut
 $\Gamma_D$ of record cost at most $\eta L$ and a remaining depth $D$ independent of $d$. For
 $\Gamma=\Gamma_h\cup\Gamma_D$ the undirected components only shrink, both conclusions hold, and
 \begin{equation}\label{eq:fragment-upper}
@@ -26,8 +26,8 @@ not merely in its fixed-radius asymptotic form. Its finite packing proof gives, 
 \]
 where $V_r=\sum_{j=0}^{r}\Delta^j$ and $a=4c(B+1)(k+2)(k+6)$ are as in that proof. The coefficient is
 $O_{k,D,c,\Delta}(n^3\Delta^{2n})$. Since $n=o(\log\log d)$, its ratio to $\log_2d$ tends to zero. Remove these
-$o(L)$ targets, leaving at least $(1-\delta)L-o(L)$ good ones. This use of the explicit native transport estimate
-is part of the written proof, not an additional Lean claim.
+$o(L)$ targets, leaving at least $(1-\delta)L-o(L)$ good ones. This step uses the explicit transport estimate of the fifth paper~\cite{DirectedRecovery2026}, whose constants are
+proved there in the text and are not formalized; only its finite packing step is in Lean.
 
 Partition the good outputs according to the uncut component containing their output step, with a singleton patch
 for a good output at a cut root. A patch has at most $n$ targets. Its induced paired-port graph has at most $2n$

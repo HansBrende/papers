@@ -1,6 +1,6 @@
 # Paper 21: what is not formalized, and plans for the next items
 
-Status: 15 November 2026. Items 1, 2 and 3, including the window-one upper bound, are proved in Lean.
+Status: 15 November 2026. Items 1–4, including the window-one upper bound, are proved in Lean.
 The remaining plans below are written mathematics.
 
 | # | Item | Where in the paper | State |
@@ -9,7 +9,7 @@ The remaining plans below are written mathematics.
 | 2 | Known bound: rate at most w/(w+1) | preliminaries, "Known bounds" | **Lean** (`MatrixCoding/KnownBounds.lean`); the former target [`StatementsOrderWindow.lean`](../StatementsOrderWindow.lean) is a compatibility import of the shared proof |
 | 2′ | Known bound: one half at windows one and two | same proposition | Window-one upper bound is **Lean**; the sharper window-two upper bound remains the synthesis's written multigraph-ranking argument |
 | 3 | The three-lane code attaining 119/3 on the Fano relation | entropy section, Theorem E(a) | **Lean** (`MatrixCoding/FanoLaneCode.lean`): exact cardinality, whole-row recovery and optimality over every finite abelian base alphabet; arbitrary prescribed triangle sums |
-| 4 | From a graph split into induced matchings to a whole-row code | remark on growing windows | written in the remark |
+| 4 | From a graph split into induced matchings to a whole-row code | remark on growing windows | **Lean** (`MatrixCoding/GraphMatchingCode.lean`): exact size and recovery over finite abelian groups, graph-degree window, and exact linear codimension over every field; graph existence remains cited |
 | 5 | Mixing relations exist | order section | written, reviewed |
 | 6 | Mixing lifts of the Fano relation exist | entropy section | written, reviewed; not worth formalizing now |
 | 7 | Runs that a cheap cut splits | construction side | written, reviewed; rests on the fifth paper's written transport estimate |
@@ -47,11 +47,15 @@ this construction with the existing upper bound; `exists_code_for_cardinality` s
 ZMod q for every positive integer q. Theorem E now has fully formal status. No attainment is
 claimed for the grid or the sparse mixing lifts.
 
-## Item 4: plan
+## Item 4: completed
 
-For a simple graph G on [d] with a partition of its edges into induced matchings, put
-ρ(j) = {j} ∪ {non-neighbours of j}. Each matching, with every edge taken in both orders, is one
-induced matching in the sense of item 1: for the two orders of one edge use j ∈ ρ(j); for
-different edges use that the matching is induced. So the hypotheses of item 1's structure hold
-with one part per matching, and its cardinality theorem gives codimension equal to the number of
-matchings. The existence of the graphs themselves stays cited.
+The shared [GraphMatchings](../../lean-machine/LeanMachine/WholeRow/GraphMatchings.lean)
+uses Mathlib's `Subgraph.IsMatching` and `Subgraph.IsInduced`, nonempty parts and unique edge
+membership. Taking both orders of every edge produces an `InducedMatchingPartition` for
+ρ(j) = {j} ∪ {non-neighbours of j}. Its window at j is exactly d − degree(j).
+
+[GraphMatchingCode](../../Tape-Transposition-and-the-Matrix-Coding-Conjecture/lean/MatrixCoding/GraphMatchingCode.lean)
+then proves the paper's whole-row predicate and exactly |A|^(d²−m) words for every finite abelian
+group A and arbitrary prescribed matching sums. Diagonal and non-edge coordinates are free.
+The zero-sum construction is a linear subspace of codimension exactly m over any field,
+including infinite fields. The graph-existence results and their asymptotic parameters remain cited.

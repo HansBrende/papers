@@ -27,6 +27,14 @@ import MatrixCoding
 #print axioms LeanBacklog.FanoLift.conditional_acyclic_gap
 #print axioms LeanBacklog.FanoLift.conditional_gap
 #print axioms LeanBacklog.FanoLift.conditional_gap_one_percent
+#print axioms LeanBacklog.GraphMatchingCode.cardinality
+#print axioms LeanBacklog.GraphMatchingCode.exists_code
+#print axioms LeanBacklog.GraphMatchingCode.finrank_linearCode_add
+#print axioms LeanBacklog.GraphMatchingCode.isWholeRowCode
+#print axioms LeanBacklog.GraphMatchingCode.mem_code_iff
+#print axioms LeanBacklog.GraphMatchingCode.mem_linearCode_iff_code
+#print axioms LeanBacklog.GraphMatchingCode.update_nonedge
+#print axioms LeanBacklog.GraphMatchingCode.window_iff
 #print axioms LeanBacklog.GridCertificate.paid_grid
 #print axioms LeanBacklog.GridFull.full_upper
 #print axioms LeanBacklog.GridFull.paid_full

@@ -74,6 +74,7 @@ upper rate is independent of the alphabet. Window two uses the separate multigra
 \end{outline}
 
 \begin{remark}[Windows that grow with $d$]\label{rem:growing}
+\partformal{GraphMatchingCode.lean}{GraphMatchingCode.exists_code, GraphMatchingCode.mem_code_iff, GraphMatchingCode.cardinality, GraphMatchingCode.isWholeRowCode, GraphMatchingCode.window_iff, GraphMatchingCode.update_nonedge, GraphMatchingCode.mem_linearCode_iff_code, GraphMatchingCode.finrank_linearCode_add}{The graph-existence results and their asymptotic parameters, cited below. The finite graph-to-code conversion is formal.}
 In \cref{def:rate,conj:MCC} the window is fixed before $d$ grows. This cannot be relaxed much. Mittal and Raz
 conjectured that for some constant $c>0$ no set of $2^{(1-c)d^2}$ matrices of bits has every column a function of
 $cd$ rows; in their terms, that the transpose is a block-rigid function~\cite[Conjecture~36]{MittalRaz2021}. In the
@@ -95,6 +96,22 @@ missed by~$j$; listing each edge of a matching in both orders gives a partition 
 $2d^{1/2+\eps}+1$. At a fixed window, codes of this form have rate at most one half in the limit
 (\cref{prop:matchings}).
 \end{remark}
+
+\begin{outline}[The finite conversion in \cref{rem:growing}]
+Let $G$ be a simple graph on $d$ vertices whose edges are partitioned into $m$ nonempty induced matchings.
+Set $\rho(j)=\{i:\{i,j\}\notin E(G)\}$, including $j$ itself. Each matching supplies one block of ordered
+entries, with both orders of each edge present. Distinct entries in a block are mutual helpers: if their
+cross endpoints were adjacent, the induced-subgraph property and the unique neighbour in a matching would
+force the two ordered entries to coincide. The blocks therefore form exactly the partition required in
+\cref{prop:matchings}.
+
+For any finite abelian group $A$, impose one prescribed sum per block. The resulting whole-row code has
+exactly $\card A^{d^2-m}$ words; diagonal and non-edge entries are free. Its helper width at column $j$ is
+$d-\deg_G(j)$, so minimum degree at least $d-w$ gives window at most $w$. Over any field the zero-sum code
+is a linear subspace of codimension exactly $m$, since the disjoint nonempty checks give a surjective linear
+map to the $m$ check values. These are the finite statements used with the cited graph families; no
+existence theorem for those families is part of this formalization.
+\end{outline}
 
 \subsection{The Tape Coding Conjecture}\label{sec:prelim-tcc}
 

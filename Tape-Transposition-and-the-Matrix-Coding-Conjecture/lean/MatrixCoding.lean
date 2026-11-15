@@ -16,6 +16,7 @@ import MatrixCoding.FanoLaneCode
 import MatrixCoding.FanoLift
 import MatrixCoding.FanoOrder
 import MatrixCoding.FiniteWholeRowPayments
+import MatrixCoding.GraphMatchingCode
 import MatrixCoding.GridCertificate
 import MatrixCoding.GridFull
 import MatrixCoding.GridOrder

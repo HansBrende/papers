@@ -17,9 +17,9 @@ lake build
 lake env lean PaperAxioms.lean
 \end{verbatim}
 The cache command retrieves the pinned compiled Mathlib dependencies; a compatible existing cache can instead be
-reused. The paper's root module imports all $47$ public local modules. Of these, $46$ are the maintained proofs and
+reused. The paper's root module imports all $48$ public local modules. Of these, $47$ are the maintained proofs and
 adapters, and \leanfile{MatrixCoding.Invariance} imports the pairing and parity theorems from the shared library.
-The induced-matching counting proof and the row-order averaging bound are also maintained in the shared library;
+The induced-matching counting proof, the conversion from graph matchings and the row-order averaging bound are maintained in the shared library;
 their paper adapters use the same whole-row predicate and give alphabet-uniform thresholds. The window-two
 improvement in \cref{prop:known} remains a cited written proof. Those shared dependencies are built by the same command. Declaration namespaces were retained when the proofs were
 packaged: \leanname{LeanBacklog} is part of their names, not an additional mathematical dependency. The earlier flat
@@ -62,6 +62,8 @@ no completed fresh replay of that entire closure is claimed here.
 The two probabilistic existence proofs and the native fragmentation
 composition remain written proofs with the scope stated at their results. In particular, the native packing
 estimate used at a growing radius in \cref{prop:hyperfinite} is not supplied by its formal counting adapter.
+The finite conversion in \cref{rem:growing} supplies recovery, exact cardinality and linear codimension, but
+does not formalize the graph-existence theorems cited there.
 The tableau equivalence in \cref{sec:constr-forgets} is an execution checker and restatement, not a coding lower
 bound. Neither the packaging nor the finite certificates assert a common deficit.
 

@@ -42,6 +42,9 @@ The maintained Lean modules, using only the standard axioms, include:
 - [Parities over induced matchings](lean/MatrixCoding/InducedMatchings.lean): half rate at fixed
   window, with the stronger range `w = o(d^(1/3))`, arbitrary finite abelian alphabets and
   prescribed sums; the finite counting proof is in the shared library.
+- [Graph-to-code conversion](lean/MatrixCoding/GraphMatchingCode.lean): an edge partition
+  into induced matchings gives exact-size whole-row codes over finite abelian groups;
+  over any field the zero-sum code has codimension equal to the number of parts.
 - The shared library's [pairing](../lean-machine/LeanMachine/WholeRow/Pairing.lean)
   and [parity](../lean-machine/LeanMachine/WholeRow/ParityTrimming.lean)
   bounds, included by this package's root module.
@@ -50,7 +53,8 @@ Complete written proofs, not Lean: existence of bounded-window mixing relations
 and growing-girth Fano lifts; and
 the exclusion of oblivious runs fragmented by a cheap cut into components with
 few outputs. The exact finite certificate does not assert grid attainment or
-attainment on the sparse lifts.
+attainment on the sparse lifts. The graph families used in the growing-window
+remark remain cited existence results.
 
 ## What remains open
 

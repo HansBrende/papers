@@ -7,7 +7,7 @@ The remaining plans below are written mathematics.
 |---|---|---|---|
 | 1 | Parities over induced matchings | construction side, proposition | **Lean** (`MatrixCoding/InducedMatchings.lean`), with the stronger range w = o(d^(1/3)) |
 | 2 | Known bound: rate at most w/(w+1) | preliminaries, "Known bounds" | **Lean** (`MatrixCoding/KnownBounds.lean`); the former target [`StatementsOrderWindow.lean`](../StatementsOrderWindow.lean) is a compatibility import of the shared proof |
-| 2′ | Known bound: one half at windows one and two | same proposition | Window-one upper bound is **Lean**; the sharper window-two upper bound remains the synthesis's written multigraph-ranking argument |
+| 2′ | Known bound: one half at windows one and two | same proposition | Window-one upper bound is **Lean**; window two is **next**: typechecked statement in [`StatementsWindowTwo.lean`](../StatementsWindowTwo.lean), plan below |
 | 3 | The three-lane code attaining 119/3 on the Fano relation | entropy section, Theorem E(a) | **Lean** (`MatrixCoding/FanoLaneCode.lean`): exact cardinality, whole-row recovery and optimality over every finite abelian base alphabet; arbitrary prescribed triangle sums |
 | 4 | From a graph split into induced matchings to a whole-row code | remark on growing windows | **Lean** (`MatrixCoding/GraphMatchingCode.lean`): exact size and recovery over finite abelian groups, graph-degree window, and exact linear codimension over every field; graph existence remains cited |
 | 5 | Mixing relations exist | order section | written, reviewed |
@@ -31,6 +31,40 @@ the bound q^(cost ρ o) by well-founded recovery and restriction to the compleme
 uses `IsWholeRowCodeExcept` and proves |C|^(w+1) ≤ q^(wd(d+1)), the real-exponent version,
 the window-one bound q^(d(d+1)/2), and the limiting rate uniformly over finite alphabets.
 The optional window-two improvement is not included.
+
+## Item 2′ (window two): next, plan
+
+**Typechecked statement:** [`StatementsWindowTwo.lean`](../StatementsWindowTwo.lean)
+(`exists_cost_window_two_le`, open; the square case is derived from it there).
+
+**Statement.** For ρ : J → Finset R with all |ρ(j)| ≤ 2, some row order has cost at most
+g(n, m), where n = |R|, m = |J| and
+
+    g(n, m) = n(n+1)/2 − (n − m)              if m < n,
+    g(n, m) = n(n+1)/2 + n(m − n) + (n − 1)   if m ≥ n.
+
+For m = n = d this is d(d+1)/2 + d − 1. With `OrderCode.card_le_order` it gives the bound on codes,
+and the "Known bounds" proposition becomes fully formal.
+
+**Why this closed form.** The synthesis proves the square case with a potential that is not a
+closed formula. The function g is an invariant of the same greedy step, so the proof is one
+induction on n with integer arithmetic. It was checked by exhaustive enumeration for n ≤ 5 and
+is attained at m = n and m = n − 1.
+
+**Induction step (n ≥ 2).** Let ℓ(r) = #{j : r ∈ ρ(j)}; Σ_r ℓ(r) ≤ 2m, so the row r with least ℓ
+has n·δ ≤ 2m for δ = ℓ(r). Put r last: the δ columns helped by r cost n each; the other m − δ
+columns have all helpers among the remaining n − 1 rows. So cost ≤ n·δ + g(n − 1, m − δ), and it
+remains to check n·δ + g(n − 1, m − δ) ≤ g(n, m):
+- m < n: then δ ≤ 1. For δ = 1 there is equality. For δ = 0 it is g(n − 1, m) ≤ g(n, m), in both
+  sub-cases m < n − 1 and m = n − 1.
+- m ≥ n, with ε = m − n: then δ ≤ ε + 2 (from n·δ ≤ 2m and n ≥ 2). If δ ≤ ε + 1 the second branch
+  of g applies to (n − 1, m − δ) and the inequality reduces to δ ≤ ε + 2. If δ = ε + 2 then
+  m − δ = n − 2 < n − 1, the first branch applies, and there is equality.
+- Base: n = 0 gives cost 0; n = 1 gives cost at most m = g(1, m) for m ≥ 1, and 0 for m = 0.
+
+**Lean notes.** Halves can be avoided by proving 2·cost ≤ 2·g. The step needs an order on R that
+extends an order on R ∖ {r} by one last element; alternatively run the induction over finite
+subsets of rows with injective numberings and convert once at the end.
 
 ## Item 3: completed
 

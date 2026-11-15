@@ -64,10 +64,11 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   relaxations, each forgetting data of the one before:
   1. *Same-table execution diagrams.* The run unrolled: one finite table produces values, moves,
      writes and appends on every input. Shared motion gives the oblivious-machine version;
-     [the finite validator and exact equivalence are Lean](SameTable.lean), including B1's
+     [the replay checker and exact restatement are Lean](SameTable.lean), including B1's
      per-size predicate and all-time obliviousness. This is a re-encoding, not a simpler criterion
      ([readable statement](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)).
-     A network code on a tape diagram with free gates is already weaker.
+     This is routine tooling, not a new result. A network code on a tape diagram
+     with free gates is already weaker.
   2. *Causal values and cut records* on the native bit DAG, with the records each output can
      reach: at depth D at most 1+(k+1)K_D bounded-width records and K_D raw bits per output.
   3. *An all-input index encoder of charged length on one native cone system* (B1 supplies it;
@@ -76,7 +77,9 @@ logarithmic-size entries in linear time? An exclusion of oblivious machines alon
   5. *One large whole-row fibre*: the statement above.
   Rungs 4 and 5 agree at leading rate (translated covers of the cube by one code), so "all
   fibres" is not a gap. 3→4 forgets which bits are read and how often; 2→3 forgets where the
-  advice can be read and that one table produced it. The ingredients overlap and must come from
+  advice can be read and that one table produced it. [Bounded causal packets can be
+  expanded with nonuniform gates](notes/whole-row-ingredient-ledger.md#6-what-bounded-causal-views-can-reconstruct),
+  but their fixed-table controller is not automatic. The ingredients overlap and must come from
   one common run. Existing local bounds need extra class premises; **no general native
   extraction with a sufficient inequality is proved at these intermediate rungs.** A proposal
   names its rung and the additional premise.
@@ -312,7 +315,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     through their uniform endpoints (pairing rate at most 1/2 + b/N + 1/n once d ≥ n(w + 2w³n),
     with an explicit additional charge for initially inactive fixed cells); B3's deterministic
     macro projection, conditional comparison against every acyclic invoice and Fano gap above one percent; the exact rectangular row-order/acyclic-set theorem and complete-lift sanity instance.
-    The same-table tableau/replay equivalence with oblivious linear-time transposition is also Lean.
+    The [abstract local-view cover invoice](LocalRecordViews.lean) allows fractional
+    covers and unequal record widths; its native premises remain written.
+    The routine same-table restatement is available as a Lean replay checker.
     Boundaries: [status index](notes/consolidation-status.md).
   - *Banked (written, reviewed):* B3's fixed-degree random existence and girth;
     the [ingredient ledger](notes/whole-row-ingredient-ledger.md);
@@ -321,8 +326,9 @@ One line per closed front, so that work is not repeated. Reasons and reopening c
     implication to or from Paper 4's motion classes is established).
   - *Review and stopping point.* Astra: B3 stages 1–2 and the acyclic-set adapter complete;
     [permutation counting and girth remain parked](notes/finite-shannon-gap-amplification.md#7-lean-coverage-and-remaining-effort).
-    The [same-table converse](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
-    is complete within its cap; Fable reviews the endpoint. No adaptive-family wrapper,
+    The [same-table replay checker](notes/whole-row-ingredient-ledger.md#5-converse-formalization-source-audit-and-effort-estimate)
+    and abstract local-view invoice are complete. The [sparse-record refinement audit](notes/whole-row-ingredient-ledger.md#6-what-bounded-causal-views-can-reconstruct)
+    separates finite nonuniform gates from fixed-table control. No adaptive-family wrapper,
     probability/girth development or construction experiment is commissioned.
   - *Open, no premise with a consumer:* the one-table half of rung 2 of the ladder; expander-type
     motion coupled to a code (Paper 4's open problem). No numerical search is commissioned.

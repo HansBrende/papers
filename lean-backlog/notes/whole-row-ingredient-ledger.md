@@ -37,8 +37,9 @@ install the stated finite table and initial data: induction on time says
 its actual state, scanned symbols, writes, moves and appends agree with
 the diagram on every input. Thus this is a semantic re-encoding of the
 original computation, with the same time bound, not a simpler capacity
-criterion. [SameTable.lean][SameTable] now verifies this converse and its
-oblivious-family equivalence; Section 5 states the validator and endpoints.
+criterion. [SameTable.lean][SameTable] verifies this routine induction as a
+replay checker, not a new mathematical obstruction or coding equivalence.
+Section 5 states the validator and endpoints.
 The underlying execution semantics are the first paper's frozen
 [machine definitions][P1statement], reused through the eleventh paper's
 [trace and value interfaces][P11traces]. No new interpreter is introduced.
@@ -186,7 +187,8 @@ ledger names the losses; it does not supply such an inequality.
 
 ## 5. Converse formalization: source audit and effort estimate
 
-**Status: Lean verified in [SameTable.lean][SameTable].** The estimated
+**Status: routine restatement and replay-checker tooling, Lean verified in
+[SameTable.lean][SameTable].** The estimated
 adapter is complete, within the 300–600-line cap. Its finite validator is
 decidable. The new obligation was local consistency of supplied diagrams
 implying agreement with actual execution; the forward checks are included
@@ -305,6 +307,74 @@ dependency direction. No frozen file or dependency pin changed. Every
 public declaration is included in its axiom audit; only the standard
 axioms occur. This completes the capped unit. B3's probability and girth
 formalization remains parked.
+
+## 6. What bounded causal views can reconstruct
+
+**Written audit, not a Lean compiler theorem.** The intermediate claim needs
+two models distinguished. Bounded causal views can be expanded on the same
+finite time diagram with a separately chosen gate at each vertex and a
+larger constant data alphabet. This does **not** yet reconstruct one fixed
+finite transition table for a family of diagrams.
+
+Here is the precise finite claim. Fix the actual time DAG: the state
+predecessor and last-write predecessors, the raw input address at each
+vertex, the output ports and the motion. Fix a cut. Each cut record is a
+specified function of raw reads and **strictly earlier first-hit cut
+records** in its backward cone. Each output has such a causal view too.
+All record functions are evaluated in time order and all output identities
+hold on the full input cube. The views are fixed, not selected by uncharged
+input-dependent advice. A record may not use itself to justify its own
+production; an output at a cut root may use the record just computed there.
+
+Suppose the **complete first-hit terminal sets** at every unrevealed vertex,
+every strict cut-root evaluation and every output contain at most K
+raw-read occurrences and r cut records of at most s bits, with these bounds
+fixed across sizes. Bounding only the arguments selected by the record and
+output functions would not bound the intermediate packets described here.
+At each unrevealed step carry the tuple of terminal values reached by its
+backward cone. At a cut step evaluate its specified record function and
+restart the tuple there. Induction through the DAG proves that the parent
+tuples and the current raw read supply the required arguments. Duplicate
+values into the state and work-write ports as necessary. Padding packets
+to at most max(s,K+rs) bits gives finite gate domains, and the output gate
+evaluates its prescribed function. This changes neither the finite wiring
+nor the number of its vertices. The slots and their merge maps are
+hardwired separately at each vertex; growing global address labels are
+not being stored in this constant-size packet. The state edge carries a
+packet too, so a prospective machine implementation may need a constant
+enlargement of finite control as well as of the work alphabet. This is not
+a same-state-set assertion.
+
+The cut-root convention matters to this bound. If only unrevealed-root
+cones have at most K_D=Σ_(j≤D)(k+1)^j vertices, a record being recomputed
+at a cut root needs its strict predecessor cones as well. With b=k+1,
+the conservative bounds K=1+bK_D and r=bK suffice for all these gates.
+One cannot invoke a one-record view of a revealed output as a recipe for
+producing that record. Constants D,k,s must be fixed for the alphabet
+increase to be constant.
+
+The missing machine premise is **control**, not packet content. Arbitrary
+per-time/per-size choices of decoder, slot maps, moves and halting are
+externally supplied in this construction. A finite catalogue of possible
+gates does not make one table select the right gate starting from blank
+tapes; a computable schedule does not pay for executing it in the same
+time and motion. Supplying a growing program as initial work data or
+enlarging the state set with the horizon would change the model. Even
+retaining a machine that generates the original motion does not supply a
+controller for the new gate and slot choices. A same-table refinement must
+add that controller with its resource and time accounting, or satisfy the
+local checks of Section 5 directly.
+
+Thus “up to uniformity and alphabet” is valid only after allowing constant
+finite-control enlargement too, and only if *uniformity* includes this
+full same-time local-control obligation. At the nonuniform finite
+circuit level the packet construction is lossless under the stated causal
+premises. At the machine level one cannot declare that the first loss
+occurs only when all advice is made globally accessible: abstract bounded
+views may already have forgotten the fixed table. Rung 2 above retains
+their native same-table provenance; dropping it is an additional
+relaxation. No converse incorporating the coding reduction and only new
+constraints on the static code or helper relation is established here.
 
 [SameTable]: ../SameTable.lean
 [P1defs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean

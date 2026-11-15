@@ -1,8 +1,10 @@
 # Local views of cut records: the consumer and its missing premise
 
 Claude Fable 5.2 and GPT-6 Astra, directed by Hans Brende, 14 November 2026.
-**Status:** written proofs and source audit, independently reviewed; no new
-Lean endpoint in this note. The conditioning and fibre arguments reuse
+**Status:** the finite counting and weighted cover invoices of Sections 1–2
+are Lean verified in [LocalRecordViews.lean](../LocalRecordViews.lean).
+The conditional-entropy display and native applications remain written.
+The conditioning and fibre arguments reuse
 [Paper 5](../../Directed-Recovery-Structures-in-Tape-Computations/paper/sections/preliminaries.tex).
 This refines rung 2 of the [ingredient ledger](whole-row-ingredient-ledger.md).
 Section 7 composes existing results into a native exclusion under
@@ -66,6 +68,31 @@ The proof also permits fractional covers: give the pairs (J_i,T_i) nonnegative
 weights λ_i, require Σ_{i:j∈J_i}λ_i≥1, and replace both sums by weighted sums.
 For unequal record widths, charge the sum of the widths of records in T_i.
 No independence among records or patches is used.
+
+**Lean scope.** Reindex output labels by the demanded coordinate σ(j), so
+`Recovers N view a` says that each source coordinate is determined on the
+full cube by its fixed raw helpers and fixed record view. For a patch S and
+selected records T, `isIndexCode_patchEncoder` fixes **every exterior
+coordinate** and verifies Paper 5's index-code predicate on `N|S`.
+`patch_card_le` reuses its fibre count for any finite source alphabet and
+any finite, possibly record-dependent message alphabets:
+
+  |A|^|S| ≤ |record words on T| · capacity bound for N|S.
+
+For binary records of widths s_r, `patch_deficit_le` gives
+|S|−cap(S)≤Σ_(r∈T)s_r. `weighted_deficit_le` sums these inequalities with
+nonnegative weights, and `weighted_half_invoice` gives
+
+  L/2 − Σ_i λ_i e_i ≤ Σ_i λ_i Σ_(r∈T_i)s_r
+
+when the patches fractionally cover the source coordinates and every
+induced storage code has at most 2^(|S_i|/2+e_i) words. The equal-width
+unweighted endpoint `half_invoice` has exactly the conclusion sCm≥L/2−Σe_i
+under Σ|T_i|≤Cm. Empty patches, zero record widths and real capacity/error
+parameters are allowed. The full-cube and fixed-view premises remain;
+no native cut, geometry, causal provenance or local half bound is inferred.
+The proof is finite counting; the conditional-entropy inequality displayed
+in Section 1 is not a separate Lean endpoint in this module.
 
 This is the familiar local-deficit/overlap consumer. Paper 15's
 [Theorem 10.1 (P), and Corollaries 10.2–10.4](../../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/paper/sections/patches.tex)

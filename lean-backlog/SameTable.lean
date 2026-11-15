@@ -7,7 +7,8 @@ import Transpose.Tape.DefsCE
 The validator below uses only a finite table, a finite motion prefix and
 finite input-dependent payloads. Reads are computed by scanning earlier
 writes backwards. No validity premise mentions a run or a machine trace.
-The interpreter in the frozen first paper is unchanged.
+This is a routine semantic restatement and reusable replay checker, not
+a new capacity result. The interpreter in the frozen first paper is unchanged.
 -/
 
 namespace LeanBacklog.SameTable

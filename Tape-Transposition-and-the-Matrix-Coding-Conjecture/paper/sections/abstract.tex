@@ -1,0 +1,29 @@
+This paper is the companion of the first paper of the series, \emph{Matrix Transposition and the Tape Coding
+Conjecture}. That paper reduced the question whether a multitape Turing machine can transpose a $d\times d$ matrix of
+$\lceil\log_2d\rceil$-bit entries in linear time to a conjecture about network codes on the time--space diagrams of
+tapes. Here the implication runs the other way: a conjecture about arrays alone, with no machine, no time and no
+network in its statement, implies the Tape Coding Conjecture.
+
+A \emph{whole-row code} of window~$w$ is a set of $d\times d$ arrays in which every column is a function of at most
+$w$ rows. The symmetric arrays are such a code, with $w=1$ and about half of all entries free. The \emph{Matrix Coding
+Conjecture} says that there is a $\delta>0$ such that, for every fixed~$w$ and all large~$d$, a whole-row code of
+window~$w$ has at most $2^{(1-\delta)L}$ elements, where $L$ is the number of bits of an array. We prove that the
+Matrix Coding Conjecture implies the Tape Coding Conjecture in its robust form, and therefore that no multitape Turing
+machine, oblivious or not, would transpose in linear time. A weak form, in which the deficit $\delta$ may shrink slowly
+as the window grows and only one size $d$ beyond every threshold is needed, already suffices. For oblivious machines the
+reduction is direct: after a cheap cut of the run, the bits on which the outputs of almost every row of the transpose
+depend lie in boundedly many rows of the input.
+
+The conjecture is open, and the rest of the paper is about it. Every whole-row code contains a large code in which rows
+are also functions of columns, on a symmetric relation. Every bound obtained from an acyclic set of entries is the
+bound of an order of the rows, and such bounds, with or without transported copies of the recovery rules, cannot give
+a deficit that is independent of the window. Entropy inequalities can go further: on the incidence relation of the
+Fano plane the best acyclic bound is $41$ entries of $49$ and the true value is $119/3$, and the gap persists, at more
+than one percent of all entries, on every lift with a mixing property. Codes that are invariant under the shifts of a
+pairing of the entries, with $b$ pairs omitted, have rate at most $\tfrac12+b/d^2+o(1)$ over every finite abelian group
+and for every relation of window~$w$, with nonlinear recovery allowed.
+
+All of the above is formalized in Lean~4, with the standard axioms only, against the frozen statement of the first
+paper, except for two existence statements, which are proved in the text: relations of bounded window with the mixing
+property, and mixing lifts of the Fano relation. One further result is proved in the text and not formalized: the
+exclusion of oblivious runs whose time diagram a cheap cut splits into pieces with few outputs.

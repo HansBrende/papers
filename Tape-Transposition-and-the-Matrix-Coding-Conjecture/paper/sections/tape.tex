@@ -1,0 +1,42 @@
+\section{From block codes to whole rows}\label{sec:tape}
+
+The Tape Coding Conjecture is about codes on block networks, in which a node may compute anything from the rows
+attached to it. We cut such a code as we cut a run. A block network is not the dependency graph of a walk, so the cut
+of the fourteenth paper does not apply to it directly; the first step is to realize it inside one.
+
+\begin{theorem}[Theorem T: the Matrix Coding Conjecture implies the Tape Coding Conjecture]\label{thm:T}
+\formal{WholeRowTCC.lean}{BlockTCC.robustNoCode_of_commonDeficit, BlockTCC.noCode_of_commonDeficit, BlockTCC.not_linearTimeTransposable_of_commonDeficit, BlockTCC.robustNoCode_of_normalizedTwoSidedDeficit}
+If \cref{conj:MCC} holds, then \cref{conj:TCC} holds, in its robust and hence in its plain form. Consequently
+\cref{conj:MCC} implies that \textup{(T)} fails: \lean{Transpose.LinearTimeTransposable} is false. The same follows
+from the conjecture for two-sided codes on symmetric reflexive relations.
+\end{theorem}
+
+\begin{outline}
+Suppose a causal code solves complete exchange on a set $F$ of inputs of co-entropy at most $C_0db$, on the block
+network of a valid diagram of length at most~$cL$.
+
+\emph{Lifting.} Every slot is replaced by a walk of twelve positions that visits the blocks on both sides of a common
+pivot, so that every memory edge and every chord edge of the network becomes a path of the dependency graph of a
+walk (\leanfile{BlockIntervalWalk.lean}).
+
+\emph{Cutting.} The cut of the fourteenth paper for that walk, projected back to slots, is a set $\Gamma$ of at most
+$\theta N$ of the $N$ slots after whose removal every path has bounded length (\leanfile{BlockCut.lean}).
+
+\emph{Rows.} A slot has at most two attached input rows, so the slots from which an output slot can be reached
+without passing through $\Gamma$ meet boundedly many rows; rows of the transpose that meet too many output slots are
+paid for (\leanfile{BlockRowGrouping.lean}, \leanfile{BlockCodeLocal.lean}).
+
+\emph{Fibres.} Fix the messages on the edges out of $\Gamma$ and the paid rows. On the inputs of $F$ that produce
+them, every remaining column of the array is a function of boundedly many rows: a whole-row code
+(\leanfile{BlockCodeTransfer.lean}).
+
+\emph{Invoice.} The profile capacities bound the number of fixed bits by a multiple of $\theta L$. Some fibre has at
+least $2^{L-\text{cost}}$ elements, and for small $\theta$ this contradicts the deficit
+(\leanfile{BlockCutPrice.lean}, \leanfile{BlockCodeInvoice.lean}).
+\end{outline}
+\draftnote{Give the constants (the price $(4kG+1)\ell$ of a cut slot, the bound on the rows of a cone) and the
+treatment of the co-entropy of $F$.}
+
+The theorem is a common strengthening, not a comparison: it does not say that the Tape Coding Conjecture implies
+anything about whole-row codes. A whole-row code of rate near one need not be computable by a causal code on any
+diagram, and no converse of \cref{thm:T} is known.

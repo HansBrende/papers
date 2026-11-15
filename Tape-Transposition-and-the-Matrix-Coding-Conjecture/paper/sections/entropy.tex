@@ -1,0 +1,44 @@
+\section{Entropy beyond order}\label{sec:entropy}
+
+A \emph{valid polymatroid} for $\rho$ is a normalized, monotone, submodular function $h$ on sets of entries with
+$h(\{x\})\le1$ and $h(S\cup\{x\})=h(S)$ whenever $S$ contains the helper rows of the column of~$x$. The entropy of a
+uniformly random element of a code, in units of $\log\card\Sigma$, is a valid polymatroid whose value on the set of
+all entries is $\log_{\card\Sigma}\card C$. So the largest value of a valid polymatroid on that set, the \emph{Shannon
+value} $\mathrm{Sh}(\rho)$, bounds $\log_{\card\Sigma}\card C$~\cite{SeventhPaper2026}.
+
+\begin{theorem}[Theorem E: entropy beats order]\label{thm:E}
+\formal{FanoFull.lean}{FanoFull.full_upper, FanoFull.wholeRow_card_cube}
+\formal{FanoAttainment.lean}{FanoAttainment.full_attainment, FanoAttainment.full_shannon_exact}
+\formal{WholeRowAcyclic.lean}{WholeRowAcyclic.fano_exact_acyclic_card, WholeRowAcyclic.fano_gap, WholeRowAcyclic.grid_exact_acyclic_card, WholeRowAcyclic.grid_gap}
+\formal{FanoLift.lean}{FanoLift.conditional_gap, FanoLift.conditional_acyclic_gap, FanoLift.conditional_gap_one_percent, FanoLift.completeLift_gap}
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{Fano.} Let $d=7$ and let $\rho(j)$ be the three points of the line $j$ of the Fano plane. Then
+$\mathrm{Sh}(\rho)=119/3$, a code over an alphabet of $q^3$ symbols attains it, and $\sigma(\rho)=41$: every
+acyclic bound is at least $4/3$ entries above the truth.
+\item \emph{Grid.} For the $9\times6$ array whose columns are the six lines of the $3\times3$ grid and whose rows are
+its nine points, $\mathrm{Sh}\le204/5$ and $\sigma=41$. The entries outside the incidences have no mutual triangles.
+\item \emph{Lifts.} Let $d=7n$, let every row and column of the Fano relation be replaced by $n$ copies, and let
+$\rho$ be a helper map whose helper rows are copies of points on the line of the column. If every $r$ copies of a
+point and every $r$ copies of a line through it contain a helper incidence, then for every valid polymatroid $h$ and
+every acyclic set~$A$,
+\[
+  d^2-\card A-h(\text{all entries})\ \ge\ 41\,(n-r+1)^2-\tfrac{119}{3}\,n^2 ,
+\]
+which exceeds $d^2/100$ when $99n\le100(n-r+1)$.
+\end{enumerate}
+\end{theorem}
+\draftnote{Certificates and their generator; the three-lane code; the projection lemma
+(\lean{MacroProjection.upper_of_projection}); the threshold argument for every order of the fine rows.}
+
+\begin{proposition}[Mixing lifts exist]\label{prop:lifts}
+\notformalized
+For every large $n$ there is a lift as in \cref{thm:E}(c) with $r=\lceil n/100\rceil$, with at most $3600$ helper
+rows for every column and at most $3600$ columns helped by every row, and with incidence girth at least
+$c\log n$ for a constant $c>0$.
+\end{proposition}
+\draftnote{Complete proof: unions of $1200$ random perfect matchings on every incidence; the union bound for empty
+rectangles; deletion of one vertex on every short cycle.}
+
+These relations have window $3600$, and $\sigma\le(41/49)d^2$ already bounds their codes away from rate one. The
+theorem is evidence about methods, not about the conjecture: inequalities that are not of order type can hold at
+positive density at a fixed window.

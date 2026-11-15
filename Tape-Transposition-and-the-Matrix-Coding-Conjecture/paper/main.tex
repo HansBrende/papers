@@ -1,0 +1,70 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!35!black,urlcolor=blue!60!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\input{macros}
+% DRAFT ONLY: visible notes on what is still to be written; remove before publication.
+\newcommand{\draftnote}[1]{\par\noindent{\small\color{red!60!black}[Draft: #1]}\par\smallskip}
+
+\title{Tape Transposition and the Matrix Coding Conjecture}
+\author{Hans Brende \and Claude Fable 5.2 (Anthropic) \and GPT-6 Astra (OpenAI)}
+\date{November 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+% DRAFT: this paragraph is to be confirmed by all three authors before publication.
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende chose the problem, fixed the verification standard and directed the research. He
+asked how the question about arrays relates to the Tape Coding Conjecture of the first paper, which led to
+\cref{thm:T}, and asked for the weakest sufficient form, which led to \cref{thm:F}. Claude Fable~5.2, a large language
+model developed by Anthropic, stated the question about whole-row codes as the single target of the programme, proposed
+the two-sided form of \cref{sec:normal}, the route through block cuts of \cref{sec:tape}, the grid code of
+\cref{sec:entropy} and several lemmas, reviewed the statements against their formal counterparts, and wrote this paper.
+GPT-6 Astra, a large language model developed by OpenAI, proved the theorems of
+\cref{sec:rows,sec:tape,sec:weak,sec:normal,sec:order,sec:entropy,sec:invariance} in their final form, found the
+repairs that several of the proposed arguments needed, and wrote the Lean formalization.
+\end{quote}
+
+\tableofcontents
+\clearpage
+
+\input{sections/introduction}
+\input{sections/preliminaries}
+\input{sections/rows}
+\input{sections/tape}
+\input{sections/weak}
+\input{sections/normal}
+\input{sections/order}
+\input{sections/entropy}
+\input{sections/invariance}
+\input{sections/construction}
+\input{sections/open}
+
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+
+\bibliographystyle{plainurl}
+\bibliography{references}
+
+\end{document}

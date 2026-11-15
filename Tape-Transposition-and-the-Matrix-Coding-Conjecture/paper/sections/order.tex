@@ -1,0 +1,37 @@
+\section{Order and closure}\label{sec:order}
+
+The bounds of \cref{prop:known} come from one argument: a set $A$ of entries is \emph{acyclic} if no entry of $A$ is
+reached from itself along helpers inside~$A$, an entry that is its own helper counting as a cycle; then a code has at
+most $\card\Sigma^{d^2-\card A}$ elements. We determine the best such bound and show what it cannot do.
+
+\begin{theorem}[Theorem O: order bounds, exactly]\label{thm:O}
+\formal{AcyclicOrder.lean}{WholeRow.exists_rowSet_superset, WholeRow.rowSet_card_add_cost, WholeRow.exact_acyclic_card}
+\formal{ClosureBarriers.lean}{ClosureBarriers.assigned_rule_card_le, ClosureBarriers.transported_invoice_ge}
+\formal{RectangleBarrier.lean}{RectangleBarrier.rectangle_barrier, RectangleBarrier.rectangle_invoice_ge}
+Let $\rho$ be a helper map on $[d]$, for arrays with rows $[d]$ and columns in any finite set.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item For an order of the rows, the entries that lie strictly after the last helper row of their column form an
+acyclic set, and every acyclic set is contained in one of these. The largest acyclic set has $d^2-\sigma(\rho)$
+entries, where $\sigma(\rho)$ is the least value, over the orders of the rows, of the sum over the columns of the
+position of the last helper row.
+\item If the recovery rules of $m$ helper relations together generate all entries from a set of $s$ entries, then
+$d^2-s$ is at most the sum of the sizes of their largest acyclic sets. In particular the rules of transported copies
+of one relation never give a better bound than its own acyclic bound.
+\item If no $r$ rows and $r$ columns are free of incidences of $\rho$, then $\sigma(\rho)\ge(d-r+1)^2$.
+\end{enumerate}
+\end{theorem}
+\draftnote{The inequality of (c) and the form of (b) are to be checked against the Lean declarations. Outlines; the
+values $\sigma=41$ for the Fano and grid relations.}
+
+\begin{proposition}[Mixing relations of bounded window]\label{prop:mixing}
+\notformalized
+For every $\eta>0$ there is a $t$ such that for all large $d$ there is a symmetric reflexive helper map on $[d]$ of
+window at most $2t+1$ for which no $\lceil\eta d\rceil$ rows and $\lceil\eta d\rceil$ columns are free of incidences.
+\end{proposition}
+\draftnote{Complete proof: the union of $t$ random perfect matchings with their inverses and the diagonal, for
+$t\eta^2>2\ln2$, and a union bound over pairs of sets.}
+
+By (c) and \cref{prop:mixing} the best acyclic bound has rate at least $(1-\eta)^2$ on some relations of bounded
+window, so no bound of this
+kind, and by (b) no closure argument with transported copies, proves \cref{conj:MCC}. This confirms the indication of
+the synthesis for large windows~\cite[Section~9]{SeventeenthPaper2026}.

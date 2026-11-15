@@ -1,0 +1,103 @@
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Machines and the statement}\label{sec:prelim-machines}
+
+We use the model and the formal statement of the first paper~\cite[Section~2]{FirstPaper2026}. A machine has a
+read-only input tape, $k$ work tapes and a write-only output tape. A $d\times d$ matrix $A$ with entries of
+$b=b(d)=\max(1,\lceil\log_2d\rceil)$ bits is encoded row by row as a word of $L=d^2b$ bits, and the machine must append
+the encoding of the transpose. Statement~(T) is the Lean proposition \lean{Transpose.LinearTimeTransposable}: some
+machine and some constant $c$ do this within $c(L+1)$ steps for all $d\ge1$ and all~$A$. A machine is
+\emph{oblivious} at size~$d$ if the positions of all heads and the times at which output bits are appended are the
+same for all inputs of that size.
+
+\subsection{Whole-row codes}\label{sec:prelim-codes}
+
+Rows and columns of a $d\times d$ array are indexed by $[d]=\{0,\dots,d-1\}$, and an array over an alphabet~$\Sigma$
+is an element of $\Sigma^{[d]\times[d]}$. A \emph{helper map} is a map $\rho$ from $[d]$ to the subsets of $[d]$; its
+\emph{window} is $\max_j\card{\rho(j)}$. We read $\rho(j)$ as the set of rows that help column~$j$.
+
+\begin{definition}[Whole-row codes]\label{def:wholerow}
+\formal{StatementsRowSpread.lean}{RowSpread.wholeRowHelpers, RowSpread.IsWholeRowCodeExcept, RowSpread.WholeRowCardinalityBound, RowSpread.UniformWholeRowRateCanonicalBits}
+A set $C\subseteq\Sigma^{[d]\times[d]}$ is a \emph{whole-row code for~$\rho$} if for every $j\in[d]$ any two arrays of
+$C$ that agree in all entries of the rows $\rho(j)$ agree in all entries of column~$j$. It is \emph{two-sided} if in
+addition any two arrays of $C$ that agree in all entries of the columns $\rho(j)$ agree in all entries of row~$j$.
+\end{definition}
+
+The function that computes a column from its helper rows is arbitrary, and differs from column to column. An entry
+$(i,j)$ with $i\in\rho(j)$ lies in one of its own helper rows; we call it \emph{incident}. There are at most $wd$
+incident entries, so they do not affect rates. These are the $\rho$-codes of the
+synthesis~\cite[Section~6.7]{SeventeenthPaper2026}.
+
+\begin{definition}[Rates]\label{def:rate}
+The \emph{rate} of a nonempty code $C$ over $\Sigma$ is $\log_{\card\Sigma}\card C/d^2$. For $w\ge1$ let $R(w)$ be the
+upper limit, as $d\to\infty$, of the largest rate of a whole-row code of window at most $w$ on $d\times d$ arrays with
+entries in $\{0,1\}^{b(d)}$, the \emph{canonical alphabet}.
+\end{definition}
+
+\begin{example}[Pairing]\label{ex:pairing}
+For $\rho(j)=\{j\}$ the symmetric arrays form a two-sided whole-row code of rate $\tfrac12+\tfrac1{2d}$. So
+$R(w)\ge\tfrac12$ for every~$w$.
+\end{example}
+
+In this notation \cref{conj:MCC} says $\sup_wR(w)<1$; its Lean form is
+\lean{Wall.CommonDeficit}.
+
+\begin{conjecture}[Half-rate conjecture]\label{conj:half}
+\formal{StatementsRowSpread.lean}{RowSpread.WholeRowHalfRateCanonicalBits}
+$R(w)=\tfrac12$ for every $w\ge1$.
+\end{conjecture}
+
+\begin{proposition}[Known bounds]\label{prop:known}
+\cited{\cite[Propositions~6.22 and~6.24]{SeventeenthPaper2026}; not formalized there.}
+For every alphabet, a whole-row code of window $w$ has rate at most $\tfrac{w}{w+1}(1+\tfrac1d)$, and for $w\le2$ it
+has at most $\card\Sigma^{d(d+1)/2+d-1}$ elements. In particular $R(1)=R(2)=\tfrac12$ and
+$\tfrac12\le R(w)\le\tfrac{w}{w+1}$.
+\end{proposition}
+
+\subsection{The Tape Coding Conjecture}\label{sec:prelim-tcc}
+
+We recall the objects of the first paper in the form in which \cref{sec:tape} uses
+them~\cite[Sections~8 and~9]{FirstPaper2026}. A \emph{time--space diagram} with $k$ work tapes and length~$T$ records,
+for every step, the positions of the input head and of the work heads and the length of the output so far; it is
+\emph{valid} if every head moves by at most one cell per step. Fix a granularity $G\ge1$ and let $\ell=\lceil db/G\rceil$, the length of a block. The \emph{block network} of
+the diagram has as nodes the \emph{slots}, the consecutive stretches of $\ell$ steps, in their order in time; a
+\emph{memory edge} from every slot to the next; and a \emph{chord edge} from a slot to a later one whenever some work
+head, during the later slot, is in blocks in which it last resided during the earlier one. The rows of the input that
+the input head touches during a slot are \emph{attached} to it, and an output bit is produced at the slot in which it
+is appended. A memory edge can carry the blocks in which the heads reside and a chord edge one block for every tape
+that has the chord; these are the \emph{profile capacities}~\cite[Definitions~8.2 and~8.3]{FirstPaper2026}.
+A \emph{causal code} assigns to every
+edge a function of the values on the edges into its tail and of the bits of the rows attached there, and to every
+output bit a function of the same data at its slot. It \emph{solves complete exchange} on a set of inputs if on those
+inputs every edge value fits its capacity and every output bit is the transposed input bit.
+
+\begin{conjecture}[Tape Coding Conjecture, robust form {\cite[Conjecture~9.1]{FirstPaper2026}}]\label{conj:TCC}
+For all $k$, $G\ge1$, $c$ and $C_0$ and all sufficiently large~$d$, no causal code solves complete exchange at the
+profile capacities on the block network of a valid diagram with $k$ work tapes and length at most $cL$, for a set of
+inputs of co-entropy at most $C_0\,d\,b(d)$.
+\end{conjecture}
+
+The Lean proposition is \lean{Transpose.Tape.RobustNoCode_TM}. The \emph{plain form}, \lean{NoCode_TM}, asks the same
+for codes that are correct on all inputs. The robust form implies that (T)
+fails~\cite[Theorem~9.2]{FirstPaper2026}, and the plain form excludes oblivious linear-time
+transposers~\cite[Theorem~9.9]{FirstPaper2026}; both implications are Lean-verified there.
+
+\subsection{Notation}\label{sec:prelim-notation}
+
+The letters of the earlier papers collide, so we fix them here.
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+$d$, $b=b(d)$, $L=d^2b$ & side length, bits of an entry, bits of an array\\
+$\rho$, $w$ & helper map and its window (in the fourth paper $\rho$ is a rate)\\
+$U$, $R$ & window of a normalized relation; cap on the number of columns a row helps\\
+$\delta$ & deficit: a bound $2^{(1-\delta)L}$ on the size of a code\\
+$k$, $c$, $G$ & work tapes, time constant, blocks per row\\
+$\ell=\lceil db/G\rceil$ & cells of a block (the $r$ of the first paper)\\
+$\theta$, $D$ & density of a cut among the nodes; depth left by the cut\\
+$W$ & number of rows that a cone can meet after the cut\\
+\bottomrule
+\end{tabular}
+\end{center}
+Logarithms are to base two unless a base is written. A statement holds \emph{for large $d$} if it holds for all $d$
+above a threshold that may depend on every other parameter in scope.

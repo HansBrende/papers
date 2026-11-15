@@ -1,0 +1,43 @@
+\section{The construction side}\label{sec:construction}
+
+What would a counterexample to the conjecture, and what would a linear-time transposer, have to look like?
+
+\subsection{What a code of rate near one must avoid}\label{sec:constr-code}
+
+By \cref{thm:N} it may be taken two-sided on a symmetric reflexive relation. By \cref{thm:I} it breaks every pairing
+symmetry on a positive fraction of the entries. By \cref{prop:known} and the classes of \cref{sec:invariance} its
+relation has window at least three and spread rows and offsets, and by \cref{thm:O} acyclic sets and closure say
+nothing against it when the relation mixes. \Cref{thm:E} shows that entropy inequalities can still exclude it.
+\draftnote{The codes of the thirteenth and fifteenth papers: what is known about realizing them as whole-row codes.}
+
+\subsection{What the conjecture forgets about machines}\label{sec:constr-forgets}
+
+Between a machine and \cref{conj:MCC} lie several statements, each obtained from the one before by forgetting
+something: the run as a table of steps, which is a restatement of the machine
+(\lean{SameTable.uniformTableaux_iff}); the values on a cut with the few records that each output can reach; an index
+code for all inputs on the cone system; the whole-row codes on its fibres. The reduction of \cref{sec:rows} never uses
+that all steps apply the same rule.
+
+\begin{proposition}[Runs that a cheap cut splits]\label{prop:hyperfinite}
+\notformalized
+Let an oblivious machine with $k$ work tapes run in time $c(L+1)$ with steps of $s$ bits. Suppose that for some
+$\theta$ with $s(k+2)c\,\theta<\tfrac12$ and all large $d$ there is a set of at most $\theta T$ steps whose removal
+leaves components of the dependency graph, edges taken without direction, with $o(\log\log d)$ output steps each.
+Then the machine does not transpose.
+\end{proposition}
+\draftnote{Complete proof from the local-view inequality (\lean{LocalRecordViews.half_invoice}, formalized), the cut
+of the fourteenth paper and the separation theorem of the fifth paper. Relation to the classes of the fourth paper:
+no implication is established in either direction.}
+
+\begin{remark}[Fibres are nearly Markov]\label{rem:markov}
+Proof sketch only: the set of inputs with a given cut message is cut out by constraints on boundedly many rows each,
+and the fibre used in \cref{thm:T} is close to such a set in relative entropy.
+\draftnote{To be stated precisely; at present written and not independently reviewed.}
+\end{remark}
+
+\subsection{What a machine would need}\label{sec:constr-machine}
+
+A linear-time transposer yields, for every $\eps$, whole-row codes of rate at least $1-\eps$ at a window that depends
+on $\eps$ only. Such codes would not yet be a machine: they would have to be produced by passes over tapes in linear
+time, and the motion would have to satisfy the conditions of the earlier
+papers~\cite{FourthPaper2026,SeventeenthPaper2026}.

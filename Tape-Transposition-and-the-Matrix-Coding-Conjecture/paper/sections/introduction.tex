@@ -1,0 +1,181 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}\label{sec:intro-problem}
+
+A $d\times d$ matrix with entries of $b(d)=\max(1,\lceil\log_2d\rceil)$ bits is written on the input tape of a
+deterministic multitape Turing machine, row after row, as a word of $L=d^2b(d)$ bits. The machine has to write the
+transpose. Statement~(T) says that some machine does this within $c(L+1)$ steps for a constant~$c$. The best known
+machines need of the order of $L\log d$ steps, apart from a small saving in the exponent of the logarithm claimed in an
+unrefereed preprint~\cite{OpenAI2026mult}, and no lower bound above linear is known for any explicit problem on machines with two work tapes. A
+linear-time multiplier of integers would give a linear-time transposer~\cite{HvdH2025}, so a proof that (T) fails would
+also bound multiplication from below. The formal statement is the Lean proposition
+\lean{Transpose.LinearTimeTransposable} of the first paper~\cite{FirstPaper2026}, which is frozen: this paper proves
+theorems about it and does not change it.
+
+\subsection{Two conjectures}\label{sec:intro-two}
+
+The first paper replaced (T) by a statement about codes. The run of a machine is drawn as a time--space diagram: the
+positions of the heads at every step. Cutting the tapes into blocks gives a network whose nodes are the visits of a
+head to a block, and a linear-time transposer yields a network code on it that delivers a piece of every row block to
+every column block. The \emph{Tape Coding Conjecture} says that no such code exists on the block network of any
+diagram of linear length; it implies that (T) fails~\cite[Conjecture~9.1 and Theorem~9.2]{FirstPaper2026}. Its
+statement has no transition table in it, but it keeps the diagram: time, the shape of tapes, and the capacity of
+every link.
+
+The conjecture of this paper keeps none of these. Let $\rho$ assign to every column index a set of at most $w$ row
+indices. A set $C$ of $d\times d$ arrays is a \emph{whole-row code for~$\rho$} if two arrays of $C$ that agree on the
+rows $\rho(j)$ agree on column~$j$, for every~$j$ (\cref{def:wholerow}). For $\rho(j)=\{j\}$ the symmetric arrays are
+such a code: column $j$ is row~$j$. They have $d(d+1)/2$ free entries, a little more than half. We call the fraction
+of free entries the \emph{rate}.
+
+\begin{conjecture}[Matrix Coding Conjecture]\label{conj:MCC}
+There is a $\delta>0$ such that for every $w\ge1$ there is a $d_0$ with the following property. For every $d\ge d_0$
+and every $\rho$ of window at most~$w$, every whole-row code for~$\rho$ with entries of $b(d)$ bits has at most
+$2^{(1-\delta)L}$ elements.
+\end{conjecture}
+
+The conjecture asks only that the rate stay away from one. We expect much more, namely that the rate tends to one half
+at every fixed window (the \emph{half-rate conjecture}, \cref{conj:half}), which is the form in which the synthesis
+paper of the series asked the question for a fixed alphabet~\cite[Problem~9.4(c)]{SeventeenthPaper2026}. What is known
+is the bound $w/(w+1)$ for the rate, and one half for $w\le2$~\cite{SeventeenthPaper2026}.
+
+\subsection{Results}\label{sec:intro-results}
+
+The first three theorems are the reduction. The other four are about the conjecture.
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Theorem~W (whole rows; \cref{thm:W}).} In the run of an oblivious machine with linear running time, after
+a cut that reveals at most $\eps L$ bits, the input bits on which the outputs of all but a small fraction of the rows
+of the transpose depend lie in boundedly many rows of the input, the bound depending on $\eps$ and on the machine's
+resources and not on~$d$. Consequently the Matrix Coding Conjecture excludes oblivious linear-time transposers
+(\cref{cor:W-obl}). This is what turns a statement about runs into a statement about arrays.
+\item \textbf{Theorem~T (tape coding; \cref{thm:T}).} The Matrix Coding Conjecture implies the robust form of the Tape
+Coding Conjecture. With the reduction of the first paper it follows that the Matrix Coding Conjecture implies that
+(T) fails, for all machines.
+\item \textbf{Theorem~F (the weak form; \cref{thm:F}).} A weak form of the conjecture (\cref{conj:weak}) already
+implies that (T) fails. It asks for a bound at one size $d$ beyond every threshold, and lets the deficit decrease
+with the window; \cref{rem:weak-demand} says how fast it may decrease.
+\item \textbf{Theorem~N (normal form; \cref{thm:N}).} Every whole-row code $C$ contains, after a translation, a code
+with at least $\card C^2/2^{L}$ elements in which rows are functions of columns as well, and the relation may be taken
+symmetric and reflexive at a small cost. So the conjecture may be attacked for such codes only.
+\item \textbf{Theorem~O (order; \cref{thm:O}).} The largest acyclic set of entries has exactly $d^2$ minus the least
+cost of an order of the rows, and every acyclic set lies in the one given by some order. Recovery rules of
+transported copies of a code do not improve this bound, and on relations with a mixing property it leaves a deficit
+that tends to zero as the window grows (such relations exist by \cref{prop:mixing}, which is not formalized). So no argument of this kind proves the conjecture.
+\item \textbf{Theorem~E (entropy; \cref{thm:E}).} On the incidence relation of the Fano plane every polymatroid that
+obeys the recovery constraints has value at most $119/3$, a code attains this, and the best acyclic bound is~$41$. A
+$9\times6$ grid relation without mutual triangles has value at most $204/5$ against~$41$. Every lift of the Fano
+relation whose helper rows respect the incidences and which mixes at one percent has a gap of more than $d^2/100$
+between the two bounds. Such lifts exist with both degrees at most $3600$ and girth tending to infinity
+(\cref{prop:lifts}, not formalized). So bounds beyond order exist at a fixed window; these relations already have a
+constant deficit from order.
+\item \textbf{Theorem~I (invariance; \cref{thm:I}).} A whole-row code that is invariant under the shifts of all but
+$b$ pairs of a pairing of the entries has at most $q^{d^2/2+b+o(d^2)}$ elements over an alphabet of $q$ symbols, with
+an explicit threshold that does not depend on the alphabet or on the relation. So a code of rate above one half must
+break the symmetry of a pairing on a positive fraction of the entries.
+\end{itemize}
+
+\subsection{How the paper builds on the series}\label{sec:intro-series}
+
+\paragraph{The first paper} supplies the frozen statement, the Tape Coding Conjecture, and the reduction from machines
+that are correct on a fraction $2^{-O(d\log d)}$ of the inputs to codes on block networks, which is what makes the
+robust form of the conjecture reach machines that are not oblivious~\cite{FirstPaper2026}. \Cref{thm:T} is stated
+against that conjecture as it stands there.
+
+\paragraph{The fourth and fourteenth papers} supply the cut. The fourth paper showed that for oblivious machines two
+statements together exclude a transposer: every run can be cut cheaply to bounded depth, and index codes on the
+resulting systems of cones are long~\cite[Theorem~4.10]{FourthPaper2026}. The fourteenth paper proved the first of the
+two for all runs~\cite[Theorem~7.5]{BoundedStack2026}. \Cref{thm:W} starts from that cut, and \cref{thm:T} applies it to a block
+network after lifting the network to a walk.
+
+\paragraph{The seventeenth paper,} the synthesis, reduced the oblivious case to one function, the best rate of a
+storage code on the cone relations left by cheap cuts, and described the statement that would decide it
+(\cref{sec:intro-diagnosis}). It also introduced the codes of this paper, under the name of $\rho$-codes, proved the
+bounds $w/(w+1)$ and one half for $w\le2$, and asked for one half at every window~\cite{SeventeenthPaper2026}. The
+present paper shows that these codes, and a far weaker bound than one half, are all that the question about machines
+needs.
+
+\paragraph{Other papers.} The storage-code bounds of the fifth and seventh papers are used for the classes in which
+the conjecture is known and for the certificates of \cref{thm:E}~\cite{DirectedRecovery2026,SeventhPaper2026}. The
+thirteenth and fifteenth papers constructed storage codes of rate tending to one on abstract relations of bounded
+degree~\cite{StorageCodes2026,HighRate2026}; whether such codes can be whole-row codes is one of the open questions of
+\cref{sec:open}. The eighteenth paper treated machines that are not oblivious through their own
+runs~\cite{AdaptiveTransfer2026}; \cref{thm:T} reaches them through the first paper instead.
+
+\subsection{The diagnosis of the synthesis, point by point}\label{sec:intro-diagnosis}
+
+The synthesis listed five properties that a statement deciding the oblivious case must
+have~\cite[Section~4.4]{SeventeenthPaper2026}. We go through them for \cref{conj:MCC}.
+\begin{enumerate}[label=(\arabic*),leftmargin=2em]
+\item \emph{It must tie what is known to where it can be, for all schedules.} After \cref{thm:W} the place is a set of
+whole rows, and the schedule has disappeared from the statement: the conjecture quantifies over all~$\rho$.
+\item \emph{It must fail for abstract separated relations, on which codes of rate tending to one exist.} The
+conjecture says nothing about such relations. It concerns whole-row relations, in which an entry is helped by $wd$
+others, all of them in $w$ rows. No code of rate above one half is known on these at a fixed window as $d$ grows.
+\item \emph{It must fail for motion that ignores the data.} The conjecture is not about motion. The codes of
+\cref{thm:W,thm:T} are extracted from correct outputs, and a machine that moves its heads and transposes nothing yields
+none.
+\item \emph{It must constrain all scales at once.} The conjecture is a statement at one scale, and the scales enter
+through the window: a cheaper cut leaves deeper cones and a larger window, so the deficit must not vanish as the
+window grows. \Cref{thm:F} makes the exchange rate explicit.
+\item \emph{It must use the shape of tapes,} because a bound on coding gains for graphs of bounded degree in general
+would be a circuit lower bound. The shape of tapes is used in the reduction: the cheap cut exists because heads walk,
+and cones meet few rows because the input is read row by row. What is left in the statement is the shape of the
+array: a row and a column meet in one entry.
+\end{enumerate}
+So the diagnosis is met in a different way than the synthesis expected in points~(4) and~(5), and the restriction to
+oblivious machines, under which it was made, is removed. The wall has not fallen. It has been moved to a statement
+about arrays, and \cref{thm:O,thm:E,thm:I} say what is known on the other side.
+
+\subsection{Questions of earlier papers}\label{sec:intro-questions}
+
+\begin{itemize}[leftmargin=1.5em]
+\item The fourth paper remarked that no implication was known, in either direction, between the plain Tape Coding
+Conjecture and the pair of statements of its decomposition~\cite[Remark~4.12]{FourthPaper2026}. That question stays
+open. What is new is one statement that implies both: \cref{conj:MCC} gives the bound on index codes at every depth
+(\cref{cor:W-obl}) and the Tape Coding Conjecture (\cref{thm:T}).
+\item The synthesis asked whether whole-row codes have rate one half at every window, over a fixed
+alphabet~\cite[Problem~9.4(c)]{SeventeenthPaper2026}. We do not answer this. \Cref{thm:T,thm:F} say what any bound
+below one, at the alphabet of the transposition problem, would give, and \cref{thm:I} proves one half for codes with
+the symmetry of a pairing.
+\item The synthesis observed that for small windows the acyclic-subgraph bound might still suffice, and that
+computations indicated that for large windows it does not~\cite[Section~9]{SeventeenthPaper2026}. \Cref{thm:O} proves
+the second half: on mixing relations the best acyclic bound has rate tending to one as the window grows. Window three
+is still open.
+\end{itemize}
+
+\subsection{What is left}\label{sec:intro-left}
+
+One statement: \cref{conj:weak}, or the stronger \cref{conj:MCC}, or the still stronger \cref{conj:half}. The weak form
+lets the deficit decrease as the window grows, but only very slowly (\cref{rem:weak-demand}), while the bounds that
+hold for all codes give a deficit of $1/(w+1)$. The smallest open case
+of the half-rate conjecture is window three on relations whose rows and columns are spread. No converse is known: a
+family of whole-row codes of rate tending to one would refute the conjecture and would not be a machine.
+\Cref{sec:construction} says what such a family, and what a machine, would have to look like, and \cref{sec:open}
+states the open problems.
+
+\subsection{Formal status, and how to read the paper}\label{sec:intro-formal}
+
+\Cref{thm:W,thm:T,thm:F,thm:N,thm:O,thm:I} and the finite and conditional parts of \cref{thm:E} are formalized in
+Lean~4 with Mathlib~\cite{Mathlib2026}; each carries a line naming its declarations, and \cref{sec:leanindex} lists
+them. They use the axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound} only. \Cref{thm:T,thm:F}
+conclude the frozen proposition of the first paper. Not formalized, and proved in the text: the two existence statements
+\cref{prop:mixing,prop:lifts} and the exclusion of \cref{prop:hyperfinite}. A
+reader who wants only the reduction can read \cref{sec:prelim,sec:rows,sec:tape,sec:weak}; a reader who wants to work
+on the conjecture can start at \cref{sec:normal}.
+
+\subsection{Related work}\label{sec:intro-related}
+
+Whole-row codes are storage codes, or equivalently index codes with side information, on a particular family of
+relations; for these notions see~\cite{BBJK2011,Riis2007}. The passage from a computation of small depth to an index
+code by fixing the values on a cut goes back to Valiant's depth reduction~\cite{Valiant1977}, and for transposition
+in the input--output model to Adler, Harvey, Jain, Kleinberg and Lehman~\cite{AHJKL2006}. Lower bounds for
+transposition are known on machines with one work tape~\cite{DMS1991,DietzfelbingerMaass1993}. % DRAFT: a literature search for whole-row relations and for the implication of Theorem T, including theses, is
+% still to be made; no claim of novelty is made before it.
+
+\subsection{Organization}\label{sec:intro-org}
+
+\Cref{sec:prelim} fixes the model, the codes and the notation. \Cref{sec:rows,sec:tape,sec:weak} prove the reduction.
+\Cref{sec:normal,sec:order,sec:entropy,sec:invariance} study the conjecture: a normal form, what order cannot do, what
+entropy can, and where one half is proved. \Cref{sec:construction} is the construction side, \cref{sec:open} the open
+problems, and the appendices index the Lean declarations and describe the verification.

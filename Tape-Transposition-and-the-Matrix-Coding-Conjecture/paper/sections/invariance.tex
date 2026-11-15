@@ -1,0 +1,30 @@
+\section{Where one half is proved}\label{sec:invariance}
+
+One half is known for $w\le2$ (\cref{prop:known}), for relations whose rows or offsets are not
+spread~\cite{SeventeenthPaper2026}, and for several classes of relations and codes from the earlier papers, listed in
+\cref{tab:classes}. The theorem of this section adds a class defined by a symmetry of the code, with no condition on
+the relation.
+
+Let $\iota$ be an involution of the entries, for example $(i,j)\mapsto(j,i)$. A \emph{pairing shift} adds one group
+element to the two entries of an orbit of~$\iota$, or to a fixed entry.
+
+\begin{theorem}[Theorem I: invariance under a pairing]\label{thm:I}
+\formal{WholeRow/Pairing.lean}{WholeRow.pairing_card_sq_le_forward, WholeRow.pairing_card_pow_le_half}
+\formal{WholeRow/ParityTrimming.lean}{WholeRow.parity_card_le_forward, WholeRow.parity_card_pow_le_baseline}
+Let $\Sigma$ be a finite abelian group, $\rho$ a helper map of window $w$ on $[d]$, and $C$ a whole-row code
+for~$\rho$ that is invariant under the pairing shifts of all orbits of $\iota$ except $b$ orbits of two entries. Then
+for every $n\ge1$ with $d\ge n(w+2w^3n)$,
+\[
+  \card C^{2n}\ \le\ \card\Sigma^{\,n(d^2+2b)+2d^2},
+\]
+that is, the rate is at most $\tfrac12+b/d^2+1/n$. If in addition the shifts of $u$ fixed entries that are not
+incident are missing, the bound holds with $2b+u$ in place of~$2b$. For codes invariant under the shifts of $m$
+disjoint parity blocks of at least two entries each, the rate is at most $1-m/d^2+1/n$.
+\end{theorem}
+\draftnote{The statement, in particular the two variants, is to be checked against the Lean declarations. Outline:
+compatibility from recovery; records separate cosets; the count; deletion of heavy rows at one
+symbol per block; lanes. Table of the classes with one half, with citations. These declarations are in the shared
+library; the verification appendix must say which build covers them.}
+
+The theorem excludes one mechanism at every window: a code above the pairing rate cannot keep the pairing symmetry on
+all but $o(d^2)$ orbits. Nothing is known to force that symmetry on the codes that come from machines.

@@ -1,0 +1,45 @@
+\section{From runs to whole rows}\label{sec:rows}
+
+This section proves the reduction for oblivious machines. It is the direct route, and it shows where the rows come
+from: the input head reads the matrix row by row, so a short stretch of computation sees few rows.
+
+\subsection{Cuts, cones and index codes}\label{sec:rows-cones}
+
+Fix an oblivious run of length $T\le c(L+1)$ at size~$d$. Its \emph{dependency graph} has the steps as vertices; a
+step depends on the preceding step and, for every work tape, on the last earlier step at which that head was on the
+same cell~\cite[Section~4]{FourthPaper2026}. A \emph{cut} is a set $\Gamma$ of steps whose values are revealed; its
+\emph{depth} is the largest number of vertices on a path that avoids it. The \emph{cone} of an output bit is the set
+of input positions read at the steps from which its appending step can be reached without passing through~$\Gamma$.
+The revealed values form an index code: two inputs with the same revealed values that agree on the cone of an output
+bit agree on that bit of the transpose~\cite[Corollary~4.5]{FourthPaper2026}. Every run of linear length has a cut of
+at most $\eps L$ revealed bits and depth bounded in terms of $\eps$, $k$, $c$ and the width of a
+step~\cite[Theorem~7.5]{BoundedStack2026}.
+
+\subsection{Theorem W}\label{sec:rows-W}
+
+\begin{theorem}[Theorem W: whole rows]\label{thm:W}
+\formal{WindowSpread.lean}{WindowSpread.native_row_spread_prefix, WindowSpread.nativeRowSpreadQuantitative, WindowSpread.nativeRowSpreadExtension}
+Let $k$, $c$ and the width of a step be fixed, and let $\eps>0$. There are $w$ and $D$, depending on these and not
+on~$d$, such that for all large $d$ every oblivious run of length at most $c(L+1)$ at size $d$ has a cut $\Gamma$ of
+depth at most~$D$ that reveals at most $\eps L$ bits, a set $E$ of at most $\eps d$ exceptional rows of the transpose,
+and a helper map $\rho$ of window at most~$w$, such that the cone of every output bit in a row $j\notin E$ of the
+transpose lies in the rows $\rho(j)$ of the input.
+\end{theorem}
+\draftnote{Statement to be checked word for word against the Lean proposition; outline of the formal proof (the
+counting of windows along the input walk, the guards, the row cover) to be written.}
+
+\begin{corollary}[The oblivious case]\label{cor:W-obl}
+\formal{RowSpreadCrux.lean}{RowSpread.native_indexCode_bound_of_wholeRow, RowSpread.uniformWholeRowRateCanonicalBits_crux, RowSpread.uniformWholeRowRateCanonicalBits_excludes, RowSpread.wholeRow_window_bound_excludes}
+If \cref{conj:MCC} holds with deficit~$\delta$, then every index code on the cone system of a cut of bounded depth of
+an oblivious linear-time run has at least $(\delta-o(1))L$ bits, at every depth, and no oblivious machine transposes
+in linear time. A bound at one explicit window, with a deficit above a fixed multiple of the cost of the cut, already
+excludes the machines with the corresponding resources.
+\end{corollary}
+\draftnote{The constants of this statement (the factor in front of $\delta$, the multiple of the cost of the cut in
+the one-window form) are to be taken from the Lean declarations. Outline: fix the revealed values and the exceptional
+rows; the fibre is a whole-row code for $\rho$ (\lean{entryWord_wholeRow_of_cones}); sum over fibres.}
+
+The synthesis reduced the oblivious case to one function, the best rate of a storage code on the cone relations left
+by cheap cuts~\cite[Section~4.1]{SeventeenthPaper2026}. The corollary replaces that function, which depends on the
+schedule, by the rate of whole-row codes: if this rate stays below one, no oblivious machine transposes in linear
+time.

@@ -1,0 +1,42 @@
+\section{The weak form}\label{sec:weak}
+
+\Cref{thm:T} uses one deficit for all windows. The proof uses less: for given resources it needs a bound at one
+window, at one large size, with a deficit above the cost of the cut. Stating exactly that gives a weaker conjecture
+with the same consequence. By \cref{thm:N} it may be stated for two-sided codes on symmetric reflexive relations.
+
+For $k\ge5$, $G\ge1$, $c\ge4$, $d\ge1$, $\theta>0$ and $R\ge0$ put $b=b(d)$, $L=d^2b$, $\ell=\lceil db/G\rceil$ and
+\begin{align*}
+  D&=\text{the depth of the cut of density $\theta$ of~\cite[Theorem~7.5]{BoundedStack2026}},&
+  W&=2(G+1)(2k+3)^{D},\\
+  K&=c+4+5(k-3)(cG+2),&
+  M&=(4kG+1)\,\ell\,\bigl\lfloor\theta\lceil cL/\ell\rceil\bigr\rfloor,\\
+  h&=\begin{cases}0,&R\ge d,\\ \min\bigl(d,\lfloor Wd/(R+1)\rfloor\bigr),&R<d,\end{cases}&
+  X&=2dh-h^2 .
+\end{align*}
+
+\begin{conjecture}[Matrix Coding Conjecture, weak form]\label{conj:weak}
+\formal{Wall.lean}{Wall.Conjecture}
+For all $k\ge5$, $G\ge1$, $c\ge4$ and every $d_0$ there are $d\ge\max(d_0,1)$, $R$, $\theta>0$ and $\delta$ such that
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item every two-sided whole-row code on $d\times d$ arrays with entries in $\{0,1\}^{b}$, for a symmetric reflexive
+helper map of window at most $W+R+1$, has at most $2^{(1-\delta)L}$ elements, and
+\item $\delta L>2(Kd+M)+bX$.
+\end{enumerate}
+\end{conjecture}
+
+\begin{theorem}[Theorem F: the weak form suffices]\label{thm:F}
+\formal{Wall.lean}{Wall.of_commonDeficit, Wall.excludes_adaptive, Wall.of_previous, Wall.commonDeficit_implies_previous}
+\Cref{conj:MCC} implies \cref{conj:weak}, and \cref{conj:weak} implies that \textup{(T)} fails.
+\end{theorem}
+\draftnote{Outline: final-output diagrams of co-entropy $Kd$ from the first paper (\lean{codes_coentLinear_at}), the
+end invoice with integer budgets (\leanfile{FiniteWholeRowPayments.lean}), the normalization.}
+
+\begin{remark}[What the weak form asks]\label{rem:weak-demand}
+Condition~(ii) reads, up to lower-order terms, $\delta>2(4kG+1)c\,\theta+2W/(R+1)$ at window $U=W+R+1$. So a bound
+$1-f(U)$ on the rate at window~$U$ need not have $f$ bounded below: it suffices that for some $\theta$ and $R$ the
+value $f(W+R+1)$ exceeds the right-hand side. \emph{Heuristic:} the depth $D$ of the cut grows very fast as $\theta$
+falls and $W$ is exponential in~$D$, so that $\theta$ is of the order of an inverse power of $\log\log W$; a deficit
+that falls more slowly than every such power would then suffice. We have not proved an estimate of this form. On the other hand the general
+bound $f(U)=1/(U+1)$ of \cref{prop:known} never meets it, since $1/(W+R+2)<2W/(R+1)$. The symmetric arrays show
+$\delta\le(d-1)/(2d)$, and a window of $d$ or more admits all arrays, so every witness has $W+R+1<d$.
+\end{remark}

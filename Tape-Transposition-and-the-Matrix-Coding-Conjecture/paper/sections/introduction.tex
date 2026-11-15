@@ -44,11 +44,12 @@ is the bound $w/(w+1)$ for the rate, and one half for $w\le2$~\cite{SeventeenthP
 The first three theorems are the reduction. The other four are about the conjecture.
 
 \begin{itemize}[leftmargin=1.5em]
-\item \textbf{Theorem~W (whole rows; \cref{thm:W}).} In the run of an oblivious machine with linear running time, after
-a cut that reveals at most $\eps L$ bits, the input bits on which the outputs of all but a small fraction of the rows
-of the transpose depend lie in boundedly many rows of the input, the bound depending on $\eps$ and on the machine's
-resources and not on~$d$. Consequently the Matrix Coding Conjecture excludes oblivious linear-time transposers
-(\cref{cor:W-obl}). This is what turns a statement about runs into a statement about arrays.
+\item \textbf{Theorem~W (whole rows; \cref{thm:W}).} In any run of linear length, a cut of bounded depth can be
+extended, by revealing at most $\eps L$ further bits, so that the input bits on which the outputs of all but a small
+fraction of the rows of the transpose depend lie in boundedly many rows of the input, the bound depending on $\eps$
+and on the resources of the machine and not on~$d$. The theorem is about the motion of the heads alone: it assumes
+neither that the machine is oblivious nor that it is correct. For oblivious machines, whose runs have cheap cuts of
+bounded depth, it follows that the Matrix Coding Conjecture excludes linear-time transposers (\cref{cor:W-obl}). This is what turns a statement about runs into a statement about arrays.
 \item \textbf{Theorem~T (tape coding; \cref{thm:T}).} The Matrix Coding Conjecture implies the robust form of the Tape
 Coding Conjecture. With the reduction of the first paper it follows that the Matrix Coding Conjecture implies that
 (T) fails, for all machines.
@@ -160,7 +161,10 @@ states the open problems.
 Lean~4 with Mathlib~\cite{Mathlib2026}; each carries a line naming its declarations, and \cref{sec:leanindex} lists
 them. They use the axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound} only. \Cref{thm:T,thm:F}
 conclude the frozen proposition of the first paper. Not formalized, and proved in the text: the two existence statements
-\cref{prop:mixing,prop:lifts} and the exclusion of \cref{prop:hyperfinite}, and the three-lane code realizing the Fano optimum. A
+\cref{prop:mixing,prop:lifts}, the exclusion of \cref{prop:hyperfinite}, and the code that attains the Fano optimum.
+Remarks are not formalized either: in particular the arithmetic of \cref{rem:weak-demand} and the sketch of
+\cref{rem:markov}; \cref{prop:known} and the results in the table of \cref{sec:invariance} are cited from earlier
+papers with their status there. A
 reader who wants only the reduction can read \cref{sec:prelim,sec:rows,sec:tape,sec:weak}; a reader who wants to work
 on the conjecture can start at \cref{sec:normal}.
 

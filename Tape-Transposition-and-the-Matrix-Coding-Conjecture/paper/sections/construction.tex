@@ -4,11 +4,25 @@ What would a counterexample to the conjecture, and what would a linear-time tran
 
 \subsection{What a code of rate near one must avoid}\label{sec:constr-code}
 
-By \cref{thm:N} it may be taken two-sided on a symmetric reflexive relation. By \cref{thm:I} it breaks every pairing
-symmetry on a positive fraction of the entries. By \cref{prop:known} and the classes of \cref{sec:invariance} its
-relation has window at least three and spread rows and offsets, and by \cref{thm:O} acyclic sets and closure say
-nothing against it when the relation mixes. \Cref{thm:E} shows that entropy inequalities can still exclude it.
-\draftnote{The codes of the thirteenth and fifteenth papers: what is known about realizing them as whole-row codes.}
+Suppose that whole-row codes of rate $1-\eps$ exist at a window that depends on $\eps$ only, for all large~$d$.
+\begin{itemize}[leftmargin=1.5em]
+\item By \cref{thm:N} there are such codes, of rate $1-2\eps$, that are two-sided on symmetric reflexive relations.
+\item By \cref{prop:known} and the classes of \cref{sec:invariance} the window is at least three and the rows and
+offsets of the relation are spread.
+\item By \cref{thm:I}, for every pairing of the entries the codes fail to be invariant under the shifts of all but a
+fraction of about $2\eps$ of its orbits: a pairing has at most $d^2/2$ orbits of two entries, and rate $1-\eps$ forces
+the number $b$ of orbits without invariance to be at least $(\tfrac12-\eps-o(1))d^2$.
+\item The examples above the pairing rate that are known at small sizes, such as the Fano code of \cref{thm:E}, gain
+from the incident entries and from short cycles of helpers. At a fixed window the incident entries are a fraction
+$O(w/d)$ of all entries, so a gain of positive density as $d$ grows cannot come from them alone.
+\item \Cref{thm:O} gives no information on mixing relations. \Cref{thm:E} shows that this is a limit of the method
+and not evidence for such codes: entropy inequalities can hold where acyclic bounds do not.
+\end{itemize}
+The thirteenth and fifteenth papers construct storage codes of rate tending to one on abstract relations of bounded
+degree~\cite{StorageCodes2026,HighRate2026}. In a whole-row relation an entry has $wd$ helpers, which fill $w$ rows,
+and we do not know whether those codes can be laid out in this way (\cref{prob:highrate}).
+\draftnote{State precisely what is proved about laying out those codes (the layouts that fail), with proofs or
+citations, or leave this paragraph as it is.}
 
 \subsection{What the conjecture forgets about machines}\label{sec:constr-forgets}
 
@@ -37,7 +51,10 @@ and the fibre used in \cref{thm:T} is close to such a set in relative entropy.
 
 \subsection{What a machine would need}\label{sec:constr-machine}
 
-A linear-time transposer yields, for every $\eps$, whole-row codes of rate at least $1-\eps$ at a window that depends
-on $\eps$ only. Such codes would not yet be a machine: they would have to be produced by passes over tapes in linear
-time, and the motion would have to satisfy the conditions of the earlier
-papers~\cite{FourthPaper2026,SeventeenthPaper2026}.
+By \cref{thm:T}, read in the other direction, a linear-time transposer yields for every $\eps>0$ whole-row codes of
+rate at least $1-\eps$ at a window that depends on $\eps$ and on the resources of the machine only, for all large~$d$;
+for an oblivious machine \cref{thm:W} produces them directly from a cut of its run. So a construction of a machine
+contains a refutation of \cref{conj:MCC}, with everything listed in \cref{sec:constr-code}. The converse fails as far
+as we know: such codes are sets, and a machine must also produce them by passes over tapes in linear time, with head
+motion that meets the conditions of the earlier papers~\cite[Corollary~3.24]{FourthPaper2026}. This is why a
+refutation of the conjecture would close this route to an impossibility proof without deciding~(T).

@@ -11,7 +11,12 @@ There is now a stronger **unrestricted**, Lean-verified consumer: a common
 canonical whole-row deficit implies robust block TCC and therefore excludes
 adaptive linear-time transposers. The [block transfer](block-tcc-from-whole-row.md)
 proves the additional graph refinement, capacity bill and row grouping;
-its combined endpoint is [WholeRowTCC.lean](../WholeRowTCC.lean). It does not automatically supply
+its combined endpoint is [WholeRowTCC.lean](../WholeRowTCC.lean).
+For adaptive exclusion alone, [WeakWholeRowTCC.lean](../WeakWholeRowTCC.lean)
+allows dimension-dependent deficits and windows on cofinally many dimensions,
+testing only symmetric reflexive two-sided codes at canonical alphabets;
+the exact [finite criterion](block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis)
+retains the cut and normalization payments. It does not automatically supply
 any restricted-class premise below. The table's explicit 169ε/64 invoices
 continue to describe the original Lean oblivious route.
 

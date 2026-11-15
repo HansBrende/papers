@@ -27,7 +27,8 @@ MODULES = [
     "GridCertificate", "GridFull", "GridOrder", "WholeRowAcyclic",
     "WindowPages", "FarClebsch", "PaleyTournament", "SameTable", "LocalRecordViews",
     "BlockIntervalWalk", "BlockCut", "BlockCodeLocal", "BlockCutPrice",
-    "BlockRowGrouping", "BlockCodeTransfer", "BlockCodeInvoice", "WholeRowTCC",
+    "BlockRowGrouping", "BlockEndRows", "BlockCodeTransfer", "BlockCodeInvoice",
+    "WholeRowTCC", "WeakWholeRowTCC",
 ]
 
 

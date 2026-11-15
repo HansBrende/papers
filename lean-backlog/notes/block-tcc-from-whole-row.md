@@ -3,8 +3,9 @@
 Hans Brende and GPT-6 Astra, 15 November 2026.
 **Status: the robust implication and its adaptive-machine consumer are
 Lean-verified.** The geometric refinement, finite counting and uniform
-composition are checked in the modules mapped in Section 7. No capacity
-deficit is proved here.
+composition are checked in the modules mapped in Section 7. Section 8 gives
+a strictly less uniform, finite sufficient hypothesis for the adaptive
+exclusion, also checked in Lean. No capacity deficit is proved here.
 
 The implication holds for the **robust** conjecture, not just its
 all-input version:
@@ -266,7 +267,7 @@ hypothesis, never an axiom. The code can be nonlinear and nonuniform.
 | Capacity bill | [BlockCutPrice](../BlockCutPrice.lean): `cut_edge_price`, `card_cut_outputs` | At most 4krG bits in outgoing edges and r bits in cut-slot outputs per cut slot; arbitrary capacity function below `CapProfile`. |
 | Grouping | [BlockRowGrouping](../BlockRowGrouping.lean): `badOutputRows_bill`, `card_blockHelpers` | M\|E\|≤2N; a common helper set for every nonexceptional output row. |
 | Robust fibre | [BlockCodeTransfer](../BlockCodeTransfer.lean): `fibre_wholeRow` | Correctness and capacity bounds only on F; finite observations use residues outside F. |
-| Finite invoice | [BlockCodeInvoice](../BlockCodeInvoice.lean): `robust_invoice` | Arbitrary natural co-entropy bill h, not only C₀db: L≤h+(4k+1)rG\|Γ\|+db\|E\|+b·a under whole-row exponent a. |
+| Finite invoice | [BlockCodeInvoice](../BlockCodeInvoice.lean): `robust_invoice_sharp`, `robust_invoice` | Arbitrary natural co-entropy bill h: L≤h+(4kG+1)r\|Γ\|+db\|E\|+b·a under whole-row exponent a. The original, slightly coarser invoice remains available. |
 | Uniform conclusion | [WholeRowTCC](../WholeRowTCC.lean): `robustNoCode_of_commonDeficit`, `noCode_of_commonDeficit`, `not_linearTimeTransposable_of_commonDeficit` | Exactly the existing robust/plain block predicates and the frozen adaptive-machine target. Only δ>0 and `UniformWholeRowRateCanonicalBits (1−δ)` are assumed. |
 | Normalized input | [WholeRowTCC](../WholeRowTCC.lean): `robustNoCode_of_normalizedTwoSidedDeficit` | Symmetric, reflexive, two-sided common deficit suffices via the existing factor-two transfer. |
 
@@ -280,7 +281,8 @@ input co-entropy), after fixing M and θ before d. The sharper finite
 `c+1/d` display and the directed-cone count remain the written estimates;
 the checked endpoint uses `c+1`. The general asymptotic o(L) co-entropy
 extension stated above remains written, while its arbitrary finite bill
-is checked by `robust_invoice`.
+is checked by `robust_invoice`. Section 8 checks the sharper final-slot
+payment for the adaptive-only route.
 
 Reproduce the full dependency and axiom check with:
 
@@ -292,6 +294,119 @@ lake env python3 ../../lean-backlog/check.py
 The modules use the repository's existing Lean/Mathlib v4.34.1 pins and a
 1,000,000-heartbeat budget for arithmetic proofs. No frozen file is changed.
 
+## 8. The weakened adaptive-only hypothesis
+
+**Lean-verified:** [BlockEndRows](../BlockEndRows.lean) and
+[WeakWholeRowTCC](../WeakWholeRowTCC.lean). This is a sufficient condition
+extracted from the existing reductions, not a claim to be a logically
+weakest possible hypothesis. It implies the adaptive exclusion directly;
+unlike the common-deficit theorem, it does not assert `RobustNoCode_TM`.
+
+### The smaller machine consumer
+
+Paper 1's [`codes_coentLinear_at`][Coarse] supplies, from any adaptive
+linear-time transposer, block codes at every sufficiently large dimension
+with these additional properties:
+
+- all L output bits are appended in the last L steps;
+- the solving set has coentropy at most Kd bits, not Kdb;
+- k≥5, G≥1 and c≥4, and one explicit allowance suffices:
+  K=coarseConst(k−4,c,G)=c+4+5(k−3)(cG+2).
+
+Indeed the buffered diagram has k=M.k+5 and c=2c_machine+4; the state
+count affects only the size threshold, which cofinality absorbs. No
+obliviousness of the original machine is assumed.
+
+For final continuous output,
+outNode(r,o)=⌊(T−L+o)/r⌋. An output row's db consecutive bits meet at most
+G+1 slots because db≤rG. Thus the exceptional-column set is empty.
+Set
+
+    D(k,θ) = blockDepth k θ = genieDepth k 1 12 θ,
+    W(k,G,θ) = 2(G+1)(2k+3)^D(k,θ),
+    B(k,G) = 4kG+1.
+
+These are the existing explicit depth function and `endWindow`. More
+literally, D=parK(k,θ/48)^parP(k,θ/48)·⌈48/θ⌉, with the fixed
+`parK`, `parP` of [Paper 14][Depth]. The cut costs at most
+Bθ(cL+db), retaining the final-slot overhead db and charging cut outputs
+one bit each. Hence a whole-row bound of deficit ε at this W gives
+
+    d · b(d)[dε − Bθ(cd+1)] ≤ coentropy.
+
+This is `end_invoice`, for every finite d≥1, θ>0 and arbitrary solving
+set and profile-bounded nonlinear block code. There is no asymptotic
+error term.
+
+### Exact sufficient hypothesis, in the normalized class
+
+Write q_d=2^b(d). For **every** integer triple k≥5, G≥1, c≥4 and every
+lower dimension threshold d₀, suppose there exist
+
+    d≥max(d₀,1),  θ>0,  R∈ℕ,  δ∈ℝ
+
+such that, writing W=W(k,G,θ) and σ=2W/(R+1), both conditions hold:
+
+1. Every code C on d×d entries from the alphabet `{0,1}^b(d)`, with a
+   **symmetric, reflexive** helper relation of width at most W+R+1 and
+   **two-sided** whole-row recovery, satisfies
+
+       |C| ≤ q_d^((1−δ)d²).
+
+   Two-sided means column j is determined by rows ρ(j), and row j by
+   columns ρ(j), with the same ρ. The code and recovery functions can be
+   arbitrary nonlinear functions; no invariance under transpose or any
+   other symmetry is assumed.
+
+2. The finite savings exceed the explicit allowance:
+
+       b(d) [ d(δ−σ)/2 − (4kG+1)θ(cd+1) ]
+         > c+4+5(k−3)(cG+2).                         (5)
+
+**Conclusion:** no adaptive machine transposes every matrix in linear
+time. The exact Lean statements are `AdaptiveNormalizedCriterion` and
+`not_linearTimeTransposable_of_normalizedCriterion`.
+
+All choices may depend on the resource triple and the lower threshold.
+In particular θ, R, W and δ may change with d; δ need not have a common
+positive lower bound, and the tested dimensions need only be arbitrarily
+large. The cardinality bound is required for all indicated codes at the
+chosen dimension, so the choices do not depend on a particular code or
+diagram. No bounds at other alphabets are required.
+
+For general one-sided codes at width W, omit R and σ and replace
+(δ−σ)/2 by δ in (5). This is `AdaptiveWholeRowCriterion`. The
+normalized-to-one-sided transfer is exactly the existing paid symmetry
+normalization followed by translated intersection; its factor two and
+payment have not been discarded.
+
+### A simpler fixed-window sufficient form
+
+`criterion_of_fixedWindow` proves the following convenient stronger
+premise sufficient: for each k,G,c choose one θ>0 and ε>Bcθ such that,
+at arbitrarily large d, **all** one-sided codes at W(k,G,θ) have rate at
+most 1−ε. The finite overhead and Kd are then absorbed by increasing d.
+There need be no common ε across resource triples. In the normalized
+form the analogous margin is δ>2W/(R+1)+2Bcθ.
+
+For comparison, a written asymptotic consequence is enough to permit a
+deficit function tending to zero. Suppose normalized bounds of rate
+1−f(w)+o_d(1) hold at each fixed window and along the canonical alphabets,
+with the error uniform over all indicated relations and codes at that
+window, and
+
+    f(w)(log log w)^a → ∞  for every a>0.
+
+Then the fixed-window margin above can be met. For fixed k,G, the literal
+depth parameters give
+log log W=O_{k,G}(θ^(−(4k²+1))log(1/θ)); choose R=⌈2W/θ⌉ so
+the symmetry payment is at most θ. Thus f(W+R+1)/θ→∞. For example, eventual
+f(w)=1/log log log w is sufficient. This growth estimate and asymptotic
+corollary are **written, reviewed, not formalized**; the finite criterion
+(5), with its exact quantifiers, is formalized. Merely f(w)>0 at every
+fixed w is not enough for this argument: the deficit must beat its own
+depth-cut cost.
+
 [WholeRow]: ../StatementsRowSpread.lean
 [BlockDefs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsCE.lean
 [Blocks]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Blocks.lean
@@ -301,4 +416,5 @@ The modules use the repository's existing Lean/Mathlib v4.34.1 pins and a
 [DepStep]: ../../Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/lean/MergeDepth/ColdGenie.lean
 [Hop]: ../../Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes/lean/BoundedNesting/OneWalk.lean
 [Consumer]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Statements/Coding.lean
+[Coarse]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/CoarseTrace.lean
 [OldRemark]: ../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/paper/sections/decomposition.tex

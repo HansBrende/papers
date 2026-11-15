@@ -106,8 +106,14 @@ unit-speed walk dependencies, then cut, priced and grouped into whole-row
 fibres. The [proof and declaration map](notes/block-tcc-from-whole-row.md)
 record every adapter and the quantitative conventions. The finite invoice
 allows arbitrary co-entropy and correctness only on the solving input set.
-A common canonical whole-row deficit remains the explicit open hypothesis;
-no converse or unconditional exclusion is asserted.
+The adaptive exclusion also follows from the weaker finite criterion in
+[WeakWholeRowTCC.lean](WeakWholeRowTCC.lean): only cofinally many dimensions,
+canonical alphabets and symmetric reflexive two-sided codes need be tested;
+the window and deficit may vary with dimension. Its exact savings need only
+exceed one explicit allowance for each resource triple. [Section 8 of the
+proof](notes/block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis)
+states the quantifiers and finite inequality. These capacity bounds remain
+open hypotheses; no converse or unconditional exclusion is asserted.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,

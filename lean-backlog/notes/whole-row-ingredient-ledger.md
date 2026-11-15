@@ -11,7 +11,9 @@ Write L=d²b(d) for the raw input length. B1 proves that a common positive
 whole-row deficit, along the canonical alphabets, excludes oblivious
 linear-time transposers. The Lean-verified block-network transfer in Section 7
 strengthens this: the same common deficit implies robust TCC and therefore
-excludes adaptive linear-time transposers too. Neither converse is proved. A large whole-row code is one
+excludes adaptive linear-time transposers too. The weaker finite criterion
+at the end of Section 7 also suffices for that exclusion, without a common
+deficit. Neither converse is proved. A large whole-row code is one
 necessary object, not a construction of a transposer.
 
 ## 1. An exact top statement needs the local execution semantics
@@ -458,6 +460,20 @@ The older Paper 4 remark concerned its native crux, not this universal
 whole-row hypothesis, and predates the general walk theorem used in the
 new bridge. This does not settle its reverse implication or turn a static
 code into a causal implementation.
+
+For the adaptive exclusion alone, the common deficit is more than needed.
+[WeakWholeRowTCC.lean](../WeakWholeRowTCC.lean) reuses Paper 1's buffered
+output-at-end extraction at coentropy Kd. Each output row meets at most
+G+1 slots, removing the exceptional-column charge. With
+W=2(G+1)(2k+3)^blockDepth(k,θ) and B=4kG+1, a one-sided deficit ε yields
+net savings d·b(d)[dε−Bθ(cd+1)]. They need only exceed
+Kd, K=c+4+5(k−3)(cG+2), at arbitrarily large selected dimensions for each
+k≥5,G≥1,c≥4. The normalized hypothesis tests symmetric reflexive
+two-sided codes at W+R+1 and uses ε=(δ−2W/(R+1))/2. All selected
+parameters may depend on dimension; only canonical alphabets are tested.
+The [exact quantifiers and finite inequality](block-tcc-from-whole-row.md#8-the-weakened-adaptive-only-hypothesis)
+are Lean-verified. This weaker premise excludes adaptive machines directly
+and is not claimed to imply the full robust block conjecture.
 
 [SameTable]: ../SameTable.lean
 [P1defs]: ../../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean

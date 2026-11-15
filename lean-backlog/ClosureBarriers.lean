@@ -3,6 +3,7 @@ import Mathlib.Data.Fintype.Card
 import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
+import LeanMachine.RecoveryAcyclic
 
 /-!
 # Limits of transported coordinate-closure certificates
@@ -26,8 +27,8 @@ universe u v
 variable {V : Type u} {J : Type v}
 
 /-- A strict rank on internal helper arcs. In particular, a loop is forbidden. -/
-def RankAcyclic (H : V → Finset V) (A : Finset V) : Prop :=
-  ∃ rank : V → ℕ, ∀ x ∈ A, ∀ y ∈ A, y ∈ H x → rank y < rank x
+abbrev RankAcyclic (H : V → Finset V) (A : Finset V) : Prop :=
+  LeanMachine.RecoveryAcyclic.RankAcyclic H A
 
 /-- A recovery order with one chosen copy for each nonseed coordinate.
 The choice is not required at seeds, so an empty copy type is allowed when

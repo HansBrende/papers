@@ -91,9 +91,13 @@ is checked in [MacroProjection](MacroProjection.lean), shared
 [LiftOrder](../lean-machine/LeanMachine/WholeRow/LiftOrder.lean), and
 [FanoLift](FanoLift.lean). Every supplied helper-containment, rectangle-mixing
 Fano lift has the explicit gap above one percent between its feasible
-polymatroid value and every row-order cost at the stated mixing threshold.
-Random existence, growing girth and the general order/acyclic-set
-identification remain written.
+polymatroid value and every induced acyclic-set invoice at the stated mixing
+threshold. Shared [AcyclicOrder](../lean-machine/LeanMachine/WholeRow/AcyclicOrder.lean)
+proves the exact order/acyclic-set identification for rectangular arrays,
+strengthened to containment of every acyclic set in a row-order set.
+[WholeRowAcyclic](WholeRowAcyclic.lean) specializes it to Fano and the grid.
+The complete Fano lift is an explicit instance with growing window 3n;
+fixed-degree random existence and growing girth remain written.
 
 The [ingredient ledger](notes/whole-row-ingredient-ledger.md) audits what
 the whole-row relaxation forgets: native geometry, common execution,
@@ -264,8 +268,9 @@ Native extraction and source audit:
   exclusion. The paid residual inequality, full 49-cell adapter, exact
   Shannon attainment by polymatroids and order calculation are now
   Lean-verified; the [status index](notes/consolidation-status.md) names
-  the declarations. Actual three-lane code realization and the general
-  order/acyclic-set identification remain written proofs.
+  the declarations. The rectangular order/acyclic-set identification and
+  full-host gap against every acyclic invoice are also Lean. Actual
+  three-lane code realization remains written.
 - [Finite-gap amplification](notes/finite-shannon-gap-amplification.md):
   any strict finite Shannon/order gap persists at positive density on
   growing fixed-window hosts, also with incidence girth Ω(log d) at the
@@ -275,7 +280,8 @@ Native extraction and source audit:
   [paid Fano inequality](notes/fano-soft-recovery.md) charges arbitrary
   recovery errors, and the [orbit dictionary](tools/fano-shannon/orbit-dictionary.md)
   makes its certificate geometric. The per-coordinate paid Fano inequality
-  is Lean-verified; amplification and the joint-column-error coefficient
+  is Lean-verified; deterministic amplification and the acyclic comparison
+  are also Lean, while sparse existence, girth and the joint-column-error coefficient
   retain independently reviewed written proofs.
   The [PG(2,3) calibration](notes/projective-plane-order-calibration.md)
   gives order 140 and triangle lower bound 130, without a new Shannon upper.

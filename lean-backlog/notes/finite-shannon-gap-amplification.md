@@ -2,10 +2,10 @@
 
 14 November 2026. GPT-6 Astra, following the Fano certificate developed
 with Claude Fable. **Status: deterministic macro projection and conditional
-row-order comparison Lean-verified; random existence and the girth refinement
+comparison against every induced acyclic-set invoice Lean-verified; random existence and the girth refinement
 remain written proofs, independently reviewed.** No claim of literature
-novelty is made. The general order/acyclic-set identification used below
-also remains a written result of Paper 17.
+novelty is made. The general order/acyclic-set identification from Paper 17
+is now Lean-verified, strengthened to containment on rectangular arrays.
 
 A finite gap between Shannon and order bounds need not disappear as the
 matrix grows, even when both incidence degrees stay fixed. This note
@@ -295,8 +295,16 @@ $$\operatorname{cost}(\pi)-h(\mathrm{full})
 for every feasible fine polymatroid h and every fine order π. Under
 99n≤100(n−r+1), `conditional_gap_one_percent` gives 15523n²/30000,
 and `gap_coefficient_gt_one_percent` proves that this exceeds (7n)²/100
-for n>0. These are conditional inequalities, not a Lean construction
-of mixing lifts or a lower bound on their Shannon value.
+for n>0. `conditional_acyclic_gap` and its strict one-percent corollary
+make the same comparison against every induced acyclic-set invoice, using
+the shared exact identification below. These are not a lower bound on the
+fine Shannon value or a fixed-degree construction.
+
+For non-vacuity, `completeLift` takes all clones of every incident base point.
+Lean proves containment, rectangle mixing at r=1, width exactly 3n, and
+gap at least (4/3)n² for n≥1. The two predicates `FanoOrder.line` and
+`FanoCertificate.incident` are the same base incidence. This explicit lift
+has growing window and does not replace the sparse existence argument.
 
 The entropy aggregation has a direct existing consumer. Paper 4's
 [polymatroid library](../../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean/MotionDepthCodes/Polymatroid.lean)
@@ -327,12 +335,14 @@ independent-edge random graphs do not supply the required degree bounds.
 The crude bound binom(n,r)≤2ⁿ could give a weaker existence theorem with
 larger degree, but does not prove the displayed degree-3600 result.
 
-One further boundary matters when reporting completion. The general
-Paper 17 identification of the minimum row-order cost with the complement
-of a maximum induced acyclic set is still a written theorem. The
-conditional amplification uses the explicit last-helper order cost;
-a fully Lean-checked claim about **every acyclic-set bound** also
-needs that adapter. Fano's own exact order value is already checked.
+The general Paper 17 identification is now checked in shared
+[`AcyclicOrder.lean`](../../lean-machine/LeanMachine/WholeRow/AcyclicOrder.lean),
+with a stronger rectangular containment statement: every acyclic cell set
+lies in one induced by a row order. The maximum acyclic-set size is exactly
+total cells minus minimum cost. Directed acyclicity is defined by absence
+of nonempty closed walks, including loops; its equivalence with a rank
+certificate is proved in `RecoveryAcyclic`. Thus the comparison with
+**every acyclic-set bound** has no remaining written dependency.
 The optional small-separator argument and paid macro-error extension are
 separate from the first milestone. Neither supplies a native quotient or
 an error budget.

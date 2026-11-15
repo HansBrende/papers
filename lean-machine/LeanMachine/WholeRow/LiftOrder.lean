@@ -8,7 +8,8 @@ import Mathlib.Tactic
 
 Positions are numbered from one; an empty helper set has cost zero. This
 module is finite and deterministic. It does not assert the existence of
-mixing lifts or identify row-order costs with arbitrary acyclic bounds.
+mixing lifts. The companion `AcyclicOrder` module identifies the minimum
+row-order cost with the best induced acyclic-set invoice.
 -/
 
 namespace LeanMachine.WholeRow.LiftOrder

@@ -8,9 +8,9 @@ The proof checks the 512 point subsets and one attaining row order, not all
 9! permutations. Double counting identifies the full prefix cost with the
 sum of last-helper positions; removing the 18 incident cells gives cost 23.
 
-The passage from this row-order optimum to arbitrary induced acyclic sets uses
-Paper 17's separate written whole-row exactness argument. No capacity equality
-or attaining code for the Shannon upper bound is claimed here.
+The companion `WholeRowAcyclic` module identifies this optimum with 54 minus
+the maximum induced acyclic-set size. No capacity equality or attaining code
+for the Shannon upper bound is claimed here.
 -/
 
 namespace LeanBacklog.GridOrder

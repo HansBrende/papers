@@ -8,8 +8,8 @@ The proof checks the 128 row subsets and one collinear-first order, rather
 than enumerating the 5040 permutations. A double count identifies the prefix
 formula with the sum of the seven last-helper positions, numbered 1 through 7.
 
-The comparison with the maximum induced acyclic-set size uses Paper 17's
-separate written whole-row exactness theorem; that adapter is not proved here.
+The companion `WholeRowAcyclic` module uses the shared rectangular exactness
+theorem to identify this value with 49 minus the maximum acyclic-set size.
 -/
 
 namespace LeanBacklog.FanoOrder

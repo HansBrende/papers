@@ -1,4 +1,5 @@
 import FanoFull
+import LeanMachine.WholeRow.AcyclicOrder
 
 /-!
 # Whole-row helper containment and macro projection
@@ -18,14 +19,14 @@ variable {R J B K : Type*} [Fintype R] [Fintype J] [Fintype B] [Fintype K]
 variable [DecidableEq R] [DecidableEq J] [DecidableEq B] [DecidableEq K]
 
 /-- All cells in the helper rows of the target's column. -/
-def rowHelpers (ρ : J → Finset R) (x : R × J) : Finset (R × J) :=
-  (ρ x.2).product univ
+abbrev rowHelpers (ρ : J → Finset R) (x : R × J) : Finset (R × J) :=
+  LeanMachine.WholeRow.AcyclicOrder.rowHelpers ρ x
 
 omit [Fintype R] [DecidableEq R] [DecidableEq J] in
 @[simp] theorem mem_rowHelpers (ρ : J → Finset R) (x y : R × J) :
     y ∈ rowHelpers ρ x ↔ y.1 ∈ ρ x.2 := by
   classical
-  simp [rowHelpers]
+  exact LeanMachine.WholeRow.AcyclicOrder.mem_rowHelpers ρ x y
 
 /-- Independent row and column maps give the cell projection. -/
 def cellMap (πR : R → B) (πJ : J → K) (x : R × J) : B × K :=

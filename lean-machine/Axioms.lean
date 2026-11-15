@@ -1911,3 +1911,21 @@ import LeanMachine
 #print axioms LeanMachine.WholeRow.LiftOrder.cost_ge_of_base_bound
 #print axioms LeanMachine.WholeRow.LiftOrder.cloneOrder
 #print axioms LeanMachine.WholeRow.LiftOrder.cost_clone_order_le
+
+-- Exact induced acyclicity and whole-row order identification.
+#print axioms LeanMachine.RecoveryAcyclic.arc
+#print axioms LeanMachine.RecoveryAcyclic.Acyclic
+#print axioms LeanMachine.RecoveryAcyclic.RankAcyclic
+#print axioms LeanMachine.RecoveryAcyclic.rank_iff_acyclic
+#print axioms LeanMachine.WholeRow.AcyclicOrder.rowHelpers
+#print axioms LeanMachine.WholeRow.AcyclicOrder.mem_rowHelpers
+#print axioms LeanMachine.WholeRow.AcyclicOrder.rowSet
+#print axioms LeanMachine.WholeRow.AcyclicOrder.rowSet_acyclic
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exists_rowSet_superset
+#print axioms LeanMachine.WholeRow.AcyclicOrder.rowSet_card_add_cost
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exists_cost_le_complement
+#print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exists_minimum_order
+#print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost_le
+#print axioms LeanMachine.WholeRow.AcyclicOrder.minimumCost_eq_of_bounds
+#print axioms LeanMachine.WholeRow.AcyclicOrder.exact_acyclic_card

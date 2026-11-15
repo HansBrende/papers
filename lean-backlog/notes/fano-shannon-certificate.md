@@ -10,8 +10,10 @@ exact Shannon values 56/3 and 119/3, and order value 41 are Lean-verified in
 [FanoAttainment.lean](../FanoAttainment.lean) and
 [FanoOrder.lean](../FanoOrder.lean). The attaining polymatroids are formalized;
 their three-lane code realizations remain written proofs with exact checks.
-The general order/acyclic-set identification also remains a written theorem
-of Paper 17. No literature novelty claim is made.
+The general rectangular order/acyclic-set identification is also Lean-verified;
+[WholeRowAcyclic.lean](../WholeRowAcyclic.lean) proves the full-host maximum
+acyclic size eight and gap against every acyclic invoice. No literature
+novelty claim is made.
 
 ## 1. Exact statement
 

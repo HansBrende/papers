@@ -24,7 +24,7 @@ MODULES = [
     "DecoderSelection", "DecoderEntropy", "SubcodeSelection", "ConditionalSubcode",
     "ShannonCertificate", "SubcubicReuse", "FanoCertificate",
     "FanoFull", "FanoOrder", "FanoAttainment", "MacroProjection", "FanoLift",
-    "GridCertificate", "GridFull", "GridOrder",
+    "GridCertificate", "GridFull", "GridOrder", "WholeRowAcyclic",
     "WindowPages", "FarClebsch", "PaleyTournament",
 ]
 
@@ -49,9 +49,13 @@ def main():
     if {"NormalizedCodeTransfer", "NormalizedRateTransfer"}.intersection(selected):
         shared = SOURCE.parent / "lean-machine"
         check("LeanMachine.SymmetricHelpers", shared, shared / ".lake" / "build" / "lib" / "lean")
-    if "FanoLift" in selected:
+    if {"ClosureBarriers", "EntropyConsolidation", "MacroProjection", "FanoLift", "WholeRowAcyclic"}.intersection(selected):
+        shared = SOURCE.parent / "lean-machine"
+        check("LeanMachine.RecoveryAcyclic", shared, shared / ".lake" / "build" / "lib" / "lean")
+    if {"MacroProjection", "FanoLift", "WholeRowAcyclic"}.intersection(selected):
         shared = SOURCE.parent / "lean-machine"
         check("LeanMachine.WholeRow.LiftOrder", shared, shared / ".lake" / "build" / "lib" / "lean")
+        check("LeanMachine.WholeRow.AcyclicOrder", shared, shared / ".lake" / "build" / "lib" / "lean")
     if {"FarClebsch", "PaleyTournament"}.intersection(selected):
         # Keep the existing namespace intact: a partial namespace in CACHE
         # would shadow Paper 4's other compiled modules on LEAN_PATH.

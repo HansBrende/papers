@@ -96,7 +96,3 @@ needed. Omit `--check` to regenerate the corresponding files. The index tool
 also generates `PaperAxioms.lean`, auditing every cited declaration. The build
 covers the shared invariance dependencies; no separate backlog build is needed.
 Old `lean-backlog` entry points remain compatibility imports.
-
-A package build and an axiom audit are not a fresh replay of the entire import
-closure by the frozen final verifier. That larger replay has not completed in
-the capped audit. See the paper's verification appendix for formal scope.

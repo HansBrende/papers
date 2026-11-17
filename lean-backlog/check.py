@@ -31,6 +31,7 @@ MODULES = [
     "BlockRowGrouping", "BlockEndRows", "BlockCodeTransfer", "BlockCodeInvoice",
     "WholeRowTCC", "WeakWholeRowTCC", "FiniteWholeRowPayments", "Wall",
     "WallFarCells", "WallFarShannon", "WallBipartite", "WallPermutation",
+    "WallBundle", "WallRandomVariables", "WallSubgroups", "WallCounting", "WallBranching",
 ]
 
 

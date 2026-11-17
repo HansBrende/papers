@@ -134,6 +134,16 @@ open ([precise comparison](notes/block-tcc-from-whole-row.md#9-standalone-target
   - A refutation must supply exactly the family of `conjecture_iff_not_refutingFamily`: for one
     resource triple, every large d and every θ, R, a normalized two-sided code at window
     W(θ) + R + 1 whose deficit in cells is at most the budget divided by the entry width.
+  - Stronger sufficient forms (*Lean*: [WallBundle.lean](WallBundle.lean),
+    [WallRandomVariables.lean](WallRandomVariables.lean), [WallSubgroups.lean](WallSubgroups.lean),
+    [WallCounting.lean](WallCounting.lean), [WallBranching.lean](WallBranching.lean)). Each asks for
+    one deficit on a larger class of objects than codes, and each implies `Wall.CommonDeficit`:
+    `BundleCommonDeficit` (polymatroids on the 2n vertices with new-cell caps and recovery) ⟹
+    `GroupCommonDeficit` (subgroup indices) ⟹ `LabelCommonDeficit` ⟺ `CountingCommonDeficit` ⟹
+    `SeparatedCountingCommonDeficit` ⟹ `BranchingCommonDeficit` (labelling systems with recovery
+    and branching q) ⟹ `CanonicalBranchingCommonDeficit` (the canonical alphabet only); and
+    `BundleCommonDeficit` ⟹ `RandomVariableCommonDeficit`. None is asserted or shown equivalent to
+    the wall, so refuting one of them does not refute the conjecture.
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 

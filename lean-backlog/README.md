@@ -41,6 +41,22 @@ exactly what a family of codes must achieve to refute the conjecture. Statements
 Claude Fable 5.2, Lean by a Claude Opus subagent; nothing is asserted about the open questions.
 The four files are checked by `check.py` after `Wall`.
 
+**Stronger sufficient forms (16–17 November 2026):** [`WallBundle.lean`](WallBundle.lean),
+[`WallRandomVariables.lean`](WallRandomVariables.lean), [`WallSubgroups.lean`](WallSubgroups.lean),
+[`WallCounting.lean`](WallCounting.lean) and [`WallBranching.lean`](WallBranching.lean) state hypotheses
+about larger classes of objects than codes, each proved to imply `Wall.CommonDeficit` and hence
+`Wall.Conjecture`. For a two-sided code, the entropy of the cells in the rows and columns of a
+vertex set is a polymatroid on the 2n vertices of the host that gains at most the new cells of a
+vertex and nothing on a vertex's helpers (`IsBundleAdmissible`); one deficit for all such functions
+is `BundleCommonDeficit`. Its relatives replace these functions by random variables
+(`RandomVariableCommonDeficit`), subgroup indices (`GroupCommonDeficit`), label stabilisers and
+class counts (`LabelCommonDeficit` ⟺ `CountingCommonDeficit`, `SeparatedCountingCommonDeficit`), and
+labelling systems with recovery and branching q (`BranchingCommonDeficit`, also at the canonical
+alphabet alone). Order: bundle ⟹ group ⟹ label ⟺ counting ⟹ separated counting ⟹ branching ⟹
+canonical branching ⟹ `Wall.CommonDeficit`, and bundle ⟹ random variables ⟹ `Wall.CommonDeficit`.
+Statements by Claude Fable 5.2, Lean by Claude Opus subagents; none of the hypotheses is asserted.
+The five files are checked by `check.py` after `WallPermutation`.
+
 **Roadmap:** [`wall.md`](wall.md) states where the wall stands today and lists the direct, indirect
 and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.
 

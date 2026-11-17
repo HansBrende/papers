@@ -222,6 +222,14 @@ Open questions, nearest the wall first:
   A proof of nonexistence at every fixed w would give a stronger Shannon-half theorem sufficient
   for the actual-code question. Code normalization does not automatically normalize
   arbitrary polymatroids.
+  *Lean* ([WallFarShannon.lean](WallFarShannon.lean)): stated directly on the normalized class,
+  no such step is needed. If every polymatroid satisfying the recovery constraints on the
+  unpinned cells of expanding bipartite hosts has value at most ρ times the number of cells,
+  for one ρ<1, every window and all large d, then `Wall.Conjecture` holds
+  (`conjecture_of_uniformFarPolymatroidBound`; per host, `pinned_card_le_of_polymatroid_bound`).
+  The threshold is left free: for full-array codes, measured against the far cells alone,
+  one half already fails on the Clebsch gadget (X14); no transfer of that gadget to this
+  class is claimed. The hypothesis is open and is not asserted.
 - **The general bound, and the first open window.** Paper 17's general order bound gives
   R(w)≤w/(w+1); at windows one and two the sharper bound is asymptotically one half.
   **Window three is the smallest open case: 1/2≤R(3)≤3/4.** The series establishes no
@@ -260,7 +268,7 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
 | **D0** | *Standing*: brainstorm a new front, re-evaluate the wall, or tie an indirect front to it | Permanent | — |
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): the statement of Section 1 | Open for w ≥ 3. Main front; see "what is left" | [StatementsRowSpread.lean](StatementsRowSpread.lean); linear form `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
 | **D9** | *The native crux*: index codes for the cone systems of oblivious linear-time schedules need (ρ(D) − o(1))L bits, with ρ(D_ε) > ε for one ε | Open; follows from D1 by B1. Restricted native bounds only ([audit](notes/native-cone-property-audit.md)) | `Crux`, `crux_excludes` in the fourteenth paper's library |
-| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)) | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Same-rate symmetric/reflexive normalization and its native consumers: *Lean*, [NormalizedRateTransfer](NormalizedRateTransfer.lean). Examples: *written, reviewed* |
+| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)). For `Wall.Conjecture` a far-cell form suffices: one bipartite quadrant, expanding hosts only, a pinned set chosen by the prover (for instance all cells within a fixed distance), one window per resource triple and cofinally many d; the reduction steps are due to Gemini 4 Carbon | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Same-rate symmetric/reflexive normalization and its native consumers: *Lean*, [NormalizedRateTransfer](NormalizedRateTransfer.lean). Far-cell criteria: *Lean*, [WallFarCells](WallFarCells.lean) (`FarCellCriterion`, `WindowwiseFarCellCriterion`, the uniform and two-copy forms, each implying `Wall.Conjecture`; none is asserted). Examples: *written, reviewed* |
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |

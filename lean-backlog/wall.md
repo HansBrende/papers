@@ -110,6 +110,30 @@ open ([precise comparison](notes/block-tcc-from-whole-row.md#9-standalone-target
   helper relations sufficient for a common bound. This compares actual codes, not Shannon optima
   ([Lean adapter](TwoSidedCodeTransfer.lean); [symmetry proof and exact
   calibrations](notes/two-sided-whole-row-codes.md)).
+- **Clean form** (*Lean*: [WallBipartite.lean](WallBipartite.lean),
+  [WallPermutation.lean](WallPermutation.lean)). The common-deficit question is equivalent to
+  this one. Fix w permutations σ₁, …, σ_w of {1, …, d}. A code is a set of d × d arrays in which
+  column j is determined by rows σ₁(j), …, σ_w(j) and row i by columns σ₁⁻¹(i), …, σ_w⁻¹(i).
+  Is there one δ > 0 with every such code, at every fixed w, having asymptotic rate at most 1 − δ
+  along the canonical alphabets? (`permutationCommonDeficit_iff_commonDeficit`.) Rows and columns
+  are separate index sets: no diagonal, no loops, no symmetric relation.
+  - The intermediate form takes any bipartite graph of maximum degree w between rows and columns
+    (`bipartiteCommonDeficit_iff_commonDeficit`). On a square array it contains the symmetric
+    two-sided codes at window w and is contained in them at window 2w + 1, with the same
+    dimension, alphabet and rate (`uniformBipartiteRate_iff`); every graph lies in a union of w
+    perfect matchings (`exists_perm_cover`).
+  - For `Wall.Conjecture` the same substitution gives sufficient criteria:
+    `conjecture_of_permutationCriterion`, and window-wise one window per resource triple,
+    cofinally many d and a deficit above the limiting budget
+    `budgetRate` = 2(4kG+1)cθ + 2W/(R+1). No equivalence with the conjecture is proved: the
+    conjecture gives the bipartite bound back at half the window
+    (`bipartiteCriterion_halfWindow_of_conjecture`), and whether the full converse holds is open.
+  - Free assumptions for a prover (`permutationBoundAt_of_licences`): no set of columns misses
+    many rows, and a small set of cells per host may be fixed. These do not restrict the problem
+    (`bipartiteBoundAt_iff_exists_farCellBoundAt`).
+  - A refutation must supply exactly the family of `conjecture_iff_not_refutingFamily`: for one
+    resource triple, every large d and every θ, R, a normalized two-sided code at window
+    W(θ) + R + 1 whose deficit in cells is at most the budget divided by the entry width.
 - Lean statements: `UniformWholeRowRateCanonicalBits`, `WholeRowHalfRateCanonicalBits` in
   [StatementsRowSpread.lean](StatementsRowSpread.lean).
 
@@ -268,7 +292,7 @@ the lower bounds use two lanes. These are finite bounds, not exact values.
 | **D0** | *Standing*: brainstorm a new front, re-evaluate the wall, or tie an indirect front to it | Permanent | — |
 | **D1** | *Whole rows* (paper 17, Problem 9.4(c)): the statement of Section 1 | Open for w ≥ 3. Main front; see "what is left" | [StatementsRowSpread.lean](StatementsRowSpread.lean); linear form `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |
 | **D9** | *The native crux*: index codes for the cone systems of oblivious linear-time schedules need (ρ(D) − o(1))L bits, with ρ(D_ε) > ε for one ε | Open; follows from D1 by B1. Restricted native bounds only ([audit](notes/native-cone-property-audit.md)) | `Crux`, `crux_excludes` in the fourteenth paper's library |
-| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)). For `Wall.Conjecture` a far-cell form suffices: one bipartite quadrant, expanding hosts only, a pinned set chosen by the prover (for instance all cells within a fixed distance), one window per resource triple and cofinally many d; the reduction steps are due to Gemini 4 Carbon | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Same-rate symmetric/reflexive normalization and its native consumers: *Lean*, [NormalizedRateTransfer](NormalizedRateTransfer.lean). Far-cell criteria: *Lean*, [WallFarCells](WallFarCells.lean) (`FarCellCriterion`, `WindowwiseFarCellCriterion`, the uniform and two-copy forms, each implying `Wall.Conjecture`; none is asserted). Examples: *written, reviewed* |
+| **D10** | *Symmetric two-sided whole rows*: recover columns from helper rows and rows from helper columns | Equivalent common-deficit target: translated intersections lose at most half the deficit; fixing heavy rows and columns permits symmetric, reflexive helper relations with arbitrarily small additional loss. Cyclic exact value d(d+1)/2+1; basis-eight46. No common deficit yet ([note](notes/two-sided-whole-row-codes.md)). For `Wall.Conjecture` a far-cell form suffices: one bipartite quadrant, expanding hosts only, a pinned set chosen by the prover (for instance all cells within a fixed distance), one window per resource triple and cofinally many d; the reduction steps are due to Gemini 4 Carbon | *Lean:* [finite factor-two adapter, equivalence and B1 consumers](TwoSidedCodeTransfer.lean), direct invoice δ₂>(169/32)ε. Same-rate symmetric/reflexive normalization and its native consumers: *Lean*, [NormalizedRateTransfer](NormalizedRateTransfer.lean). Far-cell criteria: *Lean*, [WallFarCells](WallFarCells.lean) (`FarCellCriterion`, `WindowwiseFarCellCriterion`, the uniform and two-copy forms, each implying `Wall.Conjecture`; none is asserted). Clean bipartite and permutation forms, equivalent to the common-deficit question: *Lean*, [WallBipartite](WallBipartite.lean), [WallPermutation](WallPermutation.lean) (Section 1). Examples: *written, reviewed* |
 | **D4** | *Native extraction* of a usable coding shape from cones | Done for whole rows, including the conditional coding transfer (B1), all *Lean*. Global monotone row words are refuted (X12) | [WindowSpread.lean](WindowSpread.lean), [RowSpreadCrux.lean](RowSpreadCrux.lean) |
 | **D7** | *The construction*: a code above pairing that tape passes can compute | No candidate. It must lie in "what is left" and carry a grid labelling | — |
 | **D8** | *Covariant decoders on a group* (D1 for linear decoders commuting with diagonal translations) | Constant coefficients and bounded sector coupling done; coefficients depending on the sector open (G3) | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean) |

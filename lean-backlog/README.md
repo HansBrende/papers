@@ -15,7 +15,7 @@ There is one definition of the target, and neither entry point assumes it is tru
 **Far-cell criteria (16 November 2026):** [`WallFarCells.lean`](WallFarCells.lean) proves that
 `Wall.Conjecture` follows from a bound on two-sided codes on one bipartite quadrant, for
 expanding hosts only, after fixing a set of cells chosen by the prover (for instance every
-cell within a fixed distance of its column). The weakest single-copy form, `FarCellCriterion`,
+cell within a fixed distance of its column). `FarCellCriterion`
 keeps the conjecture's own quantifiers; `WindowwiseFarCellCriterion` asks for a deficit at one
 window per resource triple, for cofinally many d, against the explicit limiting budget
 `budgetRate`; `UniformFarCellDeficit` is the one-constant form. A two-copy form lets the prover
@@ -24,8 +24,22 @@ to imply the other. [`WallFarShannon.lean`](WallFarShannon.lean) gives the
 Shannon form: a bound below one on every polymatroid satisfying the recovery constraints
 implies the code bound, hence the conjecture. The reduction steps are due to Gemini 4 Carbon
 (Google DeepMind); the statements were set by Claude Fable 5.2 and the Lean was written by
-a Claude Opus subagent. All hypotheses are open and none is asserted. Both files are checked
-by `check.py` after `Wall`.
+a Claude Opus subagent. All hypotheses are open and none is asserted.
+
+**Clean form (16 November 2026):** [`WallBipartite.lean`](WallBipartite.lean) and
+[`WallPermutation.lean`](WallPermutation.lean) restate the problem without a diagonal, loops or a
+symmetric relation: a d × d array, w permutations, column j determined by rows σᵢ(j) and row i by
+columns σᵢ⁻¹(i). `permutationCommonDeficit_iff_commonDeficit` and
+`bipartiteCommonDeficit_iff_commonDeficit` prove that the common-deficit question for these codes
+is equivalent to `Wall.CommonDeficit`; `conjecture_of_permutationCriterion` and its window-wise
+form are sufficient for `Wall.Conjecture`. No equivalence with the conjecture is proved: on a
+square array the two classes contain each other only up to doubling the window, and the
+conjecture returns the bipartite bound at half the window. Pinning cells and excluding sparse cuts
+are free assumptions (`permutationBoundAt_of_licences`,
+`bipartiteBoundAt_iff_exists_farCellBoundAt`), and `conjecture_iff_not_refutingFamily` states
+exactly what a family of codes must achieve to refute the conjecture. Statements by
+Claude Fable 5.2, Lean by a Claude Opus subagent; nothing is asserted about the open questions.
+The four files are checked by `check.py` after `Wall`.
 
 **Roadmap:** [`wall.md`](wall.md) states where the wall stands today and lists the direct, indirect
 and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.

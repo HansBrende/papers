@@ -30,7 +30,7 @@ MODULES = [
     "BlockIntervalWalk", "BlockCut", "BlockCodeLocal", "BlockCutPrice",
     "BlockRowGrouping", "BlockEndRows", "BlockCodeTransfer", "BlockCodeInvoice",
     "WholeRowTCC", "WeakWholeRowTCC", "FiniteWholeRowPayments", "Wall",
-    "WallFarCells", "WallFarShannon",
+    "WallFarCells", "WallFarShannon", "WallBipartite", "WallPermutation",
 ]
 
 

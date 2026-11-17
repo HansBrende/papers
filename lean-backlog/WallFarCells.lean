@@ -611,7 +611,7 @@ All parameters, including the split `m`, the expansion parameter `q`, the pin bu
 the exponent `v`, are chosen by the prover together with `d`, `R` and `θ`. -/
 def FarCellCriterion : Prop :=
   ∀ k G c : ℕ, 5 ≤ k → 1 ≤ G → 4 ≤ c → ∀ d₀ : ℕ,
-    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧ 1 ≤ q ∧
+    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧
       FarCellBoundAt (Fin (entryBits d) → Bool) (d - m) m (endWindow k G θ + R + 1) q e v ∧
       (2*(adaptiveAllowance k G c*d+cutBudget k G c d θ):ℕ) +
         (entryBits d*crossBudget d (endWindow k G θ) R:ℕ) <
@@ -620,7 +620,7 @@ def FarCellCriterion : Prop :=
 /-- **The far-cell criterion implies the conjecture**, with `δ = farDeficit / d²`. -/
 theorem conjecture_of_farCellCriterion (h : FarCellCriterion) : LeanBacklog.Wall.Conjecture := by
   intro k G c hk hG hc d₀
-  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, _, hfar, hgap⟩ := h k G c hk hG hc d₀
+  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, hfar, hgap⟩ := h k G c hk hG hc d₀
   have hd1 : 1 ≤ d := (le_max_right _ _).trans hd
   have hdpos : (0:ℝ) < d := by exact_mod_cast hd1
   have hd2 : (d:ℝ)^2 ≠ 0 := by positivity
@@ -748,7 +748,7 @@ theorem farCellCriterion_of_windowwise (h : WindowwiseFarCellCriterion) : FarCel
   have hd1 : 1 ≤ d := (le_max_right _ _).trans hd0
   have hdd₁ : d₁ ≤ d := (le_max_left _ _).trans ((le_max_right _ _).trans hd)
   have hdN : N ≤ d := (le_max_right _ _).trans ((le_max_right _ _).trans hd)
-  refine ⟨d, R, d / 2, q, e, θ, v, hd0, hθ, Nat.div_le_self d 2, by omega, hfar, ?_⟩
+  refine ⟨d, R, d / 2, q, e, θ, v, hd0, hθ, Nat.div_le_self d 2, hfar, ?_⟩
   have hbudget := hd₁ d hdd₁
   -- quadrant area
   have harea_nat := sq_le_four_mul_half d
@@ -1195,7 +1195,7 @@ theorem normalized_bound_of_twoCopy {b d m w q e : ℕ} {v : ℝ} (hm : m ≤ d)
 /-- The far-cell criterion in two-copy form. -/
 def TwoCopyFarCellCriterion : Prop :=
   ∀ k G c : ℕ, 5 ≤ k → 1 ≤ G → 4 ≤ c → ∀ d₀ : ℕ,
-    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧ 1 ≤ q ∧
+    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧
       TwoCopyFarCellBoundAt (entryBits d) (d - m) m (endWindow k G θ + R + 1) q e v ∧
       (2*(adaptiveAllowance k G c*d+cutBudget k G c d θ):ℕ) +
         (entryBits d*crossBudget d (endWindow k G θ) R:ℕ) <
@@ -1205,7 +1205,7 @@ def TwoCopyFarCellCriterion : Prop :=
 theorem conjecture_of_twoCopyFarCellCriterion (h : TwoCopyFarCellCriterion) :
     LeanBacklog.Wall.Conjecture := by
   intro k G c hk hG hc d₀
-  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, _, hfar, hgap⟩ := h k G c hk hG hc d₀
+  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, hfar, hgap⟩ := h k G c hk hG hc d₀
   have hd1 : 1 ≤ d := (le_max_right _ _).trans hd
   have hdpos : (0:ℝ) < d := by exact_mod_cast hd1
   have hd2 : (d:ℝ)^2 ≠ 0 := by positivity

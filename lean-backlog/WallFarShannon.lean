@@ -221,7 +221,7 @@ theorem farCellBoundAt_of_polymatroid {n m w q e : ℕ} {v : ℝ} {α : Type*} [
 /-- The far-cell criterion with the polymatroid bound in place of the code bound. -/
 def FarPolymatroidCriterion : Prop :=
   ∀ k G c : ℕ, 5 ≤ k → 1 ≤ G → 4 ≤ c → ∀ d₀ : ℕ,
-    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧ 1 ≤ q ∧
+    ∃ (d R m q e : ℕ) (θ v : ℝ), max d₀ 1 ≤ d ∧ 0 < θ ∧ m ≤ d ∧
       FarPolymatroidBoundAt (d - m) m (endWindow k G θ + R + 1) q e v ∧
       (2*(adaptiveAllowance k G c*d+cutBudget k G c d θ):ℕ) +
         (entryBits d*crossBudget d (endWindow k G θ) R:ℕ) <
@@ -230,8 +230,8 @@ def FarPolymatroidCriterion : Prop :=
 theorem farCellCriterion_of_polymatroidCriterion (h : FarPolymatroidCriterion) :
     FarCellCriterion := by
   intro k G c hk hG hc d₀
-  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, hq, hfar, hgap⟩ := h k G c hk hG hc d₀
-  exact ⟨d, R, m, q, e, θ, v, hd, hθ, hm, hq, farCellBoundAt_of_polymatroid hfar, hgap⟩
+  obtain ⟨d, R, m, q, e, θ, v, hd, hθ, hm, hfar, hgap⟩ := h k G c hk hG hc d₀
+  exact ⟨d, R, m, q, e, θ, v, hd, hθ, hm, farCellBoundAt_of_polymatroid hfar, hgap⟩
 
 theorem conjecture_of_farPolymatroidCriterion (h : FarPolymatroidCriterion) :
     LeanBacklog.Wall.Conjecture :=
